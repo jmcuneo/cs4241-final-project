@@ -1,6 +1,6 @@
 # Project Proposal #
 
-Milo Jacobs, Nate Westfall, Connor Peavey, Bashar Alqassar
+Team 1 - Milo Jacobs, Nate Westfall, Connor Peavey, Bashar Alqassar
 
 Approximate Whomst is a two-player webgame based on Guess Who. Instead of guessing between original characters, players instead need to guess items or characters from various video games or other fandoms. We will start with Pokémon and Minecraft items and potentially include things like Terraria items and Slay the Spire relics. We’d also like to have compatibility with user-inputted sets of images. 
 	
