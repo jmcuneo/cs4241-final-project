@@ -5,20 +5,50 @@ body{
 button{
     all:unset;
 }
+img{
+    width: 100%;
+}
+
+h1{
+    margin:0;
+}
+
+#app{
+    width:100vw;
+    height:100vh;
+}
+
+.board{
+    width:75vw;
+}
 
 .card{
+    display: block;
     box-sizing:border-box;
     width:100%;
     height:100%;
     background: whitesmoke;
 }
 
+.card:not(.no_card_hover,.card-flipped,.card-perm-flipped):hover{
+    background: Gainsboro;
+    filter: grayscale(50%) brightness(.90);
+}
+
 .card-flipped{
     background: DarkGray;
-    filter: grayscale(100%) brightness(.5);
+    filter: grayscale(100%) brightness(.75);
+}
+
+.card-flipped:not(.no_card_hover):hover{
+    background: Silver;
+    filter: grayscale(75%) brightness(.85);
 }
 
 .card-perm-flipped{
     background: DimGray;
     filter: grayscale(100%) brightness(.5);
+}
+.card-perm-flipped:not(.no_card_hover):hover{
+    filter: grayscale(0%) brightness(.5);
 }
