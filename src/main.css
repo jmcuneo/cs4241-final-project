@@ -1,0 +1,24 @@
+body{
+    margin: 0;
+}
+
+button{
+    all:unset;
+}
+
+.card{
+    box-sizing:border-box;
+    width:100%;
+    height:100%;
+    background: whitesmoke;
+}
+
+.card-flipped{
+    background: DarkGray;
+    filter: grayscale(100%) brightness(.5);
+}
+
+.card-perm-flipped{
+    background: DimGray;
+    filter: grayscale(100%) brightness(.5);
+}
