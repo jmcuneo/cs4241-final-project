@@ -1,4 +1,0 @@
-
-This project's goal is to create a fun and interactive game which educates users on significant LGBT events and activists. The premise of the game is to match an activist with an associated work (books, protests, etc.)
-
-There would be basic leaderboard functionality, allowing users to login and compete with their friends. Vanilla Javascript would serve as the frontend interface of the application. Authentication would be handled by passportjs’s OAuth implementation. A Mongo database would serve as userdata storage, scores and login information. Express would serve frontend pages, as well as providing endpoints for the various functions of the app. 
