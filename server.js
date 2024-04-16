@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import express, { json } from 'express';
 import mongoose from 'mongoose';
 import ViteExpress from 'vite-express';
-import { testDB } from './dbTester';
+import { testDB } from './dbTester.js';
 
 const app = express();
 const port = 3000;
@@ -16,15 +16,14 @@ dotenv.config();
 connectToDB().catch(err => console.log(err));
 
 /*
-######################
+#################################################
 WILL DELETE ENTIRE DB ON EVERY LOAD!!!!!!!!!!!!!!
 Only keep when in DEVELOPMENT mode. 
-######################
+#################################################
 */
 testDB();
 
 /**
- * @author @AlexanderBeck0
  * @description Connects to the MongoDB database using USER, PASS, and HOST in the .env file
  */
 async function connectToDB() {

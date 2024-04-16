@@ -32,13 +32,12 @@ export const PERMISSIONS = Object.freeze({
 });
 
 /**
- * @author Alexander Beck
- * @JackWeinstein808 Username uniqueness checking (consider using the User.exists() method)
- * @todo implement permissions
- * 
  * Defaults: accountType = {@linkcode ACCOUNT_TYPE.genpop}
  * 
  * Not required: username, gender
+ * @author Alexander Beck
+ * @JackWeinstein808 Username uniqueness checking (consider using the User.exists() method)
+ * @todo implement permissions
  */
 const userSchema = new Schema({
     _id: {

@@ -1,6 +1,14 @@
-import User, { PERMISSIONS } from "./models/user";
-import Event from "./models/event";
+import User, { PERMISSIONS } from "./models/user.js";
+import Event from "./models/event.js";
 
+/**
+*
+* WILL DELETE ENTIRE DB ON EVERY LOAD!!!!!!!!!!!!!!
+*
+* Only use when in DEVELOPMENT mode. 
+* 
+* @author Alexander Beck
+*/
 export async function testDB() {
     /* eslint-disable no-unused-vars */
     await User.deleteMany({});
@@ -39,7 +47,7 @@ export async function testDB() {
             date: new Date(2024, 11, 25),
             location: 'Unity 520',
             creator: user,
-            guestLimit: 3
+            guestLimit: 4
         });
 
         christmasParty.attendees.addToSet(

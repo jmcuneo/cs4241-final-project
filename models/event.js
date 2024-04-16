@@ -8,6 +8,8 @@ const { Schema, model, SchemaTypes } = mongoose;
 /**
  * @author Alexander Beck
  * @todo Validate attendees, permission checking, add creator to attendee list
+ * 
+ * KNOWN BUG: attendees.inviter.message will NOT give the correct error message. You have been warned.
  */
 const eventSchema = new Schema({
     name: {
@@ -54,7 +56,7 @@ const eventSchema = new Schema({
         guest: {
             type: SchemaTypes.ObjectId,
             ref: 'User',
-            required: true // Is this necessary?
+            required: true
         },
         inviter: {
             type: SchemaTypes.ObjectId,
@@ -68,10 +70,10 @@ const eventSchema = new Schema({
                     const user = await User.findById(v);
                     const event = this.parent();
                     const isAdmin = user.accountType === ACCOUNT_TYPE.ADMIN;
-                    const hasAllPerms = user.permissions !== undefined && user.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS);
+                    const hasAllPerms = user.permissions && user.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS);
                     const isBelowGuestLimit = event && event.guestLimit ? event.attendees.length < event.guestLimit : true; // TODO test this
                     const previousInvites = await Event.countDocuments({ 'attendees.inviter': user }).exec(); // TODO Test this
-                    const isBelowInviterLimit = event.guestLimit.inviterLimit !== undefined ? previousInvites < event.guestLimit.inviterLimit : true; // TODO test this
+                    const isBelowInviterLimit = event && event.guestList && event.guestLimit.inviterLimit !== undefined ? previousInvites < event.guestLimit.inviterLimit : true; // TODO test this
                     return isAdmin || (hasAllPerms && isBelowGuestLimit && isBelowInviterLimit);
                 },
                 // TODO: Make this message valid
@@ -80,12 +82,13 @@ const eventSchema = new Schema({
 
                     // Why is this undefined??
                     // I give up.
-                    // if (Event.guestLimit !== undefined) {
+                    // At least 4 hours trying to figure out how to get this to look at the guestList
+                    // if (this.parent().guestLimit !== undefined) {
                     //     const isAboveGuestLimit = Event.countDocuments('attendees') > this.guestLimit;
                     //     if (isAboveGuestLimit) {
                     //         return `The inviter, ${props.value}, attempted to invite too many people. Guest list maximum reached.`;
                     //     }
-                    //     const previousInvites = Event.countDocuments({ 'attendees.inviter': user }); // TODO Test this
+                    //     const previousInvites = Event.countDocuments({ 'attendees.inviter': user }).exec(); // TODO Test this
                     //     const isAboveInviterLimit = Event.guestLimit.inviterLimit !== undefined ? previousInvites > Event.guestLimit.inviterLimit : true; // TODO test this
                     //     if (isAboveInviterLimit) {
                     //         return `The inviter, ${props.value}, attempted to exceed the inviter limit.`;
@@ -99,7 +102,6 @@ const eventSchema = new Schema({
     }],
 }, { timestamps: true });
 
-// TODO: Implement this
 eventSchema.virtual('guestCount').get(function () {
     return this.attendees.length;
 });
