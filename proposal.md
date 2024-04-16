@@ -1,6 +1,6 @@
 By: Esha Bajwa, Joselin Barbosa, Jolene Pern
 
-##Race-a-Pet
+## Race-a-Pet
 
 Race-a-Pet is a web-based game where users can create pets and race them against each other. Users will “design” a pet with various features such as animal type, diet, and exercise, which will affect their racing ability. We organized this project in stages to prioritize the primary features and functionality of the website to aid in time management and expectations.
 
@@ -11,7 +11,7 @@ In between stages, we would conduct user studies in the form of Think-Alouds. Us
 
 Once we complete the features for stage 1 and the user study, we will move on to stage 2 of our project. Users will be able to create multiple pets and keep track of them. We will also add additional features to the form for creating a pet, beyond pet name, animal type, diet and exercise. We will also implement features based on user feedback from the user study.
 
-##Stage 1 (MVP)
+## Stage 1 (MVP)
 
 - Implementing React
 - Express
