@@ -1,4 +1,5 @@
-Event List Site
+### Event List Site
+Note: Look at [proposal.md](proposal.md), not this README for the proposal submission.
 
 2 types of users:
  - admin: able to create and manage events, add users to events
@@ -12,9 +13,12 @@ types of tech:
 
 Jack:
 - implementing login and authenication
+  
 Jayson:
 - find framework
+  
 Alex:
 - handle back end
+  
 Liv:
 - font end
