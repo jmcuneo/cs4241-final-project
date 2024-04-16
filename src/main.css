@@ -1,54 +1,92 @@
-body{
+body {
     margin: 0;
 }
 
-button{
-    all:unset;
+button {
+    all: unset;
 }
-img{
+
+img {
     width: 100%;
+    object-fit: contain;
 }
 
-h1{
-    margin:0;
+h1 {
+    margin: 0;
 }
 
-#app{
-    width:100vw;
-    height:100vh;
+#app {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
 }
 
-.board{
-    width:75vw;
+.grid {
+    display: grid;
+    justify-items: center;
 }
 
-.card{
-    display: block;
-    box-sizing:border-box;
-    width:100%;
-    height:100%;
+.grid-grow {
+    flex-grow: 1;
+}
+
+.board-spinner {
+    align-items: center;
+    justify-content: center;
+}
+
+.board-spinner,
+.board {
+    width: 75vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat {
+    width: 25vw;
+    height: 100vh;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
     background: whitesmoke;
 }
 
-.card:not(.no_card_hover,.card-flipped,.card-perm-flipped):hover{
+.card-img {
+    max-width: 100%;
+    max-height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-grow:1;
+}
+
+.card:not(.no_card_hover, .card-flipped, .card-perm-flipped):hover {
     background: Gainsboro;
     filter: grayscale(50%) brightness(.90);
 }
 
-.card-flipped{
+.card-flipped {
     background: DarkGray;
     filter: grayscale(100%) brightness(.75);
 }
 
-.card-flipped:not(.no_card_hover):hover{
+.card-flipped:not(.no_card_hover):hover {
     background: Silver;
     filter: grayscale(75%) brightness(.85);
 }
 
-.card-perm-flipped{
+.card-perm-flipped {
     background: DimGray;
     filter: grayscale(100%) brightness(.5);
 }
-.card-perm-flipped:not(.no_card_hover):hover{
-    filter: grayscale(0%) brightness(.5);
+
+.card-perm-flipped:not(.no_card_hover):hover {
+    filter: grayscale(0%) brightness(1);
 }

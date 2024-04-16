@@ -32,10 +32,7 @@
     }
 
     let images = get_board();
-    let size = Math.min(
-        (document.body.clientWidth * 0.75) / 2,
-        document.body.clientHeight / 2,
-    );
+    let size = Math.min(document.body.clientWidth*.75/2,document.body.clientHeight/2);
 </script>
 
 {#await images}
@@ -43,19 +40,23 @@
         <Circle {size} color="Silver" duration="1s"></Circle>
     </div>
 {:then board}
-    <div class="grid" style="grid-template-columns: repeat({width}, 1fr);">
-        {#each Array(width) as _, j}
-            <h1>{bingo[j] || ""}</h1>
-        {/each}
-    </div>
-    <div class="grid grid-grow" style="grid-template-columns: repeat({width}, 1fr);">
-        {#each Array(height) as _, j}
-            {#each Array(width) as _, i}
-                {@const card = board[i + j * width]}
-                <Card link={card.link} name={card.name}></Card>
+    <table>
+        <tr>
+            {#each Array(width) as _, j}
+                <th><h1>{bingo[j] || ""}</h1></th>
             {/each}
+        </tr>
+        {#each Array(height) as _, j}
+            <tr>
+                {#each Array(width) as _, i}
+                    {@const card = board[i + j * width]}
+                    <td>
+                        <Card link={card.link} name={card.name}></Card>
+                    </td>
+                {/each}
+            </tr>
         {/each}
-    </div>
+    </table>
 {:catch}
     <h1>Something went wrong</h1>
 {/await}

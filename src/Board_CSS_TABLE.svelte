@@ -48,7 +48,7 @@
             <h1>{bingo[j] || ""}</h1>
         {/each}
     </div>
-    <div class="grid grid-grow" style="grid-template-columns: repeat({width}, 1fr);">
+    <div class="grid" style="grid-template-columns: repeat({width}, 1fr);">
         {#each Array(height) as _, j}
             {#each Array(width) as _, i}
                 {@const card = board[i + j * width]}

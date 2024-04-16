@@ -34,7 +34,7 @@
     class:card-perm-flipped={perm_flip}
     class:no_card_hover={!card_hover}
 >
-    <div class="card-img" style="background-image: url('{link}');" />
+    <img src={link} />
     <span>{name}</span>
     <span>{card_hover}</span>
 </button>
