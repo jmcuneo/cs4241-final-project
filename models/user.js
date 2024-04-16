@@ -76,23 +76,23 @@ const userSchema = new Schema({
     },
     // TODO: Implement permissions (make them actually matter)
     permissions: [{
-        permission: {
+        // permission: {
             type: String,
             enum: {
                 values: Object.values(PERMISSIONS),
                 message: 'VALUE is not a supported permission'
             },
             required: false,
-        }
+        // }
     }],
-}, { timestamps: true });
+}, { timestamps: true, toObject: {virtuals: true} });
 
 /**
  * Creates a fullName field that is not actually stored in the DB, but can still be accessed.
  * Note: Because they are not stored in the DB, you cannot query with them.
  */
 userSchema.virtual('fullName').get(function () {
-    return this.firstName + ' ' + this.lastName;
+    return `${this.firstName} ${this.lastName}`;
 });
 
 /**

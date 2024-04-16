@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import User, { ACCOUNT_TYPE, PERMISSIONS } from './user.js';
 const { Schema, model, SchemaTypes } = mongoose;
 
 // Note: Not even closed to finished.
@@ -6,7 +7,7 @@ const { Schema, model, SchemaTypes } = mongoose;
 
 /**
  * @author Alexander Beck
- * @todo Validate attendees, check if user has permission before creating event
+ * @todo Validate attendees, permission checking, add creator to attendee list
  */
 const eventSchema = new Schema({
     name: {
@@ -15,6 +16,7 @@ const eventSchema = new Schema({
         required: true,
     },
     date: {
+        // TODO: Date checking (cannot make events in the past?)
         type: Date,
         required: true
     },
@@ -27,16 +29,27 @@ const eventSchema = new Schema({
         type: SchemaTypes.ObjectId,
         ref: 'User',
         validate: {
-            validator: function () {
+            validator: async function (v) {
                 // Ensure that creator has PERMISSIONS.CREATE_EVENT or is an admin
-                return true;
+                const user = await User.findById(v);
+                const hasAllPerms = user.permissions !== undefined && user.permissions.includes(PERMISSIONS.CREATE_EVENT);
+                return user.accountType === ACCOUNT_TYPE.ADMIN || hasAllPerms;
             },
             // TODO: Make this message valid
             message: props => `The creator, ${props.value}, does not have permission to create events!`
         },
         required: true
     },
-    // TODO: Validate that attendees is set up properly (I have no idea if it is properly referencing a User)
+    guestLimit: {
+        type: Number,
+        min: [0, 'Guest Limit must be greater than 0, got {VALUE}'],
+        inviterLimit: {
+            type: Number,
+            min: [0, 'Inviter Limit must be greater than 0, got {VALUE}'],
+            // TODO: Test if this max is working properly
+            max: [this, 'Invited Limit cannot be greater than the guest limit, got {VALUE}']
+        },
+    },
     attendees: [{
         guest: {
             type: SchemaTypes.ObjectId,
@@ -47,26 +60,43 @@ const eventSchema = new Schema({
             type: SchemaTypes.ObjectId,
             ref: 'User',
             validate: {
-                validator: function () {
-                    // Ensure that the inviter is in the allowed inviters,
-                    // has PERMISSIONS.INVITE_TO_ALL_EVENTS, or the inviter is an admin.
+                validator: async function (v) {
+                    // Ensure that the inviter has PERMISSIONS.INVITE_TO_ALL_EVENTS
+                    // or the inviter is an admin.
                     // Also ensure that the inviter isn't above their invite limit
-                    return true
+                    // DOES NOT ASSUME THAT THE CREATOR IS ALLOWED TO INVITE.
+                    const user = await User.findById(v);
+                    const event = this.parent();
+                    const isAdmin = user.accountType === ACCOUNT_TYPE.ADMIN;
+                    const hasAllPerms = user.permissions !== undefined && user.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS);
+                    const isBelowGuestLimit = event && event.guestLimit ? event.attendees.length < event.guestLimit : true; // TODO test this
+                    const previousInvites = await Event.countDocuments({ 'attendees.inviter': user }).exec(); // TODO Test this
+                    const isBelowInviterLimit = event.guestLimit.inviterLimit !== undefined ? previousInvites < event.guestLimit.inviterLimit : true; // TODO test this
+                    return isAdmin || (hasAllPerms && isBelowGuestLimit && isBelowInviterLimit);
                 },
                 // TODO: Make this message valid
-                message: props => `The inviter, ${props.value}, does not have permission to invite people!`
-            }
+                message: props => {
+                    // const user = User.findById(props.value).exec();
+
+                    // Why is this undefined??
+                    // I give up.
+                    // if (Event.guestLimit !== undefined) {
+                    //     const isAboveGuestLimit = Event.countDocuments('attendees') > this.guestLimit;
+                    //     if (isAboveGuestLimit) {
+                    //         return `The inviter, ${props.value}, attempted to invite too many people. Guest list maximum reached.`;
+                    //     }
+                    //     const previousInvites = Event.countDocuments({ 'attendees.inviter': user }); // TODO Test this
+                    //     const isAboveInviterLimit = Event.guestLimit.inviterLimit !== undefined ? previousInvites > Event.guestLimit.inviterLimit : true; // TODO test this
+                    //     if (isAboveInviterLimit) {
+                    //         return `The inviter, ${props.value}, attempted to exceed the inviter limit.`;
+                    //     }
+                    // }
+                    return `The inviter, ${props.value}, does not have permission to invite people!`;
+                }
+            },
+            required: true
         },
     }],
-    guestLimit: {
-        type: Number,
-        min: [0, 'Guest Limit must be greater than 0, got {VALUE}'],
-        inviterLimit: {
-            type: Number,
-            min: [0, 'Inviter Limit must be greater than 0, got {VALUE}'],
-            required: false
-        },
-    }
 }, { timestamps: true });
 
 // TODO: Implement this
