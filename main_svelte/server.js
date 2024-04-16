@@ -8,7 +8,7 @@ import vite from 'vite-express';
 
 const
   app = express(),
-  port = 3000;
+  port = 3000
   //CALLBACK_DOMAIN = "https://game.gamestream.stream";
 //CALLBACK_DOMAIN = "http://localhost:3000";
 
@@ -22,5 +22,6 @@ const
 //   // run proxy
 //   startProxy()
 // }
+
 
 vite.listen(app, process.env.PORT || port)
