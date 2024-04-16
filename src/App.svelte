@@ -1,5 +1,5 @@
 <script>
-    import Board from "./Board.svelte";
+    import Chat from "./Chat.svelte";
 </script>
 
-<Board> </Board>
+<Chat> </Chat>

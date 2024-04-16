@@ -10,16 +10,16 @@ import {Server} from 'socket.io';
 
 const
   app = express(),
-  port = 3000,
-  server = createServer(app),
-  io = new Server(server);
+  port = 3000;
 
-server.listen(5000,()=>{
-  console.log("listening on 5000")
-});
+
+const server = vite.listen(app, process.env.PORT || port)
+
+const io = new Server(server);
 
 io.on('connection', (socket) => {
   console.log('a user connected');
+  socket.on('disconnect',()=>{
+    console.log("user disconnected");
+  })
 });
-
-vite.listen(app, process.env.PORT || port)
