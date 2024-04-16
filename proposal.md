@@ -26,13 +26,13 @@ Once we complete the features for stage 1 and the user study, we will move on to
 - Leaderboard for all user's pets 
 
 
-##Stage 2
+## Stage 2
 
 - Keeping track of users and their pets 
 - Add more attributes to the pet form
 
 
-##Stage 3/ Between Stages 
+## Stage 3/ Between Stages 
 
 - Conduct a User Study on Features and Styling 
 - Make changes based on the outcome of the user study
