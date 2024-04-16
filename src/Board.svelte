@@ -25,10 +25,13 @@
 
     async function get_board() {
         await new Promise((r) => setTimeout(r, 1000));
-        return [...Array(width * height).keys()].map((e) => ({
-            name: get_name(e),
-            link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(e + 1 + "").padStart(3, "0")}.png`,
-        }));
+        return {
+            board: [...Array(width * height).keys()].map((e) => ({
+                name: get_name(e),
+                link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(e + 1 + "").padStart(3, "0")}.png`,
+            })),
+            whomst: 4,
+        };
     }
 
     let images = get_board();
@@ -48,11 +51,15 @@
             <h1>{bingo[j] || ""}</h1>
         {/each}
     </div>
-    <div class="grid grid-grow" style="grid-template-columns: repeat({width}, 1fr);">
+    <div
+        class="grid grid-grow"
+        style="grid-template-columns: repeat({width}, 1fr);"
+    >
         {#each Array(height) as _, j}
             {#each Array(width) as _, i}
-                {@const card = board[i + j * width]}
-                <Card link={card.link} name={card.name}></Card>
+                {@const index = i + j * width}
+                {@const card = board.board[index]}
+                <Card link={card.link} name={card.name} whomst={index==board.whomst}></Card>
             {/each}
         {/each}
     </div>

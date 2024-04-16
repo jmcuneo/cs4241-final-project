@@ -1,0 +1,89 @@
+.card-img {
+    max-width: 100%;
+    max-height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-grow: 1;
+}
+
+.card-inner {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    border: 1vw solid transparent;
+
+    &.whomst {
+        border-color: gold;
+    }
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    background: whitesmoke;
+
+    &.card-flipped {
+        background: DarkGray;
+
+        & .card-img {
+            filter: grayscale(100%)
+        }
+
+        & .card-inner {
+            filter: brightness(.75);
+        }
+    }
+
+    &.card-perm-flipped {
+        background: DimGray;
+
+        & .card-img {
+            filter: grayscale(100%)
+        }
+
+        & .card-inner {
+            filter: brightness(.50);
+        }
+    }
+
+    &:hover:not(.no-card-hover) {
+        &.card-perm-flipped {
+            & .card-img {
+                filter: grayscale(0%)
+            }
+
+            & .card-inner {
+                filter: brightness(1);
+            }
+        }
+
+        &:not(.card-perm-flipped) {
+
+            background: Gainsboro;
+
+            & .card-img {
+                filter: grayscale(50%)
+            }
+
+            & .card-inner {
+                filter: brightness(.75);
+            }
+
+
+            &.card-flipped {
+                background: Silver;
+
+                & .card-img {
+                    filter: grayscale(0%)
+                }
+
+                & .card-inner {
+                    filter: brightness(1);
+                }
+            }
+        }
+    }
+}

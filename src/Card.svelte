@@ -3,6 +3,7 @@
 
     export let link;
     export let name;
+    export let whomst;
     export let flipped = false;
     export let perm_flip = false;
 
@@ -11,8 +12,10 @@
     $: has_flipped_class = flipped && !perm_flip;
 
     function click() {
-        flipped = !flipped;
-        card_hover=false;
+        if (!perm_flip) {
+            flipped = !flipped;
+            card_hover = false;
+        }
     }
     function dclick() {
         if (!flipped) {
@@ -20,7 +23,7 @@
         }
     }
     function hover() {
-        card_hover=true;
+        card_hover = true;
         console.log("leave");
     }
 </script>
@@ -32,9 +35,11 @@
     class="card"
     class:card-flipped={has_flipped_class}
     class:card-perm-flipped={perm_flip}
-    class:no_card_hover={!card_hover}
+    class:no-card-hover={!card_hover}
 >
-    <div class="card-img" style="background-image: url('{link}');" />
-    <span>{name}</span>
-    <span>{card_hover}</span>
+    <div class="card-inner" class:whomst>
+        <div class="card-img" style="background-image: url('{link}');" />
+        <span>{name}</span>
+        <span>{card_hover}</span>
+    </div>
 </button>

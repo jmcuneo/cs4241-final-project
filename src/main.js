@@ -1,4 +1,4 @@
-import './main.css'
+import './main.scss'
 import App from './App.svelte'
 // import {io} from "socket.io-client";
 

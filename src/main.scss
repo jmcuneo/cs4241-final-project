@@ -1,0 +1,52 @@
+@use 'card';
+
+body {
+    margin: 0;
+}
+
+button {
+    all: unset;
+}
+
+img {
+    width: 100%;
+    object-fit: contain;
+}
+
+h1 {
+    margin: 0;
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+}
+
+.grid {
+    display: grid;
+    justify-items: center;
+}
+
+.grid-grow {
+    flex-grow: 1;
+}
+
+.board-spinner {
+    align-items: center;
+    justify-content: center;
+}
+
+.board-spinner,
+.board {
+    width: 75vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat {
+    width: 25vw;
+    height: 100vh;
+}
