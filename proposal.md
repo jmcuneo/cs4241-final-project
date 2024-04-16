@@ -11,13 +11,13 @@ admin:
 - all abilities of user
 
 user: able to add guests to events they are assigned to
-- add guests to event they are assigned to
-- remove guests they added to an event
+- add guests if they have the permissions to do so
+- remove guests if they have the permissions to do so
 - view guest list
   
 Types of tech:
 - react
-- mondodb
+- mongoose
 - 3js
 - passport: local
 
