@@ -4,7 +4,7 @@ import { MongoClient, ServerApiVersion } from 'mongodb';
 
 
 // setup Mongo
-const uri = `mongodb+srv://${process.env.MONGO_CLIENT}:${process.env.MONGO_SECRET}@cluster.vvdqqog.mongodb.net/?retryWrites=true&w=majority&appName=Cluster`;
+const uri = `mongodb+srv://approximatewhomst:gu3$$wh0@cluster0.8raq25j.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 const client = new MongoClient(uri, {
     serverApi: {
@@ -20,7 +20,9 @@ const client = new MongoClient(uri, {
 //     collection: 'sessions'
 // });
 
-const exp = {set_up_db_store,client, DB: null }
+let pokemon_collection = null;
+
+const exp = {set_up_db_store, client, DB: null }
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -28,6 +30,9 @@ async function run() {
         // Send a ping to confirm a successful connection
         exp.DB = client.db("a3").collection("data");
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        // Update our collections
+        pokemon_collection = await client.db("ApproximateWhomst").collection("Pokemon")
+
     } catch (err) {
         console.log(err)
     }
@@ -52,7 +57,25 @@ function set_up_db_store(app) {
     //         maxAge: 1000 * 60 * 60 * 3 // 3 hours
     //     },
     // }));
+
+    console.log("Setting up pokemon")
+
+    // Query to fetch Pokemon data from server from a unique id
+    app.post('/get_pokemon_by_unique_id',async (req, res) =>
+    {
+        const docs = await pokemon_collection.find(
+            {
+                unique_id: req.body
+            }
+        ).toArray();
+
+        res.json(docs)
+
+    })
+
 }
+
+
 
 
 export default exp;

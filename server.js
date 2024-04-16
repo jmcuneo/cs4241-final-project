@@ -16,7 +16,8 @@ const server = vite.listen(app, process.env.PORT || port)
 
 const io = new Server(server);
 
-io.on('connection', (socket) => {
+
+    io.on('connection', (socket) => {
   console.log('a user connected');
   socket.on('disconnect',()=>{
     console.log("user disconnected");
@@ -25,3 +26,5 @@ io.on('connection', (socket) => {
     console.log("Message: " + msg);
   });
 });
+
+
