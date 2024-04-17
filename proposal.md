@@ -1,3 +1,4 @@
+Group: Alexander Beck, Carlos Medina, Jack Weinstein, Jayson Caissie, Olivia Perez
 Event List Site:
 A website where you can create and manage a list for an event. You can add other users to an event so they can invite people.
 
