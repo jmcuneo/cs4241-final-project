@@ -1,34 +1,56 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoginPage from './components/LoginPage';
+import MainPage from './components/MainPage';
+import EventPage from './components/EventPage';
+import ManageEventPage from './components/ManageEventPage';
+import RegisterPage from './components/RegisterPage';
+import ProfilePage from './components/ProfilePage';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Router>
+      <Routes>
+      <Route
+        exact
+        path="/login"
+        element={<LoginPage />}
+      />
+      <Route
+        exact
+        path="/main"
+        element={<MainPage />}
+      />
+      <Route
+        exact
+        path="/event"
+        element={<EventPage />}
+      />
+      <Route
+        exact
+        path="/event/manage"
+        element={<ManageEventPage />}
+      />
+      <Route
+        exact
+        path="/register"
+        element={<RegisterPage />}
+      />
+      <Route
+        exact
+        path="/profile"
+        element={<ProfilePage />}
+      />
+      <Route
+        exact
+        path="/"
+        element={<LoginPage />}
+      />
+      </Routes>
+    </Router>
   )
 }
 
