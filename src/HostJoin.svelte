@@ -46,9 +46,9 @@
 </script>
 
 <div class="board-spinner">
-    <label for="hostGame">Host Game:</label>
+    <h3><label for="hostGame">Host Game:</label></h3>
     <input id="hostGame" on:keydown={hostEnter} />
-    <label for="joinGame">Join Game:</label>
+    <h3><label for="joinGame">Join Game:</label></h3>
     <input id="joinGame" on:keydown={joinEnter} />
     {#if errorMsg != ""}
         <div id="errorMsg">{errorMsg}</div>

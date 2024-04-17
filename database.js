@@ -60,16 +60,16 @@ function set_up_db_store(app) {
 
 
     // Query to fetch Pokemon data from server from a unique id
-    app.post('/get_pokemon_by_unique_id',async (req, res) =>
+    app.post('/get_pokemon_by_unique_id', async (req, res) =>
     {
         console.log(req.body)
         const docs = await pokemon_collection.find(
             {
-                unique_id: 800
+                unique_id: req.body.id
             }
         ).toArray();
 
-        res.json(await docs)
+        res.json(docs[0])
 
     })
 

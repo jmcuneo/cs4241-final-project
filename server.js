@@ -11,6 +11,7 @@ const
   app = express(),
   port = 3000;
 
+app.use(express.json());
 
 const server = vite.listen(app, process.env.PORT || port)
 

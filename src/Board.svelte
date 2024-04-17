@@ -77,7 +77,7 @@
 
 <div class="grid" style="grid-template-columns: repeat({width}, 1fr);">
     {#each Array(width) as _, j}
-        <h1>{bingo[j] || ""}</h1>
+        <h1><h1>{bingo[j] || ""}</h1></h1>
     {/each}
 </div>
 
