@@ -1,18 +1,28 @@
-<script>
+<script lang="ts">
+    // @ts-nocheck
     import HostJoin from "./HostJoin.svelte";
-    import Board from './Board.svelte';
-    import Chat from './Chat.svelte';
+    import Board from "./Board.svelte";
+    import Chat from "./Chat.svelte";
+    let game_data: { id: string; player: Number } = null;
+
+    function gameStart(new_game_data) {
+        game_data = new_game_data.detail;
+    }
+
+    function gameEnd() {
+        game_data = null;
+    }
 </script>
 
-<div id="in-game" hidden>
+{#if game_data == null}
+    <div id="host-join">
+        <HostJoin on:gameStart={gameStart}></HostJoin>
+    </div>
+{:else}
     <div class="board">
-        <Board></Board>
+        <Board {game_data} on:gameEnd={gameEnd}></Board>
     </div>
     <div class="chat">
-        <Chat></Chat>
+        <Chat {game_data}></Chat>
     </div>
-</div>
-
-<div id="host-join">
-    <HostJoin></HostJoin>
-</div>
+{/if}

@@ -1,6 +1,6 @@
 <script>
     import { Circle } from "svelte-loading-spinners";
-    import Card from "./Card.svelte";
+    import Card from "../src/Card.svelte";
 
     const width = 6;
     const height = 4;

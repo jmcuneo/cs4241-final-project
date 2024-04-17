@@ -8,6 +8,6 @@ export default defineConfig(({ command, mode }) => {
         plugins: [svelte()],
         define: {
             __APP_ENV__: JSON.stringify(env.APP_ENV),
-        },
+        }
     };
 });

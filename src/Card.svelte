@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from "svelte";
 
-    export let link;
+    export let src;
     export let name;
     export let whomst;
     export let flipped = false;
@@ -38,7 +38,7 @@
     class:no-card-hover={!card_hover}
 >
     <div class="card-inner" class:whomst>
-        <div class="card-img" style="background-image: url('{link}');" />
+        <div class="card-img" style="background-image: url('{src}');" />
         <span>{name}</span>
         <span>{card_hover}</span>
     </div>

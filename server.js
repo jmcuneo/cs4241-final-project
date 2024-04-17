@@ -27,6 +27,7 @@ io.on('connection', (socket) => {
   });
   socket.on('chat message',(msg)=>{
     console.log("Message: " + msg);
+    socket.emit('host failed','room full');
   });
   socket.on('host game',(room)=>{
     room = room.toLowerCase();

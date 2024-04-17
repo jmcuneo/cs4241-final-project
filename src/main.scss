@@ -21,9 +21,8 @@ h1 {
     width: 100vw;
     height: 100vh;
     display: flex;
-    flex-direction: column;
-    //To fix
-    // overflow: hidden;
+    align-items: center;
+    justify-content: center;
 }
 
 .grid {
@@ -36,24 +35,34 @@ h1 {
 }
 
 .board-spinner {
+    display: flex;
     align-items: center;
     justify-content: center;
+    flex-grow: 1;
 }
 
-.board-spinner,
+// .board-spinner{
+
+// }
 .board {
-    width: 75vw;
-    height: 100vh;
     display: flex;
     flex-direction: column;
+    width: 75vw;
+    height: 100vh;
 }
 
 .chat {
+    display: flex;
+    flex-direction: column;
     width: 25vw;
     height: 100vh;
 }
 
-.in-game{
-    display:flex;
-    flex-direction: column;
+.chat-window {
+    width: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
+    box-sizing: border-box;
+    border: 1vw solid transparent;
+    overflow-wrap: break-word;
 }
