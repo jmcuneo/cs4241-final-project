@@ -6,10 +6,10 @@
 
 <div id="in-game" hidden>
     <div class="board">
-    <Board></Board>
+        <Board></Board>
     </div>
     <div class="chat">
-    <Chat></Chat>
+        <Chat></Chat>
     </div>
 </div>
 

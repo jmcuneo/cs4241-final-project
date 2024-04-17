@@ -29,6 +29,7 @@ io.on('connection', (socket) => {
     console.log("Message: " + msg);
   });
   socket.on('host game',(room)=>{
+    room = room.toLowerCase();
     if(room in rooms){
       if(rooms[room]>=2){
         socket.emit('host failed','room full');
@@ -38,21 +39,25 @@ io.on('connection', (socket) => {
     }else{
       rooms[room] = 1;
       socket.join(room);
-      socket.emit('host success',room);
+      socket.emit('host success',room,1);
     }
   });
   socket.on('join game',(room)=>{
+    room = room.toLowerCase();
     if(room in rooms){
       if(rooms[room] >= 2){
         socket.emit('join failed','room full');
       }else{
         rooms[room]+=1;
         socket.join(room);
-        socket.emit('join success',room)
+        socket.emit('join success',room,2)
       }
     }else{
       socket.emit('join failed','room not found');
     }
+  });
+  socket.on('chat message',(room,num,msg)=>{
+    io.to(room).emit('message receive',num,msg);
   });
 });
 

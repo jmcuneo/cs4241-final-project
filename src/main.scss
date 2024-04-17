@@ -21,7 +21,9 @@ h1 {
     width: 100vw;
     height: 100vh;
     display: flex;
-    overflow: hidden;
+    flex-direction: column;
+    //To fix
+    // overflow: hidden;
 }
 
 .grid {
@@ -49,4 +51,9 @@ h1 {
 .chat {
     width: 25vw;
     height: 100vh;
+}
+
+.in-game{
+    display:flex;
+    flex-direction: column;
 }
