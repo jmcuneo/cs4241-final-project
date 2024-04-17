@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PetForm from './PetForm';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -30,10 +31,7 @@ function LoginPage() {
   return (
     <div>
       {loggedIn ? (
-        <div>
-          <h2>Welcome, {username}!</h2>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
+        <PetForm />
       ) : (
         <div>
           <h2>Login</h2>
