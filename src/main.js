@@ -22,6 +22,20 @@ async function test() {
     })
     let res = await response.json();
     console.log(res)
+
+
+
+    const find_game = await fetch('/get_game_by_room_code',
+        {
+            method: "POST",
+            body: JSON.stringify({ roomcode: 'game time' }),
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+    let res2 = await find_game.json();
+    console.log(res2)
+
 }
 
 test();
