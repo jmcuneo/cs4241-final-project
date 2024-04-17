@@ -92,4 +92,32 @@ function PetForm() {
   );
 }
 
+async function submit(event) {
+  event.preventDefault();
+
+  const petName = document.querySelector("#petName").value,
+    animalType = document.querySelector("#animalType").value,
+    dietType = document.querySelector("#dietType").value, 
+    exercise = document.querySelector("#exercise").value, 
+    json = {
+      petName: petName,
+      animalType: animalType,
+      dietType: dietType,
+      exercise: exercise 
+    },
+    body = JSON.stringify(json);
+
+  const response = await fetch("/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+  });
+
+  document.querySelector("#petName").value = "";
+  document.querySelector("#animalType").value = "";
+  document.querySelector("#dietType").value = "";
+  document.querySelector("#exercise").value = "";
+  getApplications();
+}
+
 export default PetForm;
