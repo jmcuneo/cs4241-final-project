@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 
-function Results() {
+
+function Results({ formData  }) {
     return (
     <div id="results">
         <h1>Race Results</h1>
         
         <div id="your-pet">
             <h2>Your Pet!</h2>
-            <p>pet name</p>
+            <p>Name: {formData.petName}</p>
             <p>animal type</p>
             <p>diet</p>
             <p>ecercise level</p>
