@@ -9,10 +9,10 @@ function Results({ formData  }) {
         <div id="your-pet">
             <h2>Your Pet!</h2>
             <p>Name: {formData.petName}</p>
-            <p>animal type</p>
-            <p>diet</p>
-            <p>ecercise level</p>
-            <p>race time</p>
+            <p>Animal type: {formData.animalType}</p>
+            <p>Diet: {formData.dietType}</p>
+            <p>Exercise level: {formData.exerciseLevel}</p>
+            <p>Race time: </p>
         </div>
 
         <div id="leaderboard">
