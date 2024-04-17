@@ -58,18 +58,18 @@ function set_up_db_store(app) {
     //     },
     // }));
 
-    console.log("Setting up pokemon")
 
     // Query to fetch Pokemon data from server from a unique id
     app.post('/get_pokemon_by_unique_id',async (req, res) =>
     {
+        console.log(req.body)
         const docs = await pokemon_collection.find(
             {
-                unique_id: req.body
+                unique_id: 800
             }
         ).toArray();
 
-        res.json(docs)
+        res.json(await docs)
 
     })
 

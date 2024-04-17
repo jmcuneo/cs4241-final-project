@@ -2,7 +2,7 @@ import express from 'express';
 import vite from 'vite-express';
 import {Server} from 'socket.io';
 
-//import database from './database.js';
+import database from './database.js';
 //import path from 'path';
 
 //console.log('path: '+path.resolve())
@@ -28,3 +28,4 @@ const io = new Server(server);
 });
 
 
+database.set_up_db_store(app)

@@ -10,9 +10,11 @@ const app = new App({
 export default app
 
 
+const json = {pokedex: 800}
+
 const response = await fetch('/get_pokemon_by_unique_id', {
     method: "POST",
-    body: 800
+    body: JSON.parse("800")
 })
 
 console.log(JSON.stringify( await response.json()))
