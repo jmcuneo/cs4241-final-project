@@ -22,6 +22,8 @@ const client = new MongoClient(uri, {
 
 let pokemon_collection = null;
 
+let games_collection = null;
+
 const exp = {set_up_db_store, client, DB: null }
 async function run() {
     try {
@@ -32,6 +34,7 @@ async function run() {
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
         // Update our collections
         pokemon_collection = await client.db("ApproximateWhomst").collection("Pokemon")
+        games_collection = await  client.db("ApproximateWhomst").collection("Game_Objects")
 
     } catch (err) {
         console.log(err)
@@ -70,6 +73,29 @@ function set_up_db_store(app) {
         ).toArray();
 
         res.json(docs[0])
+
+    })
+
+
+    app.post('/get_game_by_room_code', async (req, res) =>
+    {
+
+        const docs = await games_collection.find(
+            {
+                roomCode: req.body.roomcode
+            }
+        ).toArray();
+
+
+        if(docs[0] === undefined)
+        {
+            res.json("RoomCodeNotFound")
+        }
+        else
+        {
+            res.json(docs[0])
+        }
+
 
     })
 
