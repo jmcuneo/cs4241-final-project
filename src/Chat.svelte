@@ -31,4 +31,5 @@
         <ChatMessage {name} {message}></ChatMessage>
     {/each}
 </div>
+<p class="code">Code: {game_data.id}</p>
 <input on:keydown={keydown} />
