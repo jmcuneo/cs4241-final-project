@@ -7,9 +7,9 @@ const { Schema, model } = mongoose;
 /**
  * @author Alexander Beck
  * @example 
- *      ACCOUNT_TYPE.genpop = 'genpop'
- *      ACCOUNT_TYPE.admin = 'admin'
- *      ACCOUNT_TYPE.other = 'other'
+ *      ACCOUNT_TYPE.GENPOP = 'GENPOP'
+ *      ACCOUNT_TYPE.ADMIN = 'ADMIN'
+ *      ACCOUNT_TYPE.OTHER = 'OTHER'
  */
 export const ACCOUNT_TYPE = Object.freeze({
     GENPOP: 'GENPOP',
@@ -75,16 +75,32 @@ const userSchema = new Schema({
     },
     // TODO: Implement permissions (make them actually matter)
     permissions: [{
-        // permission: {
-            type: String,
-            enum: {
-                values: Object.values(PERMISSIONS),
-                message: 'VALUE is not a supported permission'
-            },
-            required: false,
-        // }
+        type: String,
+        enum: {
+            values: Object.values(PERMISSIONS),
+            message: 'VALUE is not a supported permission'
+        },
+        required: false,
     }],
-}, { timestamps: true, toObject: {virtuals: true} });
+}, {
+    timestamps: true, toObject: { virtuals: true },
+    methods: {
+        /**
+         * Adds permissions to another user if the current user is an {@link ACCOUNT_TYPE.ADMIN} or the user has {@link PERMISSIONS.EDIT_ALL_USERS}
+         * @param {mongoose.ObjectId | mongoose.Model} other The user (or user id) to add the permissions to
+         * @param  {...String} permissions The permissions to add. Ignores those not in {@link PERMISSIONS}
+         */
+        addPermissionsToOtherUser(other, ...permissions) {
+            // If user is admin or user has PERMISSIONS.EDIT_ALL_USERS
+            if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.EDIT_ALL_USERS)) {
+                console.log("Changing " + other._id + "'s permissions");
+                addPermissionsToUser(other, ...permissions);
+            } else {
+                // Do an error or something here, not allowed to change others permissions
+            }
+        }
+    }
+});
 
 /**
  * Creates a fullName field that is not actually stored in the DB, but can still be accessed.
@@ -96,12 +112,13 @@ userSchema.virtual('fullName').get(function () {
 
 /**
  * @author Alexander Beck
- * @requires firstName, lastName
+ * @requires firstName, lastName, username
  * @example
  *          // Inserting data
  *          const user = await User.create({
  *              firstName: 'Jane',
  *              lastName: 'Doe',
+ *              username: 'jdoe',
  *              gender: 'Female',
  *          });
  * 
@@ -126,3 +143,27 @@ userSchema.virtual('fullName').get(function () {
 const User = model('User', userSchema, 'Users');
 
 export default User;
+
+/**
+ * @author Alexander Beck
+ * @param {mongoose.ObjectId | mongoose.Model} userId The user to add the permissions to
+ * @param  {...String} permissions The permissions to add. Ignores those not in {@link PERMISSIONS}
+ */
+export async function addPermissionsToUser(userId, ...permissions) {
+    if (permissions) {
+        const user = userId instanceof mongoose.Model ? userId : await User.findById(userId);
+        const validPermissions = [];
+        permissions.forEach(permission => {
+            // Ensure that the permission is in PERMISSIONS
+            if (Object.values(PERMISSIONS).includes(permission)) {
+                validPermissions.push(permission);
+            }
+        });
+        try {
+            user.permissions.addToSet(...validPermissions);
+            await user.save();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}

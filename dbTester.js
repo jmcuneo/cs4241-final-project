@@ -1,4 +1,4 @@
-import User, { PERMISSIONS } from "./models/user.js";
+import User, { PERMISSIONS, addPermissionsToUser } from "./models/user.js";
 import Event from "./models/event.js";
 
 /**
@@ -39,8 +39,10 @@ export async function testDB() {
     });
 
     try {
-        user.permissions.addToSet(PERMISSIONS.CREATE_EVENT, PERMISSIONS.INVITE_TO_ALL_EVENTS);
-        await user.save();
+        // TODO: This might be causing an inconsistent error, keep an eye on it
+        await addPermissionsToUser(user, PERMISSIONS.CREATE_EVENT, PERMISSIONS.INVITE_TO_ALL_EVENTS, PERMISSIONS.EDIT_ALL_USERS);
+
+        user.addPermissionsToOtherUser(user2, PERMISSIONS.INVITE_TO_ALL_EVENTS);
 
         const christmasParty = await Event.create({
             name: 'Christmas Party',
@@ -57,7 +59,7 @@ export async function testDB() {
         await christmasParty.save();
 
     } catch (err) {
-        console.log(err.errors);
+        console.log(err);
     }
 
 

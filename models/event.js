@@ -106,6 +106,8 @@ eventSchema.virtual('guestCount').get(function () {
     return this.attendees.length;
 });
 
+// TODO: Possible TODO; use mongoose statics as helper functions (i.e. get number of people invited by person A to an event )
+
 /**
  * @author Alexander beck
  * @example
