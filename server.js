@@ -18,7 +18,7 @@ connectToDB().catch(err => console.log(err));
 /*
 #################################################
 WILL DELETE ENTIRE DB ON EVERY LOAD!!!!!!!!!!!!!!
-Only keep when in DEVELOPMENT mode. 
+Only keep when in DEVELOPMENT. 
 #################################################
 */
 testDB();

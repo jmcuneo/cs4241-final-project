@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 import User, { ACCOUNT_TYPE, PERMISSIONS } from './user.js';
+// import Logger from './actionlog.js';
 const { Schema, model, SchemaTypes } = mongoose;
-
-// Note: Not even closed to finished.
-// Hasn't be debugged, tested, or anything of the like. 
 
 /**
  * @author Alexander Beck
@@ -73,7 +71,7 @@ const eventSchema = new Schema({
                     const hasAllPerms = user.permissions && user.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS);
                     const isBelowGuestLimit = event && event.guestLimit ? event.attendees.length < event.guestLimit : true; // TODO test this
                     const previousInvites = await Event.countDocuments({ 'attendees.inviter': user }).exec(); // TODO Test this
-                    const isBelowInviterLimit = event && event.guestList && event.guestLimit.inviterLimit !== undefined ? previousInvites < event.guestLimit.inviterLimit : true; // TODO test this
+                    const isBelowInviterLimit = event && event.guestList && event.guestLimit.inviterLimit ? previousInvites < event.guestLimit.inviterLimit : true; // TODO test this
                     return isAdmin || (hasAllPerms && isBelowGuestLimit && isBelowInviterLimit);
                 },
                 // TODO: Make this message valid
@@ -106,11 +104,12 @@ eventSchema.virtual('guestCount').get(function () {
     return this.attendees.length;
 });
 
-// TODO: Possible TODO; use mongoose statics as helper functions (i.e. get number of people invited by person A to an event )
-
 /**
  * @author Alexander beck
  * @example
+ *          // DO NOT FOLLOW THIS UNTIL I REMOVE THIS MESSAGE,
+ *          // IT MEANS I HAVE FORGOTTEN TO IMPLEMENT NEW EXAMPLES
+ * 
  *          // Inserting data
  * 
  *          // Make sure to verify that the user has permissiosn before creating the event!

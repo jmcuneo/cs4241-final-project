@@ -1,5 +1,6 @@
 import User, { PERMISSIONS, addPermissionsToUser } from "./models/user.js";
 import Event from "./models/event.js";
+import Logger from "./models/actionlog.js";
 
 /**
 *
@@ -13,6 +14,7 @@ export async function testDB() {
     /* eslint-disable no-unused-vars */
     await User.deleteMany({});
     await Event.deleteMany({});
+    await Logger.deleteMany({});
     const user = await User.create({
         firstName: 'Alexander',
         lastName: 'Beck',
@@ -40,19 +42,22 @@ export async function testDB() {
 
     try {
         // TODO: This might be causing an inconsistent error, keep an eye on it
-        await addPermissionsToUser(user, PERMISSIONS.CREATE_EVENT, PERMISSIONS.INVITE_TO_ALL_EVENTS, PERMISSIONS.EDIT_ALL_USERS);
+        await addPermissionsToUser(user, true, PERMISSIONS.CREATE_EVENT, PERMISSIONS.INVITE_TO_ALL_EVENTS, PERMISSIONS.MODIFY_USERS);
 
         user.addPermissionsToOtherUser(user2, PERMISSIONS.INVITE_TO_ALL_EVENTS);
 
-        const christmasParty = await Event.create({
+        const christmasPartySchema = {
             name: 'Christmas Party',
             date: new Date(2024, 11, 25),
             location: 'Unity 520',
-            creator: user,
             guestLimit: 4
-        });
+        };
 
-        christmasParty.attendees.addToSet(
+        const christmasParty = await user.createEvent(christmasPartySchema);
+
+        // Will be either christmasParty.invite(inviter, user) or user.inviteUsers(christmasParty, users).
+        // Let me know which would make more sense.
+        await christmasParty.attendees.addToSet(
             { guest: user2, inviter: user },
             { guest: user3, inviter: user },
             { guest: user4, inviter: user });
