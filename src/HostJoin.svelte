@@ -34,10 +34,12 @@
         });
         socket.on("host success", (room, num) => {
             errorMsg = room;
+            socket.emit("chat message",room,num,"Player " + num + " joined.");
             joinGame(room, num);
         });
         socket.on("join success", (room, num) => {
             errorMsg = room;
+            socket.emit("chat message",room,num,"Player " + num + " joined.");
             joinGame(room, num);
         });
     };
