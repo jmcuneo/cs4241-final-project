@@ -13,5 +13,6 @@
     "flipped_p2":[5,3,2,15,18],
     "guessed_p1":[8],
     "guessed_p2":[16,20],
-    "started":1000000
+    "started":1000000,
+    "connected_players":[1,2]
 }

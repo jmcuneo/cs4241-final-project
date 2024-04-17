@@ -1,9 +1,11 @@
 <script>
     import { createEventDispatcher } from "svelte";
-
+    import socket from "./socket.js";
+    
     export let src;
     export let name;
     export let whomst;
+    export let game_data;
     export let flipped = false;
     export let perm_flip = false;
 
@@ -20,6 +22,8 @@
     function dclick() {
         if (!flipped) {
             perm_flip = true;
+            //TODO: Also emit the event for the server to validate the guess.
+            socket.emit("chat message",game_data.id,game_data.player,"Player " + game_data.player + " guessed " + name);
         }
     }
     function hover() {

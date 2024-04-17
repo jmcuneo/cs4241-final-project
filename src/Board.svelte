@@ -99,6 +99,7 @@
                     src={card.link}
                     name={card.name}
                     whomst={index == board.whomst}
+                    game_data={game_data}
                     on:load
                 ></Card>
             {/each}
