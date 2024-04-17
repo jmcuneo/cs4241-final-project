@@ -18,7 +18,6 @@ Once we complete the features for stage 1 and the user study, we will move on to
 - MongoDB
 - Log-ins 
 - Create pet form
-    - Owner name - username
     - Pet name
     - Animal type
     - Diet
