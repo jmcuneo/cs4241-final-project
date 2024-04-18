@@ -1,4 +1,5 @@
 const express = require('express'),
+    ViteExpress = require("vite-express");
     app = express(),
     { MongoClient, ObjectId } = require("mongodb")
 
@@ -146,4 +147,5 @@ app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => 
     res.redirect('/loggedIn');
 });
 
-app.listen(process.env.PORT)
+//app.listen(process.env.PORT);
+ViteExpress.listen(app, 3000);
