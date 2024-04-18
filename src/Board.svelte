@@ -2,6 +2,7 @@
     // @ts-nocheck
     import { Circle } from "svelte-loading-spinners";
     import Card from "./Card.svelte";
+    import GuessConfirm from "./GuessConfirm.svelte";
 
     export let game_data;
 
@@ -43,7 +44,7 @@
             (e) =>
                 new Promise((res, rej) => {
                     e.img = new Image();
-                    e.img.onload = res
+                    e.img.onload = res;
                     e.img.onerror = rej;
                     e.img.src = e.link;
                 }),
@@ -54,8 +55,13 @@
 
     let images = get_board();
     let display_board = true;
-    
-    // //image load hack 
+
+    let guess_id = -1;
+    function guess(new_guess_id) {
+        guess_id = new_guess_id;
+    }
+
+    // //image load hack
     // images.then(()=>
     // requestAnimationFrame(()=>
     // requestAnimationFrame(()=>
@@ -86,9 +92,14 @@
         <Circle {size} color="Silver" duration="1s"></Circle>
     </div>
 {:then board}
+    {#if guess_id != -1}
+        {@const card = board.board[guess_id]}
+        <GuessConfirm src={card.link} name={card.name}></GuessConfirm>
+    {/if}
     <div
         class="grid grid-grow"
         class:hidden={!display_board}
+        class:stop_events={guess_id != -1}
         style="grid-template-columns: repeat({width}, 1fr);"
     >
         {#each Array(height) as _, j}
@@ -101,6 +112,7 @@
                     whomst={index == board.whomst}
                     game_data={game_data}
                     on:load
+                    on:guess={guess}
                 ></Card>
             {/each}
         {/each}

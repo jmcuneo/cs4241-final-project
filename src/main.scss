@@ -54,6 +54,34 @@ h1 {
     flex-direction: column;
 }
 
+.guess-confirm {
+    display: flex;
+    flex-direction: column;
+    width: 75vw;
+    height: 100vh;
+
+}
+
+.confirm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 37.5vw;
+    height: 50vh;
+}
+
+.confirm-text {
+    width: 50%;
+    height: 50%;
+}
+
+.stop_events {
+    pointer-events: none;
+}
+
+//.confirm-inner {}
+
+
 .board {
     display: flex;
     flex-direction: column;
