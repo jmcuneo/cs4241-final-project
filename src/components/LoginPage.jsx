@@ -14,10 +14,9 @@ function LoginPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setMessage('Logging in...');
-    
-    /*
+  
     try {
-      const response = await fetch('', {
+      const response = await fetch('/localhost:3000/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -40,36 +39,11 @@ function LoginPage() {
       console.error('Login error:', error.message);
       setMessage('Login failed: ' + error.message);
     }
-    */
   };
 
   const handleRegister = async (event) => {
     event.preventDefault();
-    setMessage('Registering');
     navigate("/register");
-    /*
-    try {
-      const response = await fetch('', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: usernameRef.current.value,
-          password: passwordRef.current.value
-        })
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setMessage('Registration successful! You can now log in.');
-      } else {
-        setMessage('Registration failed. Please try again: ' + data.message);
-      }
-
-    } catch (error) {
-      console.error('Registration error:', error.message);
-      setMessage('An error occurred during registration: ' + error.message);
-    }
-    */
   };
 
   const handleMainPage = async (event) => {
@@ -84,7 +58,7 @@ function LoginPage() {
 
   return (
     <div className="row" style={{ marginLeft: '20px' }}> 
-      <h1 style={{ marginLeft: '30px' }}>Event List Manager Sign-In</h1> 
+      <h1 style={{ marginLeft: '30px' }}>Event List Sign-In</h1> 
       <form className="col s12" id="loginForm" onSubmit={handleSubmit}>
         <div className="col"> 
         <div className="input-field col s6">
