@@ -2,24 +2,56 @@ import React, { useState } from 'react';
 import Results from './Results';
 
 function PetForm() {
-  const [formData, setFormData] = useState({
-    petName: '',
-    animalType: 'dog',
-    dietType: 'dogfood',
-    exerciseLevel: 50
-  });
+  const [petName, setPetName] = useState('');
+  const [animalType, setAnimalType] = useState('dog');
+  const [dietType, setDietType] = useState('dogfood');
+  const [exerciseLevel, setExerciseLevel] = useState(50);
   const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState(null);
 
   function handleInputChange(event) {
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    switch (name) {
+      case 'petName':
+        setPetName(value);
+        break;
+      case 'animalType':
+        setAnimalType(value);
+        break;
+      case 'dietType':
+        setDietType(value);
+        break;
+      case 'exercise':
+        setExerciseLevel(value);
+        break;
+      default:
+        break;
+    }
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    // Do something with the form data, like submit to a backend API
-    console.log('Form submitted:', { formData });
-    setSubmitted(true);
+    const json = {
+      petName: petName,
+      animalType: animalType,
+      dietType: dietType,
+      exercise: exerciseLevel,
+    };
+
+    const response = await fetch("http://localhost:5000/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(json),
+    });
+
+    if (response.ok) {
+      setSubmitted(true);
+      setFormData(json);
+      setPetName('');
+      setAnimalType('dog');
+      setDietType('dogfood');
+      setExerciseLevel(50);
+    }
   }
 
   if (submitted) {
@@ -35,16 +67,16 @@ function PetForm() {
           type="text"
           id="petName"
           name="petName"
-          value={formData.petName}
+          value={petName}
           onChange={handleInputChange}
           required
         />
-
+  
         <label htmlFor="animalType">Animal Type:</label>
         <select
           id="animalType"
           name="animalType"
-          value={formData.animalType}
+          value={animalType}
           onChange={handleInputChange}
         >
           <option value="dog">Dog</option>
@@ -52,12 +84,12 @@ function PetForm() {
           <option value="turtle">Turtle</option>
           <option value="bunny">Bunny</option>
         </select>
-
+  
         <label htmlFor="dietType">Diet Type:</label>
         <select
           id="dietType"
           name="dietType"
-          value={formData.dietType}
+          value={dietType}
           onChange={handleInputChange}
         >
           <option value="dogfood">Dog Food</option>
@@ -65,7 +97,7 @@ function PetForm() {
           <option value="veggies">Veggies</option>
           <option value="carrot">Carrot</option>
         </select>
-
+  
         <label htmlFor="exercise">Exercise Level:</label>
         <input
           type="range"
@@ -73,45 +105,17 @@ function PetForm() {
           name="exercise"
           min="0"
           max="100"
-          value={formData.exerciseLevel}
+          value={exerciseLevel}
           step="1"
           onChange={handleInputChange}
         />
-        <span id="exercise-value">{formData.exerciseLevel}</span>
-
+        <span id="exercise-value">{exerciseLevel}</span>
+  
         <br /><br />
         <input type="submit" value="Submit" />
       </form>
     </div>
   );
-}
-
-async function submit(event) {
-  event.preventDefault();
-
-  const petName = document.querySelector("#petName").value,
-    animalType = document.querySelector("#animalType").value,
-    dietType = document.querySelector("#dietType").value, 
-    exercise = document.querySelector("#exercise").value, 
-    json = {
-      petName: petName,
-      animalType: animalType,
-      dietType: dietType,
-      exercise: exercise 
-    },
-    body = JSON.stringify(json);
-
-  const response = await fetch("/submit", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body,
-  });
-
-  document.querySelector("#petName").value = "";
-  document.querySelector("#animalType").value = "";
-  document.querySelector("#dietType").value = "";
-  document.querySelector("#exercise").value = "";
-  getApplications();
 }
 
 export default PetForm;

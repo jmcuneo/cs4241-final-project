@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-//get image url based on animal type
+// get image URL based on animal type
 function getImageUrl(animalType) {
     switch(animalType){
         case 'dog':
@@ -11,47 +11,49 @@ function getImageUrl(animalType) {
             return require("../src/img/turtle.jpeg");
         case 'bunny':
             return require("../src/img/bunny.webp");
+        default:
+            return ""; // empty string if animalType is undefined or null
     }
 }
 
-//calculate race time based on form data
-function calcRaceTime(formData){
+function Results({ formData }) {
+    // Check if formData exists before accessing its properties
+    if (!formData) {
+        return <div>Loading...</div>;
+    }
 
-}
-
-
-function Results({ formData  }) {
+    // Get the image URL based on animal type
     const petImageUrl = getImageUrl(formData.animalType);
 
     return (
-    <div id="results">
-        <h1>Race Results</h1>
-        
-        <div id="your-pet">
-            <h2>Your Pet!</h2>
-            <img src={petImageUrl} alt="your pet" />
-            <p>Name: {formData.petName}</p>
-            <p>Diet: {formData.dietType}</p>
-            <p>Exercise level: {formData.exerciseLevel}</p>
-            <p>Race time: </p>
-        </div>
+        <div id="results">
+            <h1>Race Results</h1>
+            
+            <div id="your-pet">
+                <h2>Your Pet!</h2>
+                <img src={petImageUrl} alt="your pet" />
+                <p>Name: {formData.petName}</p>
+                <p>Diet: {formData.dietType}</p>
+                <p>Exercise level: {formData.exercise}</p>
+                <p>Race time: </p>
+            </div>
 
-        <div id="leaderboard">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Pet Name</th>
-                        <th>Time</th>
-                        <th>Owner</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <div id="leaderboard">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Pet Name</th>
+                            <th>Time</th>
+                            <th>Owner</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
     );
 }
 
