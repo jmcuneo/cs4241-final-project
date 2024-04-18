@@ -44,13 +44,13 @@ export async function testDB() {
         // TODO: This might be causing an inconsistent error, keep an eye on it
         await addPermissionsToUser(user, true, PERMISSIONS.CREATE_EVENT, PERMISSIONS.INVITE_TO_ALL_EVENTS, PERMISSIONS.MODIFY_USERS);
 
-        user.addPermissionsToOtherUser(user2, PERMISSIONS.INVITE_TO_ALL_EVENTS);
+        await user.addPermissionsToOtherUser(user2, PERMISSIONS.INVITE_TO_ALL_EVENTS);
 
         const christmasPartySchema = {
             name: 'Christmas Party',
             date: new Date(2024, 11, 25),
             location: 'Unity 520',
-            guestLimit: 3
+            guestLimit: 4
         };
 
         const christmasParty = await user.createEvent(christmasPartySchema);
@@ -64,9 +64,12 @@ export async function testDB() {
         // await christmasParty.save();
 
         await user.inviteUsers(christmasParty, user2, user3, user4);
+
         console.log(await user.makeAdmin(user2)); // false
         await addPermissionsToUser(user, true, PERMISSIONS.GIFT_ADMIN);
         console.log(await user.makeAdmin(user2)); // true
+
+        console.log(await user.uninviteUsers(christmasParty, user3, user3, user4, user3));
 
     } catch (err) {
         console.log(err);

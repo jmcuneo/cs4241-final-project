@@ -175,7 +175,7 @@ const userSchema = new Schema({
             // Check to see if added users is within inviter limit
             // Assumes true if there is no inviter limit (or guest limit)
             const inviterLimitCheck = event.guestLimit && event.guestLimit?.inviterLimit ?
-                ((await Event.getInvitesByUser(event, this))?.length ?? 0) + users.length < event.guestLimit.inviterLimit : true;
+                ((await event.getInviteIdsByUser(this))?.length ?? 0) + users.length < event.guestLimit.inviterLimit : true;
 
             // If user is admin or user has PERMISSIONS.INVITE_TO_ALL_EVENTS
             // TODO: Implement this to work with event-by-event basis
@@ -201,6 +201,14 @@ const userSchema = new Schema({
 
                 try {
                     await event.save();
+                    successfullyAdded.forEach(async (user) => {
+                        await Logger.create({
+                            event: event,
+                            subject: this,
+                            target: user,
+                            action: EVENTS.INVITE_USER
+                        });
+                    });
                     return successfullyAdded;
                 } catch (err) {
                     console.log(err);
@@ -213,10 +221,9 @@ const userSchema = new Schema({
         },
 
         /**
-         * 
          * @param {mongoose.Model} event The event to uninvite users from
          * @param  {...mongoose.Model | mongoose.Types.ObjectId} users The users to uninvite
-         * @returns {Promise<Boolean>} A boolean representing if all the users were successfuly removed
+         * @returns {Promise<Boolean> | Promise<Array<mongoose.Model>>} A list of all the users successfuly removed, an empty list if no users were removed, and false if the user does not have the permissions to uninvite any of the users
          * @author Alexander Beck
          */
         async uninviteUsers(event, ...users) {
@@ -224,7 +231,54 @@ const userSchema = new Schema({
             if (!users) return false;
             // Perms to univite all or admin
             // or 'this' invited the user
-            return "NOT IMPLEMENTED YET";
+
+            let successfullyRemoved = [];
+
+            // Use hadPermissionAtLeastOnce to reduce redundant saves if the user was never allowed
+            // to change anything in the first place. Ensures that false is returned if the user never
+            // had the permissions, and [] is returned if the user had the permissions but nothing was changed
+            let hadPermissionAtLeastOnce = false;
+
+            users.forEach(async (user) => {
+                // Can be evaluated to undefined > 0 which is false
+                const isInviter = event?.attendees?.filter(attendee => attendee.guest === user && attendee.inviter === this)?.length > 0;
+                const isAllowedToInvite = this?.permissions.includes(PERMISSIONS.UNINVITE_TO_ALL_EVENTS) ?? false;
+                if (this.accountType === ACCOUNT_TYPE.ADMIN || isAllowedToInvite || isInviter) {
+                    hadPermissionAtLeastOnce = true;
+                    // Ensure that user is an object and not just an id
+                    // TODO: Test if this works for both ids and users.
+                    if (user instanceof mongoose.Types.ObjectId) {
+                        user = await User.findById(user);
+                    }
+
+                    if (event.attendees.some(attendee => attendee.guest === user)) {
+                        successfullyRemoved.push(user);
+
+                        // Remove user from guest list
+                        event.attendees = event.attendees.filter(attendee => attendee.guest !== user);
+                    }
+                }
+            });
+
+            if (hadPermissionAtLeastOnce) {
+                try {
+                    await event.save();
+                    successfullyRemoved.forEach(async (user) => {
+                        await Logger.create({
+                            event: event,
+                            subject: this,
+                            target: user,
+                            action: EVENTS.UNINVITE_USER
+                        });
+                    });
+                    return successfullyRemoved;
+                } catch (err) {
+                    console.log(err);
+                    return false;
+                }
+            } else {
+                return false;
+            }
         },
 
         /**
@@ -242,6 +296,11 @@ const userSchema = new Schema({
                 try {
                     user.accountType = ACCOUNT_TYPE.ADMIN;
                     await user.save();
+                    await Logger.create({
+                        subject: this,
+                        target: user,
+                        action: EVENTS.MAKE_ADMIN
+                    });
                     return true;
                 } catch (err) {
                     console.log(err);
