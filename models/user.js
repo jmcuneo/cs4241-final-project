@@ -11,12 +11,10 @@ const { Schema, model } = mongoose;
  * @example 
  *      ACCOUNT_TYPE.GENPOP = 'GENPOP'
  *      ACCOUNT_TYPE.ADMIN = 'ADMIN'
- *      ACCOUNT_TYPE.OTHER = 'OTHER'
  */
 export const ACCOUNT_TYPE = Object.freeze({
     GENPOP: 'GENPOP',
     ADMIN: 'ADMIN',
-    OTHER: 'OTHER'
 });
 
 /**
@@ -113,7 +111,7 @@ const userSchema = new Schema({
         /**
          * @author Alexander Beck
          * @param {*} eventDetails The schema details of an event.
-         * @returns {Promise<mongoose.Model>} A newly created event
+         * @returns {Promise<mongoose.Model> | Promise<Boolean>} A newly created event, or false if it fails
          * @example const christmasPartySchema = {
          *              name: 'Christmas Party',
          *              date: new Date(2024, 11, 25),
@@ -125,7 +123,8 @@ const userSchema = new Schema({
          */
         async createEvent(eventDetails) {
             // If user is admin or user has PERMISSIONS.CREATE_EVENT
-            if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.CREATE_EVENT)) {
+            // eventDetails is an added to check to ensure that it is not empty
+            if (eventDetails && (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.CREATE_EVENT))) {
                 const event = await Event.create({
                     creator: this._id,
                     ...eventDetails
@@ -137,25 +136,68 @@ const userSchema = new Schema({
                 return event;
             } else {
                 // TODO: Do an error or something here, not allowed to create event
+                return false;
             }
         },
 
-        /* eslint-disable no-unused-vars */
         /**
          * Invites the user(s) to the event if the user inviting is an admin or has {@link PERMISSIONS.INVITE_TO_ALL_EVENTS}
+         * @example 
+         *          const successfullyAddedUsers = await user.inviteUsers(christmasParty, user2, user3, user4);
+         *          if (!successfullyAddedUsers) {
+         *              // Uh oh. No users were added.
+         *              // Either there were no new users to add, the user doesn't have permissions, or adding this many users would go above the allowed invite/guest limits
+         *          }
          * @param {mongoose.Model} event The event to invite users to
          * @param  {...mongoose.Model | mongoose.Types.ObjectId} users The user(s) to invite
-         * @returns FALSE FOR NOW IT IS IN PROGRESS
+         * @returns {Promise<Boolean> | Promise<Array<mongoose.Model>>} An array of all users that were successfully added. Empty is nothing is added.
          * @author Alexander Beck
+         * @todo Possibly make an alias method in {@link Event}
          */
         async inviteUsers(event, ...users) {
+            if (!users) return [];
+
+            // Check if added users is within guest limit
+            // Assumes true if there is no guest limit
+            // TODO: Make this event?.guestLimit maybe
+            const guestLimitCheck = event?.guestLimit ?
+                (event.attendees?.length ?? 0) + users.length < event.guestLimit : true;
+
+            // Check to see if added users is within inviter limit
+            // Assumes true if there is no inviter limit (or guest limit)
+            const inviterLimitCheck = event.guestLimit && event.guestLimit?.inviterLimit ?
+                ((await Event.getInvitesByUser(event, this))?.length ?? 0) + users.length < event.guestLimit.inviterLimit : true;
+
             // If user is admin or user has PERMISSIONS.INVITE_TO_ALL_EVENTS
             // TODO: Implement this to work with event-by-event basis
-            if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS)) {
-                // Check to see if number of guests + users.length <= guestLimit
-                // Check to see if number of guests by this._id ?+ users.length <= inviterLimit
+            const permFlag = this.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS) && guestLimitCheck && inviterLimitCheck;
+
+            if (this.accountType === ACCOUNT_TYPE.ADMIN || permFlag) {
                 // Check guest list to ensure that person is not already on it
-                return 'NOT IMPLEMENTED YET, SORRY!';
+                let successfullyAdded = [];
+                users.forEach(async (user) => {
+                    // Ensure that user is an object and not just an id
+                    // TODO: Test if this works for both ids and users.
+                    if (user instanceof mongoose.Types.ObjectId) {
+                        user = await User.findById(user);
+                    }
+
+                    if (!event.attendees.some(attendee => attendee.guest === user._id)) {
+                        successfullyAdded.push(user);
+                        // Add user to the guest list
+                        event.attendees.addToSet({ guest: user, inviter: this });
+                    }
+                });
+
+                try {
+                    await event.save();
+                    return successfullyAdded;
+                } catch (err) {
+                    console.log(err);
+                }
+            } else {
+                // TODO: Do an error or something here, not allowed to invite people
+                return false;
             }
         }
     }

@@ -50,18 +50,20 @@ export async function testDB() {
             name: 'Christmas Party',
             date: new Date(2024, 11, 25),
             location: 'Unity 520',
-            guestLimit: 4
+            guestLimit: 3
         };
 
         const christmasParty = await user.createEvent(christmasPartySchema);
 
         // Will be either christmasParty.invite(inviter, user) or user.inviteUsers(christmasParty, users).
         // Let me know which would make more sense.
-        await christmasParty.attendees.addToSet(
-            { guest: user2, inviter: user },
-            { guest: user3, inviter: user },
-            { guest: user4, inviter: user });
-        await christmasParty.save();
+        // await christmasParty.attendees.addToSet(
+        //     { guest: user2, inviter: user },
+        //     { guest: user3, inviter: user },
+        //     );
+        // await christmasParty.save();
+
+        await user.inviteUsers(christmasParty, user2, user3, user4)
 
     } catch (err) {
         console.log(err);

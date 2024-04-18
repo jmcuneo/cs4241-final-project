@@ -68,11 +68,15 @@ const eventSchema = new Schema({
                     const user = await User.findById(v);
                     const event = this.parent();
                     const isAdmin = user.accountType === ACCOUNT_TYPE.ADMIN;
+                    // Pulled out from the big if statement to simplify
+                    if (isAdmin) {
+                        return true;
+                    }
                     const hasAllPerms = user.permissions && user.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS);
                     const isBelowGuestLimit = event && event.guestLimit ? event.attendees.length < event.guestLimit : true; // TODO test this
                     const previousInvites = await Event.countDocuments({ 'attendees.inviter': user }).exec(); // TODO Test this
                     const isBelowInviterLimit = event && event.guestList && event.guestLimit.inviterLimit ? previousInvites < event.guestLimit.inviterLimit : true; // TODO test this
-                    return isAdmin || (hasAllPerms && isBelowGuestLimit && isBelowInviterLimit);
+                    return hasAllPerms && isBelowGuestLimit && isBelowInviterLimit;
                 },
                 // TODO: Make this message valid
                 message: props => {
@@ -98,10 +102,32 @@ const eventSchema = new Schema({
             required: true
         },
     }],
-}, { timestamps: true });
-
-eventSchema.virtual('guestCount').get(function () {
-    return this.attendees.length;
+}, {
+    timestamps: true,
+    statics: {
+        /**
+         * @example
+         *          // Get the number of people user invited to event (0 if no one has been invited)
+         *          const userInviteCount = (await Event.getInvitesByUser(event, user))?.length ?? 0;
+         * 
+         *          // Gets every user in the event
+         *          const usersInvited = await Promise.all((await Event.getInvitesByUser(event, this)).map(user => User.findById(user)));
+         * 
+         * @param {mongoose.Model} event The event to get the invites from
+         * @param {mongoose.Model} user The inviter whom invited people
+         * @returns {null | Promise<Array<mongoose.ObjectId>>} An array of the id's of users who were invited by the given user
+         * @author Alexander Beck
+         */
+        async getInvitesByUser(event, user) {
+            return (await this.findById(event._id).
+                where('attendees.inviter').
+                equals(user).
+                select('attendees').
+                exec())?.
+                attendees.
+                map(attendee => attendee.guest);
+        }
+    },
 });
 
 /**
