@@ -63,7 +63,10 @@ export async function testDB() {
         //     );
         // await christmasParty.save();
 
-        await user.inviteUsers(christmasParty, user2, user3, user4)
+        await user.inviteUsers(christmasParty, user2, user3, user4);
+        console.log(await user.makeAdmin(user2)); // false
+        await addPermissionsToUser(user, true, PERMISSIONS.GIFT_ADMIN);
+        console.log(await user.makeAdmin(user2)); // true
 
     } catch (err) {
         console.log(err);

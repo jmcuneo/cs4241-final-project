@@ -27,6 +27,7 @@ export const PERMISSIONS = Object.freeze({
     MODIFY_USERS: 'MODIFY_USERS',
     REMOVE_ALL_USERS: 'REMOVE_ALL_USERS',
     INVITE_TO_ALL_EVENTS: 'INVITE_TO_ALL_EVENTS',
+    UNINVITE_TO_ALL_EVENTS: 'UNINVITE_TO_ALL_EVENTS',
     GIFT_ADMIN: 'GIFT_ADMIN',
     CREATE_EVENT: 'CREATE_EVENT',
 });
@@ -89,9 +90,13 @@ const userSchema = new Schema({
          * Adds permissions to another user if the current user is an {@link ACCOUNT_TYPE.ADMIN} or the user has {@link PERMISSIONS.MODIFY_USERS}
          * @param {mongoose.ObjectId | mongoose.Model} other The user (or user id) to add the permissions to
          * @param  {...String} permissions The permissions to add. Ignores those not in {@link PERMISSIONS}
+         * @returns {Promise<Boolean>} True if all the permissions were successfully added, false otherwise
          * @author Alexander Beck
          */
         async addPermissionsToOtherUser(other, ...permissions) {
+            if (!other) return false;
+            if (!permissions) return false;
+
             // If user is admin or user has PERMISSIONS.MODIFY_USERS
             if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_USERS)) {
                 const changesWereMade = await addPermissionsToUser(other, false, ...permissions);
@@ -103,8 +108,11 @@ const userSchema = new Schema({
                         action: EVENTS.MODIFY_PERMISSIONS
                     });
                 }
+                return changesWereMade; // boolean representing if the changes were made
+
             } else {
                 // TODO: Do an error or something here, not allowed to change others permissions
+                return false;
             }
         },
 
@@ -156,6 +164,7 @@ const userSchema = new Schema({
          */
         async inviteUsers(event, ...users) {
             if (!users) return [];
+            if (!event) return false;
 
             // Check if added users is within guest limit
             // Assumes true if there is no guest limit
@@ -175,6 +184,7 @@ const userSchema = new Schema({
             if (this.accountType === ACCOUNT_TYPE.ADMIN || permFlag) {
                 // Check guest list to ensure that person is not already on it
                 let successfullyAdded = [];
+                // Has to be arrow notation; redefines 'this' otherwise
                 users.forEach(async (user) => {
                     // Ensure that user is an object and not just an id
                     // TODO: Test if this works for both ids and users.
@@ -194,12 +204,52 @@ const userSchema = new Schema({
                     return successfullyAdded;
                 } catch (err) {
                     console.log(err);
+                    return false;
                 }
             } else {
                 // TODO: Do an error or something here, not allowed to invite people
                 return false;
             }
-        }
+        },
+
+        /**
+         * 
+         * @param {mongoose.Model} event The event to uninvite users from
+         * @param  {...mongoose.Model | mongoose.Types.ObjectId} users The users to uninvite
+         * @returns {Promise<Boolean>} A boolean representing if all the users were successfuly removed
+         * @author Alexander Beck
+         */
+        async uninviteUsers(event, ...users) {
+            if (!event) return false;
+            if (!users) return false;
+            // Perms to univite all or admin
+            // or 'this' invited the user
+            return "NOT IMPLEMENTED YET";
+        },
+
+        /**
+         * Note: Unlike other functions, makeAdmin does not work if a user is admin by default. The user **must**
+         * have {@link PERMISSIONS.GIFT_ADMIN}.
+         * @example if (await user.makeAdmin(user2)) {};
+         * @param {mongoose.Model} user The user to make admin
+         * @returns {Promise<Boolean>} True if the user was sucessfully made admin, false otherwise
+         * @author Alexander Beck
+         */
+        async makeAdmin(user) {
+            if (!user) return false;
+            // Defaults to false if the permissions are not initialized
+            if (this?.permissions?.includes(PERMISSIONS.GIFT_ADMIN) ?? false) {
+                try {
+                    user.accountType = ACCOUNT_TYPE.ADMIN;
+                    await user.save();
+                    return true;
+                } catch (err) {
+                    console.log(err);
+                    return false;
+                }
+            }
+            return false;
+        },
     }
 });
 
@@ -269,7 +319,7 @@ export async function addPermissionsToUser(userId, isServer, ...permissions) {
         try {
             user.permissions.addToSet(...validPermissions);
             await user.save().then(async function () {
-                // TODO: Check if this .then(async) works properly
+                // TODO: Check if this .then(async) works properly (it likely will error)
                 if (isServer) {
                     // Only create a log if the server ran it
                     await Logger.create({
