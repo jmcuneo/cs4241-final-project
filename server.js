@@ -64,7 +64,7 @@ passport.use(new GitHubStrategy({
                 const newUser = [
                     {
                         "userId": profile.id,
-                        "username": profile.username
+                        "username": profile.username,
                     }
                 ]
                 userCollection.insertMany(newUser).then(user => {
@@ -75,6 +75,7 @@ passport.use(new GitHubStrategy({
         })
     }
 ));
+
 
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport.use(
@@ -92,7 +93,7 @@ passport.use(
                     const newUser = [
                         {
                             "userId": profile.id,
-                            "username": profile.displayName
+                            "username": profile.displayName,
                         }
                     ]
                     userCollection.insertMany(newUser).then(user => {
@@ -145,5 +146,20 @@ app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => 
     req.session.login = true
     res.redirect('/loggedIn');
 });
+
+app.get('/logout', (req, res) => {
+    req.logout();
+    req.session.login = false
+    res.redirect('/');
+});
+
+app.get('/profilePage', authCheck, (req, res) => {
+    res.sendFile(__dirname + '/public/profile.html')
+})
+
+app.get('/user', (req, res) => {
+    console.log("fetching username")
+    res.json({"username" : req.user.username});
+})
 
 app.listen(process.env.PORT)
