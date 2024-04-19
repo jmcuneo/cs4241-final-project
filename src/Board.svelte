@@ -65,7 +65,13 @@
         const obj = e.detail;
         if (obj.confirm) {
             guess_data.callback(true);
-            socket.emit("guess", game_data.id, game_data.player, index);
+            socket.emit(
+                "guess",
+                game_data.id,
+                game_data.player,
+                index,
+                board.board[index].name,
+            );
             guess_data = null;
         } else if (obj.deny) {
             guess_data.callback(false);
@@ -73,15 +79,13 @@
         } else if (obj.perm_flip) {
             guess_data = { id: index, callback: obj.callback };
         } else {
-            // send flip with obj.flip
-            // socket.emit(
-            //     "flip",
-            //     game_data.id,
-            //     game_data.player,
-            //     index,
-            //     board.board[index].name,
-            // );
-            // socket.emit("flipped", game_data.id, game_data.player, index);
+            socket.emit(
+                "flip",
+                game_data.id,
+                game_data.player,
+                index,
+                board.board[index].name,
+            );
         }
     }
 
@@ -132,8 +136,6 @@
         style="grid-template-columns: repeat({width}, 1fr);"
     >
         {#each Array(height * width) as _, j}
-            <!-- {#each Array(width) as _, i}
-                {@const index = i + j * width} -->
             {@const card = board.board[j]}
             <Card
                 img={card.img}
@@ -143,7 +145,6 @@
                 on:flip={(e) => flip(e, j)}
             ></Card>
         {/each}
-        <!-- {/each} -->
     </div>
 {:catch}
     <h1>Something went wrong</h1>
