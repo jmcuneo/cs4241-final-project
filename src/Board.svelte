@@ -8,6 +8,9 @@
 
     export let game_data;
 
+    import { createEventDispatcher } from "svelte";
+    const dispatch = createEventDispatcher();
+
     const width = 6;
     const height = 4;
     const bingo = "WHOMST";
@@ -110,6 +113,16 @@
         (document.body.clientWidth * 0.75) / 2,
         document.body.clientHeight / 2,
     );
+
+    async function gameEnd(winner,answer) {
+        console.log("GAME BEGINS TO END");
+        let board = await images;
+        console.log("GAME END",winner,answer);
+        // console.log(winner,correct_name,correct_url);
+        dispatch("gameEnd",{board:board.board,winner:winner,answer:answer});
+    }
+
+    socket.on('game end',gameEnd);
 </script>
 
 <div class="grid" style="grid-template-columns: repeat({width}, 1fr);">

@@ -92,21 +92,24 @@ io.on('connection', (socket) => {
     if(rooms[room].connected_players.length == 2){
       io.to(room).emit('message receive',"Server",name + " guessed "+ cardName);
       let answer;
+      let otherAnswer;
       let winner;
-      if(rooms[room].connected_players[0] == name){
+      let isPlayer1 = rooms[room].connected_players[0] == name
+      if(isPlayer1){
         //p1
         answer = rooms[room].answer_p2;
+        otherAnswer = rooms[room].answer_p1;
         winner = rooms[room].connected_players[0];
       }else{
         //p2
         answer = rooms[room].answer_p1;
+        otherAnswer = rooms[room].answer_p2;
         winner = rooms[room].connected_players[1];
       }
       console.log("Guess: " + index + ", Answer: " + answer);
       if(index==answer){
-        // io.to(room).emit('game end',winner,room.board[index].name,room.board[index].url);
-        //TODO: uncomment above line once we're properly using the DB.
-        io.to(room).emit('game end',winner,"Caterpie","https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/800.png");
+        socket.broadcast.to(room).emit('game end',winner,otherAnswer);
+        socket.emit('game end',winner,answer);
       }
     }
   });

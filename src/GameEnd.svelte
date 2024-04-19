@@ -1,6 +1,7 @@
 <script>
     import CardInner from "./CardInner.svelte";
     export let game_data;
+    console.log("Game data:",game_data);
 
 </script>
 
@@ -8,12 +9,7 @@
     {#if game_data.winner == game_data.player}
         <h1>You Win!</h1>
     {:else}
-        <h1>You lose!</h1>
+        <h1>You Lose.</h1>
     {/if}
-    Correct card: <CardInner
-        whomst=false
-        name={game_data.correct_name}
-        src={game_data.correct_url}
-        card_hover=false
-    ></CardInner>
+    <CardInner img = {{src:game_data.correct_url}} name = {game_data.correct_name}></CardInner>
 </div>

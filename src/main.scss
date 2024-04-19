@@ -48,6 +48,7 @@ h1 {
 .grid {
     display: grid;
     justify-items: center;
+    height:10vh;
 }
 
 .grid-grow {
@@ -128,6 +129,15 @@ h1 {
 
 .letter {
     height: 4em;
+}
+
+.card-inner{
+    max-width:12.5vw;
+    max-height: 22.5vh;
+}
+
+.card-img{
+    object-fit:scale-down;
 }
 
 .deny-button,

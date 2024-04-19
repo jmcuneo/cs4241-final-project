@@ -20,14 +20,14 @@
         game_data.player=e.detail.player;
     }
 
-    function gameEnd(winner,correct_name,correct_url) {
+    function gameEnd(e){
+        let obj = e.detail;
         game_data.state="GameOver";
-        game_data.correct_name=correct_name;
-        game_data.correct_url=correct_url
-        game_data.winner=winner
+        game_data.correct_name=obj.board[obj.answer].name;
+        game_data.correct_url=obj.board[obj.answer].link;
+        game_data.winner=obj.winner;
     }
 
-    socket.on('game end',gameEnd);
 </script>
 
 {#if game_data.state == "HostJoin"}
