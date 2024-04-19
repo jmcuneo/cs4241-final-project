@@ -1,7 +1,7 @@
 <script lang="ts">
     // @ts-nocheck
     import { createEventDispatcher } from "svelte";
-    import socket from "./socket.js";
+
 
     export let src;
     export let name;
@@ -18,7 +18,7 @@
     $: has_flipped_class = flipped && !perm_flip;
 
     function clicked(flip_to: boolean, perm: boolean) {
-        dispatch("guess", {
+        dispatch("flip", {
             flip_to,
             perm,
         });
@@ -35,8 +35,6 @@
         e.preventDefault();
         if (!flipped && !perm_flip) {
             perm_flip = true;
-    
-            clicked(flipped, false);
             clicked(true, true);
             card_hover = false;
 
@@ -60,7 +58,7 @@
 >
     <div class="card-inner" class:whomst>
         <div class="card-img" style="background-image: url('{src}');" />
-        <span>{name}</span>
-        <span>{card_hover}</span>
+        <span class="pokemon">{name}</span>
+        <!-- <span>{card_hover}</span> -->
     </div>
 </button>

@@ -9,6 +9,14 @@
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+@import url('https://fonts.cdnfonts.com/css/pokemon-solid');
+
+.pokemon{
+    // font-family: 'Pokemon Solid', sans-serif;
+    // color:#ffcc03;
+    // -webkit-text-stroke:1.5px #386abb;
+}
+
 body {
     margin: 0;
     font-family: "Roboto", sans-serif;
@@ -104,4 +112,8 @@ h1 {
     box-sizing: border-box;
     border: 1vw solid transparent;
     overflow-wrap: break-word;
+}
+
+.letter{
+    height: 4em;
 }
