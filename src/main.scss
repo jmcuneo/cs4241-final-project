@@ -11,7 +11,7 @@
 
 @import url('https://fonts.cdnfonts.com/css/pokemon-solid');
 
-.pokemon{
+.pokemon {
     // font-family: 'Pokemon Solid', sans-serif;
     // color:#ffcc03;
     // -webkit-text-stroke:1.5px #386abb;
@@ -64,27 +64,33 @@ h1 {
 
 .guess-confirm {
     display: flex;
+    position: absolute;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     width: 75vw;
     height: 100vh;
-
 }
 
 .confirm {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
     width: 37.5vw;
     height: 50vh;
+    z-index: 1;
+    background: silver;
+    grid-template: 75% 25%/50% 50%;
+    gap: 1vw;
+    padding: 1vw;
 }
 
 .confirm-text {
-    width: 50%;
-    height: 50%;
+    width: 100%;
+    height: 100%;
 }
 
 .stop_events {
     pointer-events: none;
+    filter: brightness(.5);
 }
 
 //.confirm-inner {}
@@ -119,6 +125,23 @@ h1 {
     overflow-wrap: break-word;
 }
 
-.letter{
+.letter {
     height: 4em;
+}
+
+.deny-button,
+.confirm-button {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.deny-button {
+    background-color: darkgray;
+}
+
+.confirm-button {
+    background-color: whitesmoke;
 }

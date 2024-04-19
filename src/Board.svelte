@@ -40,6 +40,7 @@
         };
     }
 
+    // prefetch all images before rendering board
     async function get_board() {
         const board = await get_server_board();
         const proms = board.board.map(
@@ -58,30 +59,29 @@
     let images = get_board();
     let display_board = true;
 
-    let guess_id = -1;
-    async function flip(e) {
+    let guess_data = null;
+    async function flip(e, index: Number) {
         const board = await images;
-        let index = e.detail.index;
-        if (e.detail.perm) {
-            console.log("PERM FLIP EMITTED");
-            guess_id = index;
-            //TODO: Also emit the event for the server to validate the guess.
-            socket.emit(
-                "guess",
-                game_data.id,
-                game_data.player,
-                guess_id,
-                board.board[index].name
-            );
+        const obj = e.detail;
+        if (obj.confirm) {
+            guess_data.callback(true);
+            socket.emit("guess", game_data.id, game_data.player, index);
+            guess_data = null;
+        } else if (obj.deny) {
+            guess_data.callback(false);
+            guess_data = null;
+        } else if (obj.perm_flip) {
+            guess_data = { id: index, callback: obj.callback };
         } else {
-            //TODO: Also emit the event for the server to validate the guess.
-            socket.emit(
-                "flip",
-                game_data.id,
-                game_data.player,
-                index,
-                board.board[index].name
-            );
+            // send flip with obj.flip
+            // socket.emit(
+            //     "flip",
+            //     game_data.id,
+            //     game_data.player,
+            //     index,
+            //     board.board[index].name,
+            // );
+            // socket.emit("flipped", game_data.id, game_data.player, index);
         }
     }
 
@@ -117,14 +117,18 @@
         <Circle {size} color="Silver" duration="1s"></Circle>
     </div>
 {:then board}
-    {#if guess_id != -1}
-        {@const card = board.board[guess_id]}
-        <GuessConfirm src={card.link} name={card.name}></GuessConfirm>
+    {#if guess_data != null}
+        {@const card = board.board[guess_data.id]}
+        <GuessConfirm
+            src={card.link}
+            name={card.name}
+            on:flip={(e) => flip(e, guess_data.id)}
+        ></GuessConfirm>
     {/if}
     <div
         class="grid grid-grow"
         class:hidden={!display_board}
-        class:stop_events={guess_id != -1}
+        class:stop_events={guess_data != null}
         style="grid-template-columns: repeat({width}, 1fr);"
     >
         {#each Array(height * width) as _, j}
@@ -132,11 +136,9 @@
                 {@const index = i + j * width} -->
             {@const card = board.board[j]}
             <Card
-                src={card.link}
+                img={card.img}
                 name={card.name}
                 whomst={j == board.whomst}
-                {game_data}
-                index={j}
                 on:load
                 on:flip={(e) => flip(e, j)}
             ></Card>
