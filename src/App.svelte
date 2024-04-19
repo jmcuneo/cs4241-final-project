@@ -28,6 +28,17 @@
         game_data.winner=obj.winner;
     }
 
+    function backToHost(e){
+        //TODO: Write this on server.
+        socket.emit('complete game left',game_data.id,game_data.player);
+        game_data.state = "HostJoin";
+        game_data.id=null;
+        game_data.player=null;
+        game_data.winner=null;
+        game_data.correct_name=null;
+        game_data.correct_url=null;
+    }
+
 </script>
 
 {#if game_data.state == "HostJoin"}
@@ -43,7 +54,7 @@
     </div>
 {:else if game_data.state == "GameOver"}
     <div class="gameOver">
-        <GameEnd game_data={game_data}></GameEnd>
+        <GameEnd game_data={game_data} on:backToHost={backToHost}></GameEnd>
     </div>
     <div class="chat">
         <Chat {game_data}></Chat>

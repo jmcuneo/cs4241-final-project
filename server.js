@@ -118,6 +118,10 @@ io.on('connection', (socket) => {
     //TODO: Change to send server message function
     io.to(room).emit('message receive',"Server",name + " flipped " + cardName);
   });
+  socket.on('complete game left',(room,name)=>{
+    io.to(room).emit('message receive',"Server",name + " left.");
+    socket.leave(room);
+  });
 });
 
 
