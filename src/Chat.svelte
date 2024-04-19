@@ -18,14 +18,13 @@
     }
     let messages = [];
 
-    socket.on("message receive", (num, msg) => {
-        messages.push({ name: num, message: msg });
+    socket.on("message receive", (name, msg) => {
+        messages.push({ name: name, message: msg });
         messages=messages;
-        console.log(num, msg);
+        console.log(name, msg);
     });
 </script>
 
-<!-- <p>Wumbly fumbly mumbly Wumbly fumbly mumbly Wumbly fumbly mumbly Wumbly fumbly mumbly Wumbly fumbly mumbly Wumbly fumbly mumbly </p> -->
 <div class="chat-window">
     {#each messages as { name, message }}
         <ChatMessage {name} {message}></ChatMessage>
