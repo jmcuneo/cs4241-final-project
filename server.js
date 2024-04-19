@@ -1,4 +1,5 @@
 const express = require('express'),
+    ViteExpress = require("vite-express");
     app = express(),
     { MongoClient, ObjectId } = require("mongodb")
 
@@ -162,4 +163,5 @@ app.get('/user', (req, res) => {
     res.json({"username" : req.user.username});
 })
 
-app.listen(process.env.PORT)
+//app.listen(process.env.PORT);
+ViteExpress.listen(app, 3000);
