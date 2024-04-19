@@ -40,6 +40,7 @@
         };
     }
 
+    // prefetch all images before rendering board
     async function get_board() {
         const board = await get_server_board();
         const proms = board.board.map(
@@ -49,7 +50,7 @@
                     e.img.onload = res;
                     e.img.onerror = rej;
                     e.img.src = e.link;
-                }),
+                })
         );
         await Promise.all(proms);
         return board;
@@ -59,8 +60,9 @@
     let display_board = true;
 
     let guess_id = -1;
-    async function flip(obj, index: Number) {
+    async function flip(e, index: Number) {
         const board = await images;
+        const obj = e.detail;
         if (obj.perm) {
             guess_id = index;
             //TODO: Also emit the event for the server to validate the guess.
@@ -74,7 +76,6 @@
                     board.board[index].name,
             );
         } else {
-            //TODO: Also emit the event for the server to validate the guess.
             socket.emit(
                 "chat message",
                 game_data.id,
@@ -84,6 +85,7 @@
                     " fliped " +
                     board.board[index].name,
             );
+            socket.emit("flipped", game_data.id, game_data.player, index);
         }
     }
 
@@ -134,7 +136,7 @@
                 {@const index = i + j * width} -->
             {@const card = board.board[j]}
             <Card
-                src={card.link}
+                img={card.img}
                 name={card.name}
                 whomst={j == board.whomst}
                 {game_data}

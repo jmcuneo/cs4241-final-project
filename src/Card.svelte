@@ -1,9 +1,9 @@
 <script lang="ts">
     // @ts-nocheck
     import { createEventDispatcher } from "svelte";
+    import socket from "./socket.js";
 
-
-    export let src;
+    export let img;
     export let name;
     export let whomst;
     export let game_data;
@@ -38,12 +38,15 @@
             clicked(true, true);
             card_hover = false;
 
-            socket.emit("guess",game_data.id,game_data.player,index,name);
+            socket.emit("guess", game_data.id, game_data.player, index, name);
             // socket.emit("chat message",game_data.id,game_data.player,"Player " + game_data.player + " guessed " + name);
         }
     }
     function hover() {
         card_hover = true;
+    }
+    function onload(e) {
+        e.style.backgroundImage = `url(${img.src})`;
     }
 </script>
 
@@ -57,7 +60,7 @@
     class:no-card-hover={!card_hover}
 >
     <div class="card-inner" class:whomst>
-        <div class="card-img" style="background-image: url('{src}');" />
+        <div use:onload class="card-img" />
         <span class="pokemon">{name}</span>
         <!-- <span>{card_hover}</span> -->
     </div>
