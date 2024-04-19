@@ -82,7 +82,7 @@ function set_up_db_store(app) {
 
         const docs = await games_collection.find(
             {
-                roomCode: req.body.roomcode
+                roomCode: req.body.roomCode
             }
         ).toArray();
 
@@ -94,6 +94,55 @@ function set_up_db_store(app) {
         else
         {
             res.json(docs[0])
+        }
+
+    })
+
+    app.post('/create_new_game', async (req, res) =>
+    {
+        let code = req.body.roomCode
+
+        //Check if this game exists
+        const docs = await games_collection.find(
+            {
+                roomCode: code
+            }
+        ).toArray()
+
+        if(docs[0] === undefined) //If a game of this code does not exist
+        {
+            let gameType = req.body.type
+
+            //Create a game-board with 24 random tiles using the type [Returns an array of 24 DB objects]
+            //let board = createNewBoard(gameType)
+
+            let newGame =
+                {
+                    roomCode:code,
+                    type:gameType,
+                    board:[], //Replace with board when createNewBoard() is implemented
+                    chat:[
+                        {"author":"server","msg":"player 1 joined the game"}, //Default chat message
+                    ],
+                    answer_p1:Math.floor(Math.random() * 23), //Do the random generation here?
+                    answer_p2: Math.floor(Math.random() * 23),
+                    flipped_p1:[],
+                    flipped_p2:[],
+                    guessed_p1:[],
+                    guessed_p2:[],
+                    started:1000000,
+                    connected_players:[1] //Only player 1 is connected by default, will be [1, 2] when player 2 connects
+                }
+
+                const addGame = await games_collection.insertOne(newGame)
+
+            //Respond with the new game object that is in the DB
+            res.json(addGame);
+
+        }
+        else
+        {
+            res.json("Game Already Exists!")
         }
 
 
