@@ -3,9 +3,6 @@ import Logger, { EVENTS } from './actionlog.js';
 import Event from './event.js';
 const { Schema, model } = mongoose;
 
-// Note: Not even closed to finished.
-// Hasn't be debugged, tested, or anything of the like. 
-
 /**
  * @author Alexander Beck
  * @example 
@@ -315,12 +312,12 @@ const userSchema = new Schema({
         },
     },
     statics: {
-
         /**
          * 
-         * @param {*} account 
-         * @param {*} userData An object containing all of the information for a User
-         * @returns 
+         * @param {mongoose.model} account The account of the new user
+         * @param {*} userData An object containing all of the information for a User (Do not include username)
+         * @returns {Promise<Boolean> | Promise<mongoose.Types.model>} The new user, or false if it fails to create one
+         * @author Alexander Beck
          */
         async createUser(account, userData) {
             let newUser;
@@ -328,6 +325,12 @@ const userSchema = new Schema({
                 newUser = await User.create({
                     username: account.username,
                     ...userData
+                });
+
+                await Logger.create({
+                    subject: account,
+                    target: newUser,
+                    action: EVENTS.CREATE_ACCOUNT
                 });
             } catch (err) {
                 console.log(err);

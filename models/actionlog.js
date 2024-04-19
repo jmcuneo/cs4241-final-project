@@ -7,7 +7,7 @@ import { Schema, SchemaTypes, model } from "mongoose";
  * @author Alexander Beck
  */
 export const EVENTS = Object.freeze({
-    JOIN: 'JOIN',
+    CREATE_ACCOUNT: 'CREATE_ACCOUNT',
     INVITE_USER: 'INVITE_USER',
     UNINVITE_USER: 'UNINVITE_USER',
     MODIFY_USER: 'MODIFY_USER',

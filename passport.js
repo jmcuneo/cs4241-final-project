@@ -4,7 +4,10 @@ import Account from './models/account.js';
 import bcrypt from 'bcrypt';
 
 
-// Define your LocalStrategy
+/**
+ * Define your LocalStrategy
+ * @author Jack Weinstein
+ */
 const localStrategy = new LocalStrategy({
 	usernameField: 'username',
 	passwordField: 'password'
@@ -41,5 +44,8 @@ passport.deserializeUser((id, done) => {
 // Use the local strategy
 passport.use(localStrategy);
 
-// Export passport as the default export
+/**
+ * Export passport as the default export
+ * @author Jack Weinstein
+ */
 export default passport;

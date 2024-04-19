@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
+/**
+ * @author Jack Weinstein
+ */
 const accountSchema = new mongoose.Schema({
 	username: {
 		type: String,
@@ -24,7 +27,10 @@ accountSchema.pre('save', async function (next) {
 	next();
 });
 
-// Create and export the User model using ES module syntax
+/**
+ * Create and export the User model using ES module syntax
+ * @author Jack Weinstein
+ */
 const Account = mongoose.model('Account', accountSchema, 'Accounts');
 
 export default Account;
