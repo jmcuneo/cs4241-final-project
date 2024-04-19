@@ -32,15 +32,15 @@
         socket.on("join failed", (msg) => {
             errorMsg = msg;
         });
-        socket.on("host success", (room, num) => {
+        socket.on("host success", (room, name) => {
             errorMsg = room;
-            socket.emit("chat message",room,num,"Player " + num + " joined.");
-            joinGame(room, num);
+            // socket.emit("chat message",room,num,"Player " + num + " joined.");
+            joinGame(room, name);
         });
-        socket.on("join success", (room, num) => {
+        socket.on("join success", (room, name) => {
             errorMsg = room;
-            socket.emit("chat message",room,num,"Player " + num + " joined.");
-            joinGame(room, num);
+            // socket.emit("chat message",room,name,"Player " + name + " joined.");
+            joinGame(room, name);
         });
     };
 </script>
