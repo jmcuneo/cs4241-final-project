@@ -7,6 +7,7 @@
     function keydown(e) {
         if (e.key === "Enter") {
             // console.log("Enter pressed");
+            console.log(game_data);
             socket.emit(
                 "chat message",
                 game_data.id,

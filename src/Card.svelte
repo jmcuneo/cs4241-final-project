@@ -1,7 +1,6 @@
 <script lang="ts">
-    // @ts-nocheck
+    import CardInner from "./CardInner.svelte";
     import { createEventDispatcher } from "svelte";
-    import socket from "./socket.js";
 
     export let img;
     export let name;
@@ -17,28 +16,25 @@
 
     $: has_flipped_class = flipped && !perm_flip;
 
-    function clicked(flip_to: boolean, perm: boolean) {
-        dispatch("flip", {
-            flip_to,
-            perm,
-        });
+    function clicked(obj) {
+        dispatch("flip", obj);
     }
 
     function click() {
         if (!perm_flip) {
             flipped = !flipped;
             card_hover = false;
-            clicked(flipped, false);
+            clicked({ flipped });
         }
     }
-    function dclick(e: PointerEvent) {
+    function dclick(e: Event) {
         e.preventDefault();
         if (!flipped && !perm_flip) {
             perm_flip = true;
-            clicked(true, true);
+            clicked({ perm_flip });
             card_hover = false;
 
-            socket.emit("guess", game_data.id, game_data.player, index, name);
+            //socket.emit("guess", game_data.id, game_data.player, index, name);
             // socket.emit("chat message",game_data.id,game_data.player,"Player " + game_data.player + " guessed " + name);
         }
     }

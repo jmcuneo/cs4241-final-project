@@ -66,7 +66,10 @@ io.on('connection', (socket) => {
   });
   socket.on('guess',(room,name,index,cardName)=>{
     io.to(room).emit('message receive',"Server",name + " guessed "+ cardName);
-  })
+  });
+  socket.on('flip',(room,name,index,cardName)=>{
+    io.to(room).emit('message receive',"Server",name + " flipped " + cardName);
+  });
 });
 
 
