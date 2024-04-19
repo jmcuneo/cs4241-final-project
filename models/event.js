@@ -51,8 +51,19 @@ const eventSchema = new Schema({
     },
     attendees: [{
         guest: {
-            type: mongoose.Types.ObjectId,
-            ref: 'User',
+            // type: String | mongoose.Types.ObjectId,
+            // ref: 'User',
+            // required: true
+            type: mongoose.Schema.Types.Mixed,
+            validate: {
+                validator: function (v) {
+                    return typeof v === 'string' || v instanceof mongoose.Types.ObjectId;
+                },
+                message: 'VALUE is not a proper guest type!'
+            },
+            ref: function () {
+                return this.guest instanceof mongoose.Types.ObjectId ? 'User' : undefined;
+            },
             required: true
         },
         inviter: {
@@ -152,12 +163,12 @@ const eventSchema = new Schema({
 
         /**
          * @param {mongoose.Model} inviter The inviter to get the invites from
-         * @returns {Promise<Array<mongoose.Model>>}
+         * @returns {Promise<Array<mongoose.Model> | Array<String>>}
          * @author Alexander Beck
          */
         async getInvitesByInviter(inviter) {
             const invites = await this.getInviteIdsByInviter(inviter);
-            return invites ? await Promise.all(invites.map(user => User.findById(user))) : [];
+            return invites ? await Promise.all(invites.map(user => user instanceof mongoose.Types.ObjectId ? User.findById(user) : user)) : [];
         },
     },
 });

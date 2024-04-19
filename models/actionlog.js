@@ -8,8 +8,8 @@ import { Schema, SchemaTypes, model } from "mongoose";
  */
 export const EVENTS = Object.freeze({
     CREATE_ACCOUNT: 'CREATE_ACCOUNT',
-    INVITE_USER: 'INVITE_USER',
-    UNINVITE_USER: 'UNINVITE_USER',
+    INVITE_GUEST: 'INVITE_GUEST',
+    UNINVITE_GUEST: 'UNINVITE_GUEST',
     MODIFY_USER: 'MODIFY_USER',
     CREATE_EVENT: 'CREATE_EVENT',
     DELETE_EVENT: 'DELETE_EVENT',
@@ -42,6 +42,9 @@ const actionLogSchema = new Schema({
         type: SchemaTypes.ObjectId,
         ref: 'Event',
     },
+    guest: {
+        type: String
+    }
 }, { timestamps: true });
 
 /**

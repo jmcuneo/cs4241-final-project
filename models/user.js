@@ -54,9 +54,6 @@ const userSchema = new Schema({
         required: true,
     },
     username: {
-        // type: String,
-        // minLength: 1,
-        // required: false,
         type: String,
         ref: 'Account',
         select: 'username',
@@ -150,33 +147,32 @@ const userSchema = new Schema({
         },
 
         /**
-         * Invites the user(s) to the event if the user inviting is an admin or has {@link PERMISSIONS.INVITE_TO_ALL_EVENTS}
+         * Invites the guests(s) to the event if the user inviting is an admin or has {@link PERMISSIONS.INVITE_TO_ALL_EVENTS}
          * @example 
-         *          const successfullyAddedUsers = await user.inviteUsers(christmasParty, user2, user3, user4);
+         *          const successfullyAddedUsers = await user.inviteGuests(christmasParty, "Bob Schmob", "Jacob BocaJ");
          *          if (!successfullyAddedUsers) {
          *              // Uh oh. No users were added.
          *              // Either there were no new users to add, the user doesn't have permissions, or adding this many users would go above the allowed invite/guest limits
          *          }
-         * @param {mongoose.Model} event The event to invite users to
-         * @param  {...mongoose.Model | mongoose.Types.ObjectId} users The user(s) to invite
-         * @returns {Promise<Boolean> | Promise<Array<mongoose.Model>>} An array of all users that were successfully added. Empty is nothing is added.
+         * @param {mongoose.Model} event The event to invite guests to
+         * @param  {...String | mongoose.Model} guests The guest(s) to invite
+         * @returns {Promise<Boolean> | Promise<Array<String>>} An array of all guests that were successfully added. Empty is nothing is added.
          * @author Alexander Beck
          * @todo Possibly make an alias method in {@link Event}
          */
-        async inviteUsers(event, ...users) {
-            if (!users) return [];
+        async inviteGuests(event, ...guests) {
+            if (!guests) return [];
             if (!event) return false;
 
             // Check if added users is within guest limit
             // Assumes true if there is no guest limit
-            // TODO: Make this event?.guestLimit maybe
             const guestLimitCheck = event?.guestLimit ?
-                (event.attendees?.length ?? 0) + users.length < event.guestLimit : true;
+                (event.attendees?.length ?? 0) + guests.length < event.guestLimit : true;
 
             // Check to see if added users is within inviter limit
             // Assumes true if there is no inviter limit (or guest limit)
             const inviterLimitCheck = event.guestLimit && event.guestLimit?.inviterLimit ?
-                ((await event.getInviteIdsByUser(this))?.length ?? 0) + users.length < event.guestLimit.inviterLimit : true;
+                ((await event.getInviteIdsByUser(this))?.length ?? 0) + guests.length < event.guestLimit.inviterLimit : true;
 
             // If user is admin or user has PERMISSIONS.INVITE_TO_ALL_EVENTS
             // TODO: Implement this to work with event-by-event basis
@@ -186,28 +182,23 @@ const userSchema = new Schema({
                 // Check guest list to ensure that person is not already on it
                 let successfullyAdded = [];
                 // Has to be arrow notation; redefines 'this' otherwise
-                users.forEach(async (user) => {
-                    // Ensure that user is an object and not just an id
-                    // TODO: Test if this works for both ids and users.
-                    if (user instanceof mongoose.Types.ObjectId) {
-                        user = await User.findById(user);
-                    }
+                guests.forEach(async (guest) => {
 
-                    if (!event.attendees.some(attendee => attendee.guest === user._id)) {
-                        successfullyAdded.push(user);
+                    if (!event.attendees.some(attendee => attendee.guest === guest)) {
+                        successfullyAdded.push(guest);
                         // Add user to the guest list
-                        event.attendees.addToSet({ guest: user, inviter: this });
+                        event.attendees.addToSet({ guest: guest, inviter: this });
                     }
                 });
 
                 try {
                     await event.save();
-                    successfullyAdded.forEach(async (user) => {
+                    successfullyAdded.forEach(async (guest) => {
                         await Logger.create({
                             event: event,
                             subject: this,
-                            target: user,
-                            action: EVENTS.INVITE_USER
+                            guest: guest,
+                            action: EVENTS.INVITE_GUEST
                         });
                     });
                     return successfullyAdded;
@@ -222,16 +213,14 @@ const userSchema = new Schema({
         },
 
         /**
-         * @param {mongoose.Model} event The event to uninvite users from
-         * @param  {...mongoose.Model | mongoose.Types.ObjectId} users The users to uninvite
-         * @returns {Promise<Boolean> | Promise<Array<mongoose.Model>>} A list of all the users successfuly removed, an empty list if no users were removed, and false if the user does not have the permissions to uninvite any of the users
+         * @param {mongoose.Model} event The event to uninvite guests from
+         * @param  {...String} guests The guests to uninvite
+         * @returns {Promise<Boolean> | Promise<Array<String>>} A list of all the guests successfuly removed, an empty list if no users were removed, and false if the user does not have the permissions to uninvite any of the guests
          * @author Alexander Beck
          */
-        async uninviteUsers(event, ...users) {
+        async uninviteGuests(event, ...guests) {
             if (!event) return false;
-            if (!users) return false;
-            // Perms to univite all or admin
-            // or 'this' invited the user
+            if (!guests) return false;
 
             let successfullyRemoved = [];
 
@@ -240,23 +229,18 @@ const userSchema = new Schema({
             // had the permissions, and [] is returned if the user had the permissions but nothing was changed
             let hadPermissionAtLeastOnce = false;
 
-            users.forEach(async (user) => {
+            guests.forEach(async (guest) => {
                 // Can be evaluated to undefined > 0 which is false
-                const isInviter = event?.attendees?.filter(attendee => attendee.guest === user && attendee.inviter === this)?.length > 0;
+                const isInviter = event?.attendees?.filter(attendee => attendee.guest === guest && attendee.inviter === this)?.length > 0;
                 const isAllowedToInvite = this?.permissions.includes(PERMISSIONS.UNINVITE_TO_ALL_EVENTS) ?? false;
                 if (this.accountType === ACCOUNT_TYPE.ADMIN || isAllowedToInvite || isInviter) {
                     hadPermissionAtLeastOnce = true;
-                    // Ensure that user is an object and not just an id
-                    // TODO: Test if this works for both ids and users.
-                    if (user instanceof mongoose.Types.ObjectId) {
-                        user = await User.findById(user);
-                    }
 
-                    if (event.attendees.some(attendee => attendee.guest === user)) {
-                        successfullyRemoved.push(user);
+                    if (event.attendees.some(attendee => attendee.guest === guest)) {
+                        successfullyRemoved.push(guest);
 
-                        // Remove user from guest list
-                        event.attendees = event.attendees.filter(attendee => attendee.guest !== user);
+                        // Remove guest from guest list
+                        event.attendees = event.attendees.filter(attendee => attendee.guest !== guest);
                     }
                 }
             });
@@ -264,12 +248,12 @@ const userSchema = new Schema({
             if (hadPermissionAtLeastOnce) {
                 try {
                     await event.save();
-                    successfullyRemoved.forEach(async (user) => {
+                    successfullyRemoved.forEach(async (guest) => {
                         await Logger.create({
                             event: event,
                             subject: this,
-                            target: user,
-                            action: EVENTS.UNINVITE_USER
+                            guest: guest,
+                            action: EVENTS.UNINVITE_GUEST
                         });
                     });
                     return successfullyRemoved;
@@ -313,13 +297,14 @@ const userSchema = new Schema({
     },
     statics: {
         /**
-         * 
+         * @requires account, userData
          * @param {mongoose.model} account The account of the new user
          * @param {*} userData An object containing all of the information for a User (Do not include username)
          * @returns {Promise<Boolean> | Promise<mongoose.Types.model>} The new user, or false if it fails to create one
          * @author Alexander Beck
          */
         async createUser(account, userData) {
+            if (!account || !userData) return false;
             let newUser;
             try {
                 newUser = await User.create({
@@ -354,14 +339,22 @@ userSchema.virtual('fullName').get(function () {
  * @author Alexander Beck
  * @requires firstName, lastName, username
  * @example
- *          // DO NOT FOLLOW THESE UNTIL I REMOVE THIS MESSAGE,
- *          // IT MEANS I HAVE FORGOTTEN TO IMPLEMENT NEW EXAMPLES
  * 
  *          // Inserting data
  *          const user = await User.create({
  *              firstName: 'Jane',
  *              lastName: 'Doe',
+ *              gender: 'Female',
+ *          });
+ * 
+ *          // Creating user with an account
+ *          const JanesAccount = await Account.create({ 
  *              username: 'jdoe',
+ *              password: 'JANES PASSWORD',
+ *          });
+ *          const Jane = await User.createUser(JanesAccount, {
+ *              firstName: 'Jane',
+ *              lastName: 'Doe',
  *              gender: 'Female',
  *          });
  * 

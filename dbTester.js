@@ -68,7 +68,7 @@ export async function testDB() {
             name: 'Christmas Party',
             date: new Date(2024, 11, 25),
             location: 'Unity 520',
-            guestLimit: 4
+            guestLimit: 5
         };
 
         const christmasParty = await user.createEvent(christmasPartySchema);
@@ -82,7 +82,7 @@ export async function testDB() {
         // await christmasParty.save();
 
         const users = [user, user2, user3, user4];
-        await user.inviteUsers(christmasParty, user2, user3, user4);
+        await user.inviteGuests(christmasParty, user2, user3, user4, 'Bob Schmob');
 
         // await testUninvite(christmasParty, users)
         // await testMakeAdmin(users);
@@ -106,6 +106,6 @@ async function testMakeAdmin(users) {
 }
 
 async function testUninvite(christmasParty, users) {
-    console.log(await users[0].uninviteUsers(christmasParty, users[2], users[2], users[3], users[2]));
-
+    console.log(await users[0].uninviteGuests(christmasParty, users[2], users[2], users[3], users[2]));
+    console.log(await users[0].uninviteGuests(christmasParty, 'Bob Schmob'));
 }
