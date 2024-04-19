@@ -1,33 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import {useEffect, useState} from 'react'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  //startWord
+  const [startWord, setStartWord] = useState('')
+  const fetchStartWord = async () => {
+      try {
+          const response = await fetch('https://api.datamuse.com/words?sp=??????&max=1000'); // 获取所有单词
+          const data = await response.json();
+          const filteredWords = data.filter(startWord => startWord.word.length > 4  && !/\s/.test(startWord.word));
+          const randomIndex = Math.floor(Math.random() * filteredWords.length);
+          setStartWord(filteredWords[randomIndex].word);
+      } catch (error) {
+          console.error('Error fetching random word:', error);
+      }
+  }
 
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+          {/* Start Word */}
+          <button onClick={fetchStartWord}>Generate Word</button>
+          {startWord && <p>Start Word: {startWord}</p>}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
