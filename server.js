@@ -19,6 +19,10 @@ const io = new Server(server);
 
 const rooms = {};
 
+function randomAnswer(){
+  return Math.floor(Math.random()*24);
+}
+
 io.on('connection', (socket) => {
   console.log('a user connected');
   socket.on('disconnect',()=>{
@@ -33,13 +37,32 @@ io.on('connection', (socket) => {
   socket.on('host game',(room)=>{
     room = room.toLowerCase();
     if(room in rooms){
-      if(rooms[room]>=2){
+      if(rooms[room].connected_players.length >= 2){
         socket.emit('host failed','room full');
       }else{
         socket.emit('host failed','room in use');
       }
     }else{
-      rooms[room] = 1;
+      //TODO: Use the DB and populate the list
+      rooms[room] = {
+        roomCode:room,
+        type:"pokemon",
+        board:[],
+        chat:[
+          
+        ],
+        answer_p1:randomAnswer(),
+        answer_p2:randomAnswer(),
+        flipped_p1:[],
+        flipped_p2:[],
+        guessed_p1:[],
+        guessed_p2:[],
+        //This is in milliseconds, not seconds.
+        started:new Date().getTime(),
+        connected_players:["Player 1"]
+      };
+      console.log(rooms[room].answer_p1);
+      console.log(rooms[room].answer_p2);
       socket.join(room);
       socket.emit('host success',room,"Player 1");
       io.to(room).emit('message receive',"Server","Player 1 joined");
@@ -49,10 +72,10 @@ io.on('connection', (socket) => {
   socket.on('join game',(room)=>{
     room = room.toLowerCase();
     if(room in rooms){
-      if(rooms[room] >= 2){
+      if(rooms[room].connected_players.length >= 2){
         socket.emit('join failed','room full');
       }else{
-        rooms[room]+=1;
+        rooms[room].connected_players.push("Player 2");
         socket.join(room);
         socket.emit('join success',room,"Player 2");
         io.to(room).emit('message receive',"Server","Player 2 joined");
@@ -65,9 +88,31 @@ io.on('connection', (socket) => {
     io.to(room).emit('message receive',name,msg);
   });
   socket.on('guess',(room,name,index,cardName)=>{
-    io.to(room).emit('message receive',"Server",name + " guessed "+ cardName);
+    //TODO: Prevent click if there are <2 players connected.
+    if(rooms[room].connected_players.length == 2){
+      io.to(room).emit('message receive',"Server",name + " guessed "+ cardName);
+      let answer;
+      let winner;
+      if(rooms[room].connected_players[0] == name){
+        //p1
+        answer = rooms[room].answer_p2;
+        winner = rooms[room].connected_players[0];
+      }else{
+        //p2
+        answer = rooms[room].answer_p1;
+        winner = rooms[room].connected_players[1];
+      }
+      console.log("Guess: " + index + ", Answer: " + answer);
+      if(index==answer){
+        // io.to(room).emit('game end',winner,room.board[index].name,room.board[index].url);
+        //TODO: uncomment above line once we're properly using the DB.
+        io.to(room).emit('game end',winner,"Caterpie","https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/800.png");
+      }
+    }
   });
   socket.on('flip',(room,name,index,cardName)=>{
+    //TODO: Add to flipped obj
+    //TODO: Change to send server message function
     io.to(room).emit('message receive',"Server",name + " flipped " + cardName);
   });
 });
