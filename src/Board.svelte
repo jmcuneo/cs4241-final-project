@@ -24,7 +24,7 @@
             "pigeon",
             "snake",
         ];
-        return id > 18
+        return id > 24 ? `pokemon ${id}`: id > 18
             ? names[((id - 18) >> 1) + 6] + " " + (((id - 18) % 2) + 1)
             : names[Math.floor(id / 3)] + " " + ((id % 3) + 1);
     }
@@ -32,10 +32,13 @@
     async function get_server_board() {
         await new Promise((r) => setTimeout(r, 1000));
         return {
-            board: [...Array(width * height).keys()].map((e) => ({
-                name: get_name(e),
-                link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(e + 1 + "").padStart(3, "0")}.png`,
-            })),
+            board: [...Array(width * height).keys()].map((e) => {
+                let r = Math.floor(Math.random() * 999+1);
+                return {
+                    name: get_name(r),
+                    link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(r + 1 + "").padStart(3, "0")}.png`,
+                };
+            }),
             whomst: 4,
         };
     }
@@ -70,7 +73,7 @@
                 game_data.id,
                 game_data.player,
                 index,
-                board.board[index].name,
+                board.board[index].name
             );
             guess_data = null;
         } else if (obj.deny) {
@@ -124,7 +127,7 @@
     {#if guess_data != null}
         {@const card = board.board[guess_data.id]}
         <GuessConfirm
-            src={card.link}
+            img={card.img}
             name={card.name}
             on:flip={(e) => flip(e, guess_data.id)}
         ></GuessConfirm>

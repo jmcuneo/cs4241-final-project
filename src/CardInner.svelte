@@ -1,11 +1,14 @@
 <script>
-    export let whomst;
     export let name;
-    export let src;
-    export let card_hover;
+    export let img;
+    export let whomst = false;
+
+    function onload(e) {
+        e.style.backgroundImage = `url(${img.src})`;
+    }
 </script>
+
 <div class="card-inner" class:whomst>
-    <div class="card-img" style="background-image: url('{src}');" />
-    <span>{name}</span>
-    <span>{card_hover}</span>
+    <div use:onload class="card-img" />
+    <span class="card-name">{name}</span>
 </div>

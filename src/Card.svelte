@@ -1,4 +1,5 @@
 <script lang="ts">
+    import CardInner from "./CardInner.svelte";
     import { createEventDispatcher } from "svelte";
 
     export let img;
@@ -43,9 +44,6 @@
     function hover() {
         card_hover = true;
     }
-    function onload(e) {
-        e.style.backgroundImage = `url(${img.src})`;
-    }
 </script>
 
 <button
@@ -57,9 +55,5 @@
     class:card-perm-flipped={perm_flip}
     class:no-card-hover={!card_hover}
 >
-    <div class="card-inner" class:whomst>
-        <div use:onload class="card-img" />
-        <span class="pokemon">{name}</span>
-        <!-- <span>{card_hover}</span> -->
-    </div>
+    <CardInner {img} {name} {whomst}></CardInner>
 </button>
