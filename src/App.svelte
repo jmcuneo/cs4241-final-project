@@ -4,6 +4,7 @@
     import Board from "./Board.svelte";
     import Chat from "./Chat.svelte";
     import GameEnd from "./GameEnd.svelte";
+    import socket from "./socket.js";
     let game_data: {state: string, id: string; player: string, winner: string, correct_name:string, correct_url:string } = {
         state:"HostJoin",
         id:null,
@@ -19,11 +20,14 @@
         game_data.player=e.detail.player;
     }
 
-    function gameEnd(correct_name,correct_url) {
+    function gameEnd(winner,correct_name,correct_url) {
         game_data.state="GameOver";
         game_data.correct_name=correct_name;
         game_data.correct_url=correct_url
+        game_data.winner=winner
     }
+
+    socket.on('game end',gameEnd);
 </script>
 
 {#if game_data.state == "HostJoin"}
