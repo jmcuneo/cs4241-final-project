@@ -130,6 +130,7 @@ const eventSchema = new Schema({
          * @author Alexander Beck
          */
         async getInviteIdsByInviter(event, user) {
+            if (!event || !user) return [];
             return (await this.findById(event._id).
                 where('attendees.inviter').
                 equals(user).
@@ -137,7 +138,19 @@ const eventSchema = new Schema({
                 exec())?.
                 attendees.
                 map(attendee => attendee.guest);
-        }
+        },
+
+        /**
+         * @param {mongoose.Types.Model} event The event to get the guest list from
+         * @returns {Promise<Boolean> | Promise<Array<Object>>} The guest list of the event, false if the event is undefined, or [] if there are no attendees
+         * @author Alexander Beck
+         */
+        async getGuestList(event) {
+            if (!event) return [];
+            return (await this.findById(event._id).
+                select('attendees').exec())?.
+                attendees ?? [];
+        },
     },
     methods: {
         /**
@@ -170,6 +183,14 @@ const eventSchema = new Schema({
             const invites = await this.getInviteIdsByInviter(inviter);
             return invites ? await Promise.all(invites.map(user => user instanceof mongoose.Types.ObjectId ? User.findById(user) : user)) : [];
         },
+
+        /**
+         * @returns {Promise<Boolean> | Promise<Array<Object>>} The guest list of the event, false if the event is undefined, or [] if there are no attendees
+         * @author Alexander Beck
+         */
+        async getGuestList() {
+            return await Event.getGuestList(this);
+        }
     },
 });
 

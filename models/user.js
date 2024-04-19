@@ -231,7 +231,9 @@ const userSchema = new Schema({
 
             guests.forEach(async (guest) => {
                 // Can be evaluated to undefined > 0 which is false
-                const isInviter = event?.attendees?.filter(attendee => attendee.guest === guest && attendee.inviter === this)?.length > 0;
+                const isInviter = event?.attendees?.filter(attendee =>
+                    attendee.guest === guest && attendee.inviter === this)?.length > 0;
+                    
                 const isAllowedToInvite = this?.permissions.includes(PERMISSIONS.UNINVITE_TO_ALL_EVENTS) ?? false;
                 if (this.accountType === ACCOUNT_TYPE.ADMIN || isAllowedToInvite || isInviter) {
                     hadPermissionAtLeastOnce = true;

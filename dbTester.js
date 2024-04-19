@@ -84,6 +84,7 @@ export async function testDB() {
         const users = [user, user2, user3, user4];
         await user.inviteGuests(christmasParty, user2, user3, user4, 'Bob Schmob');
 
+        // await testGetGuestList(christmasParty, users);
         // await testUninvite(christmasParty, users)
         // await testMakeAdmin(users);
 
@@ -108,4 +109,9 @@ async function testMakeAdmin(users) {
 async function testUninvite(christmasParty, users) {
     console.log(await users[0].uninviteGuests(christmasParty, users[2], users[2], users[3], users[2]));
     console.log(await users[0].uninviteGuests(christmasParty, 'Bob Schmob'));
+}
+
+async function testGetGuestList(christmasParty, users) {
+    await users[0].uninviteGuests(christmasParty, users[1], users[2], users[3], 'Bob Schmob')
+    console.log(await christmasParty.getGuestList())
 }
