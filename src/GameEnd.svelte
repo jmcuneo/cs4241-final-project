@@ -11,9 +11,9 @@
         <h1>You lose!</h1>
     {/if}
     Correct card: <CardInner
-        src={game_data.correct_url}
         whomst=false
         name={game_data.correct_name}
+        src={game_data.correct_url}
         card_hover=false
     ></CardInner>
 </div>
