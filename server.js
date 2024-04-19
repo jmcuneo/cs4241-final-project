@@ -12,12 +12,14 @@ require("dotenv").config()
 const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`
 const client = new MongoClient(uri)
 
-let userCollection
+let userCollection;
+let eventsCollection;
 
 (async function () {
     await client.connect()
     const database = client.db('finalProj')
     userCollection = database.collection('users')
+    eventsCollection = database.collection("events");
 })();
 
 const cookieSession = require('cookie-session')
@@ -62,13 +64,12 @@ passport.use(new GitHubStrategy({
                 console.log(currentUser)
                 done(null, currentUser)
             } else {
-                const newUser = [
-                    {
-                        "userId": profile.id,
-                        "username": profile.username,
-                    }
-                ]
-                userCollection.insertMany(newUser).then(user => {
+                const newUser = {
+                    "userId": profile.id,
+                    "username": profile.username,
+                    "events": []
+                }
+                userCollection.insertOne(newUser).then(user => {
                     console.log("new user created:" + newUser)
                     done(null, newUser)
                 })
@@ -91,13 +92,12 @@ passport.use(
                     console.log(currentUser)
                     done(null, currentUser)
                 } else {
-                    const newUser = [
-                        {
-                            "userId": profile.id,
-                            "username": profile.displayName,
-                        }
-                    ]
-                    userCollection.insertMany(newUser).then(user => {
+                    const newUser = {
+                        "userId": profile.id,
+                        "username": profile.displayName,
+                        "events": []
+                    }
+                    userCollection.insertOne(newUser).then(user => {
                         console.log("new user created:" + newUser)
                         done(null, newUser)
                     })
@@ -161,6 +161,20 @@ app.get('/profilePage', authCheck, (req, res) => {
 app.get('/user', (req, res) => {
     console.log("fetching username")
     res.json({"username" : req.user.username});
+})
+
+app.get("/user-events", async (req, res) => {
+    console.log("fetching user events");
+    userCollection.findOne({
+        userId: req.user.userId
+    })
+    .then((user) => user.events)
+    .then((events) => {
+        console.log(events);
+        let query = {$or: []};
+        events.forEach((e) => query.$or.push({eventId: e.eventId}));
+        return eventsCollection.find(query).toArray().then((eventList) => res.json(eventList));
+    });
 })
 
 //app.listen(process.env.PORT);

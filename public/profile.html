@@ -9,15 +9,16 @@
     
     <!-- get rid of favicon error -->
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <script src="js/client.js"></script>
 </head>
 
 <body>
     <h1>Welcome, see your profile details below</h1>
     <h2 id="user"></h2>
-    <button><a href="/logout">Logout</a></button>
+    <button onclick="window.location.href = '/logout';">Logout</button>
     <p>load all their posts here</p>
-    <button>Personal Calendar</button>
-    <script src="js/client.js"></script>
+    <button onclick="getPersonalCalendar()">Personal Calendar</button>
+    <ul id="events"></ul>
 </body>
 
 
