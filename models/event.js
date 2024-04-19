@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import User, { ACCOUNT_TYPE, PERMISSIONS } from './user.js';
-const { Schema, model, SchemaTypes } = mongoose;
+const { Schema, model } = mongoose;
 
 /**
  * @author Alexander Beck
@@ -25,7 +25,7 @@ const eventSchema = new Schema({
         required: true
     },
     creator: {
-        type: SchemaTypes.ObjectId,
+        type: mongoose.Types.ObjectId,
         ref: 'User',
         validate: {
             validator: async function (v) {
@@ -51,12 +51,12 @@ const eventSchema = new Schema({
     },
     attendees: [{
         guest: {
-            type: SchemaTypes.ObjectId,
+            type: mongoose.Types.ObjectId,
             ref: 'User',
             required: true
         },
         inviter: {
-            type: SchemaTypes.ObjectId,
+            type: mongoose.Types.ObjectId,
             ref: 'User',
             validate: {
                 validator: async function (v) {

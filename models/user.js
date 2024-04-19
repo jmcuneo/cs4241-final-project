@@ -57,9 +57,13 @@ const userSchema = new Schema({
         required: true,
     },
     username: {
+        // type: String,
+        // minLength: 1,
+        // required: false,
         type: String,
-        minLength: 1,
-        required: false,
+        ref: 'Account',
+        select: 'username',
+        required: true
     },
     gender: {
         type: String,
@@ -309,7 +313,30 @@ const userSchema = new Schema({
             }
             return false;
         },
-    }
+    },
+    statics: {
+
+        /**
+         * 
+         * @param {*} account 
+         * @param {*} userData An object containing all of the information for a User
+         * @returns 
+         */
+        async createUser(account, userData) {
+            let newUser;
+            try {
+                newUser = await User.create({
+                    username: account.username,
+                    ...userData
+                });
+            } catch (err) {
+                console.log(err);
+                return false;
+            }
+            // Note, can return null as it is currently
+            return newUser;
+        },
+    },
 });
 
 /**
