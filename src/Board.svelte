@@ -108,6 +108,7 @@
                 {@const card = board.board[index]}
                 <Card
                     src={card.link}
+                    index={j*height+i}
                     name={card.name}
                     whomst={index == board.whomst}
                     game_data={game_data}

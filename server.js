@@ -41,7 +41,8 @@ io.on('connection', (socket) => {
     }else{
       rooms[room] = 1;
       socket.join(room);
-      socket.emit('host success',room,1);
+      socket.emit('host success',room,"Player 1");
+      io.to(room).emit('message receive',"Server","Player 1 joined");
     }
   });
   socket.on('join game',(room)=>{
@@ -52,15 +53,19 @@ io.on('connection', (socket) => {
       }else{
         rooms[room]+=1;
         socket.join(room);
-        socket.emit('join success',room,2)
+        socket.emit('join success',room,"Player 2");
+        io.to(room).emit('message receive',"Server","Player 2 joined");
       }
     }else{
       socket.emit('join failed','room not found');
     }
   });
-  socket.on('chat message',(room,num,msg)=>{
-    io.to(room).emit('message receive',num,msg);
+  socket.on('chat message',(room,name,msg)=>{
+    io.to(room).emit('message receive',name,msg);
   });
+  socket.on('guess',(room,name,index,cardName)=>{
+    io.to(room).emit('message receive',"Server",name + " guessed "+ cardName);
+  })
 });
 
 

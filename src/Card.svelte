@@ -7,6 +7,7 @@
     export let name;
     export let whomst;
     export let game_data;
+    export let index;
     export let flipped = false;
     export let perm_flip = false;
 
@@ -34,16 +35,13 @@
         e.preventDefault();
         if (!flipped && !perm_flip) {
             perm_flip = true;
-            //TODO: Also emit the event for the server to validate the guess.
-            socket.emit(
-                "chat message",
-                game_data.id,
-                game_data.player,
-                "Player " + game_data.player + " guessed " + name,
-            );
+    
             clicked(flipped, false);
             clicked(true, true);
             card_hover = false;
+
+            socket.emit("guess",game_data.id,game_data.player,index,name);
+            // socket.emit("chat message",game_data.id,game_data.player,"Player " + game_data.player + " guessed " + name);
         }
     }
     function hover() {
