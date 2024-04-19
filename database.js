@@ -144,13 +144,13 @@ function set_up_db_store(app) {
             let gameType = req.body.type
 
             //Create a game-board with 24 random tiles using the type [Returns an array of 24 DB objects]
-            //let board = createNewBoard(gameType)
+            let board = await createNewBoard(gameType)
 
             let newGame =
                 {
                     roomCode:code,
                     type:gameType,
-                    board:[], //Replace with board when createNewBoard() is implemented
+                    board: board, //Replace with board when createNewBoard() is implemented
                     chat:[
                         {"author":"server","msg":"player 1 joined the game"}, //Default chat message
                     ],
@@ -179,6 +179,59 @@ function set_up_db_store(app) {
     })
 
 }
+
+
+
+//Helper functions for handling DB creation
+
+async function createNewBoard(gameType)
+{
+    console.log("creating a new gameboard")
+    let board = []
+    let boardElementsToFetch = [];
+
+    //Handles pokemon games
+    if(gameType === "pokemon")
+    {
+        let number_of_pokemon = 1025; //Hardcoded # of pokemon in DB
+
+        //We will handle pokemon selection purely client-side, knowing we don't want any duplicates (saves runtime and guarantees we only need to query 24 times)
+        for(let i = 0; i <= 23; i++)
+        {
+            let unique_found = false;
+
+            while(!unique_found)
+            {
+                let rand = Math.floor(Math.random() * number_of_pokemon);
+
+                if(!boardElementsToFetch.includes(rand))
+                {
+                    boardElementsToFetch.push(rand)
+                    unique_found = true;
+                }
+
+            }
+        }
+
+        console.log(boardElementsToFetch)
+
+        //Now fetch all elements and put them in the board array
+        for(let i = 0; i <= 23; i++)
+        {
+            const docs = await pokemon_collection.find(
+                {
+                    unique_id: boardElementsToFetch[i]
+                }
+            ).toArray();
+
+            board.push(docs)
+        }
+        console.log(board)
+    }
+
+    return board;
+}
+
 
 
 
