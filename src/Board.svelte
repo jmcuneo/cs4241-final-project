@@ -65,24 +65,20 @@
             guess_id = index;
             //TODO: Also emit the event for the server to validate the guess.
             socket.emit(
-                "chat message",
+                "guess",
                 game_data.id,
                 game_data.player,
-                "Player " +
-                    game_data.player +
-                    " guessed " +
-                    board.board[index].name,
+                guess_id,
+                board.board[index].name
             );
         } else {
             //TODO: Also emit the event for the server to validate the guess.
             socket.emit(
-                "chat message",
+                "flip",
                 game_data.id,
                 game_data.player,
-                "Player " +
-                    game_data.player +
-                    " fliped " +
-                    board.board[index].name,
+                index,
+                board.board[index].name
             );
         }
     }
