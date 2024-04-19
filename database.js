@@ -24,21 +24,27 @@ let pokemon_collection = null;
 
 let games_collection = null;
 
-const exp = {set_up_db_store, client, DB: null }
+const exp = { set_up_db_store, client, DB: null }
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
         // Send a ping to confirm a successful connection
-        exp.DB = client.db("a3").collection("data");
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
         // Update our collections
-        pokemon_collection = await client.db("ApproximateWhomst").collection("Pokemon")
-        games_collection = await  client.db("ApproximateWhomst").collection("Game_Objects")
-
+        pokemon_collection = client.db("ApproximateWhomst").collection("Pokemon")
+        games_collection =  client.db("ApproximateWhomst").collection("Game_Objects")
     } catch (err) {
         console.log(err)
     }
+}
+
+async function getNpokemon(N) {
+    const cursor = await pokemon_collection.aggregate([
+        // { $match: { a: n } },
+        { $sample: { size: N } }
+    ]);
+    return await cursor.toArray();
 }
 
 run().catch(console.dir);
@@ -46,12 +52,13 @@ run().catch(console.dir);
 function set_up_db_store(app) {
     // check database exists
     app.use((req, res, next) => {
-        if (exp.DB !== null) {
+        if (pokemon_collection !== null) {
             next()
         } else {
             res.status(503).send()
         }
     })
+
 
     // check session
     // app.use(session({
@@ -63,8 +70,7 @@ function set_up_db_store(app) {
 
 
     // Query to fetch Pokemon data from server from a unique id
-    app.post('/get_pokemon_by_unique_id', async (req, res) =>
-    {
+    app.post('/get_pokemon_by_unique_id', async (req, res) => {
         console.log(req.body)
         const docs = await pokemon_collection.find(
             {
@@ -73,6 +79,7 @@ function set_up_db_store(app) {
         ).toArray();
 
         res.json(docs[0])
+        getNpokemon(24);
 
     })
 
@@ -99,7 +106,132 @@ function set_up_db_store(app) {
 
     })
 
+
+    app.post('/get_game_by_room_code', async (req, res) =>
+    {
+
+        const docs = await games_collection.find(
+            {
+                roomCode: req.body.roomCode
+            }
+        ).toArray();
+
+
+        if(docs[0] === undefined)
+        {
+            res.json("RoomCodeNotFound")
+        }
+        else
+        {
+            res.json(docs[0])
+        }
+
+    })
+
+    app.post('/create_new_game', async (req, res) =>
+    {
+        let code = req.body.roomCode
+
+        //Check if this game exists
+        const docs = await games_collection.find(
+            {
+                roomCode: code
+            }
+        ).toArray()
+
+        if(docs[0] === undefined) //If a game of this code does not exist
+        {
+            let gameType = req.body.type
+
+            //Create a game-board with 24 random tiles using the type [Returns an array of 24 DB objects]
+            let board = await createNewBoard(gameType)
+
+            let newGame =
+                {
+                    roomCode:code,
+                    type:gameType,
+                    board: board, //Replace with board when createNewBoard() is implemented
+                    chat:[
+                        {"author":"server","msg":"player 1 joined the game"}, //Default chat message
+                    ],
+                    answer_p1:Math.floor(Math.random() * 23), //Do the random generation here?
+                    answer_p2: Math.floor(Math.random() * 23),
+                    flipped_p1:[],
+                    flipped_p2:[],
+                    guessed_p1:[],
+                    guessed_p2:[],
+                    started:1000000,
+                    connected_players:[1] //Only player 1 is connected by default, will be [1, 2] when player 2 connects
+                }
+
+                const addGame = await games_collection.insertOne(newGame)
+
+            //Respond with the new game object that is in the DB
+            res.json(addGame);
+
+        }
+        else
+        {
+            res.json("Game Code Already Exists!")
+        }
+
+
+    })
+
 }
+
+
+
+//Helper functions for handling DB creation
+
+async function createNewBoard(gameType)
+{
+    console.log("creating a new gameboard")
+    let board = []
+    let boardElementsToFetch = [];
+
+    //Handles pokemon games
+    if(gameType === "pokemon")
+    {
+        let number_of_pokemon = 1025; //Hardcoded # of pokemon in DB
+
+        //We will handle pokemon selection purely client-side, knowing we don't want any duplicates (saves runtime and guarantees we only need to query 24 times)
+        for(let i = 0; i <= 23; i++)
+        {
+            let unique_found = false;
+
+            while(!unique_found)
+            {
+                let rand = Math.floor(Math.random() * number_of_pokemon);
+
+                if(!boardElementsToFetch.includes(rand))
+                {
+                    boardElementsToFetch.push(rand)
+                    unique_found = true;
+                }
+
+            }
+        }
+
+        console.log(boardElementsToFetch)
+
+        //Now fetch all elements and put them in the board array
+        for(let i = 0; i <= 23; i++)
+        {
+            const docs = await pokemon_collection.find(
+                {
+                    unique_id: boardElementsToFetch[i]
+                }
+            ).toArray();
+
+            board.push(docs)
+        }
+        console.log(board)
+    }
+
+    return board;
+}
+
 
 
 

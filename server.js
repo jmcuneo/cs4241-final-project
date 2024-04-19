@@ -45,6 +45,7 @@ io.on('connection', (socket) => {
       io.to(room).emit('message receive',"Server","Player 1 joined");
     }
   });
+  
   socket.on('join game',(room)=>{
     room = room.toLowerCase();
     if(room in rooms){

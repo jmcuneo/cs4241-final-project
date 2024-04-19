@@ -28,13 +28,26 @@ async function test() {
     const find_game = await fetch('/get_game_by_room_code',
         {
             method: "POST",
-            body: JSON.stringify({ roomcode: 'game time' }),
+            body: JSON.stringify({ roomCode: 'testgame7' }),
             headers: {
                 "Content-Type": "application/json",
             }
         })
     let res2 = await find_game.json();
     console.log(res2)
+
+
+    const create_game = await fetch('/create_new_game',
+        {
+            method: "POST",
+            body: JSON.stringify({ roomCode: 'testgame7', type: "pokemon" }),
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+
+    let res3 = await create_game.json();
+    console.log(res3)
 
 }
 
