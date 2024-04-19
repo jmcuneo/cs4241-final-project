@@ -21,11 +21,12 @@
         dispatch("flip", {
             flip_to,
             perm,
+            index
         });
     }
 
-    function click() {
-        if (!perm_flip) {
+    function click(e) {
+        if (!perm_flip && e.which==1) {
             flipped = !flipped;
             card_hover = false;
             clicked(flipped, false);
@@ -38,7 +39,7 @@
             clicked(true, true);
             card_hover = false;
 
-            socket.emit("guess",game_data.id,game_data.player,index,name);
+            // socket.emit("guess",game_data.id,game_data.player,index,name);
             // socket.emit("chat message",game_data.id,game_data.player,"Player " + game_data.player + " guessed " + name);
         }
     }

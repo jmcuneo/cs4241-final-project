@@ -59,9 +59,11 @@
     let display_board = true;
 
     let guess_id = -1;
-    async function flip(obj, index: Number) {
+    async function flip(e) {
         const board = await images;
-        if (obj.perm) {
+        let index = e.detail.index;
+        if (e.detail.perm) {
+            console.log("PERM FLIP EMITTED");
             guess_id = index;
             //TODO: Also emit the event for the server to validate the guess.
             socket.emit(
