@@ -5,10 +5,10 @@
 
     const dispatch = createEventDispatcher();
 
-    function joinGame(game_id: string, player: number) {
+    function joinGame(game_id: string, player: string) {
         dispatch("gameStart", {
-            id: game_id,
-            player,
+            room:game_id,
+            player:player
         });
     }
 

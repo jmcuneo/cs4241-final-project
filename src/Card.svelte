@@ -1,5 +1,5 @@
 <script>
-    import { createEventDispatcher } from "svelte";
+    import CardInner from "./CardInner.svelte";
     import socket from "./socket.js";
     
     export let src;
@@ -43,9 +43,10 @@
     class:card-perm-flipped={perm_flip}
     class:no-card-hover={!card_hover}
 >
-    <div class="card-inner" class:whomst>
-        <div class="card-img" style="background-image: url('{src}');" />
-        <span>{name}</span>
-        <span>{card_hover}</span>
-    </div>
+    <CardInner 
+        whomst={whomst}
+        name={name}
+        src={src}
+        card_hover={card_hover}
+    ></CardInner>
 </button>

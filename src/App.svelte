@@ -3,24 +3,43 @@
     import HostJoin from "./HostJoin.svelte";
     import Board from "./Board.svelte";
     import Chat from "./Chat.svelte";
-    let game_data: { id: string; player: Number } = null;
+    import GameEnd from "./GameEnd.svelte";
+    let game_data: {state: string, id: string; player: string, winner: string, correct_name:string, correct_url:string } = {
+        state:"HostJoin",
+        id:null,
+        player:null,
+        winner:null,
+        correct_name:null,
+        correct_url:null
+    };
 
-    function gameStart(new_game_data) {
-        game_data = new_game_data.detail;
+    function gameStart(e) {
+        game_data.state="InGame";
+        game_data.id=e.detail.room;
+        game_data.player=e.detail.player;
     }
 
-    function gameEnd() {
-        game_data = null;
+    function gameEnd(correct_name,correct_url) {
+        game_data.state="GameOver";
+        game_data.correct_name=correct_name;
+        game_data.correct_url=correct_url
     }
 </script>
 
-{#if game_data == null}
+{#if game_data.state == "HostJoin"}
     <div id="host-join">
         <HostJoin on:gameStart={gameStart}></HostJoin>
     </div>
-{:else}
+{:else if game_data.state == "InGame"}
     <div class="board">
         <Board {game_data} on:gameEnd={gameEnd}></Board>
+    </div>
+    <div class="chat">
+        <Chat {game_data}></Chat>
+    </div>
+{:else if game_data.state == "GameOver"}
+    <div class="gameOver">
+        <GameEnd game_data={game_data}></GameEnd>
     </div>
     <div class="chat">
         <Chat {game_data}></Chat>
