@@ -142,7 +142,7 @@ function set_up_db_store(app) {
         }
         else
         {
-            res.json("Game Already Exists!")
+            res.json("Game Code Already Exists!")
         }
 
 
