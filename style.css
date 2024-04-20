@@ -1,96 +1,167 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
+body,
+html {
   margin: 0;
+  padding: 0;
+  height: 100%;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  flex-direction: column;
+  font-family: "Roboto", sans-serif;
+  background: dimgray;
+  color: white;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin: 0;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.column {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 200%;
+  font-weight: bold;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 160%;
+  font-weight: bold;
+  padding-top: 7px;
+}
+
+.time-div {
+  padding-bottom: 15px;
+}
+
+.restaurant {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+  flex-direction: column;
+  padding-right: 5%;
+}
+
+.restaurant > p {
+  font-size: 135%;
+  font-weight: bold;
+  align-self: center;
+}
+
+#top-half-div,
+#bottom-half-div {
+  height: 50%;
+}
+
+#bottom-half-div {
+  max-width: 90%;
+  align-self: center;
+  padding-top: 1.5%;
+}
+
+.circle-button {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  min-width: 200px;
+  min-height: 200px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-image: url("https://cdn.glitch.global/446b7435-19b5-4854-910c-66a24ab877a7/goat-icon-grey.png?v=1713456176361");
+  background-size: cover;
+  align-items: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 95%;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+}
+
+.circle-button:hover {
+  background-color: darkred;
+}
+
+.food-table {
+  width: 100%;
+  background: indianred;
+  max-width: fit-content;
+  align-self: center;
+}
+
+.food-button {
+  margin-left: 10px;
+}
+
+.goatbucks {
+  font-size: 300%;
+  font-weight: bold;
+  color: LawnGreen;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  margin: 10px;
+}
+
+.instructions-button {
+  padding-bottom: 15px;
+}
+
+.instruction-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background-color: #f0f0f0;
+  border: 2px solid #cccccc;
+  padding: 20px;
+  display: none;
+  z-index: 9999;
+  color: black;
+  min-height: fit-content;
+  min-width: fit-content;
+}
+
+.instruction-box-text {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+.close-button {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff0000;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.leaderboard-table {
+  border: black;
 }
