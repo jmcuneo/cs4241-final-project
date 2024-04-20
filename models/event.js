@@ -12,11 +12,18 @@ const eventSchema = new Schema({
     name: {
         type: String,
         minLength: [1, 'Event name must be at least 1 character long!'],
+        unique: true,
         required: true,
     },
     date: {
-        // TODO: Date checking (cannot make events in the past?)
         type: Date,
+        validate: {
+            validator: async function (v) {
+                // Simply checks if the date is in the future
+                return v > new Date();
+            },
+            message: 'The date for the event, {VALUE}, must not be in the past!'
+        },
         required: true
     },
     location: {
@@ -59,7 +66,7 @@ const eventSchema = new Schema({
                 validator: function (v) {
                     return typeof v === 'string' || v instanceof mongoose.Types.ObjectId;
                 },
-                message: 'VALUE is not a proper guest type!'
+                message: '{VALUE} is not a proper guest type!'
             },
             ref: function () {
                 return this.guest instanceof mongoose.Types.ObjectId ? 'User' : undefined;
@@ -113,7 +120,15 @@ const eventSchema = new Schema({
         },
     }],
 }, {
-    timestamps: true,
+    timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true },
+    virtuals: {
+        guestCount: {
+            type: String,
+            get() {
+                return this.attendees.length;
+            }
+        }
+    },
     statics: {
         /**
          * Can be refactored to use a query instead of a static. Consider looking into which is more efficient.
@@ -150,6 +165,19 @@ const eventSchema = new Schema({
             return (await this.findById(event._id).
                 select('attendees').exec())?.
                 attendees ?? [];
+        },
+
+        /**
+         * @param {mongoose.Model} user The user to get upcoming events of (note: does nothing with it currently)
+         * @returns {Promise<Array<mongoose.Model>} A list of events, or an empty array
+         */
+        /* eslint-disable no-unused-vars */
+        async getUpcomingEvents(user) {
+            // if (!user) return [];
+            const currentDate = new Date().toISOString();
+            return (await this.
+                where('date').gte(currentDate)
+            );
         },
     },
     methods: {

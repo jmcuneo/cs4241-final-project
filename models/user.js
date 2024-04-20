@@ -80,7 +80,15 @@ const userSchema = new Schema({
         required: false,
     }],
 }, {
-    timestamps: true, toObject: { virtuals: true },
+    timestamps: true, toObject: { virtuals: true }, toJSON: {virtuals: true},
+    virtuals: {
+        fullName: {
+            type: String,
+            get() {
+                return `${this.firstName} ${this.lastName}`;
+            }
+        }
+    },
     methods: {
         /**
          * Adds permissions to another user if the current user is an {@link ACCOUNT_TYPE.ADMIN} or the user has {@link PERMISSIONS.MODIFY_USERS}
@@ -295,14 +303,11 @@ const userSchema = new Schema({
             return false;
         },
 
+        /**
+         * @returns {Promise<Array<mongoose.Model>} A list of events, or an empty array
+         */
         async getUpcomingEvents() {
-            // Shows:
-            // Event name
-            // Date
-            // Location
-            // Total Guests
-            // Your guest count
-            throw ReferenceError('Not yet implemented!');
+            return await Event.getUpcomingEvents(this);
         },
 
         /* eslint-disable no-unused-vars */
@@ -346,13 +351,6 @@ const userSchema = new Schema({
     },
 });
 
-/**
- * Creates a fullName field that is not actually stored in the DB, but can still be accessed.
- * Note: Because they are not stored in the DB, you cannot query with them.
- */
-userSchema.virtual('fullName').get(function () {
-    return `${this.firstName} ${this.lastName}`;
-});
 
 /**
  * @author Alexander Beck

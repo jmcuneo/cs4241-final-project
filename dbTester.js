@@ -72,17 +72,12 @@ export async function testDB() {
         };
 
         const christmasParty = await user.createEvent(christmasPartySchema);
-
-        // Will be either christmasParty.invite(inviter, user) or user.inviteUsers(christmasParty, users).
-        // Let me know which would make more sense.
-        // await christmasParty.attendees.addToSet(
-        //     { guest: user2, inviter: user },
-        //     { guest: user3, inviter: user },
-        //     );
-        // await christmasParty.save();
-
         const users = [user, user2, user3, user4];
         await user.inviteGuests(christmasParty, user2, user3, user4, 'Bob Schmob');
+
+        // testCreateEvents(users);
+        console.log(await users[0].getUpcomingEvents());
+
 
         // await testGetGuestList(christmasParty, users);
         // await testUninvite(christmasParty, users)
@@ -114,4 +109,32 @@ async function testUninvite(christmasParty, users) {
 async function testGetGuestList(christmasParty, users) {
     await users[0].uninviteGuests(christmasParty, users[1], users[2], users[3], 'Bob Schmob')
     console.log(await christmasParty.getGuestList())
+}
+
+async function testCreateEvents(users) {
+    const testEvents = [/*await users[0].createEvent({
+        name: 'Event 1',
+        date: new Date(2023, 11, 25),
+        location: 'Event 1 Location',
+    }),*/
+    await users[0].createEvent({
+        name: 'Event 2',
+        date: new Date(2025, 11, 25),
+        location: 'Event 2 Location',
+    }),
+    await users[0].createEvent({
+        name: 'Event 3',
+        date: new Date(2026, 11, 25),
+        location: 'Event 3 Location',
+    }),
+    await users[0].createEvent({
+        name: 'Event 4',
+        date: new Date().setHours(new Date().getHours() + 1),
+        location: 'Event 4 Location',
+    })/*,
+    await users[0].createEvent({
+        name: 'Event 5',
+        date: new Date(2024, 3, 19),
+        location: 'Event 5 Location',
+    })*/];
 }
