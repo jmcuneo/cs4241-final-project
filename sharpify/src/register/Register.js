@@ -1,11 +1,6 @@
 import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import './Register.css';
-
-const instance = axios.create({
-    baseURL: 'http://localhost:5000/api/user'
-});
 
 function Register(props) {
     const [showPassword, setShowPassword] = useState(true);
