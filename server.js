@@ -34,12 +34,14 @@ io.on('connection', (socket) => {
     console.log("Message: " + msg);
     socket.emit('host failed','room full');
   });
-  socket.on('host game',(room)=>{
+  socket.on('host game', async (room)=>{
     room = room.toLowerCase();
     if(room in rooms){
       socket.emit('host failed','room in use');
     }else{
       //TODO: Use the DB and populate the list
+      console.log("Message: ", room);
+
       rooms[room] = {
         roomCode:room,
         type:"pokemon",

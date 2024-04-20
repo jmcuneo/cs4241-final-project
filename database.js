@@ -71,27 +71,52 @@ function set_up_db_store(app) {
 
     // Query to fetch Pokemon data from server from a unique id
     app.post('/get_pokemon_by_unique_id', async (req, res) => {
-        console.log(req.body)
         const docs = await pokemon_collection.find(
             {
                 unique_id: req.body.id
             }
         ).toArray();
 
-        res.json(docs[0])
+        res.json(docs[0]);
         getNpokemon(24);
+    })
 
+
+    // Query to fetch the total number of Pokemon in the database
+    app.get('/get_num_pokemon', async (req, res) => {
+        const count = await pokemon_collection.countDocuments();
+        res.json({ count });
+    })
+
+
+    app.post('/get_pokemon_from_game', async (req, res) => {
+        let code = req.body.roomCode;
+        let index = req.body.index;
+
+        //Check if this game exists
+        const docs = await games_collection.find(
+            {
+                roomCode: code
+            }
+        ).toArray()
+
+        if (docs[0] === undefined) {
+            res.json("RoomCodeNotFound")
+        }
+        else {
+            res.json(docs[0].board[index]);
+        }
     })
 
 
     app.post('/get_game_by_room_code', async (req, res) => {
 
+        //Check if this game exists
         const docs = await games_collection.find(
             {
                 roomCode: req.body.roomcode
             }
-        ).toArray();
-
+        ).toArray()
 
         if (docs[0] === undefined) {
             res.json("RoomCodeNotFound")
@@ -99,8 +124,6 @@ function set_up_db_store(app) {
         else {
             res.json(docs[0])
         }
-
-
     })
 
 
@@ -145,7 +168,7 @@ function set_up_db_store(app) {
                 type: gameType,
                 board: board, //Replace with board when createNewBoard() is implemented
                 chat: [
-                    { "author": "server", "msg": "player 1 joined the game" }, //Default chat message
+                    { author: "server", msg: "player 1 joined the game" }, //Default chat message
                 ],
                 answer_p1: Math.floor(Math.random() * 23), //Do the random generation here?
                 answer_p2: Math.floor(Math.random() * 23),
@@ -154,7 +177,9 @@ function set_up_db_store(app) {
                 guessed_p1: [],
                 guessed_p2: [],
                 started: 1000000,
-                connected_players: [1] //Only player 1 is connected by default, will be [1, 2] when player 2 connects
+                connected_players: [
+                    { name: "Player 1", id: "" }
+                ] //Only player 1 is connected by default, will be [1, 2] when player 2 connects
             }
 
             const addGame = await games_collection.insertOne(newGame)
@@ -171,7 +196,6 @@ function set_up_db_store(app) {
     })
 
 }
-
 
 
 //Helper functions for handling DB creation
@@ -218,8 +242,6 @@ function set_up_db_store(app) {
 //     return board;
 // }
 
-
-
-
+console.log(client.db("ApproximateWhomst").collection("Game_Objects").findOne({}));
 
 export default exp;
