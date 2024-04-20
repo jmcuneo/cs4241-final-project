@@ -13,6 +13,31 @@ function Dashboard(props) {
         Welcome to the Dashboard!
         <
         /div> <
+        input type = "file"
+        id = "fileUpload"
+        accept = "image/*"
+        onChange = {
+            (e) => {
+                const file = e.target.files[0];
+                console.log(file);
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    console.log(e.target.result)
+                    const img = new Image();
+                    img.onload = () => {
+                        console.log('Image loaded');
+                        const canvas = document.getElementById('canvas');
+                        const ctx = canvas.getContext('2d');
+                        console.log(ctx);
+                        ctx.drawImage(img, 0, 0, 300, 300);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+        }
+        /> <
         canvas id = "canvas" > < /canvas> <
         /div>
     )
