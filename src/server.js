@@ -1,7 +1,7 @@
 const express = require("express"),
   app = express(),
   path = require("path"),
-  const auth = require("./jwt");
+  auth = require("./jwt");
   require("dotenv").config();
   
 app.use(express.static(path.join(__dirname, "public")));
