@@ -149,5 +149,6 @@ h1 {
 
 .endMsg {
     display: grid;
-    //grid-area: ;
+    grid-template:
+        "a b" 1fr "c b" 1fr / 1fr 1fr;
 }
