@@ -20,13 +20,13 @@ function Register(props) {
             <div className="split left">
                 <div className="color-orange-red"></div>
                 <div className="flex">
-                    <div className="dropdown">
+                    <div className="dropdown login-dropdown">
                         <div className="logo-title">SHARPIFY</div>
-                        <a className="dropdown-text" href="#">The all-in-one fitness app!</a>
+                        <a className="dropdown-text" href="#">From Blurry to Brilliant!</a>
                     </div>
                     <div className="message-container">
                         <div className="welcome-back">Welcome Back!</div>
-                        <div className="custom-message">Looking to shed a few pounds or put on some muscle? We've got you covered!</div>
+                        <div className="custom-message">Do you have photos in need of a quick fix? We've got you covered!</div>
                     </div>
                 </div>
             </div>

@@ -4,6 +4,10 @@
     top: 0;
 }
 
+.dropdown {
+    position: absolute !important;
+}
+
 .dropdown-text {
     display: none;
     position: absolute;
