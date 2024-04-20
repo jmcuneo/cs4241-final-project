@@ -15,11 +15,6 @@
   cursor: pointer; 
 }
 
-.cell :active {
-  border: none;
-  background-color: rgb(176, 224, 193);
-}
-
 .box :hover {
   border: none;
 }
