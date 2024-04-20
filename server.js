@@ -42,6 +42,8 @@ passport.deserializeUser(function (obj, done) {
 //   )
 // );
 
+app.use(express.urlencoded())
+app.use(express.static("public"));
 app.use(
   session({
     secret: "i love javascript",
@@ -74,6 +76,7 @@ const auth = (req, res, next) => {
     res.redirect("/");
   }
 };
+// app.use(auth)
 
 async function connect() {
   await client.connect();
@@ -101,16 +104,16 @@ async function connect() {
 //   return 0;
 // }
 
-async function updateScore(username) {
-  let score = await getNextID(username);
-  const ud = await db.collection("userData");
-  if (ud !== null) {
-    let q = { user: username };
-    let ns = { $set: { score: score } };
-    let o = { upsert: true };
-    login.updateOne(q, ns, o);
-  }
-}
+// async function updateScore(username) {
+//   let score = await getNextID(username);
+//   const ud = await db.collection("userData");
+//   if (ud !== null) {
+//     let q = { user: username };
+//     let ns = { $set: { score: score } };
+//     let o = { upsert: true };
+//     login.updateOne(q, ns, o);
+//   }
+// }
 
 function elapse(session) {
   let sessionTime = session.lastTime
@@ -126,8 +129,6 @@ function elapse(session) {
 // }
 
 connect();
-
-app.use(express.static("public"));
 
 app.get("/", (req, res) => {
   res.redirect("/index.html");
@@ -214,6 +215,7 @@ async function validateUser(user, pass, github) {
       return acc.pass === pass;
     } else {
       login.insertOne({ user: user, pass: pass });
+      createUser(user);
     }
   }
   return true;
@@ -240,14 +242,14 @@ app.get("/user_exists", async (req, res) => {
 });
 
 
-app.get("/login", async (req, res, next) => {
-  let data = req.query;
-  const login = await validateUser(data.user, data.pass, false);
+app.post("/login", async (req, res, next) => {
+  // let data = req.query;
+  const login = await validateUser(req.body.user, req.body.pass, false);
   if (login) {
-    let user = {username: data.user};
+    let user = {username: req.body.user};
     req.login(user, function(err) {
       if (err) { return next(err); }
-      return res.redirect("/html/boxes.html");
+      return res.redirect("/");
     });
   } else {
     res.redirect("/")
@@ -275,33 +277,46 @@ app.get("/login", async (req, res, next) => {
 //   });
 // });
 
-function generateGoatbucks(req, prev) {
-  let time = elapse(req.session)
-  let extraGB = time;
-  //do stuff w/ data
-  return extraGB + prev;
-}
+// function generateGoatbucks(req, prev) {
+//   let time = elapse(req.session)
+//   let extraGB = time;
+//   //do stuff w/ data
+//   return extraGB + prev;
+// }
 
-function setGoatbucks(req, bucks) {
-  let q = { user: req.user };
+async function setGoatbucks(req, bucks) {
+  console.log(bucks)
+  let q = { user: req.user.username };
   let ns = { $set: { score: bucks } };
   let o = { upsert: true };
-  userData.updateOne(q, ns, o);
+  await userData.updateOne(q, ns, o);
 }
 
-app.get("/goatbucks", async (req, res) => {
-  const scores = await db.collection("userData");
-  let score = 0
-  if (scores !== null) {
-    let options = {
-      projection: { score: 1 },
-    };
-    score = await scores.find({user: req.query.user}, options)
-    let newBux = generateGoatbucks(req, score)
+async function createUser(user) {
+  let newUser = {
+    "user": user,
+    "time": 0,
+    "goatbucks": 0,
+    "restaurant": []
   }
+  userData.insertOne(newUser)
+}
+
+app.get("/load", async (req, res) => {
+  let userD = {}
+  userD = await userData.findOne({user: req.user.username});
+  res.writeHead(200, "OK", { "Content-Type": "application/json" });
+  res.write(JSON.stringify(userD));
+  res.end();
+})
+
+app.post("/set_goatbucks", async (req, res) => {
+  let bux = req.body.goatbucks;
+  console.log(req.body)
+  await userData.updateOne({user: req.user.username}, {$set: {goatbucks: bux}})
 
   res.writeHead(200, "OK", { "Content-Type": "application/json" });
-  res.write(JSON.stringify(score));
+  res.write(JSON.stringify({"goatbucks": req.body.goatbucks}));
   res.end();
 });
 
