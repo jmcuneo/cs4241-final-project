@@ -1,0 +1,40 @@
+<script>
+    import { createEventDispatcher } from "svelte";
+
+    export let link;
+    export let name;
+    export let flipped = false;
+    export let perm_flip = false;
+
+    let card_hover = true;
+
+    $: has_flipped_class = flipped && !perm_flip;
+
+    function click() {
+        flipped = !flipped;
+        card_hover=false;
+    }
+    function dclick() {
+        if (!flipped) {
+            perm_flip = true;
+        }
+    }
+    function hover() {
+        card_hover=true;
+        console.log("leave");
+    }
+</script>
+
+<button
+    on:click={click}
+    on:dblclick={dclick}
+    on:mouseleave={hover}
+    class="card"
+    class:card-flipped={has_flipped_class}
+    class:card-perm-flipped={perm_flip}
+    class:no_card_hover={!card_hover}
+>
+    <img src={link} alt="{name} image"/>
+    <span>{name}</span>
+    <span>{card_hover}</span>
+</button>
