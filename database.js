@@ -71,28 +71,57 @@ function set_up_db_store(app) {
 
     // Query to fetch Pokemon data from server from a unique id
     app.post('/get_pokemon_by_unique_id', async (req, res) => {
-        console.log(req.body)
         const docs = await pokemon_collection.find(
             {
                 unique_id: req.body.id
             }
         ).toArray();
 
-        res.json(docs[0])
+        res.json(docs[0]);
         getNpokemon(24);
+    })
 
+
+    // Query to fetch the total number of Pokemon in the database
+    app.get('/get_num_pokemon', async (req, res) => {
+        const count = await pokemon_collection.countDocuments();
+        res.json({count});
+    })
+
+
+    app.post('/get_pokemon_from_game', async (req, res) =>
+    {
+        let code = req.body.roomCode;
+        let index = req.body.index;
+
+        //Check if this game exists
+        const docs = await games_collection.find(
+            {
+                roomCode: code
+            }
+        ).toArray()
+
+        if(docs[0] === undefined)
+        {
+            res.json("RoomCodeNotFound")
+        }
+        else
+        {
+            res.json(docs[0].board[index]);
+        }
     })
 
 
     app.post('/get_game_by_room_code', async (req, res) =>
     {
+        let code = req.body.roomCode
 
+        //Check if this game exists
         const docs = await games_collection.find(
             {
-                roomCode: req.body.roomcode
+                roomCode: code
             }
-        ).toArray();
-
+        ).toArray()
 
         if(docs[0] === undefined)
         {
@@ -102,31 +131,8 @@ function set_up_db_store(app) {
         {
             res.json(docs[0])
         }
-
-
     })
 
-
-    app.post('/get_game_by_room_code', async (req, res) =>
-    {
-
-        const docs = await games_collection.find(
-            {
-                roomCode: req.body.roomCode
-            }
-        ).toArray();
-
-
-        if(docs[0] === undefined)
-        {
-            res.json("RoomCodeNotFound")
-        }
-        else
-        {
-            res.json(docs[0])
-        }
-
-    })
 
     app.post('/create_new_game', async (req, res) =>
     {
@@ -183,7 +189,6 @@ function set_up_db_store(app) {
 }
 
 
-
 //Helper functions for handling DB creation
 
 async function createNewBoard(gameType)
@@ -234,8 +239,6 @@ async function createNewBoard(gameType)
     return board;
 }
 
-
-
-
+console.log(client.db("ApproximateWhomst").collection("Game_Objects").findOne({}));
 
 export default exp;

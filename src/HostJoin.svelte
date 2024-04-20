@@ -6,6 +6,7 @@
     const dispatch = createEventDispatcher();
 
     function joinGame(game_id: string, player: string) {
+        console.log("Joining game");
         dispatch("gameStart", {
             room:game_id,
             player:player
@@ -34,15 +35,30 @@
         });
         socket.on("host success", (room, name) => {
             errorMsg = room;
+            create_game(room);
             // socket.emit("chat message",room,num,"Player " + num + " joined.");
-            joinGame(room, name);
         });
         socket.on("join success", (room, name) => {
             errorMsg = room;
             // socket.emit("chat message",room,name,"Player " + name + " joined.");
-            joinGame(room, name);
+            joinGame(room);
         });
     };
+
+    async function create_game(room)
+    {
+        const create_game = await fetch('/create_new_game',
+            {
+                method: "POST",
+                body: JSON.stringify({ roomCode: room, type: "pokemon" }),
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+            await create_game.json();
+            joinGame(room);
+    }
+
 </script>
 
 <div class="board-spinner">
