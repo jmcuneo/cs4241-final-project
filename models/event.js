@@ -190,7 +190,15 @@ const eventSchema = new Schema({
          */
         async getGuestList() {
             return await Event.getGuestList(this);
-        }
+        },
+
+        async setGuestLimit() {
+            throw ReferenceError('Not yet implemented!');
+        },
+
+        async setInviterLimit() {
+            throw ReferenceError('Not yet implemented!');
+        },
     },
 });
 

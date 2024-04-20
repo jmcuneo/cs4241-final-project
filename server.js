@@ -34,7 +34,6 @@ async function connectToDB() {
 // Random todo: Obfusicate ACCOUNT_TYPE.ADMIN? Would only take a couple sends to do and would
 // make the application much more secure, especially considering it will be open source
 
-// Also, Account model? Can use that to make password view-only on user, making it more secure
 
 ViteExpress.listen(app, process.env.PORT || port, () => {
     console.log("Server listening on port " + (process.env.PORT ? process.env.PORT : port));

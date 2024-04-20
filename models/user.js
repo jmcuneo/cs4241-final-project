@@ -34,8 +34,6 @@ export const PERMISSIONS = Object.freeze({
  * 
  * Not required: gender, accountType, permissions
  * @author Alexander Beck
- * @JackWeinstein808 Username uniqueness checking (consider using the User.exists() method)
- * @todo implement permissions
  */
 const userSchema = new Schema({
     _id: {
@@ -233,7 +231,7 @@ const userSchema = new Schema({
                 // Can be evaluated to undefined > 0 which is false
                 const isInviter = event?.attendees?.filter(attendee =>
                     attendee.guest === guest && attendee.inviter === this)?.length > 0;
-                    
+
                 const isAllowedToInvite = this?.permissions.includes(PERMISSIONS.UNINVITE_TO_ALL_EVENTS) ?? false;
                 if (this.accountType === ACCOUNT_TYPE.ADMIN || isAllowedToInvite || isInviter) {
                     hadPermissionAtLeastOnce = true;
@@ -295,6 +293,25 @@ const userSchema = new Schema({
                 }
             }
             return false;
+        },
+
+        async getUpcomingEvents() {
+            // Shows:
+            // Event name
+            // Date
+            // Location
+            // Total Guests
+            // Your guest count
+            throw ReferenceError('Not yet implemented!');
+        },
+
+        /* eslint-disable no-unused-vars */
+        async getInvitedGuests(event) {
+            // Shows:
+            // Name
+
+            // Use event.getInvitesByInviter()
+            throw ReferenceError('Not yet implemented!');
         },
     },
     statics: {
