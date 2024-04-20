@@ -1,7 +1,8 @@
 const express = require("express"),
   app = express(),
   path = require("path"),
-  auth = require("./jwt");
+  auth = require("./auth");
+  db = require("./db")
   require("dotenv").config();
   
 app.use(express.static(path.join(__dirname, "public")));
@@ -25,7 +26,7 @@ const client = new MongoClient(uri, {
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 
 
-let collection = null,
+/* let collection = 
   dbName = "matching-game",
   collectionName = "users";
 
@@ -42,10 +43,11 @@ async function run() {
     }
   });
 }
-run();
+run(); */
+db.run();
 
 app.use((req, res, next) => {
-  if (collection !== null) {
+  if (1) {
     next();
   } else {
     res.status(503).send();
@@ -54,9 +56,17 @@ app.use((req, res, next) => {
 
 app.post("/add", async (req, res) => {
   console.log(req.body);
-  const result = await collection.insertOne(req.body);
-  /* res.json(result); */
+  const exists = await db.getUserIdByUsername(req.body.username);
+  console.log(exists);
+  let result;
+  if(exists === null){
+    console.log("nope");
+    db.createUser(req.body);
+  }
+  
   res.status(200).send({ message : "user"});
+/*   else res.status(400).send({message: "fuck"})
+ */  /* res.json(result); */
 });
 
 app.post("/remove", async (req, res) => {

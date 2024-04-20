@@ -1,4 +1,4 @@
-const dotenv = require('dotenv')
+/* const dotenv = require('dotenv')
 const jwt = require('jsonwebtoken');
 dotenv.config();
 
@@ -18,4 +18,4 @@ exports.authenticateToken = function(req, res, next){
     console.log(user)
     next()
   })
-}
+} */
