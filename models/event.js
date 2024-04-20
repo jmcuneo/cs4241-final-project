@@ -47,6 +47,7 @@ const eventSchema = new Schema({
         required: true
     },
     guestLimit: {
+        // TODO: Do NOT include users as guests
         type: Number,
         min: [0, 'Guest Limit must be greater than 0, got {VALUE}'],
         inviterLimit: {
@@ -58,9 +59,6 @@ const eventSchema = new Schema({
     },
     attendees: [{
         guest: {
-            // type: String | mongoose.Types.ObjectId,
-            // ref: 'User',
-            // required: true
             type: mongoose.Schema.Types.Mixed,
             validate: {
                 validator: function (v) {
@@ -81,7 +79,6 @@ const eventSchema = new Schema({
                     // Ensure that the inviter has PERMISSIONS.INVITE_TO_ALL_EVENTS
                     // or the inviter is an admin.
                     // Also ensure that the inviter isn't above their invite limit
-                    // DOES NOT ASSUME THAT THE CREATOR IS ALLOWED TO INVITE.
                     const user = await User.findById(v);
                     const event = this.parent();
                     const isAdmin = user.accountType === ACCOUNT_TYPE.ADMIN;
@@ -90,35 +87,31 @@ const eventSchema = new Schema({
                         return true;
                     }
                     const hasAllPerms = user.permissions && user.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS);
+                    const canInviteToEvent = event.allowedInviters && event.isUserAllowedToInvite(user);
                     const isBelowGuestLimit = event && event.guestLimit ? event.attendees.length < event.guestLimit : true; // TODO test this
                     const previousInvites = (await event.getInvitesByInviter(user)).length // TODO Test this
                     const isBelowInviterLimit = event && event.guestList && event.guestLimit.inviterLimit ? previousInvites < event.guestLimit.inviterLimit : true; // TODO test this
-                    return hasAllPerms && isBelowGuestLimit && isBelowInviterLimit;
+                    return (hasAllPerms || canInviteToEvent) && isBelowGuestLimit && isBelowInviterLimit;
                 },
                 // TODO: Make this message valid
-                message: props => {
-                    // const user = User.findById(props.value).exec();
-
-                    // Why is this undefined??
-                    // I give up.
-                    // At least 4 hours trying to figure out how to get this to look at the guestList
-                    // if (this.parent().guestLimit !== undefined) {
-                    //     const isAboveGuestLimit = Event.countDocuments('attendees') > this.guestLimit;
-                    //     if (isAboveGuestLimit) {
-                    //         return `The inviter, ${props.value}, attempted to invite too many people. Guest list maximum reached.`;
-                    //     }
-                    //     const previousInvites = Event.countDocuments({ 'attendees.inviter': user }).exec(); // TODO Test this
-                    //     const isAboveInviterLimit = Event.guestLimit.inviterLimit !== undefined ? previousInvites > Event.guestLimit.inviterLimit : true; // TODO test this
-                    //     if (isAboveInviterLimit) {
-                    //         return `The inviter, ${props.value}, attempted to exceed the inviter limit.`;
-                    //     }
-                    // }
-                    return `The inviter, ${props.value}, does not have permission to invite people!`;
-                }
+                message: props => `The inviter, ${props.value}, does not have permission to invite people!`
             },
             required: true
         },
     }],
+    allowedInviters: {
+        // Weird format of allowedInviters but I had to do this to
+        // be able to access this.creator
+        type: [{
+            type: mongoose.Types.ObjectId,
+            ref: 'User',
+            required: true
+        }],
+        default: function () {
+            // Default the allowedInviters to include the creator
+            return this.creator ? [this.creator] : [];
+        },
+    },
 }, {
     timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true },
     virtuals: {
@@ -171,7 +164,7 @@ const eventSchema = new Schema({
          * @param {mongoose.Model} user The user to get upcoming events of (note: does nothing with it currently)
          * @returns {Promise<Array<mongoose.Model>} A list of events, or an empty array
          */
-        /* eslint-disable no-unused-vars */
+        /* eslint-disable-next-line no-unused-vars */
         async getUpcomingEvents(user) {
             // if (!user) return [];
             const currentDate = new Date().toISOString();
@@ -220,6 +213,16 @@ const eventSchema = new Schema({
             return await Event.getGuestList(this);
         },
 
+        /**
+         * Check if the user is on the allowedInviters list
+         * @param {mongoose.Types.ObjectId | mongoose.Model} user The user to check
+         * @returns {Boolean} A boolean representing if the user is on the allowedInviters list 
+         */
+        isUserAllowedToInvite(user) {
+            const userId = user instanceof mongoose.Types.ObjectId ? user : user._id;
+            return this.allowedInviters.some(allowedInviter => allowedInviter.equals(userId));
+        },
+
         async setGuestLimit() {
             throw ReferenceError('Not yet implemented!');
         },
@@ -245,6 +248,13 @@ const eventSchema = new Schema({
  *              date: new Date(2024, 11, 25),
  *              location: 'Unity 520',
  *              creator: user._userId,
+ *          });
+ * 
+ *          // The non-server-side way of doing it:
+ *          const event = await user.createEvent({
+ *              name: 'My Event',
+ *              date: new Date(2024, 11, 25),
+ *              location: 'Unity 520'
  *          });
  * 
  *          // Updating data

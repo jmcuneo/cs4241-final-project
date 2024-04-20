@@ -20,13 +20,13 @@ export const ACCOUNT_TYPE = Object.freeze({
  * May or may not end up using these. Just an idea.
  */
 export const PERMISSIONS = Object.freeze({
-    MODIFY_EVENTS: 'MODIFY_EVENTS',
-    MODIFY_USERS: 'MODIFY_USERS',
+    MODIFY_EVENTS: 'MODIFY_EVENTS', // Change event details
+    MODIFY_USERS: 'MODIFY_USERS', // Add users to allowedInviters in all events
     REMOVE_ALL_USERS: 'REMOVE_ALL_USERS',
-    INVITE_TO_ALL_EVENTS: 'INVITE_TO_ALL_EVENTS',
-    UNINVITE_TO_ALL_EVENTS: 'UNINVITE_TO_ALL_EVENTS',
-    GIFT_ADMIN: 'GIFT_ADMIN',
-    CREATE_EVENT: 'CREATE_EVENT',
+    INVITE_TO_ALL_EVENTS: 'INVITE_TO_ALL_EVENTS', // Invite guests to all events
+    UNINVITE_TO_ALL_EVENTS: 'UNINVITE_TO_ALL_EVENTS', // Uninvite guests from all events
+    GIFT_ADMIN: 'GIFT_ADMIN', // Make other users admin
+    CREATE_EVENT: 'CREATE_EVENT', // Create events
 });
 
 /**
@@ -70,7 +70,6 @@ const userSchema = new Schema({
         },
         required: true,
     },
-    // TODO: Implement permissions (make them actually matter)
     permissions: [{
         type: String,
         enum: {
@@ -80,7 +79,7 @@ const userSchema = new Schema({
         required: false,
     }],
 }, {
-    timestamps: true, toObject: { virtuals: true }, toJSON: {virtuals: true},
+    timestamps: true, toObject: { virtuals: true }, toJSON: { virtuals: true },
     virtuals: {
         fullName: {
             type: String,
@@ -121,6 +120,84 @@ const userSchema = new Schema({
         },
 
         /**
+         * @requires {@link PERMISSIONS.MODIFY_EVENTS}
+         * @param {mongoose.Model} event The event to add allowed inviters to
+         * @param  {...mongoose.Model | mongoose.Types.ObjectId} users The user(s) to add to the allowed inviters list
+         * @returns {Promise<Boolean>} A boolean representing if the users were successfully given the permissions (NOT referring to {@link PERMISSIONS})
+         * @author Alexander Beck
+         */
+        async makeAllowedToInvite(event, ...users) {
+            if (!event || !users) return false;
+
+            if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || event.creator === this) {
+                let successfullyAdded = [];
+                users.forEach(user => {
+                    if (!event.allowedInviters.some(existingUser => existingUser === user)) {
+                        successfullyAdded.push(user);
+                        event.allowedInviters.addToSet(user);
+                    }
+                });
+
+                try {
+                    await event.save();
+                    successfullyAdded.forEach(async (user) => {
+                        await Logger.create({
+                            event: event,
+                            subject: this,
+                            target: user,
+                            action: EVENTS.ADD_USER_TO_ALLOWED_INVITERS
+                        });
+                    });
+                    return true;
+                } catch (err) {
+                    console.log(err);
+                    return false;
+                }
+            }
+            return false;
+        },
+
+        /**
+         * @requires {@link PERMISSIONS.MODIFY_EVENTS}
+         * @param {mongoose.Model} event The event to remove allowed inviters from
+         * @param  {...mongoose.Model | mongoose.Types.ObjectId} users The user(s) to remove from the allowed inviters list
+         * @returns {Promise<Boolean>} A boolean representing if the users were successfully removes from the allowed listeners list
+         * @author Alexander Beck
+         */
+        async makeUnableToInvite(event, ...users) {
+            if (!event || !users) return false;
+
+            if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || event.creator === this) {
+                let successfullyRemoved = [];
+                users.forEach(user => {
+                    if (event.allowedInviters.some(existingUser => existingUser === user)) {
+                        successfullyRemoved.push(user);
+
+                        event.allowedInviters = event.allowedInviters.filter(allowedInviter => allowedInviter !== user);
+                    }
+                });
+
+                try {
+                    await event.save();
+                    successfullyRemoved.forEach(async (user) => {
+                        await Logger.create({
+                            event: event,
+                            subject: this,
+                            target: user,
+                            action: EVENTS.REMOVE_USER_FROM_ALLOWED_INVITERS
+                        });
+                    });
+                    return true;
+                } catch (err) {
+                    console.log(err);
+                    return false;
+                }
+            }
+            return false;
+        },
+
+        /**
+         * @requires {@link PERMISSIONS.CREATE_EVENT}
          * @author Alexander Beck
          * @param {*} eventDetails The schema details of an event.
          * @returns {Promise<mongoose.Model> | Promise<Boolean>} A newly created event, or false if it fails
@@ -147,7 +224,7 @@ const userSchema = new Schema({
                 });
                 return event;
             } else {
-                // TODO: Do an error or something here, not allowed to create event
+                // Not allowed to create an event
                 return false;
             }
         },
@@ -160,6 +237,7 @@ const userSchema = new Schema({
          *              // Uh oh. No users were added.
          *              // Either there were no new users to add, the user doesn't have permissions, or adding this many users would go above the allowed invite/guest limits
          *          }
+         * @requires {@link PERMISSIONS.INVITE_TO_ALL_EVENTS}
          * @param {mongoose.Model} event The event to invite guests to
          * @param  {...String | mongoose.Model} guests The guest(s) to invite
          * @returns {Promise<Boolean> | Promise<Array<String>>} An array of all guests that were successfully added. Empty is nothing is added.
@@ -181,15 +259,16 @@ const userSchema = new Schema({
                 ((await event.getInviteIdsByUser(this))?.length ?? 0) + guests.length < event.guestLimit.inviterLimit : true;
 
             // If user is admin or user has PERMISSIONS.INVITE_TO_ALL_EVENTS
-            // TODO: Implement this to work with event-by-event basis
             const permFlag = this.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS) && guestLimitCheck && inviterLimitCheck;
 
-            if (this.accountType === ACCOUNT_TYPE.ADMIN || permFlag) {
+            // Checks if user is on the event's allowedInviter list
+            const userCanInviteToEvent = (event?.allowedInviters && event.isUserAllowedToInvite(this)) ?? false;
+
+            if (this.accountType === ACCOUNT_TYPE.ADMIN || permFlag || userCanInviteToEvent) {
                 // Check guest list to ensure that person is not already on it
                 let successfullyAdded = [];
                 // Has to be arrow notation; redefines 'this' otherwise
                 guests.forEach(async (guest) => {
-
                     if (!event.attendees.some(attendee => attendee.guest === guest)) {
                         successfullyAdded.push(guest);
                         // Add user to the guest list
@@ -213,12 +292,13 @@ const userSchema = new Schema({
                     return false;
                 }
             } else {
-                // TODO: Do an error or something here, not allowed to invite people
+                // Not allowed to invite guests
                 return false;
             }
         },
 
         /**
+         * @requires {@link PERMISSIONS.UNINVITE_TO_ALL_EVENTS}
          * @param {mongoose.Model} event The event to uninvite guests from
          * @param  {...String} guests The guests to uninvite
          * @returns {Promise<Boolean> | Promise<Array<String>>} A list of all the guests successfuly removed, an empty list if no users were removed, and false if the user does not have the permissions to uninvite any of the guests
@@ -240,8 +320,11 @@ const userSchema = new Schema({
                 const isInviter = event?.attendees?.filter(attendee =>
                     attendee.guest === guest && attendee.inviter === this)?.length > 0;
 
-                const isAllowedToInvite = this?.permissions.includes(PERMISSIONS.UNINVITE_TO_ALL_EVENTS) ?? false;
-                if (this.accountType === ACCOUNT_TYPE.ADMIN || isAllowedToInvite || isInviter) {
+                const hasAllPerms = this?.permissions.includes(PERMISSIONS.UNINVITE_TO_ALL_EVENTS) ?? false;
+
+                const isAllowedToInvite = (event?.allowedInviters && event.isUserAllowedToInvite(this)) ?? false;
+
+                if (this.accountType === ACCOUNT_TYPE.ADMIN || hasAllPerms || isAllowedToInvite || isInviter) {
                     hadPermissionAtLeastOnce = true;
 
                     if (event.attendees.some(attendee => attendee.guest === guest)) {
@@ -270,6 +353,7 @@ const userSchema = new Schema({
                     return false;
                 }
             } else {
+                // Not allowed to uninvite guests
                 return false;
             }
         },
@@ -277,6 +361,7 @@ const userSchema = new Schema({
         /**
          * Note: Unlike other functions, makeAdmin does not work if a user is admin by default. The user **must**
          * have {@link PERMISSIONS.GIFT_ADMIN}.
+         * @requires {@link PERMISSIONS.GIFT_ADMIN}
          * @example if (await user.makeAdmin(user2)) {};
          * @param {mongoose.Model} user The user to make admin
          * @returns {Promise<Boolean>} True if the user was sucessfully made admin, false otherwise
@@ -300,6 +385,7 @@ const userSchema = new Schema({
                     return false;
                 }
             }
+            // Not allowed to make a user admin
             return false;
         },
 
@@ -310,7 +396,7 @@ const userSchema = new Schema({
             return await Event.getUpcomingEvents(this);
         },
 
-        /* eslint-disable no-unused-vars */
+        /* eslint-disable-next-line no-unused-vars */
         async getInvitedGuests(event) {
             // Shows:
             // Name
@@ -398,6 +484,7 @@ const User = model('User', userSchema, 'Users');
 export default User;
 
 /**
+ * Used for when the server needs to add permissions to a user. Not an ideal way of doing things, but it works.
  * @author Alexander Beck
  * @param {mongoose.ObjectId | mongoose.Model} userId The user to add the permissions to
  * @param {Boolean} isServer A boolean representing if the function should log that the server ran this.
@@ -417,17 +504,15 @@ export async function addPermissionsToUser(userId, isServer, ...permissions) {
         });
         try {
             user.permissions.addToSet(...validPermissions);
-            await user.save().then(async function () {
-                // TODO: Check if this .then(async) works properly (it likely will error)
-                if (isServer) {
-                    // Only create a log if the server ran it
-                    await Logger.create({
-                        action: EVENTS.MODIFY_PERMISSIONS,
-                        target: user
-                    });
-                }
-                return true;
-            });
+            await user.save()
+            if (isServer) {
+                // Only create a log if the server ran it
+                await Logger.create({
+                    action: EVENTS.MODIFY_PERMISSIONS,
+                    target: user
+                });
+            }
+            return true;
         } catch (err) {
             console.log(err);
         }

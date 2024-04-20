@@ -73,13 +73,21 @@ export async function testDB() {
 
         const christmasParty = await user.createEvent(christmasPartySchema);
         const users = [user, user2, user3, user4];
-        await user.inviteGuests(christmasParty, user2, user3, user4, 'Bob Schmob');
+        await user.inviteGuests(christmasParty, user[1], 'Bob Schmob');
 
         // testCreateEvents(users);
-        console.log(await users[0].getUpcomingEvents());
 
+        await users[0].makeAllowedToInvite(christmasParty, users[2]);
+        await users[2].inviteGuests(christmasParty, users[3], 'Max');
+        await users[2].uninviteGuests(christmasParty, users[1]);
 
-        // await testGetGuestList(christmasParty, users);
+        await users[0].makeUnableToInvite(christmasParty, users[2]);
+        console.log(await users[2].uninviteGuests(christmasParty, 'Bob Schmob'));
+
+        console.log(christmasParty);
+        // TODO: Do NOT include users as guests
+
+        // await testGetGuestList(christmasParty, users); 
         // await testUninvite(christmasParty, users)
         // await testMakeAdmin(users);
 
@@ -117,24 +125,26 @@ async function testCreateEvents(users) {
         date: new Date(2023, 11, 25),
         location: 'Event 1 Location',
     }),*/
-    await users[0].createEvent({
-        name: 'Event 2',
-        date: new Date(2025, 11, 25),
-        location: 'Event 2 Location',
-    }),
-    await users[0].createEvent({
-        name: 'Event 3',
-        date: new Date(2026, 11, 25),
-        location: 'Event 3 Location',
-    }),
-    await users[0].createEvent({
-        name: 'Event 4',
-        date: new Date().setHours(new Date().getHours() + 1),
-        location: 'Event 4 Location',
-    })/*,
+        await users[0].createEvent({
+            name: 'Event 2',
+            date: new Date(2025, 11, 25),
+            location: 'Event 2 Location',
+        }),
+        await users[0].createEvent({
+            name: 'Event 3',
+            date: new Date(2026, 11, 25),
+            location: 'Event 3 Location',
+        }),
+        await users[0].createEvent({
+            name: 'Event 4',
+            date: new Date().setHours(new Date().getHours() + 1),
+            location: 'Event 4 Location',
+        })/*,
     await users[0].createEvent({
         name: 'Event 5',
         date: new Date(2024, 3, 19),
         location: 'Event 5 Location',
     })*/];
+
+    console.log(await users[0].getUpcomingEvents());
 }
