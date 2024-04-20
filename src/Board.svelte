@@ -119,18 +119,18 @@
         return res.count;
     }
 
-    async function getPokemonFromGame(room, index)
+    async function getPokemonFromGame(room)
     {
         const get_pokemon_at_index = await fetch('/get_pokemon_from_game', 
         {
             method: "POST",
-            body: JSON.stringify({ roomCode: room, index: index }),
+            body: JSON.stringify({ roomCode: room }),
             headers: {
                 "Content-Type": "application/json",
             }
         })
-        let pokemon_num = await get_pokemon_at_index.json();
-        return pokemon_num;
+        let pokemon = await get_pokemon_at_index.json();
+        return pokemon;
     }
 
     socket.on('game end',gameEnd);
