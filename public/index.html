@@ -1,13 +1,197 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>Goatbucks Clicker Layout</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/main.js"></script>
+    <div id="top-half-div" class="flex-container">
+      <div id="login-time-div" class="column">
+        <p class="subtitle">Time</p>
+        <div class="time-div">
+          <p>Time bar here</p>
+          <p>You are in your ---- Year</p>
+        </div>
+        <p>You are logged in as {user}</p>
+        <button class="button">Logout</button>
+      </div>
+      <div id="title-clicker-div" class="column">
+        <p class="title">Goatbucks Clicker</p>
+        <div class="instructions-button">
+          <button onclick="toggleInstructions()">Instructions</button>
+        </div>
+        <p class="goatbucks">0</p>
+        <button class="circle-button"></button>
+      </div>
+      <div id="leaderboard-div" class="column">
+        <p class="subtitle">Leaderboard</p>
+        <table class="leaderboard-table">
+          <tr>
+            <th>User</th>
+            <th>High Score</th>
+          </tr>
+          <tr>
+            <td>exampleUser</td>
+            <td>exampleScore</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div id="bottom-half-div" class="flex-container">
+      <div id="smoothie-lab" class="restaurant">
+        <p>Smoothie Lab</p>
+        <table class="food-table">
+          <tr>
+            <td>Elemental Smoothie</td>
+            <td><button class="food-button" id="1upgrade1">Price</button></td>
+          </tr>
+          <tr>
+            <td>Fusion Smoothie</td>
+            <td><button class="food-button" id="1upgrade2">Price</button></td>
+          </tr>
+          <tr>
+            <td>Velocity Smoothie</td>
+            <td><button class="food-button" id="1upgrade3">Price</button></td>
+          </tr>
+          <tr>
+            <td>Acai Bowl</td>
+            <td><button class="food-button" id="1upgrade4">Price</button></td>
+          </tr>
+        </table>
+      </div>
+      <div id="halal-shack" class="restaurant">
+        <p>Halal Shack</p>
+        <table class="food-table">
+          <tr>
+            <td>Rice Bowl</td>
+            <td><button class="food-button" id="2upgrade1">Price</button></td>
+          </tr>
+          <tr>
+            <td>Zoodle Bowl</td>
+            <td><button class="food-button" id="2upgrade2">Price</button></td>
+          </tr>
+          <tr>
+            <td>Fries Bowl</td>
+            <td><button class="food-button" id="2upgrade3">Price</button></td>
+          </tr>
+          <tr>
+            <td>Naanarito</td>
+            <td><button class="food-button" id="2upgrade4">Price</button></td>
+          </tr>
+        </table>
+      </div>
+      <div id="cc-food-court" class="restaurant">
+        <p>CC Food Court</p>
+        <table class="food-table">
+          <tr>
+            <td>Subs</td>
+            <td><button class="food-button" id="3upgrade1">Price</button></td>
+          </tr>
+          <tr>
+            <td>Wraps</td>
+            <td><button class="food-button" id="3upgrade2">Price</button></td>
+          </tr>
+          <tr>
+            <td>Pizza</td>
+            <td><button class="food-button" id="3upgrade3">Price</button></td>
+          </tr>
+          <tr>
+            <td>Chef's Table</td>
+            <td><button class="food-button" id="3upgrade4">Price</button></td>
+          </tr>
+        </table>
+      </div>
+      <div id="sono-grill" class="restaurant">
+        <p>Sono Grill</p>
+        <table class="food-table">
+          <tr>
+            <td>Chips and Salsa</td>
+            <td><button class="food-button" id="4upgrade1">Price</button></td>
+          </tr>
+          <tr>
+            <td>Chips and Guac</td>
+            <td><button class="food-button" id="4upgrade2">Price</button></td>
+          </tr>
+          <tr>
+            <td>Tacos</td>
+            <td><button class="food-button" id="4upgrade3">Price</button></td>
+          </tr>
+          <tr>
+            <td>Burrito Bowl</td>
+            <td><button class="food-button" id="4upgrade4">Price</button></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div id="instruction-box" class="instruction-box">
+      <div class="instruction-box-text">
+        <h2>Instructions</h2>
+        <p>
+          The goal of the game is to make GoatBucks by clicking the Goat in the
+          middle of the screen. You can use your GoatBucks to invest in WPI
+          restaurants' food items to generate more passive GoatBucks. Get as
+          much as you can!
+        </p>
+        <p>
+          While typically these games are endless, your time at school isn’t, so
+          once you get the max upgrades before you reach the end of your Senior
+          Year (by clicking the price next to each food item), then you win!
+          Years are based on a set timer.
+        </p>
+      </div>
+      <button class="close-button" onclick="toggleInstructions()">Close</button>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const button = document.querySelector(".circle-button");
+        const goatbucksDisplay = document.querySelector(".goatbucks"); 
+        let goatbucksCount = 0;
+
+        button.addEventListener("click", function (event) {
+          const rect = button.getBoundingClientRect();
+          const centerX = (rect.left + rect.right) / 2;
+          const centerY = (rect.top + rect.bottom) / 2;
+          const originX = centerX / window.innerWidth;
+          const originY = centerY / window.innerHeight;
+
+          goatbucksCount += 1; 
+          goatbucksDisplay.textContent = goatbucksCount; 
+          
+          confetti({
+            particleCount: 60,
+            spread: 80,
+            origin: { x: originX, y: originY },
+          });
+        });
+
+        const foodButtons = document.querySelectorAll(".food-button");
+        foodButtons.forEach(function (foodButton) {
+          foodButton.addEventListener("click", function (event) {
+            const rect = foodButton.getBoundingClientRect();
+            const centerX = (rect.left + rect.right) / 2;
+            const centerY = (rect.top + rect.bottom) / 2;
+            const originX = centerX / window.innerWidth;
+            const originY = centerY / window.innerHeight;
+
+            confetti({
+              particleCount: 20,
+              spread: 60,
+              origin: { x: originX, y: originY },
+            });
+          });
+        });
+      });
+
+      function toggleInstructions() {
+        const instructionBox = document.getElementById("instruction-box");
+        instructionBox.style.display =
+          instructionBox.style.display === "block" ? "none" : "block";
+      }
+    </script>
   </body>
 </html>
