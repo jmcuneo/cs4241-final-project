@@ -45,62 +45,94 @@
         <p>Smoothie Lab</p>
         <table class="food-table">
           <tr>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Upgrades
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Price
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Per Click
+            </td>
+          </tr>
+          <tr>
             <td>Elemental Smoothie</td>
-            <td><button class="food-button" id="1upgrade1">Price</button></td>
+            <td><button class="food-button" id="1upgrade1">10</button></td>
+            <td><p>+1</p></td>
           </tr>
           <tr>
             <td>Fusion Smoothie</td>
-            <td><button class="food-button" id="1upgrade2">Price</button></td>
+            <td><button class="food-button" id="1upgrade2">50</button></td>
+            <td><p>+3</p></td>
           </tr>
           <tr>
             <td>Velocity Smoothie</td>
-            <td><button class="food-button" id="1upgrade3">Price</button></td>
-          </tr>
-          <tr>
-            <td>Acai Bowl</td>
-            <td><button class="food-button" id="1upgrade4">Price</button></td>
+            <td><button class="food-button" id="1upgrade3">200</button></td>
+            <td><p>+5</p></td>
           </tr>
         </table>
       </div>
+
       <div id="halal-shack" class="restaurant">
         <p>Halal Shack</p>
         <table class="food-table">
           <tr>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Upgrades
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Price
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Passive
+            </td>
+          </tr>
+          <tr>
             <td>Rice Bowl</td>
-            <td><button class="food-button" id="2upgrade1">Price</button></td>
+            <td><button class="food-button" id="2upgrade1">20</button></td>
+            <td><p>+1</p></td>
           </tr>
           <tr>
             <td>Zoodle Bowl</td>
-            <td><button class="food-button" id="2upgrade2">Price</button></td>
+            <td><button class="food-button" id="2upgrade2">100</button></td>
+            <td><p>+2</p></td>
           </tr>
           <tr>
             <td>Fries Bowl</td>
-            <td><button class="food-button" id="2upgrade3">Price</button></td>
-          </tr>
-          <tr>
-            <td>Naanarito</td>
-            <td><button class="food-button" id="2upgrade4">Price</button></td>
+            <td><button class="food-button" id="2upgrade3">300</button></td>
+            <td><p>+3</p></td>
           </tr>
         </table>
       </div>
+
       <div id="cc-food-court" class="restaurant">
         <p>CC Food Court</p>
         <table class="food-table">
           <tr>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Upgrades
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Price
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Per Click
+            </td>
+          </tr>
+          <tr>
             <td>Subs</td>
-            <td><button class="food-button" id="3upgrade1">Price</button></td>
+            <td><button class="food-button" id="3upgrade1">500</button></td>
+            <td><p>+10</p></td>
           </tr>
           <tr>
             <td>Wraps</td>
-            <td><button class="food-button" id="3upgrade2">Price</button></td>
+            <td><button class="food-button" id="3upgrade2">2500</button></td>
+            <td><p>+12</p></td>
           </tr>
           <tr>
             <td>Pizza</td>
-            <td><button class="food-button" id="3upgrade3">Price</button></td>
-          </tr>
-          <tr>
-            <td>Chef's Table</td>
-            <td><button class="food-button" id="3upgrade4">Price</button></td>
+            <td><button class="food-button" id="3upgrade3">6000</button></td>
+            <td><p>+15</p></td>
           </tr>
         </table>
       </div>
@@ -108,20 +140,30 @@
         <p>Sono Grill</p>
         <table class="food-table">
           <tr>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Upgrades
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Price
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Passive
+            </td>
+          </tr>
+          <tr>
             <td>Chips and Salsa</td>
-            <td><button class="food-button" id="4upgrade1">Price</button></td>
+            <td><button class="food-button" id="4upgrade1">9000</button></td>
+            <td><p>+5</p></td>
           </tr>
           <tr>
             <td>Chips and Guac</td>
-            <td><button class="food-button" id="4upgrade2">Price</button></td>
+            <td><button class="food-button" id="4upgrade2">25000</button></td>
+            <td><p>+10</p></td>
           </tr>
           <tr>
             <td>Tacos</td>
-            <td><button class="food-button" id="4upgrade3">Price</button></td>
-          </tr>
-          <tr>
-            <td>Burrito Bowl</td>
-            <td><button class="food-button" id="4upgrade4">Price</button></td>
+            <td><button class="food-button" id="4upgrade3">50000</button></td>
+            <td><p>+15</p></td>
           </tr>
         </table>
       </div>
@@ -142,6 +184,9 @@
           Year (by clicking the price next to each food item), then you win!
           Years are based on a set timer.
         </p>
+        <p>
+          Next to each food upgrade, you will find a button with their price and what they will yield. If it says 'Per Click', it means that every time you click the Goat button, you will that amount added to your balance. If it says'Passive', it means you will get that amount for every second that passes from the moment you buy that upgrade.
+        </p>
       </div>
       <button class="close-button" onclick="toggleInstructions()">Close</button>
     </div>
@@ -149,7 +194,7 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const button = document.querySelector(".circle-button");
-        const goatbucksDisplay = document.querySelector(".goatbucks"); 
+        const goatbucksDisplay = document.querySelector(".goatbucks");
         let goatbucksCount = 0;
 
         button.addEventListener("click", function (event) {
@@ -159,9 +204,9 @@
           const originX = centerX / window.innerWidth;
           const originY = centerY / window.innerHeight;
 
-          goatbucksCount += 1; 
-          goatbucksDisplay.textContent = goatbucksCount; 
-          
+          goatbucksCount += 1;
+          goatbucksDisplay.textContent = goatbucksCount;
+
           confetti({
             particleCount: 60,
             spread: 80,
