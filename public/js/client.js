@@ -42,6 +42,7 @@ const calendarView = function() {
             console.log(e);
     }
     const calendar = document.querySelector("#calendar");
+    calendar.innerHTML = "<tr><th>Sunday</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th></tr>";
     const monthCodes = [0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5];
     const centuryCodes = [4, 2, 0, 6, 4, 2, 0];
     const isLeapYear = year % 100 === 0 ? (year % 400 === 0) : (year % 4 === 0);
@@ -49,10 +50,20 @@ const calendarView = function() {
     console.log(startDay);
     const daysInMonth = [31, (isLeapYear ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     let str = "<tr>";
-    let day = 0;
     for (let i = 0; i < startDay; i++)
         str += "<td></td>";
-    for (let i = 1; i + startDay <= 7; i++)
-        str += `<td>${i}</td>`;
-    calendar.innerHTML += str + "</tr>"
+    let day = 1;
+    for (day; day + startDay <= 7; day++)
+        str += `<td><button onclick='getEventsOnDay(${year}, ${month}, ${day})'>${day}</button></td>`;
+    calendar.innerHTML += str + "</tr>";
+    while (day <= daysInMonth[month - 1]) {
+        str = "<tr>";
+        for (let i = 0; i < 7; day++, i++)
+            str += `<td>${day <= daysInMonth[month - 1] ? `<button onclick='getEventsOnDay(${year}, ${month}, ${day})'>${day}</button>` : ""}</td>`;
+        calendar.innerHTML += str + "</tr>";
+    }
+};
+
+const getEventsOnDay = function(year, month, day) {
+    console.log(year + ", " + month + ", " + day);
 };

@@ -175,7 +175,7 @@ app.get("/user-events", async (req, res) => {
         events.forEach((e) => query.$or.push({eventId: e.eventId}));
         return eventsCollection.find(query).toArray().then((eventList) => res.json(eventList));
     });
-})
+});
 
 //app.listen(process.env.PORT);
 ViteExpress.listen(app, 3000);
