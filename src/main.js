@@ -44,7 +44,7 @@ async function test() {
     let res3 = await create_game.json();
     console.log(res3)
 
-    const get_pokemon_at_index = await fetch('/get_pokemon_from_game', 
+    const get_pokemon_at_index = await fetch('/get_pokemon_from_game',
         {
             method: "POST",
             body: JSON.stringify({ roomCode: 'game time', index: 2 }),
