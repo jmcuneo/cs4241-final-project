@@ -1,9 +1,9 @@
 const express = require("express"),
   app = express(),
-  path = require("path");
-
-require("dotenv").config();
-
+  path = require("path"),
+  const auth = require("./jwt");
+  require("dotenv").config();
+  
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
