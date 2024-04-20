@@ -32,7 +32,6 @@
     };
 }
  
-
     // prefetch all images before rendering board
     async function get_board() {
         const board = await get_server_board();
