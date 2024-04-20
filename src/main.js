@@ -10,7 +10,6 @@ const app = new App({
 export default app
 
 
-const json = { pokedex: 800 }
 
 async function test() {
     const response = await fetch('/get_pokemon_by_unique_id', {
@@ -23,12 +22,10 @@ async function test() {
     let res = await response.json();
     console.log(res)
 
-
-
     const find_game = await fetch('/get_game_by_room_code',
         {
             method: "POST",
-            body: JSON.stringify({ roomCode: 'testgame7' }),
+            body: JSON.stringify({ roomCode: 'newGameTest' }),
             headers: {
                 "Content-Type": "application/json",
             }
@@ -36,18 +33,27 @@ async function test() {
     let res2 = await find_game.json();
     console.log(res2)
 
-
     const create_game = await fetch('/create_new_game',
         {
             method: "POST",
-            body: JSON.stringify({ roomCode: 'testgame7', type: "pokemon" }),
+            body: JSON.stringify({ roomCode: 'game time', type: "pokemon" }),
             headers: {
                 "Content-Type": "application/json",
             }
         })
-
     let res3 = await create_game.json();
     console.log(res3)
+
+    const get_pokemon_at_index = await fetch('/get_pokemon_from_game', 
+        {
+            method: "POST",
+            body: JSON.stringify({ roomCode: 'game time', index: 2 }),
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+    let res4 = await get_pokemon_at_index.json();
+    console.log(res4);
 
 }
 
