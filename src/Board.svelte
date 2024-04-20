@@ -15,17 +15,14 @@
     const height = 4;
     const bingo = "WHOMST";
 
-    console.log("ID: " + game_data.id);
-
     async function get_server_board() {
     let numPokemon = await getNumPokemon();
+    let pokemon = await getPokemonFromGame(game_data.id);
     let promises = [...Array(width * height).keys()].map(async (e) => {
-        let pokemon = await getPokemonFromGame(game_data.id, e);
-        console.log(pokemon[0]);
         let num = Math.floor(Math.random() * numPokemon) + 1;
         return {
-            name: `${pokemon[0].label} ${pokemon[0].unique_id}`,
-            link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(pokemon[0].unique_id + "").padStart(3, "0")}.png`,
+            name: `${pokemon[e][0].unique_id}: ${pokemon[e][0].label}`,
+            link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(pokemon[e][0].unique_id + "").padStart(3, "0")}.png`,
         };
     });
     let board = await Promise.all(promises);
@@ -35,7 +32,6 @@
     };
 }
  
-
     // prefetch all images before rendering board
     async function get_board() {
         const board = await get_server_board();
@@ -123,18 +119,18 @@
         return res.count;
     }
 
-    async function getPokemonFromGame(room, index)
+    async function getPokemonFromGame(room)
     {
         const get_pokemon_at_index = await fetch('/get_pokemon_from_game', 
         {
             method: "POST",
-            body: JSON.stringify({ roomCode: room, index: index }),
+            body: JSON.stringify({ roomCode: room }),
             headers: {
                 "Content-Type": "application/json",
             }
         })
-        let pokemon_num = await get_pokemon_at_index.json();
-        return pokemon_num;
+        let pokemon = await get_pokemon_at_index.json();
+        return pokemon;
     }
 
     socket.on('game end',gameEnd);
