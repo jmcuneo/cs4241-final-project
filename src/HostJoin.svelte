@@ -33,15 +33,16 @@
         socket.on("join failed", (msg) => {
             errorMsg = msg;
         });
-        socket.on("host success", (room, name) => {
+        socket.on("host success", async function(room, name){
             errorMsg = room;
-            create_game(room);
+            await create_game(room);
+            joinGame(room,name);
             // socket.emit("chat message",room,num,"Player " + num + " joined.");
         });
         socket.on("join success", (room, name) => {
             errorMsg = room;
             // socket.emit("chat message",room,name,"Player " + name + " joined.");
-            joinGame(room);
+            joinGame(room,name);
         });
     };
 
@@ -56,7 +57,6 @@
                 }
             })
             await create_game.json();
-            joinGame(room);
     }
 
 </script>
