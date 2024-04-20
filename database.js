@@ -92,7 +92,6 @@ function set_up_db_store(app) {
     app.post('/get_pokemon_from_game', async (req, res) =>
     {
         let code = req.body.roomCode;
-        let index = req.body.index;
 
         //Check if this game exists
         const docs = await games_collection.find(
@@ -107,7 +106,7 @@ function set_up_db_store(app) {
         }
         else
         {
-            res.json(docs[0].board[index]);
+            res.json(docs[0].board);
         }
     })
 

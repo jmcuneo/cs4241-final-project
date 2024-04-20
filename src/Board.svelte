@@ -15,17 +15,16 @@
     const height = 4;
     const bingo = "WHOMST";
 
-    console.log("ID: " + game_data.id);
-
     async function get_server_board() {
     let numPokemon = await getNumPokemon();
+    let pokemon = await getPokemonFromGame(game_data.id);
+    console.log("Pokemon: " + pokemon[0]);
     let promises = [...Array(width * height).keys()].map(async (e) => {
-        let pokemon = await getPokemonFromGame(game_data.id, e);
-        console.log(pokemon[0]);
         let num = Math.floor(Math.random() * numPokemon) + 1;
+        console.log(pokemon[e][0].label);
         return {
-            name: `${pokemon[0].label} ${pokemon[0].unique_id}`,
-            link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(pokemon[0].unique_id + "").padStart(3, "0")}.png`,
+            name: `${pokemon[e][0].unique_id}: ${pokemon[e][0].label}`,
+            link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(pokemon[e][0].unique_id + "").padStart(3, "0")}.png`,
         };
     });
     let board = await Promise.all(promises);
