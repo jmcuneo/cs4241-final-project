@@ -37,11 +37,7 @@ io.on('connection', (socket) => {
   socket.on('host game',(room)=>{
     room = room.toLowerCase();
     if(room in rooms){
-      if(rooms[room].connected_players.length >= 2){
-        socket.emit('host failed','room full');
-      }else{
-        socket.emit('host failed','room in use');
-      }
+      socket.emit('host failed','room in use');
     }else{
       //TODO: Use the DB and populate the list
       rooms[room] = {
@@ -49,7 +45,7 @@ io.on('connection', (socket) => {
         type:"pokemon",
         board:[],
         chat:[
-          
+          //TODO make this work
         ],
         answer_p1:randomAnswer(),
         answer_p2:randomAnswer(),
@@ -59,7 +55,8 @@ io.on('connection', (socket) => {
         guessed_p2:[],
         //This is in milliseconds, not seconds.
         started:new Date().getTime(),
-        connected_players:["Player 1"]
+        p1:{name:"Player 1",id:socket.id},
+        p2:null
       };
       console.log(rooms[room].answer_p1);
       console.log(rooms[room].answer_p2);
@@ -72,13 +69,20 @@ io.on('connection', (socket) => {
   socket.on('join game',(room)=>{
     room = room.toLowerCase();
     if(room in rooms){
-      if(rooms[room].connected_players.length >= 2){
+      if(rooms[room].p1 != null && rooms[room].p2 != null){
         socket.emit('join failed','room full');
       }else{
-        rooms[room].connected_players.push("Player 2");
-        socket.join(room);
-        socket.emit('join success',room,"Player 2");
-        io.to(room).emit('message receive',"Server","Player 2 joined");
+        if(rooms[room].p2==null){
+          rooms[room].p2 = {name:"Player 2",id:socket.id};
+          socket.join(room);
+          socket.emit('join success',room,"Player 2");
+          io.to(room).emit('message receive',"Server","Player 2 joined"); 
+        }else if(rooms[room].p1==null){
+          rooms[room].p1 = {name:"Player 1",id:socket.id};
+          socket.join(room);
+          socket.emit('join success',room,"Player 1");
+          io.to(room).emit('message receive',"Server","Player 1 joined"); 
+        }
       }
     }else{
       socket.emit('join failed','room not found');
@@ -89,22 +93,22 @@ io.on('connection', (socket) => {
   });
   socket.on('guess',(room,name,index,cardName)=>{
     //TODO: Prevent click if there are <2 players connected.
-    if(rooms[room].connected_players.length == 2){
+    if(rooms[room].p1 != null && rooms[room].p2 != null){
       io.to(room).emit('message receive',"Server",name + " guessed "+ cardName);
       let answer;
       let otherAnswer;
       let winner;
-      let isPlayer1 = rooms[room].connected_players[0] == name
+      let isPlayer1 = rooms[room].p1.name == name;
       if(isPlayer1){
         //p1
         answer = rooms[room].answer_p2;
         otherAnswer = rooms[room].answer_p1;
-        winner = rooms[room].connected_players[0];
+        winner = rooms[room].p1.name;
       }else{
         //p2
         answer = rooms[room].answer_p1;
         otherAnswer = rooms[room].answer_p2;
-        winner = rooms[room].connected_players[1];
+        winner = rooms[room].p2.name;
       }
       console.log("Guess: " + index + ", Answer: " + answer);
       if(index==answer){
@@ -121,6 +125,24 @@ io.on('connection', (socket) => {
   socket.on('complete game left',(room,name)=>{
     io.to(room).emit('message receive',"Server",name + " left.");
     socket.leave(room);
+  });
+  socket.on('disconnecting',(reason)=>{
+    for(const room of socket.rooms){
+      // console.log(room);
+      if(room in rooms){
+        if(rooms[room].p1 != null && rooms[room].p1.id==socket.id){
+          // console.log("p1 disconnected");
+          io.to(room).emit('message receive',"Server",rooms[room].p1.name + " disconnected.");
+          rooms[room].p1=null;
+        }
+        if(rooms[room].p2 != null && rooms[room].p2.id==socket.id){
+          // console.log("p2 disconnected");
+          io.to(room).emit('message receive',"Server",rooms[room].p2.name + " disconnected.");
+          rooms[room].p2=null;
+        }
+        break;
+      }
+    }
   });
 });
 
