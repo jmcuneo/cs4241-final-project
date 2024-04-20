@@ -14,5 +14,6 @@
     "guessed_p1":[8],
     "guessed_p2":[16,20],
     "started":1000000,
-    "connected_players":[1,2]
+    "p1":{"name":"Player 1","id":"some string"},
+    "p2":null
 }
