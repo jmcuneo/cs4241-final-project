@@ -152,7 +152,7 @@ function set_up_db_store(app) {
                     type:gameType,
                     board: board, //Replace with board when createNewBoard() is implemented
                     chat:[
-                        {"author":"server","msg":"player 1 joined the game"}, //Default chat message
+                        { author:"server", msg:"player 1 joined the game"}, //Default chat message
                     ],
                     answer_p1:Math.floor(Math.random() * 23), //Do the random generation here?
                     answer_p2: Math.floor(Math.random() * 23),
@@ -161,7 +161,9 @@ function set_up_db_store(app) {
                     guessed_p1:[],
                     guessed_p2:[],
                     started:1000000,
-                    connected_players:[1] //Only player 1 is connected by default, will be [1, 2] when player 2 connects
+                    connected_players:[
+                        {name:"Player 1",id:""}
+                    ] //Only player 1 is connected by default, will be [1, 2] when player 2 connects
                 }
 
                 const addGame = await games_collection.insertOne(newGame)
