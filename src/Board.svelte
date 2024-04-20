@@ -18,10 +18,8 @@
     async function get_server_board() {
     let numPokemon = await getNumPokemon();
     let pokemon = await getPokemonFromGame(game_data.id);
-    console.log("Pokemon: " + pokemon[0]);
     let promises = [...Array(width * height).keys()].map(async (e) => {
         let num = Math.floor(Math.random() * numPokemon) + 1;
-        console.log(pokemon[e][0].label);
         return {
             name: `${pokemon[e][0].unique_id}: ${pokemon[e][0].label}`,
             link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(pokemon[e][0].unique_id + "").padStart(3, "0")}.png`,
