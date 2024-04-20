@@ -3,10 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.css';
 
-const getProfile = async () => {
-    return await instance.get("get");
-}
-
 function Navbar(props) {
     const navigate = useNavigate();
     const location = useLocation();  // Get the current location
@@ -16,17 +12,6 @@ function Navbar(props) {
     };
 
     const [user, setUser] = useState({ username: "Username" });
-
-    useEffect(() => {
-        getProfile()
-            .then((res) => {
-                console.log(res.data)
-                setUser(res.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: "rgba(42,87,131,1)" }}>
