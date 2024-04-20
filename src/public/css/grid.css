@@ -1,0 +1,26 @@
+/* .grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 10px;
+  justify-content: center;
+} */
+
+.box {
+  height: 150px;
+  background-color: azure;
+}
+
+.cell :hover {
+  border: 1px solid blue;
+  cursor: pointer; 
+}
+
+.cell :active {
+  border: none;
+  background-color: rgb(176, 224, 193);
+}
+
+.box :hover {
+  border: none;
+}
+
