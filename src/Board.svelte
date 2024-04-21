@@ -136,7 +136,8 @@
     socket.on('game end',gameEnd);
 </script>
 
-<div class="grid" style="grid-template-columns: repeat({width}, 1fr);">
+<div class="grid" style="grid-template-columns: repeat({width}, 1fr);" 
+class:stop_events={guess_data != null}>
     {#each Array(width) as _, j}
         {@const letter = bingo[j] || ""}
         <img class="letter" alt="Pokemon {letter}" src="Poke_{letter}.png" />

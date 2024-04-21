@@ -1,5 +1,5 @@
 <script>
-    export let name;
+    export let name="";
     export let img;
     export let whomst = false;
 
@@ -10,5 +10,7 @@
 
 <div class="card-inner" class:whomst>
     <div use:onload class="card-img" />
-    <span class="card-name">{name}</span>
+    {#if name}
+        <span class="card-name">{name}</span>
+    {/if}
 </div>

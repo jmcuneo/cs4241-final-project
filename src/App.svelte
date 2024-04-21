@@ -50,17 +50,16 @@
     <div id="host-join">
         <HostJoin on:gameStart={gameStart}></HostJoin>
     </div>
-{:else if game_data.state == "InGame"}
-    <div class="board">
-        <Board {game_data} on:gameEnd={gameEnd}></Board>
-    </div>
-    <div class="chat">
-        <Chat {game_data}></Chat>
-    </div>
-{:else if game_data.state == "GameOver"}
-    <div class="gameOver">
-        <GameEnd {game_data} on:backToHost={backToHost}></GameEnd>
-    </div>
+{:else}
+    {#if game_data.state == "InGame"}
+        <div class="board">
+            <Board {game_data} on:gameEnd={gameEnd}></Board>
+        </div>
+    {:else if game_data.state == "GameOver"}
+        <div class="gameOver">
+            <GameEnd {game_data} on:backToHost={backToHost}></GameEnd>
+        </div>
+    {/if}
     <div class="chat">
         <Chat {game_data}></Chat>
     </div>
