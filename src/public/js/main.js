@@ -23,13 +23,24 @@ let selectedColor = "rgb(176, 224, 193)"
 let totalTime = 0
 let minute = 0
 let second = 0
-let timer = true
+
 
 window.onload = function() {
+    const gameboard = document.getElementById("gameboard")
+    gameboard.style.display = "none"
+    const startBtn = document.getElementById("startButton")
+    startBtn.onclick = start
+}
+
+function start() {
+    const startBtn = document.getElementById("startButton")
+    const gameboard = document.getElementById("gameboard")
+    gameboard.style.display = "flex"
+    setInterval(stopWatch, 1000)    
     for(let i = 0; i < test.length ;i++) {
         addCell(test[i])
     }
-    setInterval(stopWatch, 1000); 
+    startBtn.style.display = "none"
 }
 
 function addCell(content) {
