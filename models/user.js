@@ -129,7 +129,7 @@ const userSchema = new Schema({
         async makeAllowedToInvite(event, ...users) {
             if (!event || !users) return false;
 
-            if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || event.creator === this) {
+            if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || event.creator === this._id) {
                 let successfullyAdded = [];
                 users.forEach(user => {
                     if (!event.allowedInviters.some(existingUser => existingUser === user)) {
@@ -167,7 +167,7 @@ const userSchema = new Schema({
         async makeUnableToInvite(event, ...users) {
             if (!event || !users) return false;
 
-            if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || event.creator === this) {
+            if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || event.creator === this._id) {
                 let successfullyRemoved = [];
                 users.forEach(user => {
                     if (event.allowedInviters.some(existingUser => existingUser === user)) {
@@ -255,14 +255,15 @@ const userSchema = new Schema({
 
             // Check to see if added users is within inviter limit
             // Assumes true if there is no inviter limit (or guest limit)
-            const inviterLimitCheck = event.guestLimit && event.guestLimit?.inviterLimit ?
-                ((await event.getInviteIdsByUser(this))?.length ?? 0) + guests.length < event.guestLimit.inviterLimit : true;
+            const inviterLimitCheck = event?.inviterLimit ?
+                ((await event.getInviteIdsByInviter(this))?.length ?? 0) + guests.length < event.inviterLimit : true;
 
+            const eventLimit = guestLimitCheck && inviterLimitCheck;
             // If user is admin or user has PERMISSIONS.INVITE_TO_ALL_EVENTS
-            const permFlag = this.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS) && guestLimitCheck && inviterLimitCheck;
+            const permFlag = this.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS) && eventLimit;
 
             // Checks if user is on the event's allowedInviter list
-            const userCanInviteToEvent = (event?.allowedInviters && event.isUserAllowedToInvite(this)) ?? false;
+            const userCanInviteToEvent = ((event?.allowedInviters && event.isUserAllowedToInvite(this)) ?? false) && eventLimit;
 
             if (this.accountType === ACCOUNT_TYPE.ADMIN || permFlag || userCanInviteToEvent) {
                 // Check guest list to ensure that person is not already on it

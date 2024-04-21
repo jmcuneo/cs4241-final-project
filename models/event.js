@@ -51,11 +51,18 @@ const eventSchema = new Schema({
         // TODO: Do NOT include users as guests
         type: Number,
         min: [0, 'Guest Limit must be greater than 0, got {VALUE}'],
-        inviterLimit: {
-            type: Number,
-            min: [0, 'Inviter Limit must be greater than 0, got {VALUE}'],
-            // TODO: Test if this max is working properly
-            max: [this, 'Invited Limit cannot be greater than the guest limit, got {VALUE}']
+    },
+    inviterLimit: {
+        type: Number,
+        min: [0, 'Inviter Limit must be greater than 0, got {VALUE}'],
+        validate: {
+            validator: function (v) {
+                if (this.guestLimit !== undefined) {
+                    return v <= this.guestLimit;
+                }
+                return v >= 0;
+            },
+            message: 'Cannot set the inviter limit to be greater than the guest limit! Recieved VALUE'
         },
     },
     attendees: [{
@@ -91,7 +98,7 @@ const eventSchema = new Schema({
                     const canInviteToEvent = event.allowedInviters && event.isUserAllowedToInvite(user);
                     const isBelowGuestLimit = event && event.guestLimit ? event.attendees.length < event.guestLimit : true; // TODO test this
                     const previousInvites = (await event.getInvitesByInviter(user)).length // TODO Test this
-                    const isBelowInviterLimit = event && event.guestList && event.guestLimit.inviterLimit ? previousInvites < event.guestLimit.inviterLimit : true; // TODO test this
+                    const isBelowInviterLimit = event && event.inviterLimit ? previousInvites < event.inviterLimit : true; // TODO test this
                     return (hasAllPerms || canInviteToEvent) && isBelowGuestLimit && isBelowInviterLimit;
                 },
                 // TODO: Make this message valid
@@ -239,7 +246,6 @@ const eventSchema = new Schema({
             if (user.accountType === ACCOUNT_TYPE.ADMIN || user.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || this.creator === user._id) {
                 if (guestLimit === 0) {
                     // Remove guest limit
-                    // TODO: This will likely remove the inviterLimit null as well. Is this expected behavior?
                     return await this.removeGuestLimit(user);
                 } else if (guestLimit < 0) {
                     // guestLimit should not be negative
@@ -270,7 +276,6 @@ const eventSchema = new Schema({
             if (!user) return false;
             if (user.accountType === ACCOUNT_TYPE.ADMIN || user.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || this.creator === user._id) {
                 this.guestLimit = undefined;
-
                 try {
                     await this.save();
                     await Logger.create({
@@ -287,8 +292,69 @@ const eventSchema = new Schema({
             return false;
         },
 
-        async setInviterLimit() {
-            throw ReferenceError('Not yet implemented!');
+        /**
+          * @param {mongoose.Model} user The user setting the inviter limit
+          * @param {Number} inviterLimit A non-negative number. The new inviter limit to set to. 0 to remove the inviter limit
+          * @returns {Promise<Boolean>} A boolean representing if the inviter limit was successfully changed
+          */
+        async setInviterLimit(user, inviterLimit) {
+            // Why this is in event.js instead of user.js? I have no idea.
+            // Should it be in user.js? Probably.
+            // Am I going to change it? I might. But probably not.
+            // Is this function just a copy of setGuestLimit? Yes.
+            if (!user) return false;
+
+            // This is the exact same thing as removeInviterLimit, but doing this forces the code
+            // to be more readable (removeInviterLimit(user) instead of setInviterLimit(user))
+            if (inviterLimit === undefined) return false;
+
+            if (user.accountType === ACCOUNT_TYPE.ADMIN || user.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || this.creator === user._id) {
+                if (inviterLimit === 0) {
+                    // Remove inviter limit
+                    return await this.removeInviterLimit(user);
+                } else if (inviterLimit < 0) {
+                    // inviterLimit should not be negative
+                    return false;
+                }
+                this.inviterLimit = inviterLimit;
+                try {
+                    await this.save();
+                    await Logger.create({
+                        action: EVENTS.MODIFY_EVENT,
+                        subject: user,
+                        event: this
+                    });
+                    return true;
+                } catch (err) {
+                    console.log(err);
+                    return false;
+                }
+            }
+            return false;
+        },
+
+        /**
+         * @param {mongoose.Model} user The user removing the inviter list
+         * @returns {Promise<Boolean>} A boolean representing if the inviter limit was successfully removed
+         */
+        async removeInviterLimit(user) {
+            if (!user) return false;
+            if (user.accountType === ACCOUNT_TYPE.ADMIN || user.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || this.creator === user._id) {
+                this.inviterLimit = undefined;
+                try {
+                    await this.save();
+                    await Logger.create({
+                        action: EVENTS.MODIFY_EVENT,
+                        subject: user,
+                        event: this
+                    });
+                    return true;
+                } catch (err) {
+                    console.log(err);
+                    return false;
+                }
+            }
+            return false;
         },
     },
 });
