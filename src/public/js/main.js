@@ -20,10 +20,16 @@ let selected2 = null
 let defaultColor = "azure"
 let selectedColor = "rgb(176, 224, 193)"
 
+let totalTime = 0
+let minute = 0
+let second = 0
+let timer = true
+
 window.onload = function() {
     for(let i = 0; i < test.length ;i++) {
         addCell(test[i])
     }
+    setInterval(stopWatch, 1000); 
 }
 
 function addCell(content) {
@@ -68,4 +74,26 @@ function showInfo(event) {
     let infoSection = document.getElementById("info")
     let info = test.find((element) => element.title === id).info //Change this later based on server-side setup
     infoSection.innerHTML = info
+}
+
+function stopWatch() { 
+    totalTime++
+    second++
+    if (second == 60) { 
+        minute++
+        second = 0
+    } 
+    let minString = minute; 
+    let secString = second; 
+
+    if (minute < 10) { 
+        minString = "0" + minString
+    } 
+
+    if (second < 10) { 
+        secString = "0" + secString
+    } 
+
+    document.getElementById('min').innerHTML = minString
+    document.getElementById('sec').innerHTML = secString
 }
