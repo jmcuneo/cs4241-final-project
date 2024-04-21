@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CS4241 Final Project Scores Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="description" content="The login page to this website.">
+    
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/main.css">
+  </head>
+  <body class="bg-dark text-white">
+    <header class="navbar navbar-expand-lg bg-black">
+      <div class="container-fluid">
+
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <img src="/images/wpiLogo.png" height="50" width="140" alt="WPI Logo" loading="lazy"/>
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <h4 class="my-auto"><a class="nav-link text-black" href="/">TT</a></h4>
+            </li>
+            <li class="nav-item">
+              <p class="my-auto"><a class="nav-link text-white" href="/">Index/Login</a></p>
+            </li>
+            <li class="nav-item mx-2">
+              <h2 class="mt-1"><b>//</b></h2>
+            </li>
+            <li class="nav-item">
+              <p class="my-auto"><a class="nav-link text-white" href="/main.html">Main</a></p>
+            </li>
+            <li class="nav-item mx-2">
+              <h2 class="mt-1"><b>//</b></h2>
+            </li>
+            <li class="nav-item">
+              <p class="my-auto"><a class="nav-link text-white" href="/scores.html">Scores</a></p>
+            </li>
+          </ul>
+          <p class="my-auto"><b>{{{msg}}}</b></p>
+        </div>
+      </div>
+    </header>
+
+
+    <div class="container">
+      <div class = "pt-4 pb-2 mx-auto mt-4 rounded" style="width:80%;background-color:#032050">
+        <h2 class="text-center"><b>sᴉɹʇǝʇ Top 10 Scoreboard</b></h2>
+      </div>
+
+      <div id = "scores" class="bg-black p-4 rounded m-auto mt-5" style="width:80%;">
+        <table id = "scoresTable" class="table table-striped table-dark table-bordered table-hover">
+
+        </table>
+      </div>
+
+    </div>
+
+  <script src="./js/bootstrap.min.js"></script>
+  <script src="./js/scores.js"></script>
+  </body>
+</html>
