@@ -169,8 +169,10 @@ const eventSchema = new Schema({
         },
 
         /**
+         * Does nothing with the current user parameter. It is in place for the event that the application is expanded to allow different organizations with different event scopes
          * @param {mongoose.Model} user The user to get upcoming events of (note: does nothing with it currently)
          * @returns {Promise<Array<mongoose.Model>} A list of events, or an empty array
+         * @author Alexander Beck
          */
         /* eslint-disable-next-line no-unused-vars */
         async getUpcomingEvents(user) {
@@ -225,6 +227,7 @@ const eventSchema = new Schema({
          * Check if the user is on the allowedInviters list
          * @param {mongoose.Types.ObjectId | mongoose.Model} user The user to check
          * @returns {Boolean} A boolean representing if the user is on the allowedInviters list 
+         * @author Alexander Beck
          */
         isUserAllowedToInvite(user) {
             const userId = user instanceof mongoose.Types.ObjectId ? user : user._id;
@@ -235,6 +238,7 @@ const eventSchema = new Schema({
          * @param {mongoose.Model} user The user setting the guest limit
          * @param {Number} guestLimit A non-negative number. The new guest limit to set to. 0 to remove the guest limit
          * @returns {Promise<Boolean>} A boolean representing if the guest limit was successfully changed
+         * @author Alexander Beck
          */
         async setGuestLimit(user, guestLimit) {
             // Why this is in event.js instead of user.js? I have no idea.
@@ -271,6 +275,7 @@ const eventSchema = new Schema({
         /**
          * @param {mongoose.Model} user The user removing the guest list
          * @returns {Promise<Boolean>} A boolean representing if the guest limit was successfully removed
+         * @author Alexander Beck
          */
         async removeGuestLimit(user) {
             if (!user) return false;
@@ -296,6 +301,7 @@ const eventSchema = new Schema({
           * @param {mongoose.Model} user The user setting the inviter limit
           * @param {Number} inviterLimit A non-negative number. The new inviter limit to set to. 0 to remove the inviter limit
           * @returns {Promise<Boolean>} A boolean representing if the inviter limit was successfully changed
+          * @author Alexander Beck
           */
         async setInviterLimit(user, inviterLimit) {
             // Why this is in event.js instead of user.js? I have no idea.
@@ -336,6 +342,7 @@ const eventSchema = new Schema({
         /**
          * @param {mongoose.Model} user The user removing the inviter list
          * @returns {Promise<Boolean>} A boolean representing if the inviter limit was successfully removed
+         * @author Alexander Beck
          */
         async removeInviterLimit(user) {
             if (!user) return false;

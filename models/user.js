@@ -398,13 +398,20 @@ const userSchema = new Schema({
             return await Event.getUpcomingEvents(this);
         },
 
-        /* eslint-disable-next-line no-unused-vars */
+        /**
+         * Used for the front end. Will return a list of guests, with their full names.
+         * @example await user.getInvitedGuests(christmasParty);
+         * @param {mongoose.Model} event The event to get the guests from
+         * @returns {Promise<Array<String>> | Promise<Boolean>} A list of names of invited guests or false if the event is empty
+         * @author Alexander Beck
+         */
         async getInvitedGuests(event) {
-            // Shows:
-            // Name
-
-            // Use event.getInvitesByInviter()
-            throw ReferenceError('Not yet implemented!');
+            // Used for frontend
+            if (!event) return false;
+            return Promise.all((await event.getInvitesByInviter(this)).map(async (invite) => {
+                if (typeof invite === 'string') return invite;
+                return await invite.fullName;
+            }));
         },
     },
     statics: {
