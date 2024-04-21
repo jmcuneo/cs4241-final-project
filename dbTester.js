@@ -83,7 +83,17 @@ export async function testDB() {
 
         await users[0].makeUnableToInvite(christmasParty, users[2]);
         console.log(await users[2].uninviteGuests(christmasParty, 'Bob Schmob'));
+        console.log(await christmasParty.setGuestLimit(users[0], 20));
+        console.log(christmasParty);
+        console.log(await christmasParty.setGuestLimit(users[1], 15));
+        console.log(christmasParty);
+        console.log(await christmasParty.setGuestLimit(users[0], 0));
+        console.log(christmasParty);
 
+        console.log(await christmasParty.setGuestLimit(users[0], 20));
+        console.log(christmasParty);
+
+        console.log(await christmasParty.setGuestLimit(users[0]));
         console.log(christmasParty);
         // TODO: Do NOT include users as guests
 

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import User, { ACCOUNT_TYPE, PERMISSIONS } from './user.js';
+import Logger, { EVENTS } from './actionlog.js';
 const { Schema, model } = mongoose;
 
 /**
@@ -223,8 +224,67 @@ const eventSchema = new Schema({
             return this.allowedInviters.some(allowedInviter => allowedInviter.equals(userId));
         },
 
-        async setGuestLimit() {
-            throw ReferenceError('Not yet implemented!');
+        /**
+         * @param {mongoose.Model} user The user setting the guest limit
+         * @param {Number} guestLimit A non-negative number. The new guest limit to set to. 0 to remove the guest limit
+         * @returns {Promise<Boolean>} A boolean representing if the guest limit was successfully changed
+         */
+        async setGuestLimit(user, guestLimit) {
+            // Why this is in event.js instead of user.js? I have no idea.
+            // Should it be in user.js? Probably.
+            // Am I going to change it? I might. But probably not.
+            if (!user) return false;
+            if (guestLimit === undefined) return false;
+
+            if (user.accountType === ACCOUNT_TYPE.ADMIN || user.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || this.creator === user._id) {
+                if (guestLimit === 0) {
+                    // Remove guest limit
+                    // TODO: This will likely remove the inviterLimit null as well. Is this expected behavior?
+                    return await this.removeGuestLimit(user);
+                } else if (guestLimit < 0) {
+                    // guestLimit should not be negative
+                    return false;
+                }
+                this.guestLimit = guestLimit;
+                try {
+                    await this.save();
+                    await Logger.create({
+                        action: EVENTS.MODIFY_EVENT,
+                        subject: user,
+                        event: this
+                    });
+                    return true;
+                } catch (err) {
+                    console.log(err);
+                    return false;
+                }
+            }
+            return false;
+        },
+
+        /**
+         * @param {mongoose.Model} user The user removing the guest list
+         * @returns {Promise<Boolean>} A boolean representing if the guest limit was successfully removed
+         */
+        async removeGuestLimit(user) {
+            if (!user) return false;
+            if (user.accountType === ACCOUNT_TYPE.ADMIN || user.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || this.creator === user._id) {
+                this.guestLimit = undefined;
+
+                try {
+                    await this.save();
+                    await Logger.create({
+                        action: EVENTS.MODIFY_EVENT,
+                        subject: user,
+                        event: this
+                    });
+                    return true;
+                } catch (err) {
+                    console.log(err);
+                    return false;
+                }
+            }
+            return false;
         },
 
         async setInviterLimit() {

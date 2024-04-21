@@ -269,7 +269,7 @@ const userSchema = new Schema({
                 let successfullyAdded = [];
                 // Has to be arrow notation; redefines 'this' otherwise
                 guests.forEach(async (guest) => {
-                    if (!event.attendees.some(attendee => attendee.guest === guest)) {
+                    if (guest && !event.attendees.some(attendee => attendee.guest === guest)) {
                         successfullyAdded.push(guest);
                         // Add user to the guest list
                         event.attendees.addToSet({ guest: guest, inviter: this });
@@ -316,6 +316,7 @@ const userSchema = new Schema({
             let hadPermissionAtLeastOnce = false;
 
             guests.forEach(async (guest) => {
+                // guest can also be undefined, which may cause an error.
                 // Can be evaluated to undefined > 0 which is false
                 const isInviter = event?.attendees?.filter(attendee =>
                     attendee.guest === guest && attendee.inviter === this)?.length > 0;
