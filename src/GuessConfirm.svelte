@@ -39,7 +39,9 @@
         <div class="popup continue">
             <span>You Guessed Wrong</span>
             <CardInner {img} {name}></CardInner>
-            <button class="confirm-button" on:click={(e) => decision(2)}
+            <button
+                class="confirm-button quarter-height"
+                on:click={(e) => decision(2)}
                 >Continue
             </button>
         </div>

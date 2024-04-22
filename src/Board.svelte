@@ -165,6 +165,7 @@
         <GuessConfirm
             img={card.img}
             name={card.name}
+            is_continue={guess_data.failed}
             on:flip={(e) => flip(e, guess_data.id)}
         ></GuessConfirm>
     {/if}
