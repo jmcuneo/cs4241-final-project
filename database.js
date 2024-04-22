@@ -125,6 +125,11 @@ async function updateGame(code,variable,value){
         $set:{}
     };
     updateDocument["$set"][variable]=value;
+    await games_collection.updateOne(filter,{
+        $set:{
+            "started":new Date()
+        }
+    });
     return await games_collection.updateOne(filter,updateDocument);
 }
 
