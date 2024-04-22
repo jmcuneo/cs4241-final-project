@@ -1,15 +1,34 @@
 import {useEffect, useState} from 'react'
 import './App.css'
+import {addScore, fetchScores, scoreEntry} from "./service/Score.ts";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {queryClient} from "./service/QueryClient.ts";
 
-function App() {
+export default function App() {
   //startWord
-  const [startWord, setStartWord] = useState('')
+  const [startWord, setStartWord] = useState('');
   //word count
   const [wordCount, setWordCount] = useState(0);
   //score
   const [score, setScore] = useState(0);
   //timer
   const [seconds, setSeconds] = useState(10);
+
+  //getScores.data has the data
+    const getScores = useQuery<scoreEntry[], Error>({
+        queryKey: ["scoreboard"],
+        queryFn: () => fetchScores()
+    });
+
+    //setScore.mutate(body) creates a new entry
+    const setScore = useMutation({
+        mutationKey: ["newScore"],
+        mutationFn: (body: any) => addScore(body),
+        onSuccess: () => {
+            return queryClient.invalidateQueries({queryKey: ["scoreboard"]});
+        }
+    });
+
   useEffect(() =>{
       const timer = setInterval(() => {
           setSeconds(prevSeconds => prevSeconds - 1)
@@ -39,6 +58,8 @@ function App() {
       }
   }
 
+
+
   return (
     <>
         <div>
@@ -56,15 +77,13 @@ function App() {
                     <h1>Score Counter</h1>
                     <p>Score: {score}</p>
                 </div>
-
             </div>
+
 
           {/* Start Word */}
           <button onClick={fetchStartWord}>Start</button>
           {startWord && <p>Start Word: {startWord}</p>}
       </div>
     </>
-  )
+  );
 }
-
-export default App
