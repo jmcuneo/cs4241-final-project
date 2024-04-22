@@ -32,7 +32,7 @@ export const PERMISSIONS = Object.freeze({
 /**
  * Defaults: accountType = {@linkcode ACCOUNT_TYPE.genpop}
  * 
- * Not required: gender, accountType, permissions
+ * Not required: accountType, permissions
  * @author Alexander Beck
  */
 const userSchema = new Schema({
@@ -56,10 +56,6 @@ const userSchema = new Schema({
         ref: 'Account',
         select: 'username',
         required: true
-    },
-    gender: {
-        type: String,
-        required: false,
     },
     accountType: {
         type: String,
@@ -456,7 +452,6 @@ const userSchema = new Schema({
  *          const user = await User.create({
  *              firstName: 'Jane',
  *              lastName: 'Doe',
- *              gender: 'Female',
  *          });
  * 
  *          // Creating user with an account
@@ -467,7 +462,6 @@ const userSchema = new Schema({
  *          const Jane = await User.createUser(JanesAccount, {
  *              firstName: 'Jane',
  *              lastName: 'Doe',
- *              gender: 'Female',
  *          });
  * 
  *          // Updating data
