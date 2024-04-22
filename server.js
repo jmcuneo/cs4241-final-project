@@ -111,9 +111,17 @@ io.on('connection', (socket) => {
     await database.updateGame(room,flippedArr+"."+index,!flippedArr[index]);
     sendServerChatMessage(room,name + " flipped " + cardName);
   });
-  socket.on('complete game left',(room,name)=>{
+  socket.on('complete game left',async function(room,name){
     sendServerChatMessage(room,name + " left.");
     socket.leave(room);
+    const game = await database.getGameByRoomCode(room);
+    if(name==game.p1.name){
+      await database.updateGame(room,"p1",null);
+      await checkForDelete(game,room,game.p2);
+    }else{
+      await database.updateGame(room,"p2",null);
+      await checkForDelete(game,room,game.p1);
+    }
   });
   socket.on('disconnecting',async function(reason){
     console.log("Disconnecting fired");
