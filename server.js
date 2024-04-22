@@ -5,6 +5,7 @@ import express, { json } from 'express';
 import mongoose from 'mongoose';
 import ViteExpress from 'vite-express';
 import { testDB, createDummyUsers } from './dbTester.js';
+import jwt from 'jsonwebtoken';
 
 import Account from './models/account.js';
 import session from 'express-session';
@@ -27,29 +28,17 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Session Middleware
 app.use(session({
-    secret: '5O$5HP^xg2zV0duE',
+    secret: '5O$5HP^xg2zV0duE',     //MAKE A NEW KEY EVENTUALLY AND MOVE TO .ENV
     resave: false,
     saveUninitialized: false,
-}));
+    cookie: { secure: true }
+  }));
+
 
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
-
-/*
-//auth middlware
-const isAuth = (req, res, next)=>{
-    if(req.session.isLoggedIn)
-    next()
-    else
-        res.redirect('/login')
-}
-
-// Protected authentication check route
-app.get('/', isAuth, (req, res) => {
-});*/
 
 // Register Route
 app.post('/register', async (req, res) => {
@@ -78,8 +67,22 @@ app.post('/register', async (req, res) => {
 
 //login route
 app.post('/login', passport.authenticate('local', { failureMessage: true }), async (req, res) => {
-    res.json({ success: true, message: "Login successful" });
+    const user = await Account.findOne({ username: req.body.username });
+    if (!user) 
+        return res.status(404).json({ success: false, message: "User not found" });
+    
+    const token = generateToken(user);
+    req.session.user = { id: user._id, username: req.username };
+    res.json({ success: true, token, message: "Login successful" });
 });
+
+function generateToken(user){
+    const payload = {
+        username: user.username,
+    };
+
+    return jwt.sign(payload, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!", { expiresIn: '1h' });     //MAKE A NEW KEY EVENTUALLY AND MOVE TO .ENV
+}
 
 // Connect to the database
 connectToDB().catch(err => console.log(err));

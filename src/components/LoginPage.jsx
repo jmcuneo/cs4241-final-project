@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
  * @author Jack Weinstein
  */
 
-function LoginPage() {
+function LoginPage({onLogin}) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -45,6 +45,7 @@ function LoginPage() {
 
       const data = await response.json();
       setMessage("Logging In..."); 
+      onLogin(data.token);
       navigate("/main");
 
     } catch (error) {
