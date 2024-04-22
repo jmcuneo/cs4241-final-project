@@ -100,28 +100,31 @@ io.on('connection', (socket) => {
       if(index==answer){
         socket.broadcast.to(room).emit('game end',winner,otherAnswer);
         socket.emit('game end',winner,answer);
+      }else{
+        socket.emit('guess failed');
       }
-    }else{
-      socket.emit('guess failed');
     }
   });
   socket.on('flip',async function(room,name,index,cardName){
     //TODO: Add to flipped obj
     //TODO: Change to send server message function
     const game = await database.getGameByRoomCode(room);
-    let flippedArr = game.p1.name==name?"flipped_p1":"flipped_p2"
-    await database.updateGame(room,flippedArr+"."+index,!flippedArr[index]);
+    let flippedArr = game.p1.name==name?"flipped_p1":"flipped_p2";
+    // console.log(game[flippedArr][index]);
+    await database.updateGame(room,flippedArr+"."+index,!game[flippedArr][index]);
     sendServerChatMessage(room,name + " flipped " + cardName);
   });
   socket.on('complete game left',async function(room,name){
     sendServerChatMessage(room,name + " left.");
     socket.leave(room);
     const game = await database.getGameByRoomCode(room);
-    if(name==game.p1.name){
+    if(game.p1 != null && name==game.p1.name){
       await database.updateGame(room,"p1",null);
+      await database.updateGame(room,"playAgain_p1",false);
       await checkForDelete(game,room,game.p2);
-    }else{
+    }else if(game.p2 != null){
       await database.updateGame(room,"p2",null);
+      await database.updateGame(room,"playAgain_p2",false);
       await checkForDelete(game,room,game.p1);
     }
   });
@@ -136,6 +139,10 @@ io.on('connection', (socket) => {
           // io.to(room).emit('message receive',"Server",rooms[room].p1.name + " disconnected.");
           sendServerChatMessage(room,game.p1.name + " disconnected.");
           await database.updateGame(room,"p1",null);
+          await database.updateGame(room,"playAgain_p1",false);
+          if(game.p2 != null){
+            socket.to(game.p2.id).emit('play again deselected');
+          }
           await checkForDelete(game,room,game.p2);
         }
         if(game.p2 != null && game.p2.id==socket.id){
@@ -143,6 +150,10 @@ io.on('connection', (socket) => {
           // io.to(room).emit('message receive',"Server",rooms[room].p2.name + " disconnected.");
           sendServerChatMessage(room,game.p2.name + " disconnected.");
           await database.updateGame(room,"p2",null);
+          await database.updateGame(room,"playAgain_p2",false);
+          if(game.p1 != null){
+            socket.to(game.p1.id).emit('play again deselected');
+          }
           await checkForDelete(game,room,game.p1);
         }
 
@@ -154,6 +165,41 @@ io.on('connection', (socket) => {
     //TODO: Handle disconnect
     //socket.rooms.forEach will iterate through rooms they've joined
     console.log("user disconnected");
+  });
+  socket.on('play again',async function(room,name){
+    const game = await database.getGameByRoomCode(room);
+    let startNewGame = false;
+    let isPlayer1 = false;
+    //TODO: Set these back to false if someone leaves.
+    //Set text to x/2 where x is the number of players who have selected it.
+    if(game!=null && game.p1 != null && game.p2 != null){
+      if(game.p1.name=="Player 1"){
+        isPlayer1=true;
+        database.updateGame(game,"playAgain_p1",true);
+        if(game.playAgain_p2){
+          startNewGame=true;
+        }
+        socket.to(game.p2.id).emit('play again selected');
+      }else{
+        database.updateGame(game,"playAgain_p2",true);
+        if(game.playAgain_p1){
+          startNewGame=true;
+        }
+        socket.to(game.p1.id).emit('play again selected');
+      }
+    }
+    if(startNewGame){
+      await database.deleteGame(room);
+      const newGame = await database.createNewGame(room,"pokemon");
+      await database.updateGame(room,"p1",{name:"Player 1",id:game.p1.id});
+      await database.updateGame(room,"p2",{name:"Player 2",id:game.p2.id});
+      socket.emit('host success',room,"Player 1");
+      sendServerChatMessage(room,"Player 1 joined the game.");
+      io.to(game.p1.id).emit('host success',room,"Player 1");
+      io.to(game.p2.id).emit('join success',room,"Player 2");
+      io.to(game.p1.id).emit('game setup',newGame.board,newGame.answer_p1,newGame.flipped_p1,newGame.guessed_p1,newGame.chat);
+      io.to(game.p2.id).emit('game setup',newGame.board,newGame.answer_p1,newGame.flipped_p1,newGame.guessed_p1,newGame.chat)
+    }
   });
 });
 
