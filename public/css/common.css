@@ -2,12 +2,14 @@
     --fixed-background: #FFFFFF;
     --fixed-text: #000000;
     --fixed-header: #AC2B37;
+    --fixed-sub-header: #902530;
     --fixed-header-text: #FFFFFF;
     --fixed-accent: #A9B0B7;
 
     --background: #FFFFFF;
     --text: #000000;
     --header: #AC2B37;
+    --sub-header: #902530;
     --header-text: #FFFFFF;
     --accent: #A9B0B7;
 }
@@ -33,6 +35,7 @@ body {
     color: var(--header-text);
     padding: 2vh;
     width: 100%;
+    height: max-content;
     box-sizing: border-box;
     position: relative;
 }
@@ -67,6 +70,7 @@ body {
     height: 100%;
     aspect-ratio: 1/1;
     padding: 4px;
+    fill: var(--fixed-header-text);
 }
 body.dark #dark-switch {
     display: none;
