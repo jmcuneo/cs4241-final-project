@@ -1,17 +1,17 @@
 
 const test = [
-    {img: "", title: "Person 1", info: "good", alt: "test here"},
-    {img: "", title: "Person 2", info: "shit", alt: "test here"},
-    {img: "", title: "Event 1", info: "bad", alt: "test here"},
-    {img: "", title: "Event 2", info: "great", alt: "test here"},
-    {img: "", title: "Person 3", info: "ahhhh", alt: "test here"},
-    {img: "", title: "Event 3", info: "kiss kiss", alt: "test here"},
-    {img: "", title: "Person 4", info: "mwah", alt: "test here"},
-    {img: "", title: "Event 4", info: "sup", alt: "test here"},
-    {img: "", title: "Event 5", info: "dying", alt: "test here"},
-    {img: "", title: "Person 5", info: "bro", alt: "test here"},
-    {img: "", title: "Person 6", info: "good shit", alt: "test here"},
-    {img: "", title: "Event 6", info: "bruh", alt: "test here"}
+    {img: "https://i.guim.co.uk/img/media/f81bb42a3314f5c4702cd08406c1bd89fa1f4fe8/0_2_2500_1499/master/2500.jpg?width=1200&height=900&quality=85&auto=format&fit=crop&s=00fdca93446c99792cfc81e7074072bc", title: "Marsha P Johnson", info: "good", alt: "test here"},
+    {img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/LGBT_flag_square.svg/2048px-LGBT_flag_square.svg.png", title: "Person 2", info: "shit", alt: "test here"},
+    {img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsno7c9dEv5Ce96wGKhEnflTfc0nX6hEiiluueIR0CJQ&s", title: "Event 1", info: "bad", alt: "test here"},
+    {img: "https://www.pointofpride.org/hubfs/Imported_Blog_Media/PointOfPride_Blog_HistoryOfTheTransFlag.png#keepProtocol", title: "Event 2", info: "great", alt: "test here"},
+    {img: "https://i.kym-cdn.com/entries/icons/facebook/000/039/484/cover7.jpg", title: "Person 3", info: "ahhhh", alt: "test here"},
+    {img: "https://www.unco.edu/gender-sexuality-resource-center/images/pride-flags/Lesbian-Pride.jpg", title: "Event 3", info: "kiss kiss", alt: "test here"},
+    {img: "https://upload.wikimedia.org/wikipedia/commons/7/75/Nonbinary_flag.svg", title: "Person 4", info: "mwah", alt: "test here"},
+    {img: "https://upload.wikimedia.org/wikipedia/commons/2/2a/Bisexual_Pride_Flag.svg", title: "Event 4", info: "sup", alt: "test here"},
+    {img: "https://www.northwestern.edu/civil-rights-office/images/progressprideflag-danielquasar-highrez.png", title: "Event 5", info: "dying", alt: "test here"},
+    {img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Asexual_Pride_Flag.svg/1280px-Asexual_Pride_Flag.svg.png", title: "Person 5", info: "bro", alt: "test here"},
+    {img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Pansexuality_Pride_Flag.svg/1200px-Pansexuality_Pride_Flag.svg.png", title: "Person 6", info: "good shit", alt: "test here"},
+    {img: "https://assets.volvo.com/is/image/VolvoInformationTechnologyAB/image14?qlt=82&wid=1024&ts=1670911241536&dpr=off&fit=constrain&fmt=png-alpha", title: "Event 6", info: "bruh", alt: "test here"}
 ]
 
 let selected1 = null
@@ -49,9 +49,14 @@ function addCell(content) {
     cell.id = content.title
     cell.addEventListener("click", select)
     cell.addEventListener("mouseenter", showInfo)
-    let box = makeElem("div", "box", "", cell)
-    let cont = makeElem("p", "", content.title, box)
-    
+    let card = makeElem("div", "card has-text-weight-bold", "", cell)
+    let imgCard = makeElem("div", "card-image", "", card)
+    let imgWrap = makeElem("figure", "image is-4by3", "", imgCard)
+    let img = makeElem("img", "", null, imgWrap)
+    img.src = content.img
+    img.alt = content.alt
+    // img.style.objectFit = "cover"
+    let cont = makeElem("p", "is-6", content.title, card)
 }
 
 function makeElem(type, classType, inner, parent) {
@@ -68,6 +73,7 @@ function select(event) {
     if(id != selected1 && id != selected2) {
         if (selected2 != null) {
             let oldSelected = document.getElementById(selected1).childNodes[0]
+            // oldSelected.style.border = "none"
             oldSelected.style.backgroundColor = defaultColor 
             selected1 = selected2
             selected2 = id         
@@ -76,6 +82,7 @@ function select(event) {
         } else {
             selected1 = id
         }
+        // elem.style.border = "3px solid " + selectedColor
         elem.style.backgroundColor = selectedColor
     }
 }
