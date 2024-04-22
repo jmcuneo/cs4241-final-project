@@ -117,10 +117,10 @@ io.on('connection', (socket) => {
     sendServerChatMessage(room,name + " left.");
     socket.leave(room);
     const game = await database.getGameByRoomCode(room);
-    if(name==game.p1.name){
+    if(game.p1 != null && name==game.p1.name){
       await database.updateGame(room,"p1",null);
       await checkForDelete(game,room,game.p2);
-    }else{
+    }else if(game.p2 != null){
       await database.updateGame(room,"p2",null);
       await checkForDelete(game,room,game.p1);
     }
