@@ -1,47 +1,63 @@
 <script>
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  let msgs = []
+  let hp1 = 100;
+  let hp2 = 100;
+  let hp3 = 100;
+  let hp4 = 100;
+
+  const ws = new WebSocket( 'ws://127.0.0.1:3000' )
+
+  // when connection is established...
+  ws.onopen = () => {
+    ws.send( 'a new client has connected.' )
+    ws.onmessage = async msg => {
+      // add message to end of msgs array,
+      // re-assign to trigger UI update
+      const message = await msg.data.text()
+      switch(message){
+        case "1":
+          hp1--;
+          break;
+        case "2":
+          hp2--;
+          break;
+        case "3":
+          hp3--;
+          break;
+        case "4":
+          hp4--;
+          break;
+      }
+
+
+    }
+  }
+
+  // const send = function(txt) {
+  //   ws.send( txt )
+  //   msgs = msgs.concat([ 'me: ' + txt ])
+  // }
+
+  const countdown = function() {
+    console.log("counting down")
+    // let val = this.textContent;
+    let playerId = this.id; //player1 player2 etc
+    console.log(playerId)
+    ws.send(playerId)
+  }
+
 </script>
 
-<main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>Vite + Svelte</h1>
+<!--<input type='text' on:change={send} />-->
 
-  <div class="card">
-    <Counter />
-  </div>
 
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
 
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
-</main>
+<button on:click={countdown} id="1">{hp1}</button>
+<button on:click={countdown} id="2">{hp2}</button>
+<button on:click={countdown} id="3">{hp3}</button>
+<button on:click={countdown} id="4">{hp4}</button>
 
-<style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
-  }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
-  }
-</style>
+
+<!--{#each msgs as msg }-->
+<!--  <h3>{msg}</h3>-->
+<!--{/each}-->

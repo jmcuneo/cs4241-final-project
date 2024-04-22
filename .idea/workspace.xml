@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46836379-5a5c-461b-8fd8-2ed99e734ee7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="46836379-5a5c-461b-8fd8-2ed99e734ee7" name="Changes" comment="Vite project setup" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -49,11 +47,23 @@
       <option name="presentableId" value="Default" />
       <updated>1713388143716</updated>
       <workItem from="1713388145550" duration="1924000" />
-      <workItem from="1713802121481" duration="739000" />
+      <workItem from="1713802121481" duration="1074000" />
     </task>
+    <task id="LOCAL-00001" summary="Vite project setup">
+      <created>1713803135897</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1713803135897</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Vite project setup" />
+    <option name="LAST_COMMIT_MESSAGE" value="Vite project setup" />
   </component>
 </project>
