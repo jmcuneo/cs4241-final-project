@@ -67,40 +67,74 @@ async function addDataToTable(table){
   table.innerHTML = "";
 
   let scores = await getScores();
-  let columnNames = ["User","Score"];
+  let columnNames = ["","User","Score"];
+  let classNames = ["","username","score"]
+  let width = ["width:25px", "width:40%", "width:40%"]
   let tableHead = table.createTHead();
   let row = tableHead.insertRow();
+  let count = 0;
 
   // For each score in the list, it builds out a row with that entry
   for (let score of scores){
     delete score['_id'];
     let row = table.insertRow();
     row.setAttribute("scope", "row")
+    if(count===0){
+      let medal = row.insertCell()
+      let img = document.createElement("img")
+      img.setAttribute("src", "/images/goldMedal.png")
+      img.setAttribute("style","width:20px;height:20px;")
+      medal.appendChild(img)
+    } else if (count===1){
+      let medal = row.insertCell()
+      let img = document.createElement("img")
+      img.setAttribute("src", "/images/silverMedal.png")
+      img.setAttribute("style","width:20px;height:20px;")
+      medal.appendChild(img)
+    } else if (count ===2) {
+      let medal = row.insertCell()
+      let img = document.createElement("img")
+      img.setAttribute("src", "/images/bronzeMedal.png")
+      img.setAttribute("style","width:20px;height:20px;")
+      medal.appendChild(img)
+    }
 
     for (const property in score) {
       let data = row.insertCell();
+      data.setAttribute("class", property);
       let content = document.createTextNode(score[property]);
       data.appendChild(content);
     }
+    count++;
   }
+  
 
   if(scores.length<10){
     for(let count = 0; count<10-scores.length; count++){
         let row = table.insertRow();
+        row.setAttribute("scope", "row")
         for (const property in columnNames) {
             let data = row.insertCell();
-            let content = document.createTextNode("-");
+            data.setAttribute("class",classNames[property]);
+            if(property==0){
+              var content = document.createTextNode((10-(10-count))+scores.length+1);
+            } else {
+              var content = document.createTextNode("-");
+            }
+            
             data.appendChild(content);
           }
     }
   }
 
   // Adds the table headers (column names)
-  for (let name of columnNames){
+  for (let count = 0; count<3; count++){
     let th = document.createElement("th");
-    let cName = document.createTextNode(name);
+    let cName = document.createTextNode(columnNames[count]);
     th.setAttribute("scope","col")
     th.appendChild(cName);
+    th.setAttribute("class", classNames[count])
+    th.setAttribute("style", width[count])
     row.appendChild(th);
   }
 };

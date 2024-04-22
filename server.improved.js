@@ -134,7 +134,6 @@ app.get( '/getScores', async (req, res) => {
 
 /* Route that adds a book to the database
 app.post( '/submitAdd', (req, res) => {
-  // Pushes a new book to the people array using the parsed data
   let dataString = ""
 
   req.on( "data", function( data ) {

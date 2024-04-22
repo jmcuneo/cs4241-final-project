@@ -1,3 +1,9 @@
-body {
-    font-family: Arial, Helvetica, sans-serif;
-  }
+.press-start-2p-regular {
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.username {
+  text-align:right;
+}

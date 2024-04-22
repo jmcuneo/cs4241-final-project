@@ -8,15 +8,19 @@
     
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/main.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-dark text-white">
+  <body class="bg-dark text-white press-start-2p-regular">
     <header class="navbar navbar-expand-lg bg-black">
       <div class="container-fluid">
 
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <img src="/images/wpiLogo.png" height="50" width="140" alt="WPI Logo" loading="lazy"/>
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 pt-2">
             <li class="nav-item">
               <h4 class="my-auto"><a class="nav-link text-black" href="/">TT</a></h4>
             </li>
@@ -43,12 +47,12 @@
 
 
     <div class="container">
-      <div class = "pt-4 pb-2 mx-auto mt-4 rounded" style="width:80%;background-color:#032050">
-        <h2 class="text-center"><b>sᴉɹʇǝʇ Top 10 Scoreboard</b></h2>
+      <div class = "pt-4 pb-2 mx-auto mt-4 rounded" style="background-color:#032050">
+        <h2 class="text-center"><b>Inverse Tetris Top 10 Scoreboard</b></h2>
       </div>
 
-      <div id = "scores" class="bg-black p-4 rounded m-auto mt-5" style="width:80%;">
-        <table id = "scoresTable" class="table table-striped table-dark table-bordered table-hover">
+      <div id = "scores" class="bg-black p-4 rounded m-auto mt-5 d-flex justify-content-center w-75">
+        <table id = "scoresTable" class="table table-striped table-dark table-hover m-3 w-75">
 
         </table>
       </div>

@@ -10,14 +10,19 @@
     <link rel="stylesheet" href="./css/main.css">
     <!-- get rid of favicon error -->
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
   </head>
-  <body class = "bg-dark text-white">
+  <body class = "bg-dark text-white press-start-2p-regular">
     <header class="navbar navbar-expand-lg bg-black">
 
       <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <img src="/images/wpiLogo.png" height="50" width="140" alt="WPI Logo" loading="lazy"/>
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 pt-2">
             <li class="nav-item">
               <h4 class="my-auto"><a class="nav-link text-black" href="/">TT</a></h4>
             </li>
@@ -44,11 +49,20 @@
     </header>
 
     <div class="container">
-      <div class = "pt-4 pb-2 mx-auto mt-4 rounded" style="width:80%;background-color:#032050">
-        <h2 class="text-center"><b>sᴉɹʇǝʇ</b></h2>
+      <div class = "pt-4 pb-2 mx-auto mt-4" style="background-color:#032050">
+        <h2 class="text-center"><b>Inverse Tetris</b></h2>
       </div>
 
-      <div style="display: flex; justify-content: center;" class="mt-3">
+      <div class="d-flex flex-row-reverse bg-black py-4">
+        <div class="bg-dark text-center py-2 mx-3" style="width:33%">
+          High Score: <p id="highScore" style="display: inline;">(WIP)</p>
+        </div>
+        <div class="bg-dark text-center py-2 mx-3" style="width:33%">
+          Current Score: <p id="currentScore" style="display: inline;">(WIP)</p>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: center; background-color:#0c0c0c;" class="p-5">
           <canvas id="board" style="margin-left: auto; margin-right: 0"></canvas>
           <canvas id="next" style="margin-left: 0; margin-right: auto"></canvas>
       </div>
