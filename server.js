@@ -100,9 +100,9 @@ io.on('connection', (socket) => {
       if(index==answer){
         socket.broadcast.to(room).emit('game end',winner,otherAnswer);
         socket.emit('game end',winner,answer);
+      }else{
+        socket.emit('guess failed');
       }
-    }else{
-      socket.emit('guess failed');
     }
   });
   socket.on('flip',async function(room,name,index,cardName){
