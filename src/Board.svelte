@@ -52,6 +52,9 @@
     async function flip(e, index: Number) {
         const board = await images;
         const obj = e.detail;
+        if (obj.continue) {
+            guess_data = null;
+        }
         if (obj.confirm) {
             socket.emit(
                 "guess",
@@ -64,7 +67,7 @@
             guess_data.callback(false);
             guess_data = null;
         } else if (obj.perm_flip) {
-            guess_data = { id: index, callback: obj.callback };
+            guess_data = { id: index, callback: obj.callback, failed: false };
         } else {
             socket.emit(
                 "flip",
@@ -131,7 +134,7 @@
     }
     function guessFailed() {
         guess_data.callback(true);
-        guess_data = null;
+        guess_data.failed = true;
     }
 
     socket.on("game end", gameEnd);
