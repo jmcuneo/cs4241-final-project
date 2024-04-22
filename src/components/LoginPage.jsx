@@ -1,6 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 
+/**
+ * @author Jack Weinstein
+ */
+
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -16,7 +20,7 @@ function LoginPage() {
     setMessage('Logging in...');
   
     try {
-      const response = await fetch('/localhost:3000/login', {
+      const response = await fetch('//localhost:3000/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -26,14 +30,22 @@ function LoginPage() {
       });
       
       if (!response.ok) {
-        const data = await response.json();
-        setMessage(data.message); // Display the specific error message
-        throw new Error('Login failed');
+        if (response.status === 401) {
+          // Handle 401 Unauthorized error
+          const errorMessage = await response.text(); // Read response as text
+          setMessage(errorMessage); // Display the specific error message
+          throw new Error(errorMessage); // Throw custom error with message
+        } else {
+          // Handle other errors (e.g., 500 Internal Server Error)
+          const data = await response.json();
+          setMessage(data.message); // Display the error message
+          throw new Error(data.message); // Throw custom error with message
+        }
       } 
 
       const data = await response.json();
       setMessage("Logging In..."); 
-      navigate("/delivery-log");
+      navigate("/main");
 
     } catch (error) {
       console.error('Login error:', error.message);
