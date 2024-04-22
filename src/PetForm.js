@@ -62,7 +62,7 @@ function PetForm() {
   return (
     <div>
     <h2>Create your Pet to Race!</h2>
-    <Form onSubmit={handleSubmit} className="p-4">
+    <Form onSubmit={handleSubmit}>
       <Form.Group controlId="petName">
         <Form.Label>Pet Name:</Form.Label>
         <Form.Control
