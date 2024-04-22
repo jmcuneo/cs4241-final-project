@@ -20,15 +20,25 @@
     let messages = [];
 
     socket.on("message receive", (name, msg) => {
-        messages.push({ name: name, message: msg });
-        messages=messages;
+        let player_num = 0;
+        if (name == "Server") {
+            player_num = 2;
+        } else if ((game_data.player = "Player 1")) {
+            player_num = 0;
+        } else {
+            player_num = 1;
+        }
+
+        messages.push({ name: name, message: msg, player_num });
+        messages = messages;
+
         console.log(name, msg);
     });
 </script>
 
 <div class="chat-window">
-    {#each messages as { name, message }}
-        <ChatMessage {name} {message}></ChatMessage>
+    {#each messages as { name, message, player_num }}
+        <ChatMessage {name} {message} player_id={player_num}></ChatMessage>
     {/each}
 </div>
 <p class="code">Code: {game_data.id}</p>

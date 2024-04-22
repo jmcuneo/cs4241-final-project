@@ -1,0 +1,23 @@
+.player1 {
+    color: red;
+
+    & .message {
+        color: darkred;
+    }
+}
+
+.player2 {
+    color: blue;
+
+    & .message {
+        color: darkblue;
+    }
+}
+
+.server {
+    color: gold;
+
+    & .message {
+        color: goldenrod;
+    }
+}
