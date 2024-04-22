@@ -18,7 +18,7 @@ let selected1 = null
 let selected2 = null
 
 let defaultColor = "azure"
-let selectedColor = "rgb(176, 224, 193)"
+let selectedColor = "rgb(116, 138, 227)"
 
 let totalTime = 0
 let minute = 0
@@ -55,7 +55,6 @@ function addCell(content) {
     let img = makeElem("img", "", null, imgWrap)
     img.src = content.img
     img.alt = content.alt
-    // img.style.objectFit = "cover"
     let cont = makeElem("p", "is-6", content.title, card)
 }
 
@@ -67,24 +66,34 @@ function makeElem(type, classType, inner, parent) {
     return item
 }
 
-function select(event) {
+async function select(event) {
     let elem = this.childNodes[0]
     let id = this.id
-    if(id != selected1 && id != selected2) {
-        if (selected2 != null) {
+    if(!elem.className.includes("inactive")) {
+        if(id != selected1 && selected2 == null) {
+            if (selected1 == null) {
+                elem.style.backgroundColor = selectedColor
+                selected1 = id        
+            } else {
+                selected2 = id
+                let body = JSON.stringify({item1: selected1, item2: selected2, timeElapsed: totalTime})
+                // const response = await fetch( "/select", {
+                //     method:'POST',
+                //     headers: { 'Content-Type': 'application/json'},
+                //     body 
+                // })
+                // const resp = await response.json()
+                //handleGuess(resp)
+                handleGuess({score: 1000, validMatch: true}) //For testing purposes
+            }   
+        } else if (id == selected1) {
             let oldSelected = document.getElementById(selected1).childNodes[0]
-            // oldSelected.style.border = "none"
             oldSelected.style.backgroundColor = defaultColor 
             selected1 = selected2
-            selected2 = id         
-        } else if (selected1 != null){
-            selected2 = id
-        } else {
-            selected1 = id
-        }
-        // elem.style.border = "3px solid " + selectedColor
-        elem.style.backgroundColor = selectedColor
+            selected2 = null
+        }        
     }
+
 }
 
 function showInfo(event) {
@@ -115,3 +124,58 @@ function stopWatch() {
     document.getElementById('min').innerHTML = minString
     document.getElementById('sec').innerHTML = secString
 }
+
+function handleGuess(resp) {
+    let score = resp.score
+    let match = resp.validMatch
+
+    displayScore(score)
+
+    let oldSelected = document.getElementById(selected1).childNodes[0]
+    oldSelected.style.backgroundColor = defaultColor     
+    handleDisplay(selected1, match)
+    handleDisplay(selected2, match)
+    selected1 = null
+    selected2 = null   
+}
+
+function handleDisplay(itemID, match) {
+    let item = document.getElementById(itemID).childNodes[0]
+    if(match) {
+        item.style.border = "2px solid green"
+        item.style.backgroundColor = "green"
+        item.className = item.className + " inactive"
+    }
+}
+
+function displayScore(score) {
+    let scoreboard = document.getElementById("score")
+    let currentScore = parseInt(scoreboard.innerHTML) + score
+    scoreboard.innerHTML = currentScore
+}
+
+//Old vanilla selection code
+// if(id != selected1 && id != selected2) {
+//     if (selected2 != null) {
+//         let oldSelected = document.getElementById(selected1).childNodes[0]
+//         // oldSelected.style.border = "none"
+//         oldSelected.style.backgroundColor = defaultColor 
+//         selected1 = selected2
+//         selected2 = id         
+//     } else if (selected1 != null){
+//         selected2 = id
+//     } else {
+//         selected1 = id
+//     }
+//     // elem.style.border = "3px solid " + selectedColor
+//     elem.style.backgroundColor = selectedColor
+// } else if (id == selected2) {
+//     let oldSelected = document.getElementById(selected2).childNodes[0]
+//     oldSelected.style.backgroundColor = defaultColor 
+//     selected2 = null
+// } else if (id == selected1) {
+//     let oldSelected = document.getElementById(selected1).childNodes[0]
+//     oldSelected.style.backgroundColor = defaultColor 
+//     selected1 = selected2
+//     selected2 = null
+// }
