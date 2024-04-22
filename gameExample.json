@@ -1,7 +1,12 @@
 {
     "roomCode":"game time",
     "type":"pokemon",
-    "board":[32,12,490,290,800],
+    "board":[
+        {
+            "label":"Necrozma",
+            "unique_id":800
+        }
+    ],
     "chat":[
         {"author":"server","msg":"player 1 joined the game"},
         {"author":"p1","msg":"hi"},
@@ -9,10 +14,10 @@
     ],
     "answer_p1":0,
     "answer_p2":23,
-    "flipped_p1":[0,1,3,5],
-    "flipped_p2":[5,3,2,15,18],
-    "guessed_p1":[8],
-    "guessed_p2":[16,20],
+    "flipped_p1":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],
+    "flipped_p2":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],
+    "guessed_p1":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],
+    "guessed_p2":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],
     "started":1000000,
     "p1":{"name":"Player 1","id":"some string"},
     "p2":null

@@ -14,24 +14,6 @@
     const width = 6;
     const height = 4;
     const bingo = "WHOMST";
-
-    async function get_server_board() {
-        let numPokemon = await getNumPokemon();
-        let promises = [...Array(width * height).keys()].map(async (e) => {
-            let pokemon = await getPokemonFromGame(game_data.id, e);
-            console.log(pokemon[0]);
-            let num = Math.floor(Math.random() * numPokemon) + 1;
-            return {
-                name: `${pokemon[0].label} ${pokemon[0].unique_id}`,
-                link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(pokemon[0].unique_id + "").padStart(3, "0")}.png`,
-            };
-        });
-        let board = await Promise.all(promises);
-        return {
-            board,
-            whomst: 4,
-        };
-    }
  
     // prefetch all images before rendering board
     async function get_board(serverBoard) {

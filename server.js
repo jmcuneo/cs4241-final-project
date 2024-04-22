@@ -26,17 +26,9 @@ io.on('connection', (socket) => {
   console.log('a user connected');
   function sendServerChatMessage(room,message){
     //TODO: Append to chat history.
+    database.pushGame(room,'chat',{"author":"Server","msg":message});
     io.to(room).emit('message receive',"Server",message);
   }
-  socket.on('disconnect',()=>{
-    //TODO: Handle disconnect
-    //socket.rooms.forEach will iterate through rooms they've joined
-    console.log("user disconnected");
-  });
-  socket.on('chat message',(msg)=>{
-    console.log("Message: " + msg);
-    socket.emit('host failed','room full');
-  });
   socket.on('host game', async (room)=>{
     room = room.toLowerCase();
     const existingGame = await database.getGameByRoomCode(room);
@@ -47,6 +39,7 @@ io.on('connection', (socket) => {
       console.log("Message: ", room);
 
       const game = await database.createNewGame(room,"pokemon");
+      await database.updateGame(room,"p1",{name:"Player 1",id:socket.id});
 
       socket.join(room);
       socket.emit('host success',room,"Player 1");
@@ -86,6 +79,7 @@ io.on('connection', (socket) => {
   });
   socket.on('chat message',(room,name,msg)=>{
     //TODO: Append to chat history
+    database.pushGame(room,'chat',{"author":name,"msg":msg});
     io.to(room).emit('message receive',name,msg);
   });
   socket.on('guess',async function(room,name,index,cardName){
@@ -102,11 +96,13 @@ io.on('connection', (socket) => {
         answer = game.answer_p2;
         otherAnswer = game.answer_p1;
         winner = game.p1.name;
+        database.updateGame(room,"guessed_p1."+index,true);
       }else{
         //p2
         answer = game.answer_p1;
         otherAnswer = game.answer_p2;
         winner = game.p2.name;
+        database.updateGame(room,"guessed_p2."+index,true);
       }
       console.log("Guess: " + index + ", Answer: " + answer);
       if(index==answer){
@@ -115,9 +111,12 @@ io.on('connection', (socket) => {
       }
     }
   });
-  socket.on('flip',(room,name,index,cardName)=>{
+  socket.on('flip',async function(room,name,index,cardName){
     //TODO: Add to flipped obj
     //TODO: Change to send server message function
+    const game = await database.getGameByRoomCode(room);
+    let flippedArr = game.p1.name==name?"flipped_p1":"flipped_p2"
+    await database.updateGame(room,flippedArr+"."+index,!flippedArr[index]);
     sendServerChatMessage(room,name + " flipped " + cardName);
   });
   socket.on('complete game left',(room,name)=>{
@@ -125,25 +124,33 @@ io.on('connection', (socket) => {
     socket.leave(room);
   });
   socket.on('disconnecting',async function(reason){
+    console.log("Disconnecting fired");
     for(const room of socket.rooms){
       // console.log(room);
       const game = await database.getGameByRoomCode(room);
+      console.log(game);
       if(game != null){
+        console.log(game.p1,game.p2,socket.id);
         if(game.p1 != null && game.p1.id==socket.id){
-          // console.log("p1 disconnected");
+          console.log("p1 disconnected");
           // io.to(room).emit('message receive',"Server",rooms[room].p1.name + " disconnected.");
-          sendServerChatMessage(game.p1.name + " disconnected.");
-          game.p1=null;
+          sendServerChatMessage(room,game.p1.name + " disconnected.");
+          await database.updateGame(room,"p1",null);
         }
         if(game.p2 != null && game.p2.id==socket.id){
-          // console.log("p2 disconnected");
+          console.log("p2 disconnected");
           // io.to(room).emit('message receive',"Server",rooms[room].p2.name + " disconnected.");
-          sendServerChatMessage(game.p2.name + " disconnected.");
-          game.p2=null;
+          sendServerChatMessage(room,game.p2.name + " disconnected.");
+          await database.updateGame(room,"p2",null);
         }
         break;
       }
     }
+  });
+  socket.on('disconnect',()=>{
+    //TODO: Handle disconnect
+    //socket.rooms.forEach will iterate through rooms they've joined
+    console.log("user disconnected");
   });
 });
 

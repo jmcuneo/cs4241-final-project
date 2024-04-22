@@ -24,7 +24,7 @@ let pokemon_collection = null;
 
 let games_collection = null;
 
-const exp = { set_up_db_store, client, DB: null, getNumPokemon, getPokemonFromGame, getGameByRoomCode, updateGame, createNewGame }
+const exp = { set_up_db_store, client, DB: null, getNumPokemon, getPokemonFromGame, getGameByRoomCode, updateGame, createNewGame, pushGame}
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -117,16 +117,30 @@ async function getGameByRoomCode(code){
     }
 }
 
-async function updateGame(code,player,value){
+async function updateGame(code,variable,value){
     const filter = {
         roomCode:code
     };
     const updateDocument = {
         $set:{}
     };
-    updateDocument["$set"][player]=value;
+    updateDocument["$set"][variable]=value;
     return await games_collection.updateOne(filter,updateDocument);
 }
+
+async function pushGame(code,variable,value){
+    const filter = {
+        roomCode:code
+    };
+    const updateDocument = {
+        $push:{
+
+        }
+    }
+    updateDocument["$push"][variable]=value;
+    return await games_collection.updateOne(filter,updateDocument);
+}
+
 
 
 async function createNewGame(code,gameType){
@@ -143,6 +157,10 @@ async function createNewGame(code,gameType){
 
         //Create a game-board with 24 random tiles using the type [Returns an array of 24 DB objects]
         let board = await getNpokemon(24);
+        let guessedArr = [];
+        for(let i = 0; i < 24; i++){
+            guessedArr.push(false);
+        }
 
         let newGame =
             {
@@ -150,16 +168,16 @@ async function createNewGame(code,gameType){
                 type:gameType,
                 board: board, //Replace with board when createNewBoard() is implemented
                 chat:[
-                    { author:"server", msg:"player 1 joined the game"}, //Default chat message
+                    
                 ],
                 answer_p1:Math.floor(Math.random() * 23), //Do the random generation here?
                 answer_p2: Math.floor(Math.random() * 23),
-                flipped_p1:[],
-                flipped_p2:[],
-                guessed_p1:[],
-                guessed_p2:[],
+                flipped_p1:[...guessedArr],
+                flipped_p2:[...guessedArr],
+                guessed_p1:[...guessedArr],
+                guessed_p2:[...guessedArr],
                 started:1000000,
-                p1:{name:"Player 1",id:""},
+                p1:null,
                 p2:null
             };
 
