@@ -113,6 +113,9 @@ export async function createDummyUsers() {
             lastName: 'Dummy'
         });
     }
+    await addPermissionsToUser(admin, true, PERMISSIONS.GIFT_ADMIN);
+    await admin.makeAdmin(admin);
+
 
     let user = await User.findOne({ username: 'dummy' });
     if (!user) {
