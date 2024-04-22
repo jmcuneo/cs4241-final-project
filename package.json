@@ -1,0 +1,8 @@
+{
+	"name": "Instant Messenger",
+	"version": "0.1",
+	"description": "Simple IM app",
+	"devDependencies": {
+		"vite": "^5.2.10"
+	}
+}
