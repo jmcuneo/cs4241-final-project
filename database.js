@@ -1,5 +1,5 @@
 //import session from 'express-session';
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import {MongoClient, ServerApiVersion, Timestamp} from 'mongodb';
 //import MongoDBStore from 'connect-mongodb-session';
 
 
@@ -176,7 +176,7 @@ async function createNewGame(code,gameType){
                 flipped_p2:[...guessedArr],
                 guessed_p1:[...guessedArr],
                 guessed_p2:[...guessedArr],
-                started:1000000,
+                started: new Date(),
                 p1:null,
                 p2:null
             };
