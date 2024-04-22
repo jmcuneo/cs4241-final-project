@@ -17,11 +17,6 @@ const server = vite.listen(app, process.env.PORT || port)
 
 const io = new Server(server);
 
-
-function randomAnswer(){
-  return Math.floor(Math.random()*24);
-}
-
 io.on('connection', (socket) => {
   console.log('a user connected');
   function sendServerChatMessage(room,message){

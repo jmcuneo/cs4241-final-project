@@ -170,8 +170,8 @@ async function createNewGame(code,gameType){
                 chat:[
                     
                 ],
-                answer_p1:Math.floor(Math.random() * 23), //Do the random generation here?
-                answer_p2: Math.floor(Math.random() * 23),
+                answer_p1:Math.floor(Math.random() * 24), //Do the random generation here?
+                answer_p2: Math.floor(Math.random() * 24),
                 flipped_p1:[...guessedArr],
                 flipped_p2:[...guessedArr],
                 guessed_p1:[...guessedArr],
