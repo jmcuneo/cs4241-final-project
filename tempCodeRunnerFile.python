@@ -1,0 +1,41 @@
+import requests
+from bs4 import BeautifulSoup
+
+global html_content
+
+def akinator_init():
+    global html_content
+
+    url = "https://en.akinator.com/theme_selection"
+    response = requests.get(url)
+
+    if(response.status_code != 200):
+        print("ERROR. COULD NOT OPEN WEBSITE")
+        return
+    
+    response = requests.post(url, data={"theme_id": "1"}, allow_redirects=True)
+
+    if response.status_code != 200:
+        print("Failed to click the button. Status code:", response.status_code)
+
+    html_content = response.content
+
+def get_question():
+    global html_content
+    soup = BeautifulSoup(html_content, "html.parser")
+
+    print(html_content)
+    question_element = soup.find("p", class_="question-text", id="question-label")
+
+    question_text = question_element.get_text()
+    print("Question:", question_text)
+
+
+
+
+
+
+if __name__ == "__main__":
+    akinator_init()
+    get_question()
+    print("Welcome to Akinator!")

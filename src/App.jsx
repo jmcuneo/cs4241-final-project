@@ -7,12 +7,14 @@ import EventPage from './components/EventPage';
 import ManageEventPage from './components/ManageEventPage';
 import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
+import Background from './background/Background';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <Router>
+      <Background />{}
       <Routes>
       <Route
         exact
