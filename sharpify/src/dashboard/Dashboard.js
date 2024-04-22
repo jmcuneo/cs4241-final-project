@@ -11,8 +11,7 @@ function Dashboard(props) {
         <
         div className = "top-message" >
         Welcome to the Dashboard!
-        <
-        /div> <
+        </div> <
         input type = "file"
         id = "fileUpload"
         accept = "image/*"
@@ -35,6 +34,16 @@ function Dashboard(props) {
                         const ctx = canvas.getContext('2d');
                         //console.log(ctx);
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height / imageAspectRatio);
+                        //download image
+                        //TODO Make this downloaded image the actual enhanced image not the same image again
+                        let downloadLink = document.getElementById('downloadLink');
+                        downloadLink.download = 'enhanced-image.png';
+                        canvas.toBlob(function(blob) {
+                            let url = URL.createObjectURL(blob);
+                            downloadLink.href = url;
+                            downloadLink.click();
+                            URL.revokeObjectURL(url);
+                        });
                     };
                     img.src = e.target.result;
                 };
@@ -42,8 +51,9 @@ function Dashboard(props) {
             }
 
         }
-        /> <
-        canvas id = "canvas" > < /canvas> </
+        /> 
+        <a id="downloadLink"></a>
+        <canvas id = "canvas" > </canvas> </
         div >
     )
 };
