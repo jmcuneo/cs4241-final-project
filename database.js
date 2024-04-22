@@ -24,7 +24,7 @@ let pokemon_collection = null;
 
 let games_collection = null;
 
-const exp = { set_up_db_store, client, DB: null }
+const exp = { set_up_db_store, client, DB: null, getNumPokemon, getPokemonFromGame, getGameByRoomCode, updateGame, createNewGame }
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -117,6 +117,17 @@ async function getGameByRoomCode(code){
     }
 }
 
+async function updateGame(code,player,value){
+    const filter = {
+        roomCode:code
+    };
+    const updateDocument = {
+        $set:{}
+    };
+    updateDocument["$set"][player]=value;
+    return await games_collection.updateOne(filter,updateDocument);
+}
+
 
 async function createNewGame(code,gameType){
 
@@ -131,7 +142,7 @@ async function createNewGame(code,gameType){
     {
 
         //Create a game-board with 24 random tiles using the type [Returns an array of 24 DB objects]
-        let board = await createNewBoard(gameType)
+        let board = await getNpokemon(24);
 
         let newGame =
             {
@@ -153,13 +164,14 @@ async function createNewGame(code,gameType){
             };
 
         const addGame = await games_collection.insertOne(newGame)
-
+        console.log("Added new game!");
         //Respond with the new game object that is in the DB
-        return addGame;
+        return newGame;
 
     }
     else
     {
+        console.log("Game already exists!");
         //Game code already exists
         return null;
     }
@@ -167,54 +179,6 @@ async function createNewGame(code,gameType){
 
 
 //Helper functions for handling DB creation
-
-async function createNewBoard(gameType)
-{
-    console.log("creating a new gameboard")
-    let board = []
-    let boardElementsToFetch = [];
-
-    //Handles pokemon games
-    if(gameType === "pokemon")
-    {
-        let number_of_pokemon = 1025; //Hardcoded # of pokemon in DB
-
-        //We will handle pokemon selection purely client-side, knowing we don't want any duplicates (saves runtime and guarantees we only need to query 24 times)
-        for(let i = 0; i <= 23; i++)
-        {
-            let unique_found = false;
-
-            while(!unique_found)
-            {
-                let rand = Math.floor(Math.random() * number_of_pokemon);
-
-                if(!boardElementsToFetch.includes(rand))
-                {
-                    boardElementsToFetch.push(rand)
-                    unique_found = true;
-                }
-
-            }
-        }
-
-        console.log(boardElementsToFetch)
-
-        //Now fetch all elements and put them in the board array
-        for(let i = 0; i <= 23; i++)
-        {
-            const docs = await pokemon_collection.find(
-                {
-                    unique_id: boardElementsToFetch[i]
-                }
-            ).toArray();
-
-            board.push(docs)
-        }
-        console.log(board)
-    }
-
-    return board;
-}
 
 console.log(client.db("ApproximateWhomst").collection("Game_Objects").findOne({}));
 
