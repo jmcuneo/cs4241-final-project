@@ -209,7 +209,33 @@ async function deleteGame(code)
 }
 
 
-//Helper functions for handling DB creation
+//DB Maintenance
+
+var now = new Date();
+let interval = 60 * 60 * 100; //10 minutes in MS
+var start = interval - (now.getMinutes() * 60 + now.getSeconds()) * 100 + now.getMilliseconds();
+
+setTimeout(async function delete_timeout_elements()
+{
+    console.log("Deleting all old elements")
+
+    let last_interval = new Date();
+    last_interval.setMinutes(last_interval.getMinutes() - 30) //delete all games 30 min ago
+    console.log(last_interval)
+
+    let deletion = await games_collection.deleteMany(
+        {
+            started: {$lt: last_interval}
+        }
+    )
+
+    console.log(await deletion)
+
+
+    setTimeout(delete_timeout_elements, interval)
+}, start)
+
+
 
 console.log(client.db("ApproximateWhomst").collection("Game_Objects").findOne({}));
 

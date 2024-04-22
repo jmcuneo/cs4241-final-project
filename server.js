@@ -109,7 +109,8 @@ io.on('connection', (socket) => {
     //TODO: Add to flipped obj
     //TODO: Change to send server message function
     const game = await database.getGameByRoomCode(room);
-    let flippedArr = game.p1.name==name?"flipped_p1":"flipped_p2"
+    let flippedArr = game.p1.name==name?"flipped_p1":"flipped_p2";
+    // console.log(game[flippedArr][index]);
     await database.updateGame(room,flippedArr+"."+index,!game[flippedArr][index]);
     sendServerChatMessage(room,name + " flipped " + cardName);
   });
@@ -119,9 +120,11 @@ io.on('connection', (socket) => {
     const game = await database.getGameByRoomCode(room);
     if(game.p1 != null && name==game.p1.name){
       await database.updateGame(room,"p1",null);
+      await database.updateGame(room,"playAgain_p1",false);
       await checkForDelete(game,room,game.p2);
     }else if(game.p2 != null){
       await database.updateGame(room,"p2",null);
+      await database.updateGame(room,"playAgain_p2",false);
       await checkForDelete(game,room,game.p1);
     }
   });
@@ -136,6 +139,10 @@ io.on('connection', (socket) => {
           // io.to(room).emit('message receive',"Server",rooms[room].p1.name + " disconnected.");
           sendServerChatMessage(room,game.p1.name + " disconnected.");
           await database.updateGame(room,"p1",null);
+          await database.updateGame(room,"playAgain_p1",false);
+          if(game.p2 != null){
+            socket.to(game.p2.id).emit('play again deselected');
+          }
           await checkForDelete(game,room,game.p2);
         }
         if(game.p2 != null && game.p2.id==socket.id){
@@ -143,6 +150,10 @@ io.on('connection', (socket) => {
           // io.to(room).emit('message receive',"Server",rooms[room].p2.name + " disconnected.");
           sendServerChatMessage(room,game.p2.name + " disconnected.");
           await database.updateGame(room,"p2",null);
+          await database.updateGame(room,"playAgain_p2",false);
+          if(game.p1 != null){
+            socket.to(game.p1.id).emit('play again deselected');
+          }
           await checkForDelete(game,room,game.p1);
         }
 
@@ -158,29 +169,36 @@ io.on('connection', (socket) => {
   socket.on('play again',async function(room,name){
     const game = await database.getGameByRoomCode(room);
     let startNewGame = false;
+    let isPlayer1 = false;
     //TODO: Set these back to false if someone leaves.
     //Set text to x/2 where x is the number of players who have selected it.
-    if(game!=null){
+    if(game!=null && game.p1 != null && game.p2 != null){
       if(game.p1.name=="Player 1"){
+        isPlayer1=true;
         database.updateGame(game,"playAgain_p1",true);
         if(game.playAgain_p2){
           startNewGame=true;
         }
+        socket.to(game.p2.id).emit('play again selected');
       }else{
         database.updateGame(game,"playAgain_p2",true);
         if(game.playAgain_p1){
           startNewGame=true;
         }
+        socket.to(game.p1.id).emit('play again selected');
       }
     }
     if(startNewGame){
-      const game = await database.createNewGame(room,"pokemon");
+      await database.deleteGame(room);
+      const newGame = await database.createNewGame(room,"pokemon");
+      await database.updateGame(room,"p1",{name:"Player 1",id:game.p1.id});
+      await database.updateGame(room,"p2",{name:"Player 2",id:game.p2.id});
       socket.emit('host success',room,"Player 1");
-      //TODO: Emit start game event to first player
       sendServerChatMessage(room,"Player 1 joined the game.");
-      //TODO: Also send flipped and guessed
-      socket.emit('game setup',game.board,game.answer_p1,game.flipped_p1,game.guessed_p1,game.chat);
-
+      io.to(game.p1.id).emit('host success',room,"Player 1");
+      io.to(game.p2.id).emit('join success',room,"Player 2");
+      io.to(game.p1.id).emit('game setup',newGame.board,newGame.answer_p1,newGame.flipped_p1,newGame.guessed_p1,newGame.chat);
+      io.to(game.p2.id).emit('game setup',newGame.board,newGame.answer_p1,newGame.flipped_p1,newGame.guessed_p1,newGame.chat)
     }
   });
 });
@@ -193,6 +211,7 @@ async function checkForDelete(game, room, otherPlayer){
     await database.deleteGame(room);
   }
 }
+
 
 
 database.set_up_db_store(app)
