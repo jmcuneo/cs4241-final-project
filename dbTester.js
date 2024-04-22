@@ -17,22 +17,18 @@ export async function testDB() {
     const userS = {
         firstName: 'Alexander',
         lastName: 'Beck',
-        gender: 'Male',
     };
     const user2S = {
         firstName: 'Jane',
         lastName: 'Doe',
-        gender: 'Female',
     };
     const user3S = {
         firstName: 'John',
         lastName: 'Smith',
-        gender: 'Male',
     };
     const user4S = {
         firstName: 'ale',
         lastName: 'asdf',
-        gender: 'Female',
     };
 
     const userA = await Account.create({
@@ -64,6 +60,7 @@ export async function testDB() {
 
         await user.addPermissionsToOtherUser(user2, PERMISSIONS.INVITE_TO_ALL_EVENTS);
 
+        console.log(await Account.find({username: 'juser'}));
         const christmasPartySchema = {
             name: 'Christmas Party',
             date: new Date(2024, 11, 25),
@@ -106,7 +103,7 @@ async function clearEntireDB() {
     await User.deleteMany({});
     await Event.deleteMany({});
     await Logger.deleteMany({});
-    await Account.deleteMany({});
+    // await Account.deleteMany({});
 }
 
 async function testMakeAdmin(users) {

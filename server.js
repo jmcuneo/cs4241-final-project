@@ -118,7 +118,7 @@ WILL DELETE ENTIRE DB ON EVERY LOAD!!!!!!!!!!!!!!
 Only keep when in DEVELOPMENT. 
 #################################################
 */
-//testDB();
+// testDB();
 
 /**
  * @description Connects to the MongoDB database using USER, PASS, and HOST in the .env file
