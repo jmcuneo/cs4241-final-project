@@ -16,25 +16,26 @@
     const bingo = "WHOMST";
 
     async function get_server_board() {
-    let numPokemon = await getNumPokemon();
-    let pokemon = await getPokemonFromGame(game_data.id);
-    let promises = [...Array(width * height).keys()].map(async (e) => {
-        let num = Math.floor(Math.random() * numPokemon) + 1;
+        let numPokemon = await getNumPokemon();
+        let promises = [...Array(width * height).keys()].map(async (e) => {
+            let pokemon = await getPokemonFromGame(game_data.id, e);
+            console.log(pokemon[0]);
+            let num = Math.floor(Math.random() * numPokemon) + 1;
+            return {
+                name: `${pokemon[0].label} ${pokemon[0].unique_id}`,
+                link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(pokemon[0].unique_id + "").padStart(3, "0")}.png`,
+            };
+        });
+        let board = await Promise.all(promises);
         return {
-            name: `${pokemon[e][0].unique_id}: ${pokemon[e][0].label}`,
-            link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(pokemon[e][0].unique_id + "").padStart(3, "0")}.png`,
+            board,
+            whomst: 4,
         };
-    });
-    let board = await Promise.all(promises);
-    return {
-        board,
-        whomst: 4,
-    };
-}
+    }
  
     // prefetch all images before rendering board
-    async function get_board() {
-        const board = await get_server_board();
+    async function get_board(serverBoard) {
+        const board = serverBoard;
         const proms = board.board.map(
             (e) =>
                 new Promise((res, rej) => {
@@ -48,8 +49,22 @@
         return board;
     }
 
-    let images = get_board();
+    let images = new Promise((req,res)=>{});
     let display_board = true;
+
+    socket.on('game setup',(gameBoard,whomst)=>{
+        let serverBoard = {board:[],whomst:-1};
+        serverBoard.whomst=whomst;
+        serverBoard.board = [];
+        for(let i = 0; i < gameBoard.length; i++){
+            serverBoard.board.push({
+                name:`${gameBoard[i].label} ${gameBoard[i].unique_id}`,
+                link:`https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(gameBoard[i].unique_id + "").padStart(3, "0")}.png`
+            });
+        }
+        display_board=true;
+        images = get_board(serverBoard);
+    });
 
     let guess_data = null;
     async function flip(e, index: Number) {
@@ -174,6 +189,7 @@ class:stop_events={guess_data != null}>
             ></Card>
         {/each}
     </div>
-{:catch}
+{:catch error}
     <h1>Something went wrong</h1>
+    <p>{error}</p>
 {/await}

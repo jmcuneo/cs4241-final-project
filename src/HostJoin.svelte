@@ -35,7 +35,7 @@
         });
         socket.on("host success", async function(room, name){
             errorMsg = room;
-            await create_game(room);
+            // await create_game(room);
             joinGame(room,name);
             // socket.emit("chat message",room,num,"Player " + num + " joined.");
         });
@@ -45,19 +45,6 @@
             joinGame(room,name);
         });
     };
-
-    async function create_game(room)
-    {
-        const create_game = await fetch('/create_new_game',
-            {
-                method: "POST",
-                body: JSON.stringify({ roomCode: room, type: "pokemon" }),
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            })
-            await create_game.json();
-    }
 
 </script>
 

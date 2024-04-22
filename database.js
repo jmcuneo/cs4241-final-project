@@ -24,7 +24,7 @@ let pokemon_collection = null;
 
 let games_collection = null;
 
-const exp = { set_up_db_store, client, DB: null }
+const exp = { set_up_db_store, client, DB: null, getNumPokemon, getPokemonFromGame, getGameByRoomCode, updateGame, createNewGame }
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -70,205 +70,115 @@ function set_up_db_store(app) {
 
 
     // Query to fetch Pokemon data from server from a unique id
-    app.post('/get_pokemon_by_unique_id', async (req, res) => {
-        const docs = await pokemon_collection.find(
-            {
-                unique_id: req.body.id
-            }
-        ).toArray();
 
-        res.json(docs[0]);
-        getNpokemon(24);
-    })
+}
 
 
-    // Query to fetch the total number of Pokemon in the database
-    app.get('/get_num_pokemon', async (req, res) => {
-        const count = await pokemon_collection.countDocuments();
-        res.json({count});
-    })
+async function getNumPokemon(){
+    const count = await pokemon_collection.countDocuments();
+    return count;
+}
 
 
-    app.post('/get_pokemon_from_game', async (req, res) =>
+async function getPokemonFromGame(code, index){
+    const docs = await games_collection.find(
+        {
+            roomCode: code
+        }
+    ).toArray()
+
+    if(docs[0] === undefined)
     {
-        let code = req.body.roomCode;
-
-        //Check if this game exists
-        const docs = await games_collection.find(
-            {
-                roomCode: code
-            }
-        ).toArray()
-
-        if(docs[0] === undefined)
-        {
-            res.json("RoomCodeNotFound")
-        }
-        else
-        {
-            res.json(docs[0].board);
-        }
-    })
-
-
-    app.post('/get_game_by_room_code', async (req, res) =>
+        //Room code not found
+        return null;
+    }
+    else
     {
-        let code = req.body.roomCode
+        return docs[0].board[index];
+    }
+}
 
-        //Check if this game exists
-        const docs = await games_collection.find(
-            {
-                roomCode: code
-            }
-        ).toArray()
 
-        if(docs[0] === undefined)
+async function getGameByRoomCode(code){
+    const docs = await games_collection.find(
         {
-            res.json("RoomCodeNotFound")
+            roomCode: code
         }
-        else
-        {
-            res.json(docs[0])
-        }
-    })
+    ).toArray()
 
-
-    app.post('/create_new_game', async (req, res) =>
+    if(docs[0] === undefined)
     {
-        let code = req.body.roomCode
-
-        //Check if this game exists
-        const docs = await games_collection.find(
-            {
-                roomCode: code
-            }
-        ).toArray()
-
-        if(docs[0] === undefined) //If a game of this code does not exist
-        {
-            let gameType = req.body.type
-
-            //Create a game-board with 24 random tiles using the type [Returns an array of 24 DB objects]
-            let board = await createNewBoard(gameType)
-
-            let newGame =
-                {
-                    roomCode:code,
-                    type:gameType,
-                    board: board, //Replace with board when createNewBoard() is implemented
-                    chat:[
-                        { author:"server", msg:"player 1 joined the game"}, //Default chat message
-                    ],
-                    answer_p1:Math.floor(Math.random() * 23), //Do the random generation here?
-                    answer_p2: Math.floor(Math.random() * 23),
-                    flipped_p1:[],
-                    flipped_p2:[],
-                    guessed_p1:[],
-                    guessed_p2:[],
-                    started:1000000,
-                    connected_players:[
-                        {name:"Player 1",id:""}
-                    ] //Only player 1 is connected by default, will be [1, 2] when player 2 connects
-                }
-
-                const addGame = await games_collection.insertOne(newGame)
-
-            //Respond with the new game object that is in the DB
-            res.json(addGame);
-
-        }
-        else
-        {
-            res.json("Game Code Already Exists!")
-        }
-
-
-    })
-
-
-    //Deletes a game in the DB by its room code
-    app.post('/delete_game_by_room_code', async (req, res) =>
+        //Room code not found
+        return null;
+    }
+    else
     {
-        let code = req.body.roomCode
+        return docs[0];
+    }
+}
 
-        //Check if this game exists
-        const docs = await games_collection.find(
+async function updateGame(code,player,value){
+    const filter = {
+        roomCode:code
+    };
+    const updateDocument = {
+        $set:{}
+    };
+    updateDocument["$set"][player]=value;
+    return await games_collection.updateOne(filter,updateDocument);
+}
+
+
+async function createNewGame(code,gameType){
+
+    //Check if this game exists
+    const docs = await games_collection.find(
+        {
+            roomCode: code
+        }
+    ).toArray()
+
+    if(docs[0] === undefined) //If a game of this code does not exist
+    {
+
+        //Create a game-board with 24 random tiles using the type [Returns an array of 24 DB objects]
+        let board = await getNpokemon(24);
+
+        let newGame =
             {
-                roomCode: code
-            }
-        ).toArray()
+                roomCode:code,
+                type:gameType,
+                board: board, //Replace with board when createNewBoard() is implemented
+                chat:[
+                    { author:"server", msg:"player 1 joined the game"}, //Default chat message
+                ],
+                answer_p1:Math.floor(Math.random() * 23), //Do the random generation here?
+                answer_p2: Math.floor(Math.random() * 23),
+                flipped_p1:[],
+                flipped_p2:[],
+                guessed_p1:[],
+                guessed_p2:[],
+                started:1000000,
+                p1:{name:"Player 1",id:""},
+                p2:null
+            };
 
-        if(docs[0] === undefined) //If a game of this code does not exist
-        {
-            res.json("Error Deleting Game (Does not Exist!)")
-        }
-        else
-        {
-            const query =
-                {
-                    roomCode: code
-                }
-            const deletedData = await games_collection.deleteOne(query)
-            res.json(deletedData)
-        }
+        const addGame = await games_collection.insertOne(newGame)
+        console.log("Added new game!");
+        //Respond with the new game object that is in the DB
+        return newGame;
 
-
-    })
-
-
+    }
+    else
+    {
+        console.log("Game already exists!");
+        //Game code already exists
+        return null;
+    }
 }
 
 
 //Helper functions for handling DB creation
-
-async function createNewBoard(gameType)
-{
-    console.log("creating a new gameboard")
-    let board = []
-    let boardElementsToFetch = [];
-
-    //Handles pokemon games
-    if(gameType === "pokemon")
-    {
-        let number_of_pokemon = 1025; //Hardcoded # of pokemon in DB
-
-        //We will handle pokemon selection purely client-side, knowing we don't want any duplicates (saves runtime and guarantees we only need to query 24 times)
-        for(let i = 0; i <= 23; i++)
-        {
-            let unique_found = false;
-
-            while(!unique_found)
-            {
-                let rand = Math.floor(Math.random() * number_of_pokemon);
-
-                if(!boardElementsToFetch.includes(rand))
-                {
-                    boardElementsToFetch.push(rand)
-                    unique_found = true;
-                }
-
-            }
-        }
-
-        console.log(boardElementsToFetch)
-
-        //Now fetch all elements and put them in the board array
-        for(let i = 0; i <= 23; i++)
-        {
-            const docs = await pokemon_collection.find(
-                {
-                    unique_id: boardElementsToFetch[i]
-                }
-            ).toArray();
-
-            board.push(docs)
-        }
-        console.log(board)
-    }
-
-    return board;
-}
-
 
 console.log(client.db("ApproximateWhomst").collection("Game_Objects").findOne({}));
 
