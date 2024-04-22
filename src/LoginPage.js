@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PetForm from './PetForm';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col} from 'react-bootstrap';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -34,9 +34,11 @@ function LoginPage() {
       {loggedIn ? (
         <PetForm />
       ) : (
-        <div>
+        <Container>
+        <Row>
+        <Col>
           <h2>Login</h2>
-          <Form>
+          <Form className="p-4">
             <Form.Group controlId="formBasicUsername">
               <Form.Control
                 type="text"
@@ -59,9 +61,10 @@ function LoginPage() {
               Login
             </Button>
           </Form>
-
+          </Col>
+          <Col>
           <h2>Register</h2>
-          <Form>
+          <Form className="p-4">
             <Form.Group controlId="formBasicNewUsername">
               <Form.Control
                 type="text"
@@ -84,7 +87,9 @@ function LoginPage() {
               Register
             </Button>
           </Form>
-        </div>
+          </Col>
+          </Row>
+        </Container>
       )}
     </div>
   );
