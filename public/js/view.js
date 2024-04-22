@@ -6,14 +6,14 @@ const addToTable = function (entry) {
                   <td>${entry.startTime}</td>
                   <td>${entry.length}</td>
                   <td>${entry.location}</td>
-                  <td><button class="info">See more details</button></td>
+                  <td><button class="info" onclick="info('${entry.event}')">See more details</button></td>
                 </tr>`;
     table.insertAdjacentHTML("beforeend", row);
     //eventlistener
     const infoButton = table.querySelector(".info:last-child");
-    infoButton.addEventListener("click", function (event) {
-      event.preventDefault();
-    });
+    // infoButton.addEventListener("click", function (event) {
+    //   event.preventDefault();
+    // });
   };
  //check if input box is empty
  function isEmpty(str) {
@@ -30,41 +30,42 @@ const addToTable = function (entry) {
   
 //   }
 
-  const info = async function (entryIndex){
+  const info = async function (eventName){
     console.log("hello world");
     //send the index of the entry user wants to delete from array
-    const reqObj = { entryIndex: entryIndex };
+    const reqObj = { eventName: eventName };
     const response = await fetch("/info", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(reqObj),
+      //body: JSON.stringify(eventName)
     });
-    const info = await response.json();
+    const eventInfo = await response.json();
     //get image
-    if((info.image == null) && (info.description == null)){
+    if((eventInfo.image == null) && (eventInfo.description == null)){
         console.log("nothing to display");
         const descriptionContainer = document.getElementById('descriptionContainer');
         const txtElement = document.createElement('p');
         txtElement.innerHTML = "No additional details";
         descriptionContainer.appendChild(txtElement);
     }
-    if(info.image != null){
-        console.log("response image type: ", typeof(info.image));
-        console.log("image: ", info.image);
+    if(eventInfo.image != null){
+        console.log("response image type: ", typeof(eventInfo.image));
+        console.log("image: ", eventInfo.image);
         const imageContainer = document.getElementById('imageContainer');
         const imgElement = document.createElement('img');
-        imgElement.src = info.image;
+        imgElement.src = eventInfo.image;
         //imgElement.alt = 'Uploaded Image';
         imageContainer.appendChild(imgElement) 
     }else {
         console.log("no image");
     }
-    if(info.description != null){
-        console.log("response desc type: ", typeof(info.description));
-        console.log("descrip: ", info.description.description);
+    if(eventInfo.description != null){
+        console.log("response desc type: ", typeof(eventInfo.description));
+        console.log("descrip: ", eventInfo.description.description);
         const descriptionContainer = document.getElementById('descriptionContainer');
         const txtElement = document.createElement('p');
-        txtElement.innerHTML = info.description.description;
+        txtElement.innerHTML = eventInfo.description.description;
         descriptionContainer.appendChild(txtElement); 
 
     }else{
@@ -92,12 +93,12 @@ window.onload = function () {
     // const viewButton = document.getElementById("view");
     // viewButton.onclick = view;
 
-    const tableEvent = document.getElementById("table");
-    tableEvent.addEventListener("click", function (event) {
-      event.preventDefault();
-      if (event.target && event.target.classList.contains("info")) {
-        const entryIndex = event.target.closest("tr").rowIndex - 1; // Subtract 1 because of table header
-        info.onclick = info(entryIndex);
-      }
-    });
+    // const tableEvent = document.getElementById("table");
+    // tableEvent.addEventListener("click", function (event) {
+    //   event.preventDefault();
+    //   if (event.target && event.target.classList.contains("info")) {
+    //     const entryIndex = event.target.closest("tr").rowIndex - 1; // Subtract 1 because of table header
+    //     info.onclick = info(entryIndex);
+    //   }
+    // });
 }

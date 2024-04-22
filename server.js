@@ -201,15 +201,14 @@ app.get("/user-events", async (req, res) => {
         return eventsCollection.find(query).toArray().then((eventList) => res.json(eventList));
     });
 });
-let eventPost = []; //array to store all events
-let image; //for mopngoDB
-app.post('/upload', upload.single('image'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).send('No file uploaded.');
-    }
-    image = '/uploads/' + req.file.filename;
-    res.sendStatus(200);
-});
+//let image; //for mopngoDB
+// app.post('/upload', upload.single('image'), (req, res) => {
+//     if (!req.file) {
+//         return res.status(400).send('No file uploaded.');
+//     }
+//     image = '/uploads/' + req.file.filename;
+//     res.sendStatus(200);
+// });
 let description; //mongoDB
 app.post("/description", async (req, res) => {
     console.log("description: ", req.body);
@@ -222,32 +221,37 @@ app.post("/description", async (req, res) => {
 
 //submit - gets entry (name, date, time, loaction) from client checks for event of same time, name, location
 // adds to array and database and sends client updated array
-app.post("/submit", async (req, res) => {
+app.post("/submit", upload.single('image'), async (req, res) => {
     let data = req.body;
-    console.log("type of startTime server: ", typeof(data.startTime))
     console.log(data);
-    for(let i = 0; i < eventPost.length; i++){
-      if(data.event == eventPost[i].event){
+    const eventExists = await eventsCollection.findOne({event: data.event});
+    console.log(eventExists);
+    if (eventExists != null) {
         console.log("Event already posted!");
         res.send(JSON.stringify("Event already posted!"));
         return;
-      } 
     }
-    var entry = {
-      //name: req.user.username, fix after appened to login page
-      event: data.event,
-      date: data.date,
-      startTime: convertTime(data.startTime),
-      length: elapsedTime(data.startTime, data.endTime, data.date), 
-      location: data.location,
-      image: image,
-      description: description
-    };
-    console.log("length ", (eventPost.length + 1));
-    eventPost.push(entry);
+    const event = data.event;
+    const date = data.date;
+    const startTime = data.startTime;
+    const endTime = data.endTime;
+    const location = data.location;
+    const description = data.description;
+    // Access uploaded file from req.file
+    const image = '/uploads/' + req.file.filename;
+        const entry = {
+            event: event,
+            date: date,
+            image: image,
+            startTime: startTime,
+            endTime: endTime,
+            location: location,
+            description: description
+        }
+
     const result = await eventsCollection.insertOne(entry)
-    req.json = JSON.stringify(eventPost);
-    res.send(req.json);
+    //req.json = JSON.stringify(eventPost);
+    res.json(await eventsCollection.find({}).toArray());
   });
 
   function convertTime(time) {
@@ -289,16 +293,16 @@ function elapsedTime(startTime, endTime, date) {
 // })
 
 app.post("/info", async (req, res) => {
-    console.log("index: ", req.body.entryIndex);
-    const indexToRemove = req.body.entryIndex;
+    //console.log("index: ", req.body.entryIndex);
+    //const indexToRemove = req.body.entryIndex;
     
     // if (isNaN(indexToRemove) || indexToRemove < 0 || indexToRemove >= eventPost.length) {
     //   return res.status(400).send(JSON.stringify("Invalid index"));
     // }
 
-    const details = eventPost[indexToRemove];
-    console.log("details: ", details);
-    const eventName = details.event;  
+    //const details = eventPost[indexToRemove];
+    //console.log("details: ", details);
+    const eventName = req.body.eventName;  
   
     // Use the attribute 'name' of the object to remove data from MongoDB
     const filter = { event: eventName }; // Filter to find the document by the original item
@@ -309,22 +313,9 @@ app.post("/info", async (req, res) => {
     
   });
 
-let mongoDataLoaded = false;
-
 app.post("/refresh", express.json(), async (req, res) => {
-  if (!mongoDataLoaded) {
-    // Load all data from MongoDB only if it hasn't been loaded before
     const mongoData = await eventsCollection.find({}).toArray();
-    for(let i = 0; i < mongoData.length; i++){
-      eventPost.push(mongoData[i]);
-    }
-}
-  else{
-    console.log("mongo already loaded");
-  }
-  
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(eventPost));
+    res.json(mongoData);
 });
 
 //app.listen(process.env.PORT);
