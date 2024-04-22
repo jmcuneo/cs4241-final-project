@@ -33,11 +33,11 @@ function Results({ formData }) {
       <Row>
         <Col id="your-pet">
           <h2>Your Pet!</h2>
-          <img src={petImageUrl} alt="your pet" />
+          <img src={petImageUrl} alt="your pet" width="300"/>
           <p>Name: {formData.petName}</p>
           <p>Diet: {formData.dietType}</p>
           <p>Exercise level: {formData.exercise}</p>
-          <p>Race time: </p>
+          <p>Race time: {formData.raceTime} seconds</p>
         </Col>
 
         <Col id="leaderboard">
