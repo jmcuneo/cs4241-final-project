@@ -74,18 +74,8 @@ function RegisterPage() {
             <div><label style={{ fontSize: '20px', color: 'white' }} htmlFor="password">Password</label></div>
             <input className="validate" type="password" id="password" name="password" required ref={passwordRef}/>
           </div>
-          <button style={{marginTop: '10px', backgroundColor: 'rgb(235, 79, 52)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="cancelButton" onClick={handleCancel}>Cancel</button>
-          <button style={{marginTop: '10px', marginLeft: '20px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="registerButton" onClick={handleSubmit}>Register</button>
-          <div className="input-field col s6">
-            <div><label style={{ fontSize: '20px', color: 'white' }}>User Type</label></div>
-            <input type="search" list="userTypes" name="selectUserType" />
-            <datalist id="userTypes">
-              <option value="User"></option>
-              <option value="Admin"></option>
-            </datalist>
-          </div>
-          <button style={{marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold'}} className="btn waves-effect waves-light" type="button" id="logoutButton" onClick={handleLogin}>Back</button>
-          <button style={{marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="registerButton" onClick={handleSubmit}>Register</button>
+          <button style={{marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(235, 79, 52)', color: 'black', fontWeight: 'bold'}} className="btn waves-effect waves-light" type="button" id="logoutButton" onClick={handleLogin}>Back</button>
+          <button style={{marginTop: '10px', marginLeft: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="registerButton" onClick={handleSubmit}>Register</button>
         </div>
       </form>
       <div style={{ fontSize: '20px', marginLeft: '30px', marginTop: '10px' }}>{message}</div> 

@@ -37,14 +37,24 @@ app.use(session({
   secret: '5O$5HP^xg2zV0duE',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    clientPromise: client.connect()
-  })
 }));
 
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+/*
+//auth middlware
+const isAuth = (req, res, next)=>{
+    if(req.session.isLoggedIn)
+    next()
+    else
+        res.redirect('/login')
+}
+
+// Protected authentication check route
+app.get('/', isAuth, (req, res) => {
+});*/
 
 // Register Route
 app.post('/register', async (req, res) => {
