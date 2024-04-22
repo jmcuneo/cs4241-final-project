@@ -5,7 +5,7 @@
 
     export let game_data;
     console.log("Game data:", game_data);
-    deleteGameData()
+    // deleteGameData()
     function leaveGame() {
         dispatch("backToHost", {});
     }

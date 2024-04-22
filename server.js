@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
       //TODO: Emit start game event to first player
       sendServerChatMessage(room,"Player 1 joined the game.");
       //TODO: Also send flipped and guessed
-      socket.emit('game setup',game.board,game.answer_p1,game.flipped_p1,game.guessed_p1);
+      socket.emit('game setup',game.board,game.answer_p1,game.flipped_p1,game.guessed_p1,game.chat);
     }
   });
   
@@ -58,14 +58,14 @@ io.on('connection', (socket) => {
           socket.join(room);
           socket.emit('join success',room,"Player 2");
           sendServerChatMessage(room,"Player 2 joined.");
-          socket.emit('game setup',game.board,game.answer_p2,game.flipped_p2,game.guessed_p2);
+          socket.emit('game setup',game.board,game.answer_p2,game.flipped_p2,game.guessed_p2,game.chat);
         }else if(game.p1==null){
           // rooms[room].p1 = {name:"Player 1",id:socket.id};
           await database.updateGame(room,"p1",{name:"Player 1",id:socket.id});
           socket.join(room);
           socket.emit('join success',room,"Player 1");
           sendServerChatMessage(room,"Player 1 joined.");
-          socket.emit('game setup',game.board,game.answer_p1,game.flipped_p1,game.guessed_p1);
+          socket.emit('game setup',game.board,game.answer_p1,game.flipped_p1,game.guessed_p1,game.chat);
         }
       }
     }else{
