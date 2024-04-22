@@ -30,7 +30,7 @@ const localStrategy = new LocalStrategy({
 
 // Serialize user
 passport.serializeUser((account, done) => {
-	done(null, { id: account.id, username: account.username });
+	done(null, { id: account._id, username: account.username });
 });
 
 // Deserialize user
