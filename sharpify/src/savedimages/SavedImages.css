@@ -1,0 +1,40 @@
+.saved-image-column {
+    text-align: center;
+    padding: 1rem;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.saved-image {
+    border: 1px solid black;
+    max-width: 100%;
+    max-height: 20rem;
+    display: block;
+}
+
+.image-container:hover .saved-image {
+    filter: brightness(90%);
+}
+
+.download-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: none;
+    background: none;
+    color: #394e61;
+    transform: scale(1.5);
+    visibility: hidden;
+    margin: .2rem;
+}
+
+.image-container:hover .download-button {
+    visibility: visible;
+}
+
+.download-button:hover {
+    color: #697d8e;
+}
