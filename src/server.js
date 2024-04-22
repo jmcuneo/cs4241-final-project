@@ -4,12 +4,26 @@ const express = require("express"),
   auth = require("./auth"),
   db = require("./db"),
   helpers = require("./helpers"),
-  { ObjectId } = require("mongodb");
+  { ObjectId } = require("mongodb"),
+  requests = require("./requests")
+
+var GitHubStrategy = require('passport-github2').Strategy,
+  passport = require('passport');
+
 require("dotenv").config();
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
-
+passport.use(new GitHubStrategy({
+  clientID: process.env.GITHUB_CLIENT_ID,
+  clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  callbackURL: "http://127.0.0.1:3000/auth/github/callback"
+},
+function(accessToken, refreshToken, profile, cb) {
+  console.log("at: ", accessToken, "rt: ", refreshToken, profile, cb);
+  requests.fetchUserEmail(accessToken);
+}
+));
 /* const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
  */
 const uri = `mongodb+srv://ibixler:${process.env.PASS}@matchinglgbt.zyq3dy3.mongodb.net/?retryWrites=true&w=majority&appName=MatchingLGBT`;
@@ -85,7 +99,17 @@ app.post("/update", async (req, res) => {
 
   res.json(result);
 });
+
+app.get('/auth/github',
+  passport.authenticate('github', { scope: [ 'user:email' ] }));
+
+app.get('/auth/github/callback', 
+  passport.authenticate('github', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
 //DATABASE CONNECTION END
 
-db.cl;
+db.close();
 app.listen(process.env.PORT || 3000);

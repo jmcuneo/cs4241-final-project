@@ -20,15 +20,15 @@ let collection = (dbName = "matching-game"),
   collectionName = "users";
 
 exports.run = async function () {
-  try{
+  try {
     console.log("trying to connect");
     await client.connect();
-  
+
     collection = await client.db(dbName).collection(collectionName);
     console.log("connecting");
-  } catch (err){
-    console.log(err)
-  } 
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 exports.exists = () => {
@@ -36,7 +36,7 @@ exports.exists = () => {
 };
 exports.close = () => {
   client.close();
-}
+};
 exports.getUserByUsername = async function (username) {
   console.log("called");
   const user = await collection.findOne({ username });
@@ -48,7 +48,7 @@ exports.getUserByUsername = async function (username) {
     return null;
   }
 };
-exports.getUserByEmail = async function ( email ) {
+exports.getUserByEmail = async function (email) {
   console.log("called");
   const user = await collection.findOne({ email });
   if (user) {
@@ -60,14 +60,13 @@ exports.getUserByEmail = async function ( email ) {
   }
 };
 exports.createUser = async function (data) {
-  try{
+  try {
     console.log("creating user");
-    console.log(data)
+    console.log(data);
     await collection.insertOne(data);
-    return true; 
-  } catch (err){
-    console.log(err)
-    return false; 
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
   }
-}; 
-
+};
