@@ -5,7 +5,6 @@ import bcrypt from 'bcrypt';
 
 
 /**
- * Define your LocalStrategy
  * @author Jack Weinstein
  */
 const localStrategy = new LocalStrategy({
