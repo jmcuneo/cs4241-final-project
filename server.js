@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import express, { json } from 'express';
 import mongoose from 'mongoose';
 import ViteExpress from 'vite-express';
-import { testDB } from './dbTester.js';
+import { testDB, createDummyUsers } from './dbTester.js';
 
 import Account from './models/account.js';
 import session from 'express-session';
@@ -29,9 +29,9 @@ app.use(bodyParser.json());
 
 // Session Middleware
 app.use(session({
-  secret: '5O$5HP^xg2zV0duE',
-  resave: false,
-  saveUninitialized: false,
+    secret: '5O$5HP^xg2zV0duE',
+    resave: false,
+    saveUninitialized: false,
 }));
 
 // Passport Middleware
@@ -63,7 +63,7 @@ app.post('/register', async (req, res) => {
         if (!existingUser) {
             return res.status(409).json({ success: false, message: "Username already exists" });
         }
-        
+
         await User.createUser(newAccount, {
             firstName: req.body.firstName,
             lastName: req.body.lastName
@@ -90,6 +90,7 @@ Only keep when in DEVELOPMENT.
 #################################################
 */
 // testDB();
+await createDummyUsers();
 
 /**
  * @description Connects to the MongoDB database using USER, PASS, and HOST in the .env file

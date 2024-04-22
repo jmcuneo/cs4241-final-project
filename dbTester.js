@@ -13,7 +13,7 @@ import Account from "./models/account.js";
 */
 export async function testDB() {
     /* eslint-disable no-unused-vars */
-    await clearEntireDB();
+    //await clearEntireDB();
     const userS = {
         firstName: 'Alexander',
         lastName: 'Beck',
@@ -56,7 +56,7 @@ export async function testDB() {
 
     // Admin account that has its own event
     // User account that has been added to the event (as allowedInviters)
-    
+
     try {
         // TODO: This might be causing an inconsistent error, keep an eye on it
         await addPermissionsToUser(user, true, PERMISSIONS.CREATE_EVENT, PERMISSIONS.INVITE_TO_ALL_EVENTS, PERMISSIONS.MODIFY_USERS);
@@ -102,11 +102,46 @@ export async function testDB() {
     }
 }
 
+export async function createDummyUsers() {
+    let admin = await User.findOne({ username: 'admin' });
+    if (!admin) {
+        admin = await User.createUser(await Account.create({
+            username: 'admin',
+            password: 'password'
+        }), {
+            firstName: 'Admin',
+            lastName: 'Dummy'
+        });
+    }
+
+    let user = await User.findOne({ username: 'dummy' });
+    if (!user) {
+        user = await User.createUser(await Account.create({
+            username: 'dummy',
+            password: 'password'
+        }), {
+            firstName: 'Dummy',
+            lastName: 'Account'
+        });
+    }
+
+    let dummyEvent = await Event.findOne({name: 'Dummy Event'});
+    if (!dummyEvent) {
+        dummyEvent = admin.createEvent({
+            name: 'Dummy Event',
+            location: 'Dummy Location',
+            date: new Date(2024, 11, 25)
+        });
+    }
+
+    await admin.makeAllowedToInvite(user);
+}
+
 async function clearEntireDB() {
     await User.deleteMany({});
     await Event.deleteMany({});
     await Logger.deleteMany({});
-    // await Account.deleteMany({});
+    await Account.deleteMany({});
 }
 
 async function testMakeAdmin(users) {
