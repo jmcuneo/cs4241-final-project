@@ -1,5 +1,5 @@
 //import session from 'express-session';
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import {MongoClient, ServerApiVersion, Timestamp} from 'mongodb';
 //import MongoDBStore from 'connect-mongodb-session';
 
 
@@ -24,7 +24,7 @@ let pokemon_collection = null;
 
 let games_collection = null;
 
-const exp = { set_up_db_store, client, DB: null, getNumPokemon, getPokemonFromGame, getGameByRoomCode, updateGame, createNewGame, pushGame}
+const exp = { set_up_db_store, client, DB: null, getNumPokemon, getPokemonFromGame, getGameByRoomCode, updateGame, createNewGame, deleteGame, pushGame}
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -176,7 +176,7 @@ async function createNewGame(code,gameType){
                 flipped_p2:[...guessedArr],
                 guessed_p1:[...guessedArr],
                 guessed_p2:[...guessedArr],
-                started:1000000,
+                started: new Date(),
                 p1:null,
                 p2:null
             };
@@ -193,6 +193,17 @@ async function createNewGame(code,gameType){
         //Game code already exists
         return null;
     }
+}
+
+async function deleteGame(code)
+{
+    const docs = await games_collection.find(
+        {
+            roomCode: code
+        }
+    ).toArray()
+
+    games_collection.deleteOne(docs[0]);
 }
 
 

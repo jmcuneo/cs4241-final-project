@@ -30,9 +30,6 @@ io.on('connection', (socket) => {
     if(existingGame != null){
       socket.emit('host failed','room in use');
     }else{
-      //TODO: Use the DB and populate the list
-      console.log("Message: ", room);
-
       const game = await database.createNewGame(room,"pokemon");
       await database.updateGame(room,"p1",{name:"Player 1",id:socket.id});
 
@@ -41,7 +38,7 @@ io.on('connection', (socket) => {
       //TODO: Emit start game event to first player
       sendServerChatMessage(room,"Player 1 joined the game.");
       //TODO: Also send flipped and guessed
-      socket.emit('game setup',game.board,game.answer_p1,game.flipped_p1,game.guessed_p1);
+      socket.emit('game setup',game.board,game.answer_p1,game.flipped_p1,game.guessed_p1,game.chat);
     }
   });
   
@@ -58,14 +55,14 @@ io.on('connection', (socket) => {
           socket.join(room);
           socket.emit('join success',room,"Player 2");
           sendServerChatMessage(room,"Player 2 joined.");
-          socket.emit('game setup',game.board,game.answer_p2,game.flipped_p2,game.guessed_p2);
+          socket.emit('game setup',game.board,game.answer_p2,game.flipped_p2,game.guessed_p2,game.chat);
         }else if(game.p1==null){
           // rooms[room].p1 = {name:"Player 1",id:socket.id};
           await database.updateGame(room,"p1",{name:"Player 1",id:socket.id});
           socket.join(room);
           socket.emit('join success',room,"Player 1");
           sendServerChatMessage(room,"Player 1 joined.");
-          socket.emit('game setup',game.board,game.answer_p1,game.flipped_p1,game.guessed_p1);
+          socket.emit('game setup',game.board,game.answer_p1,game.flipped_p1,game.guessed_p1,game.chat);
         }
       }
     }else{
@@ -104,6 +101,8 @@ io.on('connection', (socket) => {
         socket.broadcast.to(room).emit('game end',winner,otherAnswer);
         socket.emit('game end',winner,answer);
       }
+    }else{
+      socket.emit('guess failed');
     }
   });
   socket.on('flip',async function(room,name,index,cardName){
@@ -114,16 +113,22 @@ io.on('connection', (socket) => {
     await database.updateGame(room,flippedArr+"."+index,!flippedArr[index]);
     sendServerChatMessage(room,name + " flipped " + cardName);
   });
-  socket.on('complete game left',(room,name)=>{
+  socket.on('complete game left',async function(room,name){
     sendServerChatMessage(room,name + " left.");
     socket.leave(room);
+    const game = await database.getGameByRoomCode(room);
+    if(name==game.p1.name){
+      await database.updateGame(room,"p1",null);
+      await checkForDelete(game,room,game.p2);
+    }else{
+      await database.updateGame(room,"p2",null);
+      await checkForDelete(game,room,game.p1);
+    }
   });
   socket.on('disconnecting',async function(reason){
     console.log("Disconnecting fired");
     for(const room of socket.rooms){
-      // console.log(room);
       const game = await database.getGameByRoomCode(room);
-      console.log(game);
       if(game != null){
         console.log(game.p1,game.p2,socket.id);
         if(game.p1 != null && game.p1.id==socket.id){
@@ -131,13 +136,16 @@ io.on('connection', (socket) => {
           // io.to(room).emit('message receive',"Server",rooms[room].p1.name + " disconnected.");
           sendServerChatMessage(room,game.p1.name + " disconnected.");
           await database.updateGame(room,"p1",null);
+          await checkForDelete(game,room,game.p2);
         }
         if(game.p2 != null && game.p2.id==socket.id){
           console.log("p2 disconnected");
           // io.to(room).emit('message receive',"Server",rooms[room].p2.name + " disconnected.");
           sendServerChatMessage(room,game.p2.name + " disconnected.");
           await database.updateGame(room,"p2",null);
+          await checkForDelete(game,room,game.p1);
         }
+
         break;
       }
     }
@@ -148,6 +156,15 @@ io.on('connection', (socket) => {
     console.log("user disconnected");
   });
 });
+
+async function checkForDelete(game, room, otherPlayer){
+  if(otherPlayer === null){
+    // both players disconnected, delete game from database
+    // TODO: disconnect after timer is up
+    console.log("Deleting game");
+    await database.deleteGame(room);
+  }
+}
 
 
 database.set_up_db_store(app)

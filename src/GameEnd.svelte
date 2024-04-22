@@ -4,8 +4,8 @@
     const dispatch = createEventDispatcher();
 
     export let game_data;
-    console.log("Game data:", game_data);
-    deleteGameData();
+    //console.log("Game data:", game_data);
+    //deleteGameData();
     function leaveGame() {
         dispatch("backToHost", {});
     }
@@ -19,15 +19,15 @@
         ? `You guessed ${game_data.correct.name}`
         : `Your opponent's ${game_type} was ${game_data.correct.name}`;
 
-    async function deleteGameData() {
-        const deletedGame = await fetch("/delete_game_by_room_code", {
-            method: "POST",
-            body: JSON.stringify({ roomCode: game_data.id }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-    }
+    // async function deleteGameData() {
+    //     const deletedGame = await fetch("/delete_game_by_room_code", {
+    //         method: "POST",
+    //         body: JSON.stringify({ roomCode: game_data.id }),
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //         },
+    //     });
+    // }
 </script>
 
 <div class="game-end-side">
