@@ -7,14 +7,8 @@
 </script>
 
 <Router>
+    <Route path="/" component={HomePage} />
     <Route path="/login" component={LoginPage} />
-    <Route path="/home" component={HomePage} />
     <Route path="/game" component={GamePage} />
-
-<nav>
-    <Link to="/login" >Sign In</Link>
-    <Link to="/home">New Game</Link>
-    <Link to="/game">Join Game</Link>
-</nav>
 
 </Router>
