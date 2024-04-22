@@ -23,7 +23,7 @@
         let player_num = 0;
         if (name == "Server") {
             player_num = 2;
-        } else if ((game_data.player = "Player 1")) {
+        } else if (name == "Player 1") {
             player_num = 0;
         } else {
             player_num = 1;
