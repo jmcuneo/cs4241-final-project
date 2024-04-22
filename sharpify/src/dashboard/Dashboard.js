@@ -27,9 +27,12 @@ function Dashboard(props) {
                     img.onload = () => {
                         console.log('Image loaded');
                         const canvas = document.getElementById('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        console.log(canvas.width, canvas.height);
                         const ctx = canvas.getContext('2d');
                         console.log(ctx);
-                        ctx.drawImage(img, 0, 0, 300, 300);
+                        ctx.drawImage(img, 0, 0, img.width, img.height);
                     };
                     img.src = e.target.result;
                 };
@@ -38,8 +41,8 @@ function Dashboard(props) {
 
         }
         /> <
-        canvas id = "canvas" > < /canvas> <
-        /div>
+        canvas id = "canvas" > < /canvas> < /
+        div >
     )
 };
 
