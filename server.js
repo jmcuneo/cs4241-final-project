@@ -167,4 +167,5 @@ async function checkForDelete(game, room, otherPlayer){
 }
 
 
+
 database.set_up_db_store(app)
