@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './Background.css'; 
+import { motion } from 'framer-motion';
+
+
 
 const fetchSVGs = async () => {
   try {
@@ -19,7 +22,7 @@ const fetchSVGs = async () => {
 
 const getRandomCoordinate = () => ({
   left: `${Math.random() * (window.innerWidth - 100)}px`,
-  top: `${Math.random() * (window.innerHeight - 100)}px`,
+  top: `${(window.innerHeight/2) + (Math.random() * window.innerHeight/4) - 100}px`,
 });
 
 const Background = () => {
@@ -33,15 +36,22 @@ const Background = () => {
     fetchAndSetSVGs();
   }, []);
 
+  
   return (
     <div className="Background">
       {SVGList.map(({ filename, url }, index) => {
-        const coordinates = getRandomCoordinate(); // Call getRandomCoordinate for each SVG
+        const coordinates = getRandomCoordinate();
         console.log(coordinates)
         return (
-          <div key={index} className="svg-container" style={{ position: 'absolute', left: coordinates.left, top: coordinates.top }}>
+          <motion.div 
+            key={index} 
+            className="svg-container" 
+            style={{ position: 'absolute', left: coordinates.left, top: coordinates.top }}
+            animate={{ y: [100, 200, 100] }} 
+            transition={{ duration: 20, repeat: Infinity }} 
+          >
             <img src={url} alt={filename} />
-          </div>
+          </motion.div>
         );
       })}
     </div>
