@@ -4,46 +4,16 @@ const express = require("express"),
   auth = require("./auth");
   db = require("./db")
   require("dotenv").config();
+  const { ObjectId } = require("mongodb");
   
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
-const { connect } = require("http2");
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+
 /* const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
  */
 const uri = `mongodb+srv://ibixler:${process.env.PASS}@matchinglgbt.zyq3dy3.mongodb.net/?retryWrites=true&w=majority&appName=MatchingLGBT`;
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-
-
-/* let collection = 
-  dbName = "matching-game",
-  collectionName = "users";
-
-async function run() {
-  console.log("trying to connect");
-  await client.connect();
-
-  collection = await client.db(dbName).collection(collectionName);
-  console.log("connecting");
-  app.get("/docs", async (req, res) => {
-    if (collection !== null) {
-      const docs = await collection.find({}).toArray();
-      res.json(docs);
-    }
-  });
-}
-run(); */
 db.run();
 
 app.use((req, res, next) => {
@@ -56,19 +26,35 @@ app.use((req, res, next) => {
 
 app.post("/add", async (req, res) => {
   console.log(req.body);
-  const exists = await db.getUserIdByUsername(req.body.username);
+  const exists = await db.getUserByUsername(req.body.username);
   console.log(exists);
-  let result;
-  if(exists === null){
+  let result = false;
+  const validEmail = await auth.validateEmail(req.body.email);
+  console.log("email validitittyy", validEmail)
+  if(exists === null && validEmail){
     console.log("nope");
-    db.createUser(req.body);
+    const hash =  await auth.genHashSalt(req.body);
+    /* dbe means database entry */
+    const dbe = { username: req.body.username,
+                  password: hash,
+                  name: req.body.name,
+                  email: req.body.email };
+    result = db.createUser(dbe); 
   }
-  
-  res.status(200).send({ message : "user"});
-/*   else res.status(400).send({message: "fuck"})
- */  /* res.json(result); */
+  if(result) res.status(200).send({ message : "user created"});
+  else res.status(403).send({message: validEmail ? "user already exists, select a new username" : "invalid email provided try once more"});
 });
-
+app.post("/login", async(req, res ) => {
+  console.log(req.body);
+  const user = await db.getUserByUsername(req.body.username);
+  let validLogin = false;
+  if(user !== null){
+    validLogin = await auth.validatePasswordHash(req.body, user);
+    console.log(validLogin)
+  }
+  if (validLogin) res.status(200).json(auth.generateAccessToken({ username: req.body.username }));
+  else res.status(400).send("bad login");
+})
 app.post("/remove", async (req, res) => {
   const result = await collection.deleteOne({
     _id: new ObjectId(req.body._id),
@@ -90,6 +76,6 @@ app.post("/update", async (req, res) => {
   res.json(result);
 });
 //DATABASE CONNECTION END
-client.close();
 
+db.cl
 app.listen(process.env.PORT || 3000);
