@@ -14,7 +14,7 @@
     const width = 6;
     const height = 4;
     const bingo = "WHOMST";
- 
+
     // prefetch all images before rendering board
     async function get_board(serverBoard) {
         const board = serverBoard;
@@ -31,20 +31,20 @@
         return board;
     }
 
-    let images = new Promise((req,res)=>{});
+    let images = new Promise((req, res) => {});
     let display_board = true;
 
-    socket.on('game setup',(gameBoard,whomst,flipped,guessed)=>{
-        let serverBoard = {board:[],whomst:-1};
-        serverBoard.whomst=whomst;
+    socket.on("game setup", (gameBoard, whomst, flipped, guessed) => {
+        let serverBoard = { board: [], whomst: -1 };
+        serverBoard.whomst = whomst;
         serverBoard.board = [];
-        for(let i = 0; i < gameBoard.length; i++){
+        for (let i = 0; i < gameBoard.length; i++) {
             serverBoard.board.push({
-                name:`${gameBoard[i].label} ${gameBoard[i].unique_id}`,
-                link:`https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(gameBoard[i].unique_id + "").padStart(3, "0")}.png`
+                name: `${gameBoard[i].label} ${gameBoard[i].unique_id}`,
+                link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(gameBoard[i].unique_id + "").padStart(3, "0")}.png`,
             });
         }
-        display_board=true;
+        display_board = true;
         images = get_board(serverBoard);
     });
 
@@ -53,15 +53,13 @@
         const board = await images;
         const obj = e.detail;
         if (obj.confirm) {
-            guess_data.callback(true);
             socket.emit(
                 "guess",
                 game_data.id,
                 game_data.player,
                 index,
-                board.board[index].name
+                board.board[index].name,
             );
-            guess_data = null;
         } else if (obj.deny) {
             guess_data.callback(false);
             guess_data = null;
@@ -97,44 +95,54 @@
         document.body.clientHeight / 2,
     );
 
-    async function gameEnd(winner,answer) {
+    async function gameEnd(winner, answer) {
         console.log("GAME BEGINS TO END");
         let board = await images;
-        console.log("GAME END",winner,answer);
+        console.log("GAME END", winner, answer);
         // console.log(winner,correct_name,correct_url);
-        dispatch("gameEnd",{board:board.board,winner:winner,answer:answer});
+        dispatch("gameEnd", {
+            board: board.board,
+            winner: winner,
+            answer: answer,
+        });
     }
 
     async function getNumPokemon() {
-        const numPokemon = await fetch('/get_num_pokemon', {
+        const numPokemon = await fetch("/get_num_pokemon", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-            }
-        })
+            },
+        });
         let res = await numPokemon.json();
         return res.count;
     }
 
-    async function getPokemonFromGame(room)
-    {
-        const get_pokemon_at_index = await fetch('/get_pokemon_from_game', 
-        {
+    async function getPokemonFromGame(room) {
+        const get_pokemon_at_index = await fetch("/get_pokemon_from_game", {
             method: "POST",
             body: JSON.stringify({ roomCode: room }),
             headers: {
                 "Content-Type": "application/json",
-            }
-        })
+            },
+        });
         let pokemon = await get_pokemon_at_index.json();
         return pokemon;
     }
+    function guessFailed() {
+        guess_data.callback(true);
+        guess_data = null;
+    }
 
-    socket.on('game end',gameEnd);
+    socket.on("game end", gameEnd);
+    socket.on("guess failed", guessFailed);
 </script>
 
-<div class="grid" style="grid-template-columns: repeat({width}, 1fr);" 
-class:stop_events={guess_data != null}>
+<div
+    class="grid"
+    style="grid-template-columns: repeat({width}, 1fr);"
+    class:stop_events={guess_data != null}
+>
     {#each Array(width) as _, j}
         {@const letter = bingo[j] || ""}
         <img class="letter" alt="Pokemon {letter}" src="Poke_{letter}.png" />
