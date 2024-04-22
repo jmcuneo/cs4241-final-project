@@ -8,6 +8,12 @@ function RegisterPage() {
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
 
+
+  const navigate = useNavigate()
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    navigate("/");
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
     setMessage('Registering');
@@ -64,6 +70,7 @@ function RegisterPage() {
               <option value="Admin"></option>
             </datalist>
           </div>
+          <button style={{marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold'}} className="btn waves-effect waves-light" type="button" id="logoutButton" onClick={handleLogin}>Back</button>
           <button style={{marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="registerButton" onClick={handleSubmit}>Register</button>
         </div>
       </form>
