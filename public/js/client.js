@@ -16,39 +16,34 @@ window.onload = function() {
 
 let personalEvents = [];
 
-const getPersonalCalendar = function() {
-    fetch("/user-events", {
+const getPersonalCalendar = async function() {
+    await fetch("/user-events", {
         method: "GET"
     })
     .then((response) => response.json())
     .then((data) => {
         personalEvents = data;
         console.log(data);
-        const list = document.querySelector("#events");
+        /*const list = document.querySelector("#events");
         list.innerHTML = "";
-        data.forEach((e) => list.innerHTML += `<li>${JSON.stringify(e)}</li>`);
+        data.forEach((e) => list.innerHTML += `<li>${JSON.stringify(e)}</li>`);*/
     });
 };
 
-const calendarView = function() {
+const calendarView = async function() {
+    await getPersonalCalendar();
     const date = document.querySelector("#month").value;
     const year = parseInt(date.substr(0, 4));
     const century = parseInt(date.substr(0, 2));
     const subyear = parseInt(date.substr(2, 2));
     const month = parseInt(date.substr(5, 2));
-    console.log(century + ", " + subyear + ", " + month);
-    for (e of personalEvents) {
-        if (e.datetime.substr(0, 7) === date)
-            console.log(e);
-    }
     const calendar = document.querySelector("#calendar");
-    calendar.innerHTML = "<tr><th>Sunday</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th></tr>";
     const monthCodes = [0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5];
     const centuryCodes = [4, 2, 0, 6, 4, 2, 0];
     const isLeapYear = year % 100 === 0 ? (year % 400 === 0) : (year % 4 === 0);
     const startDay = (((subyear + Math.floor(subyear / 4)) % 7) + monthCodes[month - 1] + centuryCodes[century - 17] + 1 + (month <= 2 ? (isLeapYear ? -1 : 0) : 0)) % 7;
-    console.log(startDay);
     const daysInMonth = [31, (isLeapYear ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    calendar.innerHTML = "<tr><th>Sunday</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th></tr>";
     let str = "<tr>";
     for (let i = 0; i < startDay; i++)
         str += "<td></td>";
@@ -65,5 +60,10 @@ const calendarView = function() {
 };
 
 const getEventsOnDay = function(year, month, day) {
-    console.log(year + ", " + month + ", " + day);
+    //console.log(year + ", " + month + ", " + day);
+    console.log(`${year}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""}${day}`);
+    const eventsOnDay = personalEvents.filter((e) => e.datetime.substr(0, 10) === `${year}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""}${day}`);
+    const list = document.querySelector("#events");
+    list.innerHTML = "";
+    eventsOnDay.forEach((e) => list.innerHTML += `<li>${JSON.stringify(e)}</li>`);
 };
