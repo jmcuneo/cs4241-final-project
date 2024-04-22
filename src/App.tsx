@@ -13,6 +13,7 @@ function App() {
     //username
     const [username, setUsername] = useState('');
     const [usernameExists, setUsernameExists] = useState(false);
+    const [isGameStarted, setIsGameStarted] = useState(false);
 
 
     useEffect(() =>{
@@ -44,6 +45,7 @@ function App() {
         }
     }
 
+    //MongoDB code from A3
     // const checkUsernameExists = async () => {
     //     try {
     //         const response = await fetch(``); //MongoDB route
@@ -54,10 +56,15 @@ function App() {
     //     }
     // };
 
+
     const usernames = ["Nick", "Lucas", "Trevor", "Jay", "Yuran"]
-    const checkUsernameExists = async () => {
-        setUsernameExists(true);
-    }
+
+    const checkUsernameExists = async (username: string) => {
+        if (username === "") {
+            return true;
+        }
+        return usernames.includes(username);
+    };
 
 
 
@@ -70,7 +77,18 @@ function App() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
-                <button onClick={checkUsernameExists}>Check Username</button>
+                {/*<button onClick={checkUsernameExists}>Check Username</button>*/}
+                {/*{usernameExists ? <p>Username exists</p> : <p>Username available</p>}*/}
+                <button onClick={async () => {
+                    try {
+                        const exists = await checkUsernameExists(username);
+                        setUsernameExists(exists);
+                    } catch (error) {
+                        console.error('Error: ', error);
+                    }
+                }}>
+                    Check Username
+                </button>
                 {usernameExists ? <p>Username exists</p> : <p>Username available</p>}
                 {/* basic word count/time/score */}
                 <div className="container">
