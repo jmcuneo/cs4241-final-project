@@ -38,6 +38,7 @@ async function start() {
     const startBtn = document.getElementById("startButton")
     const gameboard = document.getElementById("gameboard")
     gameboard.style.display = "flex"
+    showLeaderboard()
     const response = await fetch( "/load", {
         method:'POST',
         headers: { 'Content-Type': 'application/json'}
@@ -161,6 +162,20 @@ function displayScore(score) {
     let scoreboard = document.getElementById("score")
     let currentScore = parseInt(scoreboard.innerHTML) + score
     scoreboard.innerHTML = currentScore
+}
+
+async function showLeaderboard(){
+    let board = document.getElementById("leaderboard")
+    const response = await fetch( "/leaderboard", {
+        method:'POST',
+        headers: { 'Content-Type': 'application/json'}
+    })
+    const resp = await response.json()
+    for(let i = 0; i < resp.length; i++) {
+        let row = makeElem("tr", "", "", board)
+        makeElem("td", "", resp[i].user, row)
+        makeElem("td", "", resp[i].score, row)
+    }
 }
 
 //Old vanilla selection code
