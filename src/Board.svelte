@@ -16,26 +16,29 @@
     const bingo = "WHOMST";
 
     // prefetch all images before rendering board
-    async function get_board(serverBoard) {
+    async function get_board(serverBoard, flipped) {
         const board = serverBoard;
         const proms = board.board.map(
-            (e) =>
+            (e, index) =>
                 new Promise((res, rej) => {
                     e.img = new Image();
                     e.img.onload = res;
                     e.img.onerror = rej;
                     e.img.src = e.link;
+                    e.flipped = flipped[index];
                 }),
         );
         await Promise.all(proms);
         return board;
-    }
+}
+
 
     let images = new Promise((req, res) => {});
     let display_board = true;
 
     socket.on("game setup", (gameBoard, whomst, flipped, guessed, chat) => {
         let serverBoard = { board: [], whomst: -1 };
+        console.log("Flipped:", flipped);
         serverBoard.whomst = whomst;
         serverBoard.board = [];
         for (let i = 0; i < gameBoard.length; i++) {
@@ -45,7 +48,7 @@
             });
         }
         display_board = true;
-        images = get_board(serverBoard);
+        images = get_board(serverBoard, flipped);
     });
 
     let guess_data = null;
@@ -170,10 +173,11 @@
     >
         {#each Array(height * width) as _, j}
             {@const card = board.board[j]}
-            <Card
+                <Card
                 img={card.img}
                 name={card.name}
                 whomst={j == board.whomst}
+                flipped={card.flipped}
                 on:load
                 on:flip={(e) => flip(e, j)}
             ></Card>
