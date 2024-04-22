@@ -3,8 +3,21 @@
     <v-main>
       <v-container>
         <v-row>
-          <v-col>
 
+          <v-col v-for="task in tasks" :key="task.id">
+            <v-card>
+              <v-col>
+                <v-card-text>{{ task.id }}</v-card-text>
+                <v-card-text>{{ task.title }}</v-card-text>
+                <v-card-text>{{ task.location }}</v-card-text>
+                <v-card-text>{{ task.date }}</v-card-text>
+                <v-row>
+                  <v-btn>Mark as Done</v-btn>
+                  <v-btn>Modify</v-btn>
+                  <v-btn>Delete</v-btn>
+                </v-row>
+              </v-col>
+            </v-card>
           </v-col>
           <v-col>
             <v-card>
@@ -42,6 +55,7 @@ export default {
       todayUpcoming: 0,
       totalUpcoming: 0,
       currentUser: '',
+      tasks: []
     };
   },
   created() {
@@ -60,6 +74,22 @@ export default {
         today.getSeconds().toString().padStart(2, '0');
       const dateTime = date + ' ' + time;
       this.timestamp = dateTime;
+    },
+    updateTasks: async function () {
+      const parentContainer = document.getElementById('form');
+
+      let j = {username: user}
+      const response1 = await fetch("/data", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(j)
+      })
+        .then(response => response.json())
+        .then(function (data) {
+          this.tasks = data;
+        }).catch(error => console.error('Error:', error));
     }
   },
 };
