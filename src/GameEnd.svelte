@@ -5,7 +5,6 @@
 
     export let game_data;
     console.log("Game data:", game_data);
-    // deleteGameData()
     function leaveGame() {
         dispatch("backToHost", {});
     }
@@ -13,19 +12,6 @@
     let did_win = game_data.winner == game_data.player;
     let title = did_win ? "You Win!" : "You Lose.";
     let message = did_win ? `You guessed ${game_data.correct.name}` : `Your opponent's ${game_type} was ${game_data.correct.name}`;
-
-    async function deleteGameData() {
-        const deletedGame = await fetch('/delete_game_by_room_code',
-            {
-                method: "POST",
-                body: JSON.stringify({roomCode: game_data.id}),
-                headers:
-                {
-                    "Content-Type": "application/json",
-                }
-            })
-    }
-
 
 </script>
 

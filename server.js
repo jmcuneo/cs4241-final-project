@@ -135,6 +135,7 @@ io.on('connection', (socket) => {
           await database.updateGame(room,"p2",null);
           await checkForDelete(game,room,game.p1);
         }
+
         break;
       }
     }
