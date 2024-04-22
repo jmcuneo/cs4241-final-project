@@ -3,6 +3,22 @@ const express = require('express'),
     app = express(),
     { MongoClient, ObjectId } = require("mongodb")
 
+//for sending files
+const multer = require('multer');
+const path = require('path');
+//set up mutler
+// Set up Multer to handle file uploads
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'uploads/'); // Specify the directory where images will be stored
+    },
+    filename: function(req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); // Rename the file to avoid conflicts
+    }
+});
+
+const upload = multer({ storage: storage });
+
 app.use(express.static('public'))
 app.use(express.static('views'))
 app.use(express.json())
@@ -158,6 +174,15 @@ app.get('/profilePage', authCheck, (req, res) => {
     res.sendFile(__dirname + '/public/profile.html')
 })
 
+//send to post event page
+app.get('/eventBoard', authCheck, (req, res) => {
+    res.sendFile(__dirname + '/public/eventBoard.html')
+})
+
+app.get('/allEvents', authCheck, (req, res) => {
+    res.sendFile(__dirname + '/public/viewEvents.html')
+})
+
 app.get('/user', (req, res) => {
     console.log("fetching username")
     res.json({"username" : req.user.username});
@@ -175,6 +200,131 @@ app.get("/user-events", async (req, res) => {
         events.forEach((e) => query.$or.push({eventId: e.eventId}));
         return eventsCollection.find(query).toArray().then((eventList) => res.json(eventList));
     });
+});
+let eventPost = []; //array to store all events
+let image; //for mopngoDB
+app.post('/upload', upload.single('image'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+    }
+    image = '/uploads/' + req.file.filename;
+    res.sendStatus(200);
+});
+let description; //mongoDB
+app.post("/description", async (req, res) => {
+    console.log("description: ", req.body);
+    if(req.body == ""){
+        return res.send(JSON.stringify('No description uploaded.'))
+    }
+    description = req.body;
+    res.send(JSON.stringify("Uploaded successfully."));
+})
+
+//submit - gets entry (name, date, time, loaction) from client checks for event of same time, name, location
+// adds to array and database and sends client updated array
+app.post("/submit", async (req, res) => {
+    let data = req.body;
+    console.log("type of startTime server: ", typeof(data.startTime))
+    console.log(data);
+    for(let i = 0; i < eventPost.length; i++){
+      if(data.event == eventPost[i].event){
+        console.log("Event already posted!");
+        res.send(JSON.stringify("Event already posted!"));
+        return;
+      } 
+    }
+    var entry = {
+      //name: req.user.username, fix after appened to login page
+      event: data.event,
+      date: data.date,
+      startTime: convertTime(data.startTime),
+      length: elapsedTime(data.startTime, data.endTime, data.date), 
+      location: data.location,
+      image: image,
+      description: description
+    };
+    console.log("length ", (eventPost.length + 1));
+    eventPost.push(entry);
+    const result = await eventsCollection.insertOne(entry)
+    req.json = JSON.stringify(eventPost);
+    res.send(req.json);
+  });
+
+  function convertTime(time) {
+    // Parse the time string
+    var timeSplit = time.split(':');
+    var hours = parseInt(timeSplit[0]);
+    var minutes = parseInt(timeSplit[1]);
+
+    // Convert to 12 hour
+    var ampm = (hours >= 12) ? 'PM' : 'AM';
+    hours = (hours % 12) || 12;
+
+    var newTime = hours + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + ampm;
+    return newTime;
+}
+
+function elapsedTime(startTime, endTime, date) {
+    // full dates to get time differences for multi days
+    var start = new Date(date + "T" + startTime + ':00');
+    var end = new Date(date + "T" + endTime + ':00');
+
+    // Calculate the difference in milliseconds
+    var elapsedTime = end - start;
+
+    // Convert milliseconds to hours and minutes
+    var hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+    var minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+
+    return hours + ' hours ' + minutes + ' minutes';
+}
+
+// app.post("/view", async (req, res) => {
+//     console.log(eventPost);
+//     if (eventsCollection !== null) {
+//         const events = await eventsCollection.find({}).toArray()
+//         res.json( events )
+//       }
+//       //res.send(JSON.stringify(events))
+// })
+
+app.post("/info", async (req, res) => {
+    console.log("index: ", req.body.entryIndex);
+    const indexToRemove = req.body.entryIndex;
+    
+    // if (isNaN(indexToRemove) || indexToRemove < 0 || indexToRemove >= eventPost.length) {
+    //   return res.status(400).send(JSON.stringify("Invalid index"));
+    // }
+
+    const details = eventPost[indexToRemove];
+    console.log("details: ", details);
+    const eventName = details.event;  
+  
+    // Use the attribute 'name' of the object to remove data from MongoDB
+    const filter = { event: eventName }; // Filter to find the document by the original item
+    const foundItem = await eventsCollection.findOne(filter);
+    
+    console.log(foundItem);
+    res.send(foundItem);
+    
+  });
+
+let mongoDataLoaded = false;
+
+app.post("/refresh", express.json(), async (req, res) => {
+  if (!mongoDataLoaded) {
+    // Load all data from MongoDB only if it hasn't been loaded before
+    const mongoData = await eventsCollection.find({}).toArray();
+    for(let i = 0; i < mongoData.length; i++){
+      eventPost.push(mongoData[i]);
+    }
+}
+  else{
+    console.log("mongo already loaded");
+  }
+  
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(JSON.stringify(eventPost));
 });
 
 //app.listen(process.env.PORT);
