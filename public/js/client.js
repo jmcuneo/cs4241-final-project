@@ -1,36 +1,33 @@
-//profile info 
+// client code for home page 
 
-window.onload = function() {
-    const profileInfo = fetch("/user", {
-        method: "GET",
-      })
-      .then(function(response) {
+const profileInfo = fetch("/user", {
+    method: "GET",
+})
+    .then(function (response) {
         return response.json();
-      })
-      .then(function(data) {
+    })
+    .then(function (data) {
         const username = data.username;
         document.getElementById("user").innerHTML = username;
-      });
-
-}
+    });
 
 let personalEvents = [];
 
-const getPersonalCalendar = function() {
+const getPersonalCalendar = function () {
     fetch("/user-events", {
         method: "GET"
     })
-    .then((response) => response.json())
-    .then((data) => {
-        personalEvents = data;
-        console.log(data);
-        const list = document.querySelector("#events");
-        list.innerHTML = "";
-        data.forEach((e) => list.innerHTML += `<li>${JSON.stringify(e)}</li>`);
-    });
+        .then((response) => response.json())
+        .then((data) => {
+            personalEvents = data;
+            console.log(data);
+            const list = document.querySelector("#events");
+            list.innerHTML = "";
+            data.forEach((e) => list.innerHTML += `<li>${JSON.stringify(e)}</li>`);
+        });
 };
 
-const calendarView = function() {
+const calendarView = function () {
     const date = document.querySelector("#month").value;
     const year = parseInt(date.substr(0, 4));
     const century = parseInt(date.substr(0, 2));
@@ -64,6 +61,9 @@ const calendarView = function() {
     }
 };
 
-const getEventsOnDay = function(year, month, day) {
+const getEventsOnDay = function (year, month, day) {
     console.log(year + ", " + month + ", " + day);
 };
+
+
+
