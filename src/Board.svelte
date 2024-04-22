@@ -34,7 +34,7 @@
     let images = new Promise((req,res)=>{});
     let display_board = true;
 
-    socket.on('game setup',(gameBoard,whomst)=>{
+    socket.on('game setup',(gameBoard,whomst,flipped,guessed)=>{
         let serverBoard = {board:[],whomst:-1};
         serverBoard.whomst=whomst;
         serverBoard.board = [];

@@ -12,7 +12,7 @@
     let game_type = 'pokemon'
     let did_win = game_data.winner == game_data.player;
     let title = did_win ? "You Win!" : "You Lose.";
-    let message = did_win ? `You guessed ${game_data.correct.name}` : `Your ${game_type} was ${game_data.correct.name}`;
+    let message = did_win ? `You guessed ${game_data.correct.name}` : `Your opponent's ${game_type} was ${game_data.correct.name}`;
 
     async function deleteGameData() {
         const deletedGame = await fetch('/delete_game_by_room_code',
