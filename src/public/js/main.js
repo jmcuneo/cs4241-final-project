@@ -14,6 +14,8 @@ const test = [
     {img: "https://assets.volvo.com/is/image/VolvoInformationTechnologyAB/image14?qlt=82&wid=1024&ts=1670911241536&dpr=off&fit=constrain&fmt=png-alpha", title: "Event 6", info: "bruh", alt: "test here"}
 ]
 
+let infoArr = []
+
 let selected1 = null
 let selected2 = null
 
@@ -32,18 +34,25 @@ window.onload = function() {
     startBtn.onclick = start
 }
 
-function start() {
+async function start() {
     const startBtn = document.getElementById("startButton")
     const gameboard = document.getElementById("gameboard")
     gameboard.style.display = "flex"
-    setInterval(stopWatch, 1000)    
-    for(let i = 0; i < test.length ;i++) {
-        addCell(test[i])
+    const response = await fetch( "/load", {
+        method:'POST',
+        headers: { 'Content-Type': 'application/json'}
+    })
+    const resp = await response.json()
+    for(let i = 0; i < resp.length; i++) {
+        addCell(resp[i])
     }
+    setInterval(stopWatch, 1000) 
     startBtn.style.display = "none"
 }
 
 function addCell(content) {
+    infoArr.push({title: content.title, info: content.info})
+
     let grid = document.getElementById("grid")
     let cell = makeElem("div", "cell", "", grid)
     cell.id = content.title
@@ -53,7 +62,7 @@ function addCell(content) {
     let imgCard = makeElem("div", "card-image", "", card)
     let imgWrap = makeElem("figure", "image is-4by3", "", imgCard)
     let img = makeElem("img", "", null, imgWrap)
-    img.src = content.img
+    img.src = content.link
     img.alt = content.alt
     let cont = makeElem("p", "is-6", content.title, card)
 }
@@ -77,14 +86,14 @@ async function select(event) {
             } else {
                 selected2 = id
                 let body = JSON.stringify({item1: selected1, item2: selected2, timeElapsed: totalTime})
-                // const response = await fetch( "/select", {
-                //     method:'POST',
-                //     headers: { 'Content-Type': 'application/json'},
-                //     body 
-                // })
-                // const resp = await response.json()
-                //handleGuess(resp)
-                handleGuess({score: 1000, validMatch: true}) //For testing purposes
+                const response = await fetch( "/select", {
+                    method:'POST',
+                    headers: { 'Content-Type': 'application/json'},
+                    body 
+                })
+                const resp = await response.json()
+                handleGuess(resp)
+                // handleGuess({score: 1000, validMatch: true}) //For testing purposes
             }   
         } else if (id == selected1) {
             let oldSelected = document.getElementById(selected1).childNodes[0]
@@ -99,7 +108,7 @@ async function select(event) {
 function showInfo(event) {
     let id = this.id
     let infoSection = document.getElementById("info")
-    let info = test.find((element) => element.title === id).info //Change this later based on server-side setup
+    let info = infoArr.find((element) => element.title === id).info 
     infoSection.innerHTML = info
 }
 
