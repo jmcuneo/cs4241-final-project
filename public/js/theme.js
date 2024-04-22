@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lightButton.addEventListener("click", () => {
         if(document.body.classList.contains("dark")) {
             document.body.classList.remove("dark");
-            document.cookie = "theme=;oght;";
+            document.cookie = "theme=light;";
         }
         lightButton.blur();
     });
