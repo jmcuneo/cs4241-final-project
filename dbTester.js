@@ -54,13 +54,16 @@ export async function testDB() {
     const user3 = await User.createUser(user3A, user3S);
     const user4 = await User.createUser(user4A, user4S);
 
+    // Admin account that has its own event
+    // User account that has been added to the event (as allowedInviters)
+    
     try {
         // TODO: This might be causing an inconsistent error, keep an eye on it
         await addPermissionsToUser(user, true, PERMISSIONS.CREATE_EVENT, PERMISSIONS.INVITE_TO_ALL_EVENTS, PERMISSIONS.MODIFY_USERS);
 
         await user.addPermissionsToOtherUser(user2, PERMISSIONS.INVITE_TO_ALL_EVENTS);
 
-        console.log(await Account.find({username: 'juser'}));
+        console.log(await Account.find({ username: 'juser' }));
         const christmasPartySchema = {
             name: 'Christmas Party',
             date: new Date(2024, 11, 25),

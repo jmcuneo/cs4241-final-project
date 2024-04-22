@@ -12,16 +12,16 @@ const localStrategy = new LocalStrategy({
 	passwordField: 'password'
 }, async (username, password, done) => {
 	try {
-		const account = await Account.findOne({ username });
+		const account = await Account.findOne({ username: username }).select('username +password password').exec();
 		if (!account) {
-			return done(null, false);
+			return done(null, false, {message: 'Account not found'});
 		}
 
 		const isMatch = await bcrypt.compare(password, account.password);
 		if (isMatch) {
 			return done(null, account);
 		} else {
-			return done(null, false);
+			return done(null, false, {message: 'Incorrect username or password.'});
 		}
 	} catch (error) {
 		return done(error);
