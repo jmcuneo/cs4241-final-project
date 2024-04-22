@@ -32,9 +32,9 @@ let userCollection;
 let eventsCollection;
 
 (async function () {
-    await client.connect()
-    const database = client.db('finalProj')
-    userCollection = database.collection('users')
+    await client.connect();
+    const database = client.db('finalProj');
+    userCollection = database.collection('users');
     eventsCollection = database.collection("events");
 })();
 
@@ -64,9 +64,13 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-    userCollection.findOne({ "userId": id }).then((user) => {
-        done(null, user);
-    });
+    if(userCollection) {
+        userCollection.findOne({ "userId": id }).then((user) => {
+            done(null, user);
+        });
+    } else {
+        console.error("User collection object not initialized when deserializing user!");
+    }
 });
 
 passport.use(new GitHubStrategy({
@@ -166,25 +170,25 @@ app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => 
 
 app.get('/logout', (req, res) => {
     req.logout();
-    req.session.login = false
+    req.session.login = false;
     res.redirect('/');
 });
 
 app.get('/profilePage', authCheck, (req, res) => {
-    res.sendFile(__dirname + '/public/profile.html')
+    res.sendFile(__dirname + '/public/profile.html');
 })
 
 //send to post event page
 app.get('/eventBoard', authCheck, (req, res) => {
-    res.sendFile(__dirname + '/public/eventBoard.html')
+    res.sendFile(__dirname + '/public/eventBoard.html');
 })
 
 app.get('/allEvents', authCheck, (req, res) => {
-    res.sendFile(__dirname + '/public/viewEvents.html')
+    res.sendFile(__dirname + '/public/viewEvents.html');
 })
 
 app.get('/user', (req, res) => {
-    console.log("fetching username")
+    console.log("fetching username");
     res.json({"username" : req.user.username});
 })
 
@@ -196,9 +200,13 @@ app.get("/user-events", async (req, res) => {
     .then((user) => user.events)
     .then((events) => {
         console.log(events);
-        let query = {$or: []};
-        events.forEach((e) => query.$or.push({eventId: e.eventId}));
-        return eventsCollection.find(query).toArray().then((eventList) => res.json(eventList));
+        if(events && events.len > 0) {
+            let query = {$or: []};
+            events.forEach((e) => query.$or.push({eventId: e.eventId}));
+            return eventsCollection.find(query).toArray().then((eventList) => res.json(eventList));
+        }
+
+        return res.json([]);
     });
 });
 let eventPost = []; //array to store all events

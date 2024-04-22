@@ -16,7 +16,7 @@ window.onload = function() {
 
 let personalEvents = [];
 
-const getPersonalCalendar = async function() {
+async function getPersonalCalendar() {
     await fetch("/user-events", {
         method: "GET"
     })
@@ -24,9 +24,19 @@ const getPersonalCalendar = async function() {
     .then((data) => {
         personalEvents = data;
         console.log(data);
-        /*const list = document.querySelector("#events");
+        const list = document.querySelector("#personal-events");
         list.innerHTML = "";
-        data.forEach((e) => list.innerHTML += `<li>${JSON.stringify(e)}</li>`);*/
+        if(data.length > 0) {
+            data.forEach(e => {
+                const item = document.createElement("li");
+                item.textContent = JSON.stringify(e);
+                list.appendChild(item);
+            });
+        } else {
+            const item = document.createElement("li");
+            item.textContent = "You have not created any events!";
+            list.appendChild(item);
+        }
     });
 };
 

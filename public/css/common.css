@@ -78,3 +78,22 @@ body.dark #dark-switch {
 body:not(.dark) #light-switch {
     display: none;
 }
+
+#menu-options {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0;
+    background-color: var(--sub-header);
+}
+
+#menu-options a {
+    height: 5vh;
+    text-align: center;
+    padding: 1vh 3vh;
+    color: var(--header-text);
+    background-color: var(--sub-header);
+    text-decoration: none;
+    font-weight: bolder;
+    user-select: none;
+}
