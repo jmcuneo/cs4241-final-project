@@ -1,14 +1,14 @@
 const express = require("express"),
   app = express(),
   path = require("path"),
-  auth = require("./auth");
-  db = require("./db")
-  require("dotenv").config();
-  const { ObjectId } = require("mongodb");
-  
+  auth = require("./auth"),
+  db = require("./db"),
+  helpers = require("./helpers"),
+  { ObjectId } = require("mongodb");
+require("dotenv").config();
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
-
 
 /* const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
  */
@@ -26,35 +26,45 @@ app.use((req, res, next) => {
 
 app.post("/add", async (req, res) => {
   console.log(req.body);
-  const exists = await db.getUserByUsername(req.body.username);
-  console.log(exists);
+  const existsByUsername = await db.getUserByUsername(req.body.username);
+  const existsByEmail = await db.getUserByEmail(req.body.email);
+  console.log(existsByUsername);
   let result = false;
   const validEmail = await auth.validateEmail(req.body.email);
-  console.log("email validitittyy", validEmail)
-  if(exists === null && validEmail){
+  console.log("email validitittyy", validEmail);
+  if (existsByUsername === null && existsByEmail === null && validEmail) {
     console.log("nope");
-    const hash =  await auth.genHashSalt(req.body);
+    const hash = await auth.genHashSalt(req.body);
     /* dbe means database entry */
-    const dbe = { username: req.body.username,
-                  password: hash,
-                  name: req.body.name,
-                  email: req.body.email };
-    result = db.createUser(dbe); 
+    const dbe = {
+      username: req.body.username,
+      password: hash,
+      name: req.body.name,
+      email: req.body.email,
+    };
+    result = db.createUser(dbe);
   }
-  if(result) res.status(200).send({ message : "user created"});
-  else res.status(403).send({message: validEmail ? "user already exists, select a new username" : "invalid email provided try once more"});
+  if (result) res.status(200).send({ message: "user created" });
+  /** TODO Implement the helper for the message */ else {
+    const message = await helpers.addUserMessageHelper(existsByUsername, existsByEmail, validEmail);
+    res.status(403).send({ message: message ? message : "an unknown error hath occured"});
+  }
 });
-app.post("/login", async(req, res ) => {
+app.post("/login", async (req, res) => {
   console.log(req.body);
-  const user = await db.getUserByUsername(req.body.username);
+  let user = await db.getUserByUsername(req.body.username);
+  if (!user) user = await db.getUserByEmail(req.body.email);
   let validLogin = false;
-  if(user !== null){
+  if (user !== null) {
     validLogin = await auth.validatePasswordHash(req.body, user);
-    console.log(validLogin)
+    console.log(validLogin);
   }
-  if (validLogin) res.status(200).json(auth.generateAccessToken({ username: req.body.username }));
+  if (validLogin)
+    res
+      .status(200)
+      .json(auth.generateAccessToken({ username: req.body.username }));
   else res.status(400).send("bad login");
-})
+});
 app.post("/remove", async (req, res) => {
   const result = await collection.deleteOne({
     _id: new ObjectId(req.body._id),
@@ -77,5 +87,5 @@ app.post("/update", async (req, res) => {
 });
 //DATABASE CONNECTION END
 
-db.cl
+db.cl;
 app.listen(process.env.PORT || 3000);

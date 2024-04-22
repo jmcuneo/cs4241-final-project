@@ -48,6 +48,17 @@ exports.getUserByUsername = async function (username) {
     return null;
   }
 };
+exports.getUserByEmail = async function ( email ) {
+  console.log("called");
+  const user = await collection.findOne({ email });
+  if (user) {
+    console.log("User found with ID:", user._id);
+    return user;
+  } else {
+    console.log("User not found with username:", email);
+    return null;
+  }
+};
 exports.createUser = async function (data) {
   try{
     console.log("creating user");
