@@ -185,6 +185,37 @@ function set_up_db_store(app) {
 
     })
 
+
+    //Deletes a game in the DB by its room code
+    app.post('/delete_game_by_room_code', async (req, res) =>
+    {
+        let code = req.body.roomCode
+
+        //Check if this game exists
+        const docs = await games_collection.find(
+            {
+                roomCode: code
+            }
+        ).toArray()
+
+        if(docs[0] === undefined) //If a game of this code does not exist
+        {
+            res.json("Error Deleting Game (Does not Exist!)")
+        }
+        else
+        {
+            const query =
+                {
+                    roomCode: code
+                }
+            const deletedData = await games_collection.deleteOne(query)
+            res.json(deletedData)
+        }
+
+
+    })
+
+
 }
 
 
@@ -237,6 +268,7 @@ async function createNewBoard(gameType)
 
     return board;
 }
+
 
 console.log(client.db("ApproximateWhomst").collection("Game_Objects").findOne({}));
 
