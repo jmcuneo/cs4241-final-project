@@ -54,15 +54,16 @@ app.get('/', isAuth, (req, res) => {
 // Register Route
 app.post('/register', async (req, res) => {
     try {
+        // Check for existing username
+        const existingUser = await Account.findOne({ username: req.body.username });
+        if (existingUser) {
+            return res.status(409).json({ success: false, message: "Username already exists" });
+        }
+
         const newAccount = await Account.create({
             username: req.body.username,
             password: req.body.password
         });
-        // Check for existing username
-        const existingUser = await Account.findOne({ username: req.body.username });
-        if (!existingUser) {
-            return res.status(409).json({ success: false, message: "Username already exists" });
-        }
 
         await User.createUser(newAccount, {
             firstName: req.body.firstName,
