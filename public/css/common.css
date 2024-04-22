@@ -1,0 +1,76 @@
+:root {
+    --fixed-background: #FFFFFF;
+    --fixed-text: #000000;
+    --fixed-header: #AC2B37;
+    --fixed-header-text: #FFFFFF;
+    --fixed-accent: #A9B0B7;
+
+    --background: #FFFFFF;
+    --text: #000000;
+    --header: #AC2B37;
+    --header-text: #FFFFFF;
+    --accent: #A9B0B7;
+}
+
+:root .dark {
+    --background: #4e4e4e;
+    --text: #eaeaea;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    background-color: var(--background);
+    color: var(--text);
+    display: grid;
+    grid-template-rows: max-content;
+}
+
+.header {
+    background-color: var(--header);
+    color: var(--header-text);
+    padding: 2vh;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+.header>:is(h1, h2, h3, h4, h5, h6) {
+    padding: 0;
+    margin: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hoverable {
+    transition: 0.3s linear filter;
+}
+.hoverable:hover {
+    filter: brightness(80%);
+}
+
+#theme-switch svg {
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    aspect-ratio: 1/1;
+    padding: 4px;
+}
+body.dark #dark-switch {
+    display: none;
+}
+body:not(.dark) #light-switch {
+    display: none;
+}
