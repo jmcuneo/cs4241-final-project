@@ -24,15 +24,17 @@ function Dashboard(props) {
                 reader.onload = (e) => {
                     console.log(e.target.result)
                     const img = new Image();
+                    //TODO - Send img through HTTP POST request and enhance the image on the server then draw the enhanced image on the canvas
                     img.onload = () => {
                         console.log('Image loaded');
                         const canvas = document.getElementById('canvas');
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        console.log(canvas.width, canvas.height);
+                        let imageAspectRatio = img.width / img.height;
+                        canvas.width = 800;
+                        canvas.height = 800;
+                        //console.log(canvas.width, canvas.height);
                         const ctx = canvas.getContext('2d');
-                        console.log(ctx);
-                        ctx.drawImage(img, 0, 0, img.width, img.height);
+                        //console.log(ctx);
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height / imageAspectRatio);
                     };
                     img.src = e.target.result;
                 };
@@ -41,7 +43,7 @@ function Dashboard(props) {
 
         }
         /> <
-        canvas id = "canvas" > < /canvas> < /
+        canvas id = "canvas" > < /canvas> </
         div >
     )
 };
