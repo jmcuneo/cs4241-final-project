@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PetForm from './PetForm';
+import { Button } from 'react-bootstrap';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -49,7 +50,8 @@ function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <br />
-          <button onClick={handleLogin}>Login</button>
+          {/* <button onClick={handleLogin}>Login</button> */}
+          <Button variant="primary" onClick={handleLogin} >Login</Button>{' '}
           <br />
           <h2>Register</h2>
           <input
