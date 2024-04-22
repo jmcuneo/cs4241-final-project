@@ -178,7 +178,9 @@ async function createNewGame(code,gameType){
                 guessed_p2:[...guessedArr],
                 started: new Date(),
                 p1:null,
-                p2:null
+                p2:null,
+                playAgain_p1:false,
+                playAgain_p2:false
             };
 
         const addGame = await games_collection.insertOne(newGame)

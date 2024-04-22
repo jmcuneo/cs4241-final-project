@@ -110,7 +110,7 @@ io.on('connection', (socket) => {
     //TODO: Change to send server message function
     const game = await database.getGameByRoomCode(room);
     let flippedArr = game.p1.name==name?"flipped_p1":"flipped_p2"
-    await database.updateGame(room,flippedArr+"."+index,!flippedArr[index]);
+    await database.updateGame(room,flippedArr+"."+index,!game[flippedArr][index]);
     sendServerChatMessage(room,name + " flipped " + cardName);
   });
   socket.on('complete game left',async function(room,name){
@@ -154,6 +154,34 @@ io.on('connection', (socket) => {
     //TODO: Handle disconnect
     //socket.rooms.forEach will iterate through rooms they've joined
     console.log("user disconnected");
+  });
+  socket.on('play again',async function(room,name){
+    const game = await database.getGameByRoomCode(room);
+    let startNewGame = false;
+    //TODO: Set these back to false if someone leaves.
+    //Set text to x/2 where x is the number of players who have selected it.
+    if(game!=null){
+      if(game.p1.name=="Player 1"){
+        database.updateGame(game,"playAgain_p1",true);
+        if(game.playAgain_p2){
+          startNewGame=true;
+        }
+      }else{
+        database.updateGame(game,"playAgain_p2",true);
+        if(game.playAgain_p1){
+          startNewGame=true;
+        }
+      }
+    }
+    if(startNewGame){
+      const game = await database.createNewGame(room,"pokemon");
+      socket.emit('host success',room,"Player 1");
+      //TODO: Emit start game event to first player
+      sendServerChatMessage(room,"Player 1 joined the game.");
+      //TODO: Also send flipped and guessed
+      socket.emit('game setup',game.board,game.answer_p1,game.flipped_p1,game.guessed_p1,game.chat);
+
+    }
   });
 });
 
