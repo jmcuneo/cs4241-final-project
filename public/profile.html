@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="./css/profile.css">
 
     <script src="./js/theme.js"></script>
-    <script src="./js/client.js"></script>
+    <script src="./js/profile.js"></script>
 </head>
 <body>
     <script>setTheme();</script>
@@ -34,23 +34,30 @@
             <a class="center hoverable" href = "/profilePage">View Profile</a>
             <a class="center hoverable" href = "/logout">Logout</a>
         </div>
-        <h2>Posts</h2>
-        <div id="post-collection"></div>
-        <button type="button" onclick="getPersonalCalendar()">Personal Calendar</button>
-        <ul id="personal-events"></ul>
-        <input type="month" id="month">
-        <button type="button" onclick="calendarView()">Calendar View</button>
-        <table id="calendar">
-            <tr>
-                <th>Sunday</th>
-                <th>Monday</th>
-                <th>Tuesday</th>
-                <th>Wednesday</th>
-                <th>Thursday</th>
-                <th>Friday</th>
-                <th>Saturday</th>
-            </tr>
-        </table>
+        <div class="center">
+            <h2>Posts</h2>
+            <div id="post-collection"></div>
+            <h2>Your Events <span id="date-specifier"></span></h2>
+            <ul id="personal-events"></ul>
+            <button type="button" class="hoverable" onclick="getPersonalCalendar()">Refresh Events</button>
+            <label for="month">Select a month:</label>
+            <input type="month" id="month">
+            <table id="calendar">
+                <tr>
+                    <th id="cal-yr-m" colspan="7" class="header"></th>
+                </tr>
+                <tr>
+                    <th>Sunday</th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                    <th>Saturday</th>
+                </tr>
+            </table>
+            <button type="button" onclick="calendarView()">Refresh Calendar</button>
+        </div>
     </main>
 </body>
 </html>
