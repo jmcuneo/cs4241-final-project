@@ -1,5 +1,3 @@
-//profile info 
-
 window.onload = function() {
     const profileInfo = fetch("/user", {
         method: "GET",
@@ -40,9 +38,10 @@ async function getPersonalCalendar() {
     });
 };
 
-const calendarView = async function() {
+async function calendarView() {
     await getPersonalCalendar();
     const date = document.querySelector("#month").value;
+    console.log(date);
     const year = parseInt(date.substr(0, 4));
     const century = parseInt(date.substr(0, 2));
     const subyear = parseInt(date.substr(2, 2));
@@ -69,7 +68,7 @@ const calendarView = async function() {
     }
 };
 
-const getEventsOnDay = function(year, month, day) {
+function getEventsOnDay(year, month, day) {
     //console.log(year + ", " + month + ", " + day);
     console.log(`${year}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""}${day}`);
     const eventsOnDay = personalEvents.filter((e) => e.datetime.substr(0, 10) === `${year}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""}${day}`);
