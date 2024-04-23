@@ -21,7 +21,7 @@ export default function App() {
     });
 
     //setScore.mutate(body) creates a new entry
-    const setScore = useMutation({
+    const createScore = useMutation({
         mutationKey: ["newScore"],
         mutationFn: (body: any) => addScore(body),
         onSuccess: () => {
