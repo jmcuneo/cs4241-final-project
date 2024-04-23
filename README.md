@@ -1,5 +1,13 @@
 # Final Project
 
+Instructions on how to run: 
+
+1. cd into frontend and do npm install
+2. do npm run dev in frontend folder to view the project frontend at http://localhost:5173/.
+3. run npm install in root directory
+4. run npm run server in root directory and it will run the server at http://localhost:3001 or set a PORT=portnumber variable to any port in your .env file.
+
+
 [Example Projects from A23](https://echo360.org/collection/50a4d343-caea-4deb-93ee-61bdd7da543f/public)
 
 For your final project, you'll implement a web application that exhibits understanding of the course materials. 
@@ -53,3 +61,5 @@ The video described above is also due on Canvas at this time.
 **Can I use XYZ framework?** 
 
 You can use any web-based frameworks or tools available, but for your server programming you need to use Node.js. Your client-side scripting language should be either JavaScript or TypeScript. Note that the staff may not be able to assist with TypeScript questions.
+
+
