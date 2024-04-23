@@ -205,6 +205,23 @@ app.get("/user-events", async (req, res) => {
         }
     });
 });
+
+app.post("/add-user-event", express.json(), (req, res) => {
+    userCollection.findOne({
+        userId: req.user.userId
+    }).then((user) => user.events).then((events) => {
+        console.log(req.body);
+        userCollection.updateOne(
+            {
+                userId: req.user.userId
+            }, {
+                $addToSet: {
+                    events: {eventId: req.body.eventId}
+            }
+        }).then((response) => {console.log(response); res.send(response)});
+    });
+});
+
 //let image; //for mopngoDB
 // app.post('/upload', upload.single('image'), (req, res) => {
 //     if (!req.file) {

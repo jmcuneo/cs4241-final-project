@@ -7,6 +7,7 @@ const addToTable = function (entry) {
                 <td>${entry.endTime}</td>
                 <td>${entry.location}</td>
                 <td><button class="info" onclick="info(this, '${entry.event}')">See more details</button></td>
+                <td><button onclick="addToPersonal('${entry._id}');">Add</button></td>
               </tr>`;
   table.insertAdjacentHTML("beforeend", row);
 };
@@ -88,3 +89,12 @@ window.onload = function () {
   //pull all data from mongo
     refreshPage();
 }
+
+const addToPersonal = function (eventId) {
+    console.log(JSON.stringify({eventId: eventId}));
+    fetch("/add-user-event", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({eventId: eventId})
+    }).then((response) => response.text()).then((text) => console.log(text));
+};
