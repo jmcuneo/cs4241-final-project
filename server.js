@@ -206,13 +206,13 @@ app.get("/user-events", async (req, res) => {
     });
 });
 //let image; //for mopngoDB
-app.post('/upload', upload.single('image'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).send('No file uploaded.');
-    }
-    image = '/uploads/' + req.file.filename;
-    res.sendStatus(200);
-});
+// app.post('/upload', upload.single('image'), (req, res) => {
+//     if (!req.file) {
+//         return res.status(400).send('No file uploaded.');
+//     }
+//     image = '/uploads/' + req.file.filename;
+//     res.sendStatus(200);
+// });
 let description; //mongoDB
 app.post("/description", async (req, res) => {
     console.log("description: ", req.body);
@@ -235,21 +235,24 @@ app.post("/submit", upload.single('image'), async (req, res) => {
         res.send(JSON.stringify("Event already posted!"));
         return;
     }
-    console.log("data: ", data.image)
-    //console.log("data: ", data.image.file.filename)
-    var entry = {
-      //name: req.user.username, fix after appened to login page
-      event: data.event,
-      date: data.date,
-      startTime: new Date(data.date + "T" + data.startTime + ':00'),
-      endTime: new Date(data.date + "T" + data.endTime + ':00'),
-      //length: elapsedTime(data.startTime, data.endTime, data.date), 
-      location: data.location,
-      image: data.image,
-      description: data.description
-    };
-    //console.log("length ", (eventPost.length + 1));
-    //eventPost.push(entry);
+    const event = data.event;
+    const date = data.date;
+    const startTime = data.startTime;
+    const endTime = data.endTime;
+    const location = data.location;
+    const description = data.description;
+    // Access uploaded file from req.file
+    const image = '/uploads/' + req.file.filename;
+        const entry = {
+            event: event,
+            date: date,
+            image: image,
+            startTime: startTime,
+            endTime: endTime,
+            location: location,
+            description: description
+        }
+
     const result = await eventsCollection.insertOne(entry)
     //req.json = JSON.stringify(eventPost);
     res.json(await eventsCollection.find({}).toArray());
@@ -294,16 +297,16 @@ function elapsedTime(startTime, endTime, date) {
 // })
 
 app.post("/info", async (req, res) => {
-    console.log("index: ", req.body.entryIndex);
-    const indexToRemove = req.body.entryIndex;
+    //console.log("index: ", req.body.entryIndex);
+    //const indexToRemove = req.body.entryIndex;
     
     // if (isNaN(indexToRemove) || indexToRemove < 0 || indexToRemove >= eventPost.length) {
     //   return res.status(400).send(JSON.stringify("Invalid index"));
     // }
 
-    const details = eventPost[indexToRemove];
-    console.log("details: ", details);
-    const eventName = details.event;  
+    //const details = eventPost[indexToRemove];
+    //console.log("details: ", details);
+    const eventName = req.body.eventName;  
   
     // Use the attribute 'name' of the object to remove data from MongoDB
     const filter = { event: eventName }; // Filter to find the document by the original item
