@@ -70,7 +70,7 @@ function LoginPage({onLogin}) {
   }
 
   return (
-    <div className="row" style={{ marginLeft: '20px' }}> 
+    <div className="center-page-container"> 
       <h1 style={{ marginLeft: '30px' }}>Event List Sign-In</h1> 
       <form className="col s12" id="loginForm" onSubmit={handleSubmit}>
         <div className="col"> 
@@ -82,7 +82,7 @@ function LoginPage({onLogin}) {
             <div><label style={{ fontSize: '20px', color: 'white' }} htmlFor="password">Password</label></div>
             <input className="validate" type="password" id="password" name="password" required ref={passwordRef}/>
           </div>
-          <button style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(3, 252, 98)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light"type="submit" id="loginButton">Login</button>
+          <button style={{marginTop: '10px', backgroundColor: 'rgb(3, 252, 98)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light"type="submit" id="loginButton">Login</button>
           <button style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="registerButton" onClick={handleRegister}>Register</button>
         </div>
       </form>

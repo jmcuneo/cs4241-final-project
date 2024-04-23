@@ -3,27 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 
-//I think we can keep one main page and add in the 2 buttons if the user is an admin
-
-function MainPage({onLogout}) {
+function TopButtons() {
   const navigate = useNavigate()
   const handleProfile = async (event) => {
     event.preventDefault();
     navigate("/profile");
   };
 
-  const handleEventPage = async (event) => {
+  const onLogout = async (event) => {
     event.preventDefault();
-    navigate("/event");
-  }
+    navigate("/login");
+  };
 
   return(
-    <div className='main-page-container' style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <div>
-        <h1 className='header-section'>Upcoming Events</h1>
-      </div>
-      <div className='top-right-buttons' style={{ display: 'flex' }}>
-        <button style={{marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold'}} className="btn waves-effect waves-light" type="button" id="eventPageButton" onClick={handleEventPage}>View Event Page</button>
+    <div className='top-right-buttons' style={{ display: 'flex' }}>
         <button
           style={{marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold'}}
           className="btn waves-effect waves-light"
@@ -44,8 +37,7 @@ function MainPage({onLogout}) {
           Logout
         </button>
       </div>
-    </div>
   );
 }
 
-export default MainPage;
+export default TopButtons;

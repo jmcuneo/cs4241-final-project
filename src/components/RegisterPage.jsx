@@ -49,7 +49,7 @@ function RegisterPage() {
   };
 
   return(
-    <div className="row" style={{ marginLeft: '20px' }}> 
+    <div className="center-page-container"> 
       <h1>Register</h1> 
       <form className="col s12" id="regsiterForm" onSubmit={handleSubmit}>
         <div className="col"> 
@@ -69,7 +69,7 @@ function RegisterPage() {
             <div><label style={{ fontSize: '20px', color: 'white' }} htmlFor="password">Password</label></div>
             <input className="validate" type="password" id="password" name="password" required ref={passwordRef}/>
           </div>
-          <button style={{marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(235, 79, 52)', color: 'black', fontWeight: 'bold'}} className="btn waves-effect waves-light" type="button" id="logoutButton" onClick={handleLogin}>Back</button>
+          <button style={{marginTop: '10px', backgroundColor: 'rgb(235, 79, 52)', color: 'black', fontWeight: 'bold'}} className="btn waves-effect waves-light" type="button" id="logoutButton" onClick={handleLogin}>Back</button>
           <button style={{marginTop: '10px', marginLeft: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="submit" id="registerButton">Register</button>
         </div>
       </form>
