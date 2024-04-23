@@ -60,7 +60,8 @@ app.post("/add", async (req, res) => {
     result = db.createUser(dbe);
   }
   if (result) res.status(200).send({ message: "user created" });
-  /** TODO Implement the helper for the message */ else {
+  /** TODO Implement the helper for the message */ 
+  else {
     const message = await helpers.addUserMessageHelper(existsByUsername, existsByEmail, validEmail);
     res.status(403).send({ message: message ? message : "an unknown error hath occured"});
   }
