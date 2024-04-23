@@ -21,6 +21,7 @@ const client = new MongoClient(uri, {
 // });
 
 let pokemon_collection = null;
+let minecraft_collection = null;
 
 let games_collection = null;
 
@@ -33,18 +34,33 @@ async function run() {
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
         // Update our collections
         pokemon_collection = client.db("ApproximateWhomst").collection("Pokemon")
+        minecraft_collection = client.db("ApproximateWhomst").collection("Minecraft")
         games_collection =  client.db("ApproximateWhomst").collection("Game_Objects")
     } catch (err) {
         console.log(err)
     }
 }
 
-async function getNpokemon(N) {
-    const cursor = await pokemon_collection.aggregate([
-        // { $match: { a: n } },
-        { $sample: { size: N } }
-    ]);
-    return await cursor.toArray();
+async function getNcards(N, collection) {
+
+    if(collection === "Pokemon")
+    {
+        const cursor = await pokemon_collection.aggregate([
+            // { $match: { a: n } },
+            { $sample: { size: N } }
+        ]);
+        return await cursor.toArray();
+    }
+    if(collection === "Minecraft")
+    {
+        const cursor = await minecraft_collection.aggregate([
+            // { $match: { a: n } },
+            { $sample: { size: N } }
+        ]);
+        return await cursor.toArray();
+    }
+
+
 }
 
 run().catch(console.dir);
@@ -161,7 +177,7 @@ async function createNewGame(code,gameType){
     {
 
         //Create a game-board with 24 random tiles using the type [Returns an array of 24 DB objects]
-        let board = await getNpokemon(24);
+        let board = await getNcards(24, gameType);
         let guessedArr = [];
         for(let i = 0; i < 24; i++){
             guessedArr.push(false);

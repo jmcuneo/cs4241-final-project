@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
     if (existingGame != null) {
       socket.emit('host failed', 'room in use');
     } else {
-      const game = await database.createNewGame(room, "pokemon");
+      const game = await database.createNewGame(room, "Pokemon");
       await database.updateGame(room, "p1", { name: "Player 1", id: socket.id });
 
       socket.join(room);
@@ -192,7 +192,7 @@ io.on('connection', (socket) => {
     }
     if (startNewGame) {
       await database.deleteGame(room);
-      const newGame = await database.createNewGame(room, "pokemon");
+      const newGame = await database.createNewGame(room, "Pokemon");
       await database.updateGame(room, "p1", { name: "Player 1", id: game.p1.id });
       await database.updateGame(room, "p2", { name: "Player 2", id: game.p2.id });
       socket.emit('host success', room, "Player 1");
