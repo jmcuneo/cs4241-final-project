@@ -123,9 +123,7 @@ class Piece {
 
   rotate(dir) {
     this.angle = (this.angle + dir) % 360
-    if(this.angle < 0){
-        this.angle = 360 - this.angle
-    }
+    if(this.angle < 0){this.angle += 360}
     this.shape = this.orientations[this.angle]
   }
 
@@ -138,21 +136,25 @@ class Piece {
 
 class PieceI extends Piece {
   constructor() {
-      super([[0, 0, 0, 0,], [1, 1, 1, 1], [0, 0, 0, 0,], [0, 0, 0, 0,]], 'cyan', 
-      {0: [[0, 0, 0, 0,], [1, 1, 1, 1], [0, 0, 0, 0,], [0, 0, 0, 0,]], 90: [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]], 
-       180: [[0, 0, 0, 0,], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0,]], 270: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]});
+      super([[0, 0, 0, 0,], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0,]], 'cyan', 
+      {0: [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]], 90: [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]], 
+       180: [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0]], 270: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]});
   }
 }
 
 class PieceJ extends Piece {
   constructor() {
-      super([[1, 0, 0], [1, 1, 1]], 'blue');
+      super([[1, 0, 0], [1, 1, 1], [0, 0, 0]], 'blue', 
+      {0: [[1, 0, 0], [1, 1, 1], [0, 0, 0]], 90: [[0, 1, 1], [0, 1, 0], [0, 1, 0]], 
+        180: [[0, 0, 0], [1, 1, 1], [0, 0, 1]], 270: [[0, 1, 0], [0, 1, 0], [1, 1, 0]]});
   }
 }
 
 class PieceL extends Piece {
   constructor() {
-      super([[0, 0, 1], [1, 1, 1]], 'orange');
+      super([[0, 0, 1], [1, 1, 1], [0, 0, 0]], 'orange',
+    {0: [[0, 0, 1], [1, 1, 1], [0, 0, 0]], 90: [[0, 1, 0], [0, 1, 0], [0, 1, 1]], 
+      180: [[0, 0, 0], [1, 1, 1], [1, 0, 0]], 270: [[1, 1, 0], [0, 1, 0], [0, 1, 0]]});
   }
 }
 
@@ -166,19 +168,25 @@ class PieceO extends Piece {
 
 class PieceS extends Piece {
   constructor() {
-      super([[0, 1, 1], [1, 1, 0]], 'green');
+      super([[0, 1, 1], [1, 1, 0], [0, 0, 0]], 'green', 
+      {0: [[0, 1, 1], [1, 1, 0], [0, 0, 0]], 90: [[0, 1, 0], [0, 1, 1], [0, 0, 1]], 
+        180: [[0, 0, 0], [0, 1, 1], [1, 1, 0]], 270: [[1, 0, 0], [1, 1, 0], [0, 1, 0]]});
   }
 }
 
 class PieceT extends Piece {
   constructor() {
-      super([[0, 1, 0], [1, 1, 1]], 'purple');
+      super([[0, 1, 0], [1, 1, 1]], 'purple',
+      {0: [[0, 1, 0], [1, 1, 1]], 90: [[0, 1, 0], [0, 1, 1], [0, 1, 0]], 
+        180: [[0, 0, 0], [1, 1, 1], [0, 1, 0]], 270: [[1, 1, 0], [0, 1, 0], [0, 1, 0]]});
   }
 }
 
 class PieceZ extends Piece {
   constructor() {
-      super([[1, 1, 0], [0, 1, 1]], 'red');
+      super([[1, 1, 0], [0, 1, 1], [0, 0, 0]], 'red',
+      {0: [[1, 1, 0], [0, 1, 1], [0, 0, 0]], 90: [[0, 0, 1], [0, 1, 1], [0, 1, 0]], 
+        180: [[0, 0, 0], [1, 1, 0], [0, 1, 1]], 270: [[0, 1, 0], [1, 1, 0], [1, 0, 0]]});
   }
 }
 
@@ -197,22 +205,35 @@ board.drawBackground();
 
 
 // TEST DRAW TEST DRAW TEST DRAW TESRT DAR
-pieceJ.x = 0;
-pieceJ.y = 18;
-pieceJ.draw();
+// pieceJ.x = 3;
+// pieceJ.y = 1;
+// pieceJ.rotate(0);
+// pieceJ.draw();
+
+pieceZ.x = 3;
+pieceZ.y = 1;
+pieceZ.rotate(270);
+pieceZ.draw();
 
 pieceO.x = 1;
 pieceO.y = 17;
+pieceO.rotate(0);
 pieceO.draw();
 
-pieceL.x = 0;
-pieceL.y = 15;
-pieceL.draw();
+// pieceL.x = 3;
+// pieceL.y = 1;
+// pieceL.rotate(0);
+// pieceL.draw();
 
-pieceI.x = 3;
-pieceI.y = 1;
-pieceI.rotate(90);
-pieceI.draw();
+// pieceI.x = 3;
+// pieceI.y = 1;
+// pieceI.rotate(90);
+// pieceI.draw();
+
+// pieceT.x = 3;
+// pieceT.y = 1;
+// pieceT.rotate(90);
+// pieceT.draw();
 
 // View
 
