@@ -2,6 +2,8 @@ import {useEffect, useState} from 'react'
 import './App.css'
 
 function App() {
+    //end the game
+    const [gameEnd,setGameEnd] = useState(false);
     //whether start the game
     const [showInput, setShowInput] = useState(false);
      //startWord
@@ -44,6 +46,8 @@ function App() {
               setSeconds(prevSeconds => prevSeconds - 1)
           }, 1000)
           if(seconds ===0){
+              setGameEnd(true)
+              setShowInput(false)
               clearInterval(timer)
           }
           return () => clearInterval(timer);
@@ -57,7 +61,9 @@ function App() {
     //fetch startWord
       const fetchStartWord = async () => {
           try {
+              setSeconds(10)
               setShowInput(true);
+              setGameEnd(false);
               const response = await fetch('https://api.datamuse.com/words?sp=??????&max=1000'); // 获取所有单词
               const data = await response.json();
               const filteredWords = data.filter(startWord => startWord.word.length > 4  && !/\s/.test(startWord.word));
@@ -71,8 +77,8 @@ function App() {
   return (
     <>
         <div>
-            {/*show scoreboard here*/}
-            {showInput && (  <div className="container">
+            {/*Counters*/}
+            {showInput && !gameEnd && (  <div className="container">
                 <div className="column">
                     <h1>Countdown Timer</h1>
                     <p>{seconds} seconds left</p>
@@ -87,11 +93,18 @@ function App() {
                 </div>
 
             </div>)}
+            {!showInput && gameEnd &&(
+                <div>
+                    <p>Congratulation! Your word counter is {wordCount}, score is {score}!</p>
+                </div>
+            )}
+
           {/* Start Word */}
-            {!showInput &&(<button onClick={fetchStartWord}>Start</button>)}
-            {showInput && startWord && <p>Start Word: {startWord}</p>}
+            {!showInput && !gameEnd &&(<button onClick={fetchStartWord}>Start</button>)}
+            {!showInput && gameEnd &&(<button onClick={fetchStartWord}>Restart</button>)}
+            {showInput && startWord && !gameEnd && <p>Start Word: {startWord}</p>}
             <div>
-                {showInput &&( <input
+                {showInput && !gameEnd &&( <input
                     type="text"
                     value={inputValue}
                     onChange={handleInput}
@@ -100,7 +113,7 @@ function App() {
                 />
                 )}
             <div>
-                {showInput && usedWord.map((number, index) => (
+                {showInput && !gameEnd && usedWord.map((number, index) => (
                     <p key={index}>{number}</p>
                 ))}
             </div>
