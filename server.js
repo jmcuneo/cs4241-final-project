@@ -197,12 +197,13 @@ io.on('connection', (socket) => {
     }
     if (startNewGame) {
       await database.deleteGame(room);
-      const newGame = await database.createNewGame(room,"pokemon");
+      const newGame = await database.createNewGame(room,"Pokemon");
       await database.updateGame(room,"p1",{name:"Player 1",id:game.p1.id});
       await database.updateGame(room,"p2",{name:"Player 2",id:game.p2.id});
       io.to(game.p1.id).emit('host success',room,"Player 1");
       io.to(game.p2.id).emit('join success',room,"Player 2");
       sendServerChatMessage(room,"Player 1 joined the game.");
+      // console.log(newGame);
       io.to(game.p1.id).emit('game setup',newGame.board,newGame.answer_p1,newGame.flipped_p1,newGame.guessed_p1,newGame.chat);
       io.to(game.p2.id).emit('game setup',newGame.board,newGame.answer_p2,newGame.flipped_p2,newGame.guessed_p2,newGame.chat);
     }
