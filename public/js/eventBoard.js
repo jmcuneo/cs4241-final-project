@@ -5,9 +5,7 @@ const resetTextBoxes = function () {
     document.querySelector("#date").value = "";
     document.querySelector("#startTime").value = "";
     document.querySelector("#endTime").value = "";
-
     document.querySelector("#location").value = "";
- 
   };
   // Adds row to HTML table creates an event listener for each button created - can get index from click
   const addToTable = function (entry) {
@@ -16,7 +14,7 @@ const resetTextBoxes = function () {
                   <td>${entry.event}</td>
                   <td>${entry.date}</td>
                   <td>${entry.startTime}</td>
-                  <td>${entry.length}</td>
+                  <td>${entry.endTime}</td>
                   <td>${entry.location}</td>
                   <td><button class="remove">Add To My Events</button></td>
                 </tr>`;
@@ -42,7 +40,6 @@ const resetTextBoxes = function () {
     for (let j = 0; j < array.length; j++) {
       addToTable(array[j]);
     }
-    //makeGuestList(array);
   };
   //check if input box is empty
   function isEmpty(str) {
@@ -65,12 +62,19 @@ const resetTextBoxes = function () {
       );
       return;
     }
+    var input = document.getElementById('imageInput');
+  var file = input.files[0];
+  
+  var formData = new FormData();
+  formData.append('image', file);
+
     const newEntry = createEntry(
       eventInput.value,
       dateInput.value,
       startInput.value,
       endInput.value,
-      locationInput.value
+      locationInput.value,
+      formData
     );
     
     const response = await fetch("/submit", {
@@ -79,11 +83,11 @@ const resetTextBoxes = function () {
       body: JSON.stringify(newEntry),
     });
     const text = await response.json();
-    
- 
-    generateTable(text);
+    alert("event added");
+    //generateTable(text);
     resetTextBoxes();
   };
+
   const createEntry = function (event, date, start, end, location) {
     const entry = {
       event: event,
@@ -95,38 +99,6 @@ const resetTextBoxes = function () {
     return entry;
   };
 
-  //Check the array and compare to the name just entered - if name already in the array, do not add to list
-  //If the name is not in the array, add to list -> use set for uniqeness
-  const makeGuestList = function (array) {
-    const uniqueNamesSet = new Set();
-    const list = document.getElementById("guestList");
-    list.innerHTML = ""; // Clear the existing list if needed
-    array.forEach((obj) => {
-      if (!uniqueNamesSet.has(obj.name)) {
-        // Check if the name already exists in the set
-        uniqueNamesSet.add(obj.name); // Add the name to the set
-        const li = document.createElement("li");
-        li.innerHTML = obj.name; // Use the name property of the object
-        li.classList.add("list-group-item");
-        list.appendChild(li);
-      }
-    });
-  };
-  //send empty data to server
-//   const refreshPage = async function () {
-//     const response = await fetch("/refresh", {
-//       method: "POST",
-//       body: "",
-//     });
-//     const text = await response.json();
-//     const appdata = text.appdata;
-//     const suggestdata = text.suggestdata;
-//     generateTable(appdata);
-//     console.log("suggest ", suggestdata);
-//     clearSuggest(suggestdata);
-//     makeTable(suggestdata);
-//     console.log("page refreshed.");
-//   };
   //send the index of the entry user wants to delete from array
   const remove = async function (entryIndex) {
     const reqObj = { entryIndex: entryIndex };
@@ -142,17 +114,6 @@ const resetTextBoxes = function () {
       generateTable(text);
     }
   };
-
-
-  
-//   const logout = async function (event) {
-//     event.preventDefault();
-//     const response = await fetch("/logout", {
-//       method: "GET",
-//     }).then((response) => {
-//       window.location.href = "/";
-//     });
-//   };
   
 
 const upload =  async function(event) {
@@ -206,7 +167,6 @@ const description = async function(event){
 }
 
   window.onload = function () {
-    //refreshPage();
     const button = document.getElementById("submit");
     button.onclick = submit;
     const uploadButton = document.getElementById("upload");

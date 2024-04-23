@@ -1,37 +1,40 @@
 //profile info 
 
-window.onload = function() {
-    const profileInfo = fetch("/user", {
+window.onload = async function () {
+    fetch("/user", {
         method: "GET",
-      })
-      .then(function(response) {
+    }).then(function (response) {
         return response.json();
-      })
-      .then(function(data) {
+    }).then(function (data) {
         const username = data.username;
         document.getElementById("user").innerHTML = username;
-      });
+    });
+    await getUserEvents(null);
+};
 
-}
-
-let personalEvents = [];
-
-const getPersonalCalendar = async function() {
+let userEvents = [];
+const getUserEvents = async function (filter) {
     await fetch("/user-events", {
         method: "GET"
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        personalEvents = data;
+    }).then((response) => response.json()).then((data) => {
         console.log(data);
-        /*const list = document.querySelector("#events");
-        list.innerHTML = "";
-        data.forEach((e) => list.innerHTML += `<li>${JSON.stringify(e)}</li>`);*/
+        userEvents = filter === null ? data : data.filter(filter);
+        console.log(userEvents);
+        const table = document.querySelector("#events");
+        table.innerHTML = "<tr><th>Event</th><th>Date</th><th>Start Time</th><th>End Time</th><th>Location</th></tr>";
+        for (e of userEvents) {
+            const startDate = new Date(e.startTime);
+            const endDate = new Date(e.endTime);
+            table.innerHTML += `<tr><td>${e.event}</td>
+                                    <td>${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}</td>
+                                    <td>${startDate.getHours()}:${startDate.getMinutes()}</td>
+                                    <td>${endDate.getHours()}:${endDate.getMinutes()}</td>
+                                    <td>${e.location}</td>`;
+        }
     });
 };
 
-const calendarView = async function() {
-    await getPersonalCalendar();
+const calendarView = async function () {
     const date = document.querySelector("#month").value;
     const year = parseInt(date.substr(0, 4));
     const century = parseInt(date.substr(0, 2));
@@ -57,13 +60,10 @@ const calendarView = async function() {
             str += `<td>${day <= daysInMonth[month - 1] ? `<button onclick='getEventsOnDay(${year}, ${month}, ${day})'>${day}</button>` : ""}</td>`;
         calendar.innerHTML += str + "</tr>";
     }
+    await getUserEvents((e) => e.startTime.substr(0, 7) === date);
 };
 
-const getEventsOnDay = function(year, month, day) {
-    //console.log(year + ", " + month + ", " + day);
+const getEventsOnDay = async function (year, month, day) {
     console.log(`${year}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""}${day}`);
-    const eventsOnDay = personalEvents.filter((e) => e.datetime.substr(0, 10) === `${year}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""}${day}`);
-    const list = document.querySelector("#events");
-    list.innerHTML = "";
-    eventsOnDay.forEach((e) => list.innerHTML += `<li>${JSON.stringify(e)}</li>`);
+    await getUserEvents((e) => e.startTime.substr(0, 10) === `${year}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""}${day}`);
 };

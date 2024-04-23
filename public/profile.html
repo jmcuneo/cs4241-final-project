@@ -19,7 +19,6 @@
     <button onclick="window.location.href = '/logout';">Logout</button>
     <p>load all their posts here</p>
     <button onclick="getPersonalCalendar()">Personal Calendar</button>
-    <ul id="events"></ul>
     <input type="month" id="month">
     <button onclick="calendarView()">Calendar View</button>
     <table id="calendar">
@@ -30,6 +29,13 @@
             <th>Thursday</th>
             <th>Friday</th>
             <th>Saturday</th></tr>
+    </table>
+    <table id="events">
+        <tr><th>Event</th>
+            <th>Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Location</th></tr>
     </table>
 </body>
 

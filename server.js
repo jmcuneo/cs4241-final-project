@@ -196,13 +196,16 @@ app.get("/user-events", async (req, res) => {
     .then((user) => user.events)
     .then((events) => {
         console.log(events);
-        let query = {$or: []};
-        events.forEach((e) => query.$or.push({eventId: e.eventId}));
-        return eventsCollection.find(query).toArray().then((eventList) => res.json(eventList));
+        if (events.length === 0) {
+            return res.json([]);
+        } else {
+            let query = {$or: []};
+            events.forEach((e) => query.$or.push({_id: new ObjectId(e.eventId)}));
+            return eventsCollection.find(query).toArray().then((eventList) => {console.log(eventList);res.json(eventList)});
+        }
     });
 });
-let eventPost = []; //array to store all events
-let image; //for mopngoDB
+//let image; //for mopngoDB
 app.post('/upload', upload.single('image'), (req, res) => {
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
@@ -222,32 +225,34 @@ app.post("/description", async (req, res) => {
 
 //submit - gets entry (name, date, time, loaction) from client checks for event of same time, name, location
 // adds to array and database and sends client updated array
-app.post("/submit", async (req, res) => {
+app.post("/submit", upload.single('image'), async (req, res) => {
     let data = req.body;
-    console.log("type of startTime server: ", typeof(data.startTime))
     console.log(data);
-    for(let i = 0; i < eventPost.length; i++){
-      if(data.event == eventPost[i].event){
+    const eventExists = await eventsCollection.findOne({event: data.event});
+    console.log(eventExists);
+    if (eventExists != null) {
         console.log("Event already posted!");
         res.send(JSON.stringify("Event already posted!"));
         return;
-      } 
     }
+    console.log("data: ", data.image)
+    //console.log("data: ", data.image.file.filename)
     var entry = {
       //name: req.user.username, fix after appened to login page
       event: data.event,
       date: data.date,
-      startTime: convertTime(data.startTime),
-      length: elapsedTime(data.startTime, data.endTime, data.date), 
+      startTime: new Date(data.date + "T" + data.startTime + ':00'),
+      endTime: new Date(data.date + "T" + data.endTime + ':00'),
+      //length: elapsedTime(data.startTime, data.endTime, data.date), 
       location: data.location,
-      image: image,
-      description: description
+      image: data.image,
+      description: data.description
     };
-    console.log("length ", (eventPost.length + 1));
-    eventPost.push(entry);
+    //console.log("length ", (eventPost.length + 1));
+    //eventPost.push(entry);
     const result = await eventsCollection.insertOne(entry)
-    req.json = JSON.stringify(eventPost);
-    res.send(req.json);
+    //req.json = JSON.stringify(eventPost);
+    res.json(await eventsCollection.find({}).toArray());
   });
 
   function convertTime(time) {
@@ -309,22 +314,9 @@ app.post("/info", async (req, res) => {
     
   });
 
-let mongoDataLoaded = false;
-
 app.post("/refresh", express.json(), async (req, res) => {
-  if (!mongoDataLoaded) {
-    // Load all data from MongoDB only if it hasn't been loaded before
     const mongoData = await eventsCollection.find({}).toArray();
-    for(let i = 0; i < mongoData.length; i++){
-      eventPost.push(mongoData[i]);
-    }
-}
-  else{
-    console.log("mongo already loaded");
-  }
-  
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(eventPost));
+    res.json(mongoData);
 });
 
 //app.listen(process.env.PORT);
