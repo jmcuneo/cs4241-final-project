@@ -2,6 +2,8 @@ import {useEffect, useState} from 'react'
 import './App.css'
 
 function App() {
+    //whether timer running
+    const [timerRunning, setTimerRunning] = useState(false)
     //input name
     const [nameInput, setNameInput] = useState('');
     //whether need to submit name
@@ -47,17 +49,18 @@ function App() {
      }
 
     //timer
-      useEffect(() =>{
-          const timer = setInterval(() => {
-              setSeconds(prevSeconds => prevSeconds - 1)
-          }, 1000)
-          if(seconds ===0){
-              setGameEnd(true)
-              setShowInput(false)
-              clearInterval(timer)
-          }
-          return () => clearInterval(timer);
-      }, [seconds]);
+      useEffect(() => {
+              const timer = setInterval(() => {
+                  setSeconds(prevSeconds => prevSeconds - 1)
+              }, 1000)
+              if (seconds === 0 && timerRunning) {
+                  setGameEnd(true)
+                  setShowInput(false)
+                  clearInterval(timer)
+                  setTimerRunning(false)
+              }
+              return () => clearInterval(timer);
+          }, [seconds]);
 
 
   //word count increment
@@ -67,6 +70,7 @@ function App() {
     //fetch startWord
       const fetchStartWord = async () => {
           try {
+              setTimerRunning(true)
               setScore(0)
               setWordCount(0)
               setUsedWord([])
@@ -134,7 +138,7 @@ function App() {
             </div>)}
             {!showInput && gameEnd &&(
                 <div>
-                    <h1>Congratulation!</h1>
+                    <h1>Game Over!</h1>
                     <div className="container">
                     <div className="column">
                         <h1>Word Counter</h1>
@@ -158,7 +162,7 @@ function App() {
                         value={nameInput}
                         onChange={handleNameInput}
                         onKeyUpCapture={handleNameSubmit}
-                        placeholder="Your Name"
+                        placeholder="Your Name Here"
                     />
                 </p>
             )}
@@ -168,7 +172,7 @@ function App() {
 
 
           {/* Start Word */}
-            {!showInput && !gameEnd &&(<button onClick={fetchStartWord}>Start</button>)}
+            {!showInput && !gameEnd &&(<button onClick={fetchStartWord}>Start the Game</button>)}
             {!showInput && gameEnd &&(<button onClick={fetchStartWord}>Start a New Game</button>)}
             {showInput && startWord && !gameEnd && <p>Start Word: {startWord}</p>}
             <div>
