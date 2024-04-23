@@ -2,48 +2,77 @@ import {useEffect, useState} from 'react'
 import './App.css'
 
 function App() {
-  //startWord
-  const [startWord, setStartWord] = useState('')
-  //word count
-  const [wordCount, setWordCount] = useState(0);
-  //score
-  const [score, setScore] = useState(0);
-  //timer
-  const [seconds, setSeconds] = useState(10);
-  useEffect(() =>{
-      const timer = setInterval(() => {
-          setSeconds(prevSeconds => prevSeconds - 1)
-      }, 1000)
-      if(seconds ===0){
-          clearInterval(timer)
-      }
-      return () => clearInterval(timer);
-  }, [seconds]);
+    //whether start the game
+    const [showInput, setShowInput] = useState(false);
+     //startWord
+     const [startWord, setStartWord] = useState('')
+    //word count
+     const [wordCount, setWordCount] = useState(0);
+    //score
+     const [score, setScore] = useState(0);
+    //timer
+     const [seconds, setSeconds] = useState(10);
+    //inputValue
+     const[inputValue, setInputValue] = useState('');
+     //word used
+    const [usedWord, setUsedWord] = useState<string[]>([]);
+
+
+    //get word
+    const handleInput = (event) => {
+        setInputValue(event.target.value)
+        handleSubmit(event)
+     }
+    //submit word
+    //feel free to change the code, should add the function to check the word here
+     const handleSubmit = (event) => {
+         if (event.key === 'Enter') {  //should add the function to check the word here
+             wordCountIncrement()
+             setUsedWord(prevState => [...prevState, inputValue])
+             setScore(prevScore => {
+                 const newScore = prevScore + inputValue.length;
+                 setInputValue('');
+                 return newScore;
+             })
+             setSeconds(10)
+         }
+     }
+
+    //timer
+      useEffect(() =>{
+          const timer = setInterval(() => {
+              setSeconds(prevSeconds => prevSeconds - 1)
+          }, 1000)
+          if(seconds ===0){
+              clearInterval(timer)
+          }
+          return () => clearInterval(timer);
+      }, [seconds]);
 
 
   //word count increment
     const wordCountIncrement = () =>{
         setWordCount(wordCount + 1);
     }
-    //
-  const fetchStartWord = async () => {
-      try {
-          const response = await fetch('https://api.datamuse.com/words?sp=??????&max=1000'); // 获取所有单词
-          const data = await response.json();
-          // @ts-ignore
-          const filteredWords = data.filter(startWord => startWord.word.length > 4  && !/\s/.test(startWord.word));
-          const randomIndex = Math.floor(Math.random() * filteredWords.length);
-          setStartWord(filteredWords[randomIndex].word);
-      } catch (error) {
-          console.error('Error fetching random word:', error);
+    //fetch startWord
+      const fetchStartWord = async () => {
+          try {
+              setShowInput(true);
+              const response = await fetch('https://api.datamuse.com/words?sp=??????&max=1000'); // 获取所有单词
+              const data = await response.json();
+              const filteredWords = data.filter(startWord => startWord.word.length > 4  && !/\s/.test(startWord.word));
+              const randomIndex = Math.floor(Math.random() * filteredWords.length);
+              setStartWord(filteredWords[randomIndex].word);
+          } catch (error) {
+              console.error('Error fetching random word:', error);
+          }
       }
-  }
 
   return (
     <>
         <div>
-          {/* basic word count/time/score */}
-            <div className="container">
+            {/*show scoreboard here*/}
+            {showInput && (  <div className="container">
                 <div className="column">
                     <h1>Countdown Timer</h1>
                     <p>{seconds} seconds left</p>
@@ -57,11 +86,25 @@ function App() {
                     <p>Score: {score}</p>
                 </div>
 
-            </div>
-
+            </div>)}
           {/* Start Word */}
-          <button onClick={fetchStartWord}>Start</button>
-          {startWord && <p>Start Word: {startWord}</p>}
+            {!showInput &&(<button onClick={fetchStartWord}>Start</button>)}
+            {showInput && startWord && <p>Start Word: {startWord}</p>}
+            <div>
+                {showInput &&( <input
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInput}
+                    onKeyUpCapture={handleSubmit}
+                    placeholder="Press Enter to Submit"
+                />
+                )}
+            <div>
+                {showInput && usedWord.map((number, index) => (
+                    <p key={index}>{number}</p>
+                ))}
+            </div>
+            </div>
       </div>
     </>
   )
