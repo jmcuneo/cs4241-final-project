@@ -2,6 +2,12 @@ import {useEffect, useState} from 'react'
 import './App.css'
 
 function App() {
+    //input name
+    const [nameInput, setNameInput] = useState('');
+    //whether need to submit name
+    const [nameYes, setNameYes] = useState(false)
+    //whether submit name
+    const [nameSubmit, setNameSubmit] = useState(false);
     //end the game
     const [gameEnd,setGameEnd] = useState(false);
     //whether start the game
@@ -67,6 +73,8 @@ function App() {
               setSeconds(10)
               setShowInput(true);
               setGameEnd(false);
+              setNameSubmit(false);
+              setNameYes(false);
               const response = await fetch('https://api.datamuse.com/words?sp=??????&max=1000'); // 获取所有单词
               const data = await response.json();
               const filteredWords = data.filter(startWord => startWord.word.length > 4  && !/\s/.test(startWord.word));
@@ -77,7 +85,35 @@ function App() {
           }
       }
 
-  return (
+      const displayName = () =>{
+        if(nameYes){
+        setNameYes(false)}
+        else{
+            setNameYes(true)
+        }
+      }
+
+
+
+      //input Username
+    const handleNameInput = (event) => {
+        setNameInput(event.target.value)
+        handleNameSubmit(event)
+    }
+
+
+      //submit Username
+    const handleNameSubmit = (event) =>{
+        if (event.key === 'Enter') {  //should add the function to add name and score to db
+           setNameYes(false)
+           setNameSubmit(true)
+           setNameInput('')
+        }
+    }
+
+  // @ts-ignore
+    // @ts-ignore
+    return (
     <>
         <div>
             {/*Counters*/}
@@ -91,20 +127,49 @@ function App() {
                     <p>{wordCount}</p>
                 </div>
                 <div className="column">
-                    <h1>Score Counter</h1>
+                    <h1>Score</h1>
                     <p>Score: {score}</p>
                 </div>
 
             </div>)}
             {!showInput && gameEnd &&(
                 <div>
-                    <p>Congratulation! Your word counter is {wordCount}, score is {score}!</p>
+                    <h1>Congratulation!</h1>
+                    <div className="container">
+                    <div className="column">
+                        <h1>Word Counter</h1>
+                        <p>{wordCount}</p>
+                    </div>
+                    <div className="column">
+                        <h1>Score</h1>
+                        <p>Score: {score}</p>
+                    </div>
+                    </div>
                 </div>
             )}
+            {!showInput && gameEnd && !nameSubmit &&(
+                <p>
+                <button onClick={displayName}>Submit Your Name & Score</button></p>
+            )}
+            {!showInput && gameEnd && nameYes && !nameSubmit &&(
+                <p>
+                    <input
+                        type="text"
+                        value={nameInput}
+                        onChange={handleNameInput}
+                        onKeyUpCapture={handleNameSubmit}
+                        placeholder="Your Name"
+                    />
+                </p>
+            )}
+            {!showInput && gameEnd && nameSubmit &&(
+                <p>Congratulations! You have submitted your name and score successfully</p>
+            ) }
+
 
           {/* Start Word */}
             {!showInput && !gameEnd &&(<button onClick={fetchStartWord}>Start</button>)}
-            {!showInput && gameEnd &&(<button onClick={fetchStartWord}>Restart</button>)}
+            {!showInput && gameEnd &&(<button onClick={fetchStartWord}>Start a New Game</button>)}
             {showInput && startWord && !gameEnd && <p>Start Word: {startWord}</p>}
             <div>
                 {showInput && !gameEnd &&( <input
