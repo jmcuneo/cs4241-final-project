@@ -72,7 +72,7 @@ app.post('/login', passport.authenticate('local', { failureMessage: true }), asy
         return res.status(404).json({ success: false, message: "User not found" });
     
     const token = generateToken(user);
-    req.session.user = { id: user._id, username: req.username };
+    res.setHeader('Authorization', `Bearer ${token}`);
     res.json({ success: true, token, message: "Login successful" });
 });
 
