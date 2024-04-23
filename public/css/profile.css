@@ -3,8 +3,14 @@ table, td, th {
     border-collapse: collapse;
 }
 
-td {
+.calendar {
     width: 100px;
     height: 100px;
+    text-align: center;
+}
+
+.events {
+    width: 100px;
+    height: 50px;
     text-align: center;
 }

@@ -25,11 +25,11 @@ const getUserEvents = async function (filter) {
         for (e of userEvents) {
             const startDate = new Date(e.startTime);
             const endDate = new Date(e.endTime);
-            table.innerHTML += `<tr><td>${e.event}</td>
-                                    <td>${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}</td>
-                                    <td>${startDate.getHours()}:${startDate.getMinutes()}</td>
-                                    <td>${endDate.getHours()}:${endDate.getMinutes()}</td>
-                                    <td>${e.location}</td>`;
+            table.innerHTML += `<tr><td class='events'>${e.event}</td>
+                                    <td class='events'>${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}</td>
+                                    <td class='events'>${startDate.getHours()}:${startDate.getMinutes()}</td>
+                                    <td class='events'>${endDate.getHours()}:${endDate.getMinutes()}</td>
+                                    <td class='events'>${e.location}</td>`;
         }
     });
 };
@@ -49,15 +49,15 @@ const calendarView = async function () {
     calendar.innerHTML = "<tr><th>Sunday</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th></tr>";
     let str = "<tr>";
     for (let i = 0; i < startDay; i++)
-        str += "<td></td>";
+        str += "<td class='calendar'></td>";
     let day = 1;
     for (day; day + startDay <= 7; day++)
-        str += `<td><button onclick='getEventsOnDay(${year}, ${month}, ${day})'>${day}</button></td>`;
+        str += `<td class='calendar'><button onclick='getEventsOnDay(${year}, ${month}, ${day})'>${day}</button></td>`;
     calendar.innerHTML += str + "</tr>";
     while (day <= daysInMonth[month - 1]) {
         str = "<tr>";
         for (let i = 0; i < 7; day++, i++)
-            str += `<td>${day <= daysInMonth[month - 1] ? `<button onclick='getEventsOnDay(${year}, ${month}, ${day})'>${day}</button>` : ""}</td>`;
+            str += `<td class='calendar'>${day <= daysInMonth[month - 1] ? `<button onclick='getEventsOnDay(${year}, ${month}, ${day})'>${day}</button>` : ""}</td>`;
         calendar.innerHTML += str + "</tr>";
     }
     await getUserEvents((e) => e.startTime.substr(0, 7) === date);
