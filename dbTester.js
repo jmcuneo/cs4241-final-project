@@ -13,26 +13,22 @@ import Account from "./models/account.js";
 */
 export async function testDB() {
     /* eslint-disable no-unused-vars */
-    await clearEntireDB();
+    //await clearEntireDB();
     const userS = {
         firstName: 'Alexander',
         lastName: 'Beck',
-        gender: 'Male',
     };
     const user2S = {
         firstName: 'Jane',
         lastName: 'Doe',
-        gender: 'Female',
     };
     const user3S = {
         firstName: 'John',
         lastName: 'Smith',
-        gender: 'Male',
     };
     const user4S = {
         firstName: 'ale',
         lastName: 'asdf',
-        gender: 'Female',
     };
 
     const userA = await Account.create({
@@ -58,12 +54,16 @@ export async function testDB() {
     const user3 = await User.createUser(user3A, user3S);
     const user4 = await User.createUser(user4A, user4S);
 
+    // Admin account that has its own event
+    // User account that has been added to the event (as allowedInviters)
+
     try {
         // TODO: This might be causing an inconsistent error, keep an eye on it
         await addPermissionsToUser(user, true, PERMISSIONS.CREATE_EVENT, PERMISSIONS.INVITE_TO_ALL_EVENTS, PERMISSIONS.MODIFY_USERS);
 
         await user.addPermissionsToOtherUser(user2, PERMISSIONS.INVITE_TO_ALL_EVENTS);
 
+        console.log(await Account.find({ username: 'juser' }));
         const christmasPartySchema = {
             name: 'Christmas Party',
             date: new Date(2024, 11, 25),
@@ -100,6 +100,44 @@ export async function testDB() {
     } catch (err) {
         console.log(err);
     }
+}
+
+export async function createDummyUsers() {
+    let admin = await User.findOne({ username: 'admin' });
+    if (!admin) {
+        admin = await User.createUser(await Account.create({
+            username: 'admin',
+            password: 'password'
+        }), {
+            firstName: 'Admin',
+            lastName: 'Dummy'
+        });
+    }
+    await addPermissionsToUser(admin, true, PERMISSIONS.GIFT_ADMIN);
+    await admin.makeAdmin(admin);
+
+
+    let user = await User.findOne({ username: 'dummy' });
+    if (!user) {
+        user = await User.createUser(await Account.create({
+            username: 'dummy',
+            password: 'password'
+        }), {
+            firstName: 'Dummy',
+            lastName: 'Account'
+        });
+    }
+
+    let dummyEvent = await Event.findOne({name: 'Dummy Event'});
+    if (!dummyEvent) {
+        dummyEvent = admin.createEvent({
+            name: 'Dummy Event',
+            location: 'Dummy Location',
+            date: new Date(2024, 11, 25)
+        });
+    }
+
+    await admin.makeAllowedToInvite(user);
 }
 
 async function clearEntireDB() {

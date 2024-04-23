@@ -1,24 +1,37 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom"
 
+/**
+ * @author Jack Weinstein
+ */
+
 function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
+  const firstNameRef = useRef(null);
+  const lastNameRef = useRef(null);
 
+  const navigate = useNavigate()
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    navigate("/");
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
     setMessage('Registering');
 
     try {
-      const response = await fetch('localhost:3000/register', {
+      const response = await fetch('//localhost:3000/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username: usernameRef.current.value,
-          password: passwordRef.current.value
+          password: passwordRef.current.value,
+          firstName: firstNameRef.current.value,
+          lastName: lastNameRef.current.value
         })
       });
 
@@ -26,7 +39,7 @@ function RegisterPage() {
       if (response.ok) {
         setMessage('Registration successful! You can now log in.');
       } else {
-        setMessage('Registration failed. Please try again: ' + data.message);
+        setMessage('Registration failed: ' + data.message);
       }
 
     } catch (error) {
@@ -42,11 +55,11 @@ function RegisterPage() {
         <div className="col"> 
           <div className="input-field col s6">
             <div><label style={{ fontSize: '20px', color: 'white' }} htmlFor="username">First Name</label></div>
-            <input className="validate" type="text" id="firstName" name="firstName" data-length="10" required ref={usernameRef}/>
+            <input className="validate" type="text" id="firstName" name="firstName" data-length="10" required ref={firstNameRef}/>
           </div>
           <div className="input-field col s6">
             <div><label style={{ fontSize: '20px', color: 'white' }} htmlFor="username">Last Name</label></div>
-            <input className="validate" type="text" id="lastName" name="lastName" data-length="10" required ref={usernameRef}/>
+            <input className="validate" type="text" id="lastName" name="lastName" data-length="10" required ref={lastNameRef}/>
           </div>
           <div className="input-field col s6">
             <div><label style={{ fontSize: '20px', color: 'white' }} htmlFor="username">Username</label></div>
@@ -56,15 +69,8 @@ function RegisterPage() {
             <div><label style={{ fontSize: '20px', color: 'white' }} htmlFor="password">Password</label></div>
             <input className="validate" type="password" id="password" name="password" required ref={passwordRef}/>
           </div>
-          <div className="input-field col s6">
-            <div><label style={{ fontSize: '20px', color: 'white' }}>User Type</label></div>
-            <input type="search" list="userTypes" name="selectUserType" />
-            <datalist id="userTypes">
-              <option value="User"></option>
-              <option value="Admin"></option>
-            </datalist>
-          </div>
-          <button style={{marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="registerButton" onClick={handleSubmit}>Register</button>
+          <button style={{marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(235, 79, 52)', color: 'black', fontWeight: 'bold'}} className="btn waves-effect waves-light" type="button" id="logoutButton" onClick={handleLogin}>Back</button>
+          <button style={{marginTop: '10px', marginLeft: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="submit" id="registerButton">Register</button>
         </div>
       </form>
       <div style={{ fontSize: '20px', marginLeft: '30px', marginTop: '10px' }}>{message}</div> 

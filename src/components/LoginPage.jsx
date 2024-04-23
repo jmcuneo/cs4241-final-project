@@ -1,7 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 
-function LoginPage() {
+/**
+ * @author Jack Weinstein
+ */
+
+function LoginPage({onLogin}) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -16,7 +20,7 @@ function LoginPage() {
     setMessage('Logging in...');
   
     try {
-      const response = await fetch('/localhost:3000/login', {
+      const response = await fetch('//localhost:3000/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -26,14 +30,23 @@ function LoginPage() {
       });
       
       if (!response.ok) {
-        const data = await response.json();
-        setMessage(data.message); // Display the specific error message
-        throw new Error('Login failed');
+        if (response.status === 401) {
+          // Handle 401 Unauthorized error
+          const errorMessage = await response.text(); // Read response as text
+          setMessage(errorMessage); // Display the specific error message
+          throw new Error(errorMessage); // Throw custom error with message
+        } else {
+          // Handle other errors (e.g., 500 Internal Server Error)
+          const data = await response.json();
+          setMessage(data.message); // Display the error message
+          throw new Error(data.message); // Throw custom error with message
+        }
       } 
 
       const data = await response.json();
       setMessage("Logging In..."); 
-      navigate("/delivery-log");
+      onLogin(data.token);
+      navigate("/main");
 
     } catch (error) {
       console.error('Login error:', error.message);
@@ -71,8 +84,6 @@ function LoginPage() {
           </div>
           <button style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(3, 252, 98)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light"type="submit" id="loginButton">Login</button>
           <button style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="registerButton" onClick={handleRegister}>Register</button>
-          <button style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="mainPageButton" onClick={handleMainPage}>Main Page</button>
-          <button style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="eventPageButton" onClick={handleEventPage}>Event Page</button>
         </div>
       </form>
       <div style={{ fontSize: '20px', marginLeft: '30px', marginTop: '10px' }}>{message}</div> 
