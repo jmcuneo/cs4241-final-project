@@ -6,46 +6,13 @@ const resetTextBoxes = function () {
   document.querySelector("#endTime").value = "";
   document.querySelector("#location").value = "";
 };
-// Adds row to HTML table creates an event listener for each button created - can get index from click
-const addToTable = function (entry) {
-  const table = document.getElementById("table");
-  const row = `<tr id="entryRow">
-                  <td>${entry.event}</td>
-                  <td>${entry.date}</td>
-                  <td>${entry.startTime}</td>
-                  <td>${entry.endTime}</td>
-                  <td>${entry.location}</td>
-                  <td><button class="remove">Add To My Events</button></td>
-                </tr>`;
-  table.insertAdjacentHTML("beforeend", row);
-  //eventlistener
-  const removeButton = table.querySelector(".remove:last-child");
-  removeButton.addEventListener("click", function (event) {
-    event.preventDefault();
-  });
-  resetTextBoxes();
-};
-//clear and rebuild
-const generateTable = function (array) {
-  console.log("in generate table: ", array);
-  for (let i = 0; i <= array.length; i++) {
-    if (document.getElementById("guestName") != undefined) {
-      document.getElementById("guestName").remove();
-    }
-    if (document.getElementById("entryRow") != undefined) {
-      document.getElementById("entryRow").remove();
-    }
-  }
-  for (let j = 0; j < array.length; j++) {
-    addToTable(array[j]);
-  }
-};
+
 //check if input box is empty
 function isEmpty(str) {
   return !str || str.length === 0;
 }
 
-//creates an object and sends object to server side serverside sends back an array or JSON
+//submit
 const submit = async function (event) {
   event.preventDefault();
   const eventInput = document.querySelector("#event");
@@ -70,6 +37,7 @@ const submit = async function (event) {
   var input = document.getElementById("imageInput");
   var file = input.files[0];
 
+  //wrap everything in formdata in order to pass image file over properly
   var formData = new FormData();
   formData.append("image", file);
 
