@@ -9,14 +9,17 @@ import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
 
 function App() {
-  const [token, setToken] = useState();
-
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  console.log(token)
+  
   const handleLogin = (newToken) => {
     setToken(newToken);
+    localStorage.setItem('token', newToken); // Store token in localStorage
   };
 
   const handleLogout = () => {
     setToken(null);
+    localStorage.removeItem('token'); // Remove token from localStorage
   };
 
   return (
@@ -35,6 +38,8 @@ function App() {
             <Route exact path="/profile" element={<ProfilePage />} />
           </>
         )}
+        {/* Redirect to main page if authenticated */}
+        {token && <Route path="*" element={<Navigate to="/main" />} />}
         {/* Redirect to login page if not authenticated */}
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
