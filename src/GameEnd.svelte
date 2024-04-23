@@ -10,9 +10,7 @@
     function leaveGame() {
         dispatch("backToHost", {});
     }
-    function playAgain() {
-        //dispatch("backToHost", {});
-    }
+
     let game_type = "pokemon";
     let did_win = game_data.winner == game_data.player;
     let title = did_win ? "You Win!" : "You Lose.";
@@ -20,6 +18,16 @@
         ? `You guessed ${game_data.correct.name}`
         : `Your opponent's ${game_type} was ${game_data.correct.name}`;
     let numEntered = 0;
+    let clickedPlayAgain = false;
+
+    function playAgain() {
+        if(!clickedPlayAgain){
+            //dispatch("backToHost", {});
+            socket.emit("play again",game_data.id,game_data.player);
+            numEntered++;
+            clickedPlayAgain=true;
+        }
+    }
 
     // async function deleteGameData() {
     //     const deletedGame = await fetch("/delete_game_by_room_code", {
@@ -31,11 +39,25 @@
     //     });
     // }
     socket.on("play again selected",()=>{
+        console.log("Play again selected received");
         numEntered++;
     });
     socket.on("play again deselected",()=>{
+        console.log("Play again deselected received");
         numEntered--;
     });
+
+    function joinGame(game_id, player) {
+        console.log("Joining game");
+        dispatch("gameStart", {
+            room:game_id,
+            player:player
+        });
+    }
+
+    socket.on('host success',joinGame);
+    socket.on('join success',joinGame);
+
 </script>
 
 <div class="game-end-side">

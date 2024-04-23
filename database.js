@@ -210,7 +210,8 @@ async function deleteGame(code)
         }
     ).toArray()
 
-    games_collection.deleteOne(docs[0]);
+    await games_collection.deleteOne(docs[0]);
+    console.log("Game deleted");
 }
 
 
