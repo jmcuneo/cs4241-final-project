@@ -25,7 +25,7 @@ let minecraft_collection = null;
 
 let games_collection = null;
 
-const exp = { set_up_db_store, client, DB: null, getNumPokemon, getPokemonFromGame, getGameByRoomCode, updateGame, createNewGame, deleteGame, pushGame}
+const exp = { set_up_db_store, client, DB: null, getGameByRoomCode, updateGame, createNewGame, deleteGame, pushGame}
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -88,32 +88,6 @@ function set_up_db_store(app) {
     // Query to fetch Pokemon data from server from a unique id
 
 }
-
-
-async function getNumPokemon(){
-    const count = await pokemon_collection.countDocuments();
-    return count;
-}
-
-
-async function getPokemonFromGame(code, index){
-    const docs = await games_collection.find(
-        {
-            roomCode: code
-        }
-    ).toArray()
-
-    if(docs[0] === undefined)
-    {
-        //Room code not found
-        return null;
-    }
-    else
-    {
-        return docs[0].board[index];
-    }
-}
-
 
 async function getGameByRoomCode(code){
     const docs = await games_collection.find(
