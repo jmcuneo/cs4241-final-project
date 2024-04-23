@@ -61,6 +61,9 @@ function App() {
     //fetch startWord
       const fetchStartWord = async () => {
           try {
+              setScore(0)
+              setWordCount(0)
+              setUsedWord([])
               setSeconds(10)
               setShowInput(true);
               setGameEnd(false);
