@@ -1,4 +1,8 @@
+const getUsername = fetch("/user", { method: "GET" })
+  .then(r => r.json());
+
 document.addEventListener("DOMContentLoaded", () => {
+    getUsername.then(d => document.getElementById("user").innerHTML = d.username);
     const today = new Date();
     document.querySelector("#month").value = `${today.getFullYear()}-${`${today.getMonth() + 1}`.padStart(2, "0")}`;
     calendarView();
