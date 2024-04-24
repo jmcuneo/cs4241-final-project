@@ -38,6 +38,19 @@ app.post("/submit", async (req, res) => {
   }
 });
 
+
+app.get("/get", async (req, res) => {
+  const data = await dataCollection.find().toArray();
+  res.json(data);
+});
+
+app.post("/delete", async (req, res) => {
+  await dataCollection.deleteOne({ _id: new ObjectId(req.body._id) });
+  const data = await dataCollection.find().toArray();
+  res.json(data);
+});
+
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

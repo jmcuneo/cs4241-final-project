@@ -37,12 +37,12 @@ function Results({ formData }) {
           <p>Name: {formData.petName}</p>
           <p>Diet: {formData.dietType}</p>
           <p>Exercise level: {formData.exercise}</p>
-          <p>Race time: {formData.raceTime} seconds</p>
+          <p>&#127937; Race time: {formData.raceTime} seconds</p>
         </Col>
 
-        <Col id="leaderboard">
+        <Col >
           <h2>Leaderboard</h2>
-          <Table striped bordered hover>
+          <Table striped bordered hover id="leaderboard">
             <thead>
               <tr>
                 <th>Rank</th>
