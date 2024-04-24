@@ -9,7 +9,7 @@ function GuestListComponent() {
     //table with n rows and 2 columns: guestName and invitedBy
     //tr-cols | tbody-rows
     return (
-        <div>
+        <div className='guest-list'>
             <h1>Guest List</h1>
             <table>
 
