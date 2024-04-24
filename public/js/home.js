@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     };
 
 
-    document.getElementById('sendButton').addEventListener('click', function () {
+    document.getElementById('send-button').addEventListener('click', function () {
         let message = quill.getContents().ops;
         ws.send(JSON.stringify(message));
         quill.deleteText(0, quill.getLength(), "api");
@@ -74,5 +74,5 @@ function appendMessage(username, content, datetime) {
     toAppend.push({insert: `${datetime}`});
     console.log(toAppend);
     quillReadOnly.setContents(toAppend);
-    document.querySelector("#message-display").appendChild(wrapper);
+    document.querySelector("#message-display").prepend(wrapper);
 }

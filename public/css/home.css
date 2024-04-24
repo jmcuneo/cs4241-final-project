@@ -1,4 +1,7 @@
-#message-container, #message-display {
+#content>* {
     width: 60%;
-    margin: 0 auto;
+}
+
+#message-display {
+    margin-bottom: 5vh;
 }
