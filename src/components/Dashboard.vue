@@ -82,7 +82,7 @@
             :type="'password'"
           ></v-text-field>
           <v-row>
-            <v-btn @click="addTask()">Confirm</v-btn>
+            <v-btn @click="updatePassword()">Confirm</v-btn>
             <v-btn @click="closeProfileDialog()">Cancel</v-btn>
           </v-row>
         </v-card>
@@ -245,10 +245,36 @@ export default {
         }
       } catch (error) {
         console.error('Error:', error);
-        alert(error.message);  // Optionally, handle user feedback
+        alert(error.message);
       }
     },
-
+    async updatePassword() {
+      if (this.password !== this.confirmPassword){
+        alert('Password does not match');
+      }
+      else{
+        const json = {username: this.currentUser, password: this.password},
+          body = JSON.stringify(json);
+        console.log(json._id)
+        try {
+          const response = await fetch("newpass", {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: body
+          });
+          if (response.ok) {
+            this.profileDialogVisible = false;
+          } else {
+            throw new Error('Failed to Update');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert(error.message);
+        }
+      }
+    },
   },
 };
 </script>

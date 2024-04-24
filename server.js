@@ -75,6 +75,26 @@ app.post('/register', async (req, res) => {
   }
 });
 
+app.put('/newpass', async (req, res) => {
+  //TODO modify an existing task
+  try {
+    const {username, password} = req.body;
+
+    const collection = await client.db("finalDB").collection('user');
+    const result = await collection.updateOne(
+      {username: username},
+      {  $set: {password: password}}
+    )
+    if (result.matchedCount === 0) {
+      return res.status(404).send('No data found for the user to update.');
+    }
+    res.send('Password updated successfully.');
+  } catch (error) {
+    console.error("Error occurred during deletion:", error);
+    res.status(500).send("Internal Server Error: " + error.message);
+  }
+});
+
 app.get( '/user', async (req, res) => {
   try{
     if (current === ''){
@@ -104,7 +124,6 @@ app.post('/data', async (req, res) => {
     const collection = await client.db("finalDB").collection('task');
 
     const data = await collection.find({owner: username}).toArray();
-    console.log(data)
     res.status(201).json(data);
   }catch (error) {
     res.status(500).send(error.message);
