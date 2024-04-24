@@ -22,6 +22,7 @@ Types of tech:
 - 3js
 - passport: local
 - JSON Web Token
+  
 Project Sketches:
 ![image](https://github.com/JackWeinstein808/cs4241-final-project/assets/43310898/3898ac9b-1c1e-460f-9647-ad3d22882728)
 ![image](https://github.com/JackWeinstein808/cs4241-final-project/assets/43310898/908c9983-3f98-4300-8a5e-c5a22c9378f4)
