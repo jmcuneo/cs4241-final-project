@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     quill = new Quill("#message-input", {
         theme: "snow",
         modules: {
+            syntax: true,
             toolbar: [
                 ['bold', 'italic', 'underline', 'strike'],
                 ['blockquote', 'code-block'],
@@ -58,7 +59,10 @@ function appendMessage(username, content, datetime) {
     const quillReadOnly = new Quill(wrapper, {
         placeholder: 'MESSAGE EMPTY',
         readOnly: true,
-        theme: 'snow'
+        theme: 'snow',
+        modules: {
+            syntax: true
+        }
     });
     
     let toAppend = [{insert: `${username}\n`}];
