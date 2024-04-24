@@ -1,6 +1,7 @@
 <script lang="ts">
     // @ts-nocheck
     import HostJoin from "./HostJoin.svelte";
+    import ChooseGame from "./ChooseGame.svelte";
     import Board from "./Board.svelte";
     import Chat from "./Chat.svelte";
     import GameEnd from "./GameEnd.svelte";
@@ -22,9 +23,13 @@
     };
 
     function gameStart(e) {
-        game_data.state = "InGame";
+        game_data.state = "ChooseGame";
         game_data.id = e.detail.room;
         game_data.player = e.detail.player;
+    }
+    
+    function gameChosen() {
+        game_data.state = "InGame";
     }
 
     function gameEnd(e) {
@@ -49,6 +54,10 @@
 {#if game_data.state == "HostJoin"}
     <div id="host-join">
         <HostJoin on:gameStart={gameStart}></HostJoin>
+    </div>
+{:else if game_data.state == "ChooseGame"}
+    <div id="host-join">
+        <ChooseGame on:gameChosen={gameChosen}></ChooseGame>
     </div>
 {:else}
     {#if game_data.state == "InGame"}

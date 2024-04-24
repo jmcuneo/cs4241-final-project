@@ -192,3 +192,28 @@ h1 {
 .quarter-height {
     height: 25%;
 }
+
+.choose-game {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+}
+
+.choose-grid {
+    display: grid;
+    grid-template: 1fr / 1fr 1fr;
+    flex-grow: 1;
+}
+
+.choose-game-button {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    &:hover {
+        filter: brightness(.75);
+    }
+}

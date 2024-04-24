@@ -43,7 +43,7 @@
         serverBoard.board = [];
         for (let i = 0; i < gameBoard.length; i++) {
             serverBoard.board.push({
-                name: `${gameBoard[i].label} ${gameBoard[i].unique_id}`,
+                name: gameBoard[i].label,
                 link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(gameBoard[i].unique_id + "").padStart(3, "0")}.png`,
             });
         }
@@ -151,7 +151,7 @@
 >
     {#each Array(width) as _, j}
         {@const letter = bingo[j] || ""}
-        <img class="letter" alt="Pokemon {letter}" src="Poke_{letter}.png" />
+        <img class="letter" alt="pokemon {letter}" src="poke_{letter}.png" />
     {/each}
 </div>
 
