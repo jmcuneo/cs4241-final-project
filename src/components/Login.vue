@@ -33,7 +33,7 @@
                                 name="confirmPassword"
                                 label="Confirm Password"
                                 type="password"
-                                placeholder="cocnfirm password"
+                                placeholder="confirm password"
                                 required
                   ></v-text-field>
                   <v-btn type="submit" class="mt-4" color="primary" value="log in" onclick="">{{isRegister ? stateObj.register.name : stateObj.login.name}}</v-btn>
@@ -64,7 +64,7 @@ export default {
       stateObj: {
         register :{
           name: 'Register',
-          message: 'Aleady have an Acoount? login.'
+          message: 'Already have an account? login.'
         },
         login : {
           name: 'Login',
