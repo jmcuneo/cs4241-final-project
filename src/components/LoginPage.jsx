@@ -59,16 +59,6 @@ function LoginPage({onLogin}) {
     navigate("/register");
   };
 
-  const handleMainPage = async (event) => {
-    event.preventDefault();
-    navigate("/main");
-  }
-
-  const handleEventPage = async (event) => {
-    event.preventDefault();
-    navigate("/event");
-  }
-
   return (
     <div className="center-page-container"> 
       <h1 style={{ marginLeft: '30px' }}>Event List Sign-In</h1> 

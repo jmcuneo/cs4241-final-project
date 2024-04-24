@@ -3,17 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 
-function TopButtons() {
+function TopButtons({onLogout}) {
   const navigate = useNavigate()
   const handleProfile = async (event) => {
     event.preventDefault();
     navigate("/profile");
   };
 
-  const onLogout = async (event) => {
-    event.preventDefault();
-    navigate("/login");
-  };
 
   return(
     <div className='top-right-buttons' style={{ display: 'flex' }}>

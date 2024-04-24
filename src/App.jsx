@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import './App.css'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import MainPage from './components/MainPage';
@@ -17,7 +16,7 @@ function App() {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const response = await fetch('/api/verifyToken', {
+        const response = await fetch('//localhost:3000/api/verifyToken', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
