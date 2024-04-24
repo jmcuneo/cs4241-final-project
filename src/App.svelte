@@ -27,8 +27,8 @@
         game_data.id = e.detail.room;
         game_data.player = e.detail.player;
     }
-    
-    function gameChosen() {
+
+    function gameChosen(e) {
         game_data.state = "InGame";
     }
 
@@ -52,13 +52,9 @@
 </script>
 
 {#if game_data.state == "HostJoin"}
-    <div id="host-join">
-        <HostJoin on:gameStart={gameStart}></HostJoin>
-    </div>
+    <HostJoin on:gameStart={gameStart}></HostJoin>
 {:else if game_data.state == "ChooseGame"}
-    <div id="host-join">
-        <ChooseGame on:gameChosen={gameChosen}></ChooseGame>
-    </div>
+    <ChooseGame on:gameChosen={gameChosen}></ChooseGame>
 {:else}
     {#if game_data.state == "InGame"}
         <div class="board">

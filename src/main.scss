@@ -198,12 +198,16 @@ h1 {
     flex-direction: column;
     width: 100vw;
     height: 100vh;
+    box-sizing: border-box;
+    border: 1vw solid transparent;
+    gap: 1vw;
 }
 
 .choose-grid {
     display: grid;
     grid-template: 1fr / 1fr 1fr;
     flex-grow: 1;
+    gap: 1vw;
 }
 
 .choose-game-button {
