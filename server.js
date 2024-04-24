@@ -1,21 +1,21 @@
 const express = require('express');
 const path = require('path');
-const cookie  = require( 'cookie-session' );
 const history = require('connect-history-api-fallback');
 
+let current = '';
 const app = express();
 
 // Handle SPA history mode
 app.use(history({
-  verbose: true // This is optional but can be helpful for debugging
+  verbose: true, // Enable for debugging purposes
+  rewrites: [
+    { from: /^\/api\/.*$/, to: function(context) { return context.parsedUrl.pathname; } }
+  ]
 }));
 
+app.use(express.json());
+
 app.use(express.static(path.join(__dirname, 'dist')));
-app.use( cookie({
-  name: 'a3-shiming',
-  keys: ['azu109', 'sde'],
-  maxAge: 24 * 60 * 60 * 1000
-}))
 
 const logger = (req,res,next) => {
   console.log( 'url:', req.url );
@@ -24,7 +24,7 @@ const logger = (req,res,next) => {
 
 app.use( logger );
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId} = require('mongodb');
 const uri = `mongodb+srv://deshiming:ming@webware.yfjup5c.mongodb.net/?retryWrites=true&w=majority&appName=Webware`;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -39,16 +39,16 @@ client.connect();
 app.post( '/login', async (req, res) => {
   //TODO Login
   try {
-    const collection = await client.db("hwDB").collection('userDB');
+    const collection = await client.db("finalDB").collection('user');
     const {username, password} = req.body;
-    const user = await collection.findOne({username});
-
+    const user = await collection.findOne({username: username});
     if (user && password === user.password) {
-      req.session.login = true
+      console.log("login success")
       current = username;
-      res.status(200).redirect('main.html');
+      res.status(200).send('Login successful');
     } else {
-      res.status(400).redirect('index.html');
+      console.log("login failed")
+      res.status(400).send('Wrong username or password');
     }
   }catch (error){
     res.status(500).send(error.message);
@@ -59,10 +59,10 @@ app.post('/register', async (req, res) => {
   //TODO Register
   try {
 
-    const { email, username, password, role } = req.body;
+    const {username, password} = req.body;
 
-    const collection = await client.db("hwDB").collection('userDB');
-    const userExists = await collection.findOne({ username });
+    const collection = await client.db("finalDB").collection('user');
+    const userExists = await collection.findOne({ username: username });
 
     if (userExists) {
       return res.status(400).send('Username already exists');
@@ -75,52 +75,92 @@ app.post('/register', async (req, res) => {
   }
 });
 
+app.get( '/user', async (req, res) => {
+  try{
+    if (current === ''){
+      res.status(400).send('No User Logged in')
+    }
+    else{
+      res.status(200).send(current);
+    }
+  }catch (error){
+    res.status(500).send(error.message);
+  }
+})
+
+app.get( '/logout', async (req, res) => {
+  try{
+    current = '';
+    res.status(200).send(current);
+  }catch (error){
+    res.status(500).send(error.message);
+  }
+})
+
 app.post('/data', async (req, res) => {
   //TODO Get all task for a user
   try {
     const {username} = req.body;
-    const collection = await client.db("hwDB").collection('db0');
+    const collection = await client.db("finalDB").collection('task');
 
     const data = await collection.find({owner: username}).toArray();
+    console.log(data)
     res.status(201).json(data);
   }catch (error) {
     res.status(500).send(error.message);
   }
 });
 
+app.post( '/add', async (req, res) => {
+  try{
+    const collection = await client.db("finalDB").collection('task');
+
+    const result = await collection.insertOne( req.body )
+    res.json( result )
+  }catch (error){
+    res.status(500).send(error.message);
+  }
+})
+
 app.put('/modify', async (req, res) => {
   //TODO modify an existing task
   try {
-    const {game, name, uid, server, owner} = req.body;
+    const {_id, title, location, time, owner} = req.body;
+    const json = {title: title, location: location, time: time, owner: owner},
+      body = JSON.stringify(json);
 
-    const collection = await client.db("hwDB").collection('db0');
+    const collection = await client.db("finalDB").collection('task');
     const result = await collection.updateOne(
-      { uid: uid },
-      { $set: req.body }
+      {_id: new ObjectId('' + _id)},
+      { $set: json }
     )
     if (result.matchedCount === 0) {
       return res.status(404).send('No data found for the user to update.');
     }
     res.send('Data updated successfully.');
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Error occurred during deletion:", error);
+    res.status(500).send("Internal Server Error: " + error.message);
   }
 });
 
 app.delete('/delete', async (req, res) => {
   //TODO delete a task
   try {
-    const {uid} = req.body; // Data to update
-    const collection = await client.db("hwDB").collection('db0');
-    const result = await collection.deleteOne({ uid: uid });
-
+    let {_id} = req.body; // Data to update
+    if (!_id || !ObjectId.isValid(_id)) {
+      return res.status(400).send('Invalid ID format');
+    }
+    const collection = await client.db("finalDB").collection('task');
+    const result = await collection.deleteOne({_id: new ObjectId('' + _id)});
     if (result.deletedCount === 0) {
       return res.status(404).send('No data found for the user to delete.');
     }
 
     res.send('Data deleted successfully.');
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Error occurred during deletion:", error);
+    res.status(500).send("Internal Server Error: " + error.message);
   }
 });
 

@@ -2,7 +2,8 @@
   <v-app >
     <v-main>
       <v-container>
-        <v-layout >
+        <v-col >
+          <v-alert v-model="alertVisible" :text="errorMessage" :type="alertType"></v-alert>
             <v-card width="100%">
               <v-toolbar dark color="primary">
                 <v-toolbar-title>{{isRegister ? stateObj.register.name : stateObj.login.name}} form</v-toolbar-title>
@@ -35,15 +36,14 @@
                                 placeholder="cocnfirm password"
                                 required
                   ></v-text-field>
-                  <div class="red--text"> {{errorMessage}}</div>
-                  <v-btn type="submit" class="mt-4" color="primary" value="log in">{{isRegister ? stateObj.register.name : stateObj.login.name}}</v-btn>
+                  <v-btn type="submit" class="mt-4" color="primary" value="log in" onclick="">{{isRegister ? stateObj.register.name : stateObj.login.name}}</v-btn>
                   <div class="grey--text mt-4" v-on:click="isRegister = !isRegister;">
                     {{toggleMessage}}
                   </div>
                 </form>
               </v-card-text>
             </v-card>
-        </v-layout>
+        </v-col>
       </v-container>
     </v-main>
   </v-app>
@@ -57,6 +57,8 @@ export default {
       username: "",
       password: "",
       confirmPassword: "",
+      alertType: "error",
+      alertVisible: false,
       isRegister : false,
       errorMessage: "",
       stateObj: {
@@ -72,18 +74,75 @@ export default {
     };
   },
   methods: {
-    login() {
-      const { username } = this;
-      console.log(username + "logged in")
-    },
-    register() {
-      if(this.password === this.confirmPassword){
-        this.isRegister = false;
-        this.errorMessage = "";
-        this.$refs.form.reset();
+    submit(){
+      if (this.isRegister){
+        this.register();
       }
-      else {
-        this.errorMessage = "password did not match"
+      else{
+        this.login();
+      }
+    },
+    async login() {
+      const username = this.username,
+        password = this.password,
+        json = {username: username, password: password},
+        body = JSON.stringify(json);
+
+      try {
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: body
+        });
+
+        if (response.ok) {
+          this.$router.push({ name: 'Home' , query: { username: this.username }});
+        } else {
+          const errMsg = await response.text();
+          throw new Error(errMsg);
+        }
+      } catch (error) {
+        this.alertType = "error";
+        this.errorMessage = error.message;
+        this.alertVisible = true;
+      }
+    },
+    async register() {
+      const username = this.username,
+        password = this.password,
+        json = {username: username, password: password},
+        body = JSON.stringify(json);
+
+      if (this.username !== this.confirmPassword){
+        this.alertType = "error";
+        this.errorMessage = "Password does not match";
+        this.alertVisible = true;
+      }
+      else{
+        try {
+          const response = await fetch("/register", {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: body
+          });
+
+          if (response.ok) {
+            this.alertType = "success";
+            this.errorMessage = "Successfully registered";
+            this.alertVisible = true;
+          } else {
+            const errMsg = await response.text();
+            throw new Error(errMsg);
+          }
+        } catch (error) {
+          this.alertType = "error";
+          this.errorMessage = error.message;
+          this.alertVisible = true;
+        }
       }
     }
   },
