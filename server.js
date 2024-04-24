@@ -174,33 +174,38 @@ io.on('connection', (socket) => {
     let isPlayer1 = false;
     //TODO: Set these back to false if someone leaves.
     //Set text to x/2 where x is the number of players who have selected it.
-    if (game != null && game.p1 != null && game.p2 != null) {
-      if (game.p1.name == "Player 1") {
-        isPlayer1 = true;
-        database.updateGame(game, "playAgain_p1", true);
-        if (game.playAgain_p2) {
-          startNewGame = true;
+    console.log("Play again received");
+    console.log(game);
+    if(game!=null && game.p1 != null && game.p2 != null){
+      console.log("Both players in game",name,game.playAgain_p1,game.playAgain_p2);
+      if(name=="Player 1"){
+        console.log("Player 1 time");
+        isPlayer1=true;
+        await database.updateGame(room,"playAgain_p1",true);
+        if(game.playAgain_p2){
+          startNewGame=true;
         }
         socket.to(game.p2.id).emit('play again selected');
-      } else {
-        database.updateGame(game, "playAgain_p2", true);
-        if (game.playAgain_p1) {
-          startNewGame = true;
+      }else{
+        await database.updateGame(room,"playAgain_p2",true);
+        console.log("Player 2 time");
+        if(game.playAgain_p1){
+          startNewGame=true;
         }
         socket.to(game.p1.id).emit('play again selected');
       }
     }
     if (startNewGame) {
       await database.deleteGame(room);
-      const newGame = await database.createNewGame(room, "Pokemon");
-      await database.updateGame(room, "p1", { name: "Player 1", id: game.p1.id });
-      await database.updateGame(room, "p2", { name: "Player 2", id: game.p2.id });
-      socket.emit('host success', room, "Player 1");
-      sendServerChatMessage(room, "Player 1 joined the game.");
-      io.to(game.p1.id).emit('host success', room, "Player 1");
-      io.to(game.p2.id).emit('join success', room, "Player 2");
-      io.to(game.p1.id).emit('game setup', newGame.board, newGame.answer_p1, newGame.flipped_p1, newGame.guessed_p1, newGame.chat);
-      io.to(game.p2.id).emit('game setup', newGame.board, newGame.answer_p1, newGame.flipped_p1, newGame.guessed_p1, newGame.chat)
+      const newGame = await database.createNewGame(room,"Pokemon");
+      await database.updateGame(room,"p1",{name:"Player 1",id:game.p1.id});
+      await database.updateGame(room,"p2",{name:"Player 2",id:game.p2.id});
+      io.to(game.p1.id).emit('host success',room,"Player 1");
+      io.to(game.p2.id).emit('join success',room,"Player 2");
+      sendServerChatMessage(room,"Player 1 joined the game.");
+      // console.log(newGame);
+      io.to(game.p1.id).emit('game setup',newGame.board,newGame.answer_p1,newGame.flipped_p1,newGame.guessed_p1,newGame.chat);
+      io.to(game.p2.id).emit('game setup',newGame.board,newGame.answer_p2,newGame.flipped_p2,newGame.guessed_p2,newGame.chat);
     }
   });
 });
