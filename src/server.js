@@ -31,6 +31,9 @@ const uri = `mongodb+srv://ibixler:${process.env.PASS}@matchinglgbt.zyq3dy3.mong
 
 db.run();
 
+let inMemCache = null;
+
+
 app.use((req, res, next) => {
   if (1) {
     next();
@@ -101,6 +104,22 @@ app.post("/update", async (req, res) => {
 
   res.json(result);
 });
+
+app.get("/load", async (req, res) => {
+  inMemCache = db.getCards;
+  res.send(JSON.stringify(inMemCache))
+})
+
+app.post("/score", async (req, res) => {
+  let attempt = JSON.parse(req.body)
+  let item1 = attempt.item1,
+      item2 = attempt.item2,
+      curr_time = attempt.time, //not sure what to do with time...
+      curr_score = attempt.score + helpers.calculateScore(item1, item2);
+  
+  res.json({score: curr_score})
+  
+})
 
 app.get('/auth/github',
   passport.authenticate('github', { scope: [ 'user:email' ] }));

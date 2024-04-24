@@ -80,13 +80,13 @@ exports.getCards = async () => {
 console.log(rand_arr); //TESTING
 let i = 0;
 while (i < rand_arr.length) {
-  card_array.push(await collection.findOne(/* The index in the rand array...? */))
+  card_array.push(await collection.findOne({"index": rand_arr[i]}))
   i++
 }
 i = 0
 collection = await switcher("cards-events"); //CHANGE TO NAME OF EVENT DATABASE
 while (i < rand_arr.length) {
-  card_array.push(await collection.findOne(/* The index in the rand array...? */))
+  card_array.push(await collection.findOne({"index": rand_arr[i]}))
   i++
 }
 /* This will format the card_array as 1, 2, 3, 4, 5,..., 1n, 2n, 3n, 4n, 5n... 
@@ -94,7 +94,7 @@ while (i < rand_arr.length) {
   In order to check matching, we will have to check the index with + 6
 */
 
-
+  return card_array
 }
 
 const switcher = (desired) => {
