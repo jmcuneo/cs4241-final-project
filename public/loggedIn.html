@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="./css/loggedin.css">
 
     <script src="./js/theme.js"></script>
+    <script src="./js/homepageClient.js"></script>
 </head>
 
 <body>
@@ -34,8 +35,13 @@
             <a class="center hoverable" href = "/profilePage">View Profile</a>
             <a class="center hoverable" href = "/logout">Logout</a>
         </div>
-        <a>+New Post</a>
-        <article>Feed</article>
+        <h3>Make a new post:</h3>
+        <div id="messageContainer">
+            <input type="text" id="messageInput" placeholder="Type a message...">
+            <button id="sendButton">Post</button>
+        </div>
+        <h3>Feed:</h3>
+        <div id="messageDisplay"></div>
     </main>
 </body>
 </html>
