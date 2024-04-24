@@ -1,28 +1,30 @@
-
-window.onload = function () {
-    const allMessages = fetch("/messages", {
+let quill;
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("/messages", {
         method: "GET",
     })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            for (let msg of data) {
-                const username = msg.username
-                const datetime = msg.datetime
-                const content = msg.content
-                const messageDisplay = document.getElementById('messageDisplay');
-                const formattedMessage = `${username} - ${content} - ${datetime}`;
-                //maybe use a different element type instead of div for better format 
-                const messageElement = document.createElement('div');
-                messageElement.textContent = formattedMessage;
-                messageDisplay.appendChild(messageElement);
-            }
-        })
-}
+    .then(r => r.json())
+    .then(function (data) {
+        for (let message of data) {
+            appendMessage(message.username, message.content, message.datetime);
+        }
+    });
 
+    quill = new Quill("#message-input", {
+        theme: "snow",
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline', 'strike'],
+                ['blockquote', 'code-block'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
+                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                ['clean']
+            ]
+        }
+    });
+});
 
-let currUser
 //websocket comm stuff 
 document.addEventListener('DOMContentLoaded', async function () {
     const user = await fetch("/user", {
@@ -31,7 +33,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         .then(function (response) {
             return response.json();
         });
-        console.log(user);
 
     const ws = new WebSocket('ws://localhost:3000/messages?user=' + encodeURIComponent(user.username));
 
@@ -39,21 +40,35 @@ document.addEventListener('DOMContentLoaded', async function () {
         console.log('WebSocket Client Connected');
     };
 
-    //replace with fetch?? 
     ws.onmessage = function (event) {
         const message = JSON.parse(event.data);
-        const messageDisplay = document.getElementById('messageDisplay');
-        const formattedMessage = `${message.username} - ${message.content} - ${message.datetime}`;
-        const messageElement = document.createElement('div');
-        messageElement.textContent = formattedMessage;
-        messageDisplay.appendChild(messageElement);
+        appendMessage(message.username, message.content, message.datetime);
     };
 
 
     document.getElementById('sendButton').addEventListener('click', function () {
-        const messageInput = document.getElementById('messageInput');
-        const message = messageInput.value;
-        ws.send(message);
-        messageInput.value = '';
+        let message = quill.getContents().ops;
+        ws.send(JSON.stringify(message));
+        quill.deleteText(0, quill.getLength(), "api");
     });
 });
+
+function appendMessage(username, content, datetime) {
+    const wrapper = document.createElement("div");
+    const quillReadOnly = new Quill(wrapper, {
+        placeholder: 'MESSAGE EMPTY',
+        readOnly: true,
+        theme: 'snow'
+    });
+    
+    let toAppend = [{insert: `${username}\n`}];
+    try {
+        toAppend = toAppend.concat(JSON.parse(content));
+    } catch(_) {
+        toAppend.push({insert: content + "\n"});
+    }
+    toAppend.push({insert: `${datetime}`});
+    console.log(toAppend);
+    quillReadOnly.setContents(toAppend);
+    document.querySelector("#message-display").appendChild(wrapper);
+}
