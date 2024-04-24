@@ -9,7 +9,6 @@ import jwt from 'jsonwebtoken';
 
 import Account from './models/account.js';
 import session from 'express-session';
-import MongoStore from 'connect-mongo';
 import bodyParser from 'body-parser';
 import passport from './passport.js';
 import cors from 'cors';
@@ -33,7 +32,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: { secure: true }
-  }));
+}));
 
 
 // Passport Middleware
@@ -68,15 +67,15 @@ app.post('/register', async (req, res) => {
 //login route
 app.post('/login', passport.authenticate('local', { failureMessage: true }), async (req, res) => {
     const user = await Account.findOne({ username: req.body.username });
-    if (!user) 
+    if (!user)
         return res.status(404).json({ success: false, message: "User not found" });
-    
+
     const token = generateToken(user);
     res.setHeader('Authorization', `Bearer ${token}`);
     res.json({ success: true, token, message: "Login successful" });
 });
 
-function generateToken(user){
+function generateToken(user) {
     const payload = {
         username: user.username,
     };
@@ -86,7 +85,7 @@ function generateToken(user){
 
 //Token stored in localStorage
 function getUsernameFromToken(token) {
-    try{
+    try {
         const decoded = jwt.decode(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
         const username = decoded.username;
 
@@ -103,26 +102,36 @@ API ENDPOITNS
 */
 app.post('/api/verifyToken', (req, res) => {
     try {
-        const { token } = req.body; 
+        const { token } = req.body;
+        if (!token) {
+            // If token is null
+            // Prevent jwt.verify throwing an error and cluttering the console
+            // This can be removed if the console.log is removed from the catch
+            return res.json({ valid: false });
+        }
         const decoded = jwt.verify(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
         console.log(decoded)
-    
-        if (decoded.exp < Date.now() / 1000) 
+
+        if (decoded.exp < Date.now() / 1000)
             return res.json({ valid: false });
-    
+
         return res.json({ valid: true });
-      } catch (error) {
-        console.error(error)
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            console.log('Token expired.');
+        } else {
+            console.error(error)
+        }
         return res.json({ valid: false });
     }
-    });
+});
 
-app.post('/api/getUsernameFromToken', (req, res)=> {
+app.post('/api/getUsernameFromToken', (req, res) => {
     try {
-        const { token } = req.body; 
+        const { token } = req.body;
         const decoded = jwt.decode(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
         const username = decoded.username;
-    
+
         console.log(username)
         return res.json({ username });
     } catch (error) {
@@ -130,17 +139,42 @@ app.post('/api/getUsernameFromToken', (req, res)=> {
     }
 });
 
+
+app.post('/api/getUpcomingEvents', async (req, res) => {
+    try {
+        const { token } = req.body;
+        const username = getUsernameFromToken(token);
+        const user = await User.findOne({ username: username });
+
+        const events = await user.getUpcomingEvents();
+
+        // Why does this double fire?
+        return res.json({ events: await events });
+    } catch (err) {
+        console.log(err);
+        return res.json({ error: "Failed to authenticate token" });
+    }
+});
+
+app.post('/api/getProfile', async (req, res) => {
+    try {
+        const { token } = req.body;
+        const username = getUsernameFromToken(token);
+        const user = await User.findOne({ username: username });
+
+        // NOT DONE!!!!!!!!!!!!!!!!!!!!!
+        const events = await user.getUpcomingEvents();
+
+        // Why does this double fire?
+        return res.json({ events: await events });
+    } catch (err) {
+        console.log(err);
+        return res.json({ error: "Failed to authenticate token" });
+    }
+});
+
 // Connect to the database
 connectToDB().catch(err => console.log(err));
-
-/*
-#################################################
-WILL DELETE ENTIRE DB ON EVERY LOAD!!!!!!!!!!!!!!
-Only keep when in DEVELOPMENT. 
-#################################################
-*/
-// testDB();
-await createDummyUsers();
 
 /**
  * @description Connects to the MongoDB database using USER, PASS, and HOST in the .env file
@@ -157,3 +191,12 @@ async function connectToDB() {
 ViteExpress.listen(app, process.env.PORT || port, () => {
     console.log("Server listening on port " + (process.env.PORT ? process.env.PORT : port));
 });
+
+/*
+#################################################
+WILL DELETE ENTIRE DB ON EVERY LOAD!!!!!!!!!!!!!!
+Only keep when in DEVELOPMENT. 
+#################################################
+*/
+// testDB();
+await createDummyUsers();

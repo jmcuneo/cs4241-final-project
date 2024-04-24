@@ -14,7 +14,7 @@ import Account from "./models/account.js";
 export async function testDB() {
     /* eslint-disable no-unused-vars */
     //await clearEntireDB();
-    const userS = {
+    /*const userS = {
         firstName: 'Alexander',
         lastName: 'Beck',
     };
@@ -99,7 +99,7 @@ export async function testDB() {
 
     } catch (err) {
         console.log(err);
-    }
+    }*/
 }
 
 export async function createDummyUsers() {
@@ -128,7 +128,7 @@ export async function createDummyUsers() {
         });
     }
 
-    let dummyEvent = await Event.findOne({name: 'Dummy Event'});
+    let dummyEvent = await Event.findOne({ name: 'Dummy Event' });
     if (!dummyEvent) {
         dummyEvent = admin.createEvent({
             name: 'Dummy Event',
@@ -137,7 +137,10 @@ export async function createDummyUsers() {
         });
     }
 
-    await admin.makeAllowedToInvite(user);
+    if (!dummyEvent.isUserAllowedToInvite(user))
+        await admin.makeAllowedToInvite(dummyEvent, user);
+    if (!dummyEvent.attendees.filter(attendee => attendee.guest === 'Debby'))
+        await user.inviteGuests(dummyEvent, 'Debby');
 }
 
 async function clearEntireDB() {

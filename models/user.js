@@ -95,6 +95,7 @@ const userSchema = new Schema({
         async addPermissionsToOtherUser(other, ...permissions) {
             if (!other) return false;
             if (!permissions) return false;
+            if (permissions.length === 0) return false;
 
             // If user is admin or user has PERMISSIONS.MODIFY_USERS
             if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_USERS)) {
@@ -123,7 +124,9 @@ const userSchema = new Schema({
          * @author Alexander Beck
          */
         async makeAllowedToInvite(event, ...users) {
-            if (!event || !users) return false;
+            if (event === undefined) return false;
+            if (users === undefined) return false;
+            if (users.length === 0) return false;
 
             if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || event.creator === this._id) {
                 let successfullyAdded = [];
@@ -162,6 +165,7 @@ const userSchema = new Schema({
          */
         async makeUnableToInvite(event, ...users) {
             if (!event || !users) return false;
+            if (users.length === 0) return false;
 
             if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || event.creator === this._id) {
                 let successfullyRemoved = [];
@@ -242,6 +246,7 @@ const userSchema = new Schema({
          */
         async inviteGuests(event, ...guests) {
             if (!guests) return [];
+            if (guests.length === 0) return [];
             if (!event) return false;
 
             // Check if added users is within guest limit
@@ -304,6 +309,7 @@ const userSchema = new Schema({
         async uninviteGuests(event, ...guests) {
             if (!event) return false;
             if (!guests) return false;
+            if (guests.length === 0) return false;
 
             let successfullyRemoved = [];
 
@@ -391,7 +397,21 @@ const userSchema = new Schema({
          * @returns {Promise<Array<mongoose.Model>} A list of events, or an empty array
          */
         async getUpcomingEvents() {
-            return await Event.getUpcomingEvents(this);
+            const events = await Event.getUpcomingEvents(this);
+            const user = this;
+
+            // Use this since it is unnecessary data being sent,
+            // which could theoretically slow things down
+            function hideAttendees(event) {
+                // Decouple the attendees field from the object, removing it from the returned object
+                // eslint-disable-next-line no-unused-vars
+                const { attendees, ...rest } = event;
+                return rest;
+            }
+            return await Promise.all(events.map(async function (event) {
+                const userInvites = (await event.getInviteIdsByInviter(user))?.length ?? 0;
+                return { ...hideAttendees(event.toObject()), userInvites };
+            }));
         },
 
         /**
