@@ -84,6 +84,52 @@ function generateToken(user){
     return jwt.sign(payload, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!", { expiresIn: '1h' });     //MAKE A NEW KEY EVENTUALLY AND MOVE TO .ENV
 }
 
+//Token stored in localStorage
+function getUsernameFromToken(token) {
+    try{
+        const decoded = jwt.decode(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
+        const username = decoded.username;
+
+        return username;
+    } catch (error) {
+        console.log("Failed to get username from token");
+    }
+}
+
+/*
+#################################################
+API ENDPOITNS
+#################################################
+*/
+app.post('/api/verifyToken', (req, res) => {
+    try {
+        const { token } = req.body; 
+        const decoded = jwt.verify(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
+        console.log(decoded)
+    
+        if (decoded.exp < Date.now() / 1000) 
+            return res.json({ valid: false });
+    
+        return res.json({ valid: true });
+      } catch (error) {
+        console.error(error)
+        return res.json({ valid: false });
+    }
+    });
+
+app.post('/api/getUsernameFromToken', (req, res)=> {
+    try {
+        const { token } = req.body; 
+        const decoded = jwt.decode(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
+        const username = decoded.username;
+    
+        console.log(username)
+        return res.json({ username });
+    } catch (error) {
+        return res.json({ error: "Failed to get username from token" });
+    }
+});
+
 // Connect to the database
 connectToDB().catch(err => console.log(err));
 
