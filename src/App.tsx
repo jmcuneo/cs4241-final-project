@@ -2,8 +2,10 @@ import {useEffect, useState} from 'react'
 import './App.css'
 
 function App() {
+    //display last word
+    const [lastWord, setLastWord] = useState('');
     //whether timer running
-    const [timerRunning, setTimerRunning] = useState(false)
+    const [timerRunning, setTimerRunning] = useState(false);
     //input name
     const [nameInput, setNameInput] = useState('');
     //whether need to submit name
@@ -14,8 +16,6 @@ function App() {
     const [gameEnd,setGameEnd] = useState(false);
     //whether start the game
     const [showInput, setShowInput] = useState(false);
-     //startWord
-     const [startWord, setStartWord] = useState('')
     //word count
      const [wordCount, setWordCount] = useState(0);
     //score
@@ -29,17 +29,20 @@ function App() {
 
 
     //get word
+    // @ts-ignore
     const handleInput = (event) => {
         setInputValue(event.target.value)
         handleSubmit(event)
      }
     //submit word
     //feel free to change the code, should add the function to check the word here
-     const handleSubmit = (event) => {
+     // @ts-ignore
+    const handleSubmit = (event) => {
          if (event.key === 'Enter') {  //should add the function to check the word here
              wordCountIncrement()
              setUsedWord(prevState => [...prevState, inputValue])
              setScore(prevScore => {
+                 setLastWord(inputValue);
                  const newScore = prevScore + inputValue.length;
                  setInputValue('');
                  return newScore;
@@ -79,11 +82,12 @@ function App() {
               setGameEnd(false);
               setNameSubmit(false);
               setNameYes(false);
-              const response = await fetch('https://api.datamuse.com/words?sp=??????&max=1000'); // 获取所有单词
+              const response = await fetch('https://api.datamuse.com/words?sp=??????&max=1000');
               const data = await response.json();
-              const filteredWords = data.filter(startWord => startWord.word.length > 4  && !/\s/.test(startWord.word));
+              // @ts-ignore
+              const filteredWords = data.filter(item => item.word.length > 4  && !/\s/.test(item.word));
               const randomIndex = Math.floor(Math.random() * filteredWords.length);
-              setStartWord(filteredWords[randomIndex].word);
+              setLastWord(filteredWords[randomIndex].word)
           } catch (error) {
               console.error('Error fetching random word:', error);
           }
@@ -100,6 +104,7 @@ function App() {
 
 
       //input Username
+    // @ts-ignore
     const handleNameInput = (event) => {
         setNameInput(event.target.value)
         handleNameSubmit(event)
@@ -107,6 +112,7 @@ function App() {
 
 
       //submit Username
+    // @ts-ignore
     const handleNameSubmit = (event) =>{
         if (event.key === 'Enter') {  //should add the function to add name and score to db
            setNameYes(false)
@@ -174,7 +180,7 @@ function App() {
           {/* Start Word */}
             {!showInput && !gameEnd &&(<button onClick={fetchStartWord}>Start the Game</button>)}
             {!showInput && gameEnd &&(<button onClick={fetchStartWord}>Start a New Game</button>)}
-            {showInput && startWord && !gameEnd && <p>Start Word: {startWord}</p>}
+            {showInput && lastWord && !gameEnd && <p>{lastWord}</p>}
             <div>
                 {showInput && !gameEnd &&( <input
                     type="text"
