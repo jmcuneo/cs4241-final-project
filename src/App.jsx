@@ -7,6 +7,7 @@ import ManageEventPage from './components/ManageEventPage';
 import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
 import Background from './background/Background';
+import TopButtons from './components/TopButtons';
 
 
 function App() {
@@ -53,14 +54,15 @@ function App() {
         {/*LOGIN AND REGISTER*/}
         {!authenticated && <Route exact path="/login" element={<LoginPage onLogin={handleLogin} />} />}
         <Route exact path="/register" element={<RegisterPage onRegister={handleLogin}/>} />
-
+        
         {/*PROTECTED ROUTES*/}
         {authenticated && (
           <>
             <Route exact path="/main" element={<MainPage onLogout={handleLogout}/>} />
+            <Route exact path="/main" element={<TopButtons onLogout={handleLogout}/>} />
             <Route exact path="/event" element={<EventPage />} />
             <Route exact path="/event/manage" element={<ManageEventPage />} />
-            <Route exact path="/profile" element={<ProfilePage />} />
+            <Route exact path="/profile" element={<ProfilePage onLogout={handleLogout}/>} />
           </>
         )}
         {/* Redirect to main page if authenticated */}
