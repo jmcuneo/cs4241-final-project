@@ -59,10 +59,9 @@ function App() {
         {authenticated && (
           <>
             <Route exact path="/main" element={<MainPage onLogout={handleLogout}/>} />
-            <Route exact path="/main" element={<TopButtons onLogout={handleLogout}/>} />
-            <Route exact path="/event" element={<EventPage />} />
-            <Route exact path="/event/manage" element={<ManageEventPage />} />
+            <Route exact path="/event/manage" element={<ManageEventPage onLogout={handleLogout} />} />
             <Route exact path="/profile" element={<ProfilePage onLogout={handleLogout}/>} />
+            <Route exact path="/event" element={<EventPage onLogout={handleLogout}/>} />
           </>
         )}
         {/* Redirect to main page if authenticated */}

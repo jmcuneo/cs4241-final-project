@@ -18,18 +18,6 @@ function TopButtons({ onLogout, showProfileButton, showBackButton }) {
 
   return(
     <div className='top-right-buttons'>
-      {showProfileButton && (
-        <button
-          style={{marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold'}}
-          className="btn waves-effect waves-light"
-          type="button"
-          id="profilePageButton"
-          onClick={handleProfile}
-        >
-          <FontAwesomeIcon icon={faUser} style={{ marginRight: '5px' }} />
-          Profile
-        </button>
-      )}
       {showBackButton && (
         <button
           style={{marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold'}}
@@ -40,6 +28,18 @@ function TopButtons({ onLogout, showProfileButton, showBackButton }) {
         >
           <i class="fa fa-arrow-circle-o-left" style={{marginRight: "5px", fontSize:"20px"}}></i>
           Back
+        </button>
+      )}
+      {showProfileButton && (
+        <button
+          style={{marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold'}}
+          className="btn waves-effect waves-light"
+          type="button"
+          id="profilePageButton"
+          onClick={handleProfile}
+        >
+          <FontAwesomeIcon icon={faUser} style={{ marginRight: '5px' }} />
+          Profile
         </button>
       )}
         <button

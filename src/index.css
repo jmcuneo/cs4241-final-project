@@ -84,7 +84,7 @@ button:focus-visible {
   top: 50%; /* Positions the top at 50% viewport height */
   left: 50%; /* Positions the left at 50% viewport width */
   transform: translate(-50%, -50%); /* Adjusts for margins/padding */
-  width: fit-content; /* Adjusts width to content (optional) */
+  width: fit-content; /* Adjusts width to content */
 }
 
 
@@ -93,13 +93,18 @@ button:focus-visible {
   display: flex; 
   justify-content: space-between;
   align-items: flex-start;  /* Align items to the top */
-  width: 100%;  /* Allow it to stretch across the screen */
+  width: fit-content; /* Adjusts width to content */
 }
 
 .header-section {
+  display: flex;
   position: absolute;  /* Position absolutely relative to parent */
+  flex-direction: row; /* Stacks elements horizontally */
   top: -10px;              /* Place at top */
   left: 20px;             /* Place at right */
+  justify-content: center; /* Centers elements vertically */
+  align-items: center; /* Centers elements horizontally */
+  width: fit-content; /* Adjusts width to content */
 }
 
 .top-right-buttons {
@@ -110,3 +115,14 @@ button:focus-visible {
   justify-content: flex-end; /* Push buttons to the right */
 }
 
+.guest-list {
+  display: flex; /* Enables flexbox for positioning */
+  flex-direction: column; /* Stacks elements vertically */
+  align-items: center; /* Centers elements horizontally */
+  justify-content: center; /* Centers elements vertically */
+  position: absolute; /* Positions the container absolutely */
+  top: 25%; /* Positions the top at 30% viewport height */
+  left: 9%; /* Positions the left at 10% viewport width */
+  transform: translate(-50%, -50%); /* Adjusts for margins/padding */
+  width: fit-content; /* Adjusts width to content */
+}
