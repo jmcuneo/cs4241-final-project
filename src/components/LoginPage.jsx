@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 
 /**
  * @author Jack Weinstein
@@ -80,5 +81,9 @@ function LoginPage({onLogin}) {
     </div>
   );
 }
+
+LoginPage.propTypes = {
+  onLogin: PropTypes.func.isRequired
+};
 
 export default LoginPage;

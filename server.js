@@ -149,7 +149,7 @@ app.post('/api/getUpcomingEvents', async (req, res) => {
         const events = await user.getUpcomingEvents();
 
         // Why does this double fire?
-        return res.json({ events: await events });
+        return res.json(events);
     } catch (err) {
         console.log(err);
         return res.json({ error: "Failed to authenticate token" });
@@ -160,18 +160,48 @@ app.post('/api/getProfile', async (req, res) => {
     try {
         const { token } = req.body;
         const username = getUsernameFromToken(token);
-        const user = await User.findOne({ username: username });
-
-        // NOT DONE!!!!!!!!!!!!!!!!!!!!!
-        const events = await user.getUpcomingEvents();
+        const profile = await User.findOne({ username: username }).select('fullName username prettyAccountType').populate('firstName lastName').exec();
 
         // Why does this double fire?
-        return res.json({ events: await events });
+        return res.json(hideFieldsFromObject(
+            renameFieldInObject(profile.toObject(), 'prettyAccountType', 'accountType'), 'id', '_id'));
     } catch (err) {
         console.log(err);
         return res.json({ error: "Failed to authenticate token" });
     }
 });
+
+/**
+ * Returns the given object without the provided fields
+ * @param {*} obj 
+ * @param  {...String} fields The fields to remove from the object
+ * @returns {*} The object without the given fields
+ */
+export function hideFieldsFromObject(obj, ...fields) {
+    if (fields.length === 0) return obj;
+    let newObj = obj;
+    fields.forEach(field => {
+        /* eslint-disable-next-line */
+        const { [field]: ignore, ...rest } = newObj;
+        newObj = rest;
+    });
+    return newObj;
+}
+
+/**
+ * Does not mutlilate the object.
+ * @param {*} obj 
+ * @param  {String} oldFieldName The field to rename
+ * @param {String} newFieldName The new name
+ * @returns {*} The given object with field changed to newName
+ */
+export function renameFieldInObject(obj, oldFieldName, newFieldName) {
+    if (!obj) return undefined;
+    if (!oldFieldName || !newFieldName) return obj;
+
+    const { [oldFieldName]: fieldValue, ...rest } = obj;
+    return { [newFieldName]: fieldValue, ...rest };
+}
 
 // Connect to the database
 connectToDB().catch(err => console.log(err));

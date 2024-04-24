@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import GuestListComponent from "./GuestListComponent.jsx";
 import TopButtons from './TopButtons.jsx';
+import PropTypes from 'prop-types';
 
 function ManageEventPage({ onLogout }) {
     const navigate = useNavigate()
@@ -24,5 +25,9 @@ function ManageEventPage({ onLogout }) {
   </div>
   );
 }
+
+ManageEventPage.propTypes = {
+  onLogout: PropTypes.func.isRequired
+};
 
 export default ManageEventPage;

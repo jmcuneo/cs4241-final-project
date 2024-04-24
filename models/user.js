@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Logger, { EVENTS } from './actionlog.js';
 import Event from './event.js';
+import { hideFieldsFromObject } from '../server.js';
 const { Schema, model } = mongoose;
 
 /**
@@ -81,6 +82,12 @@ const userSchema = new Schema({
             type: String,
             get() {
                 return `${this.firstName} ${this.lastName}`;
+            }
+        },
+        prettyAccountType: {
+            type: String,
+            get() {
+                return this.accountType === ACCOUNT_TYPE.ADMIN ? 'Admin' : 'General';
             }
         }
     },
@@ -400,17 +407,13 @@ const userSchema = new Schema({
             const events = await Event.getUpcomingEvents(this);
             const user = this;
 
-            // Use this since it is unnecessary data being sent,
-            // which could theoretically slow things down
-            function hideAttendees(event) {
-                // Decouple the attendees field from the object, removing it from the returned object
-                // eslint-disable-next-line no-unused-vars
-                const { attendees, ...rest } = event;
-                return rest;
-            }
             return await Promise.all(events.map(async function (event) {
                 const userInvites = (await event.getInviteIdsByInviter(user))?.length ?? 0;
-                return { ...hideAttendees(event.toObject()), userInvites };
+                return {
+                    ...hideFieldsFromObject(
+                        event.toObject(), 'attendees', 'id', '_id'),
+                    userInvites
+                };
             }));
         },
 

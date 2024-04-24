@@ -97,7 +97,7 @@ const eventSchema = new Schema({
                     const hasAllPerms = user.permissions && user.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS);
                     const canInviteToEvent = event.allowedInviters && event.isUserAllowedToInvite(user);
                     const isBelowGuestLimit = event && event.guestLimit ? event.attendees.length < event.guestLimit : true; // TODO test this
-                    const previousInvites = (await event.getInvitesByInviter(user)).length // TODO Test this
+                    const previousInvites = (await event.getInvitesByInviter(user)).length
                     const isBelowInviterLimit = event && event.inviterLimit ? previousInvites < event.inviterLimit : true; // TODO test this
                     return (hasAllPerms || canInviteToEvent) && isBelowGuestLimit && isBelowInviterLimit;
                 },
