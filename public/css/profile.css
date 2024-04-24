@@ -36,8 +36,3 @@ td {
     background-color: var(--background);
     color: var(--text);
 }
-
-tr.removable td:not(:empty) {
-    cursor: pointer;
-    user-select: none;
-}
