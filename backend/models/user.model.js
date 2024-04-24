@@ -22,7 +22,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "",
     }
-});
+    //created at, updated at
+},
+{ timestamps: true });
 
 const User = mongoose.model("User", userSchema); //create a model from the schema
 
