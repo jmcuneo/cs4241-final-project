@@ -7,6 +7,7 @@ import EventPage from './components/EventPage';
 import ManageEventPage from './components/ManageEventPage';
 import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
+import Background from './background/Background';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -24,6 +25,7 @@ function App() {
 
   return (
     <Router>
+      <Background />{}
       <Routes>
         {/*LOGIN AND REGISTER*/}
         {!token && <Route exact path="/login" element={<LoginPage onLogin={handleLogin} />} />}
