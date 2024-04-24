@@ -86,7 +86,8 @@ async function select(event) {
                 selected1 = id        
             } else {
                 selected2 = id
-                let body = JSON.stringify({item1: selected1, item2: selected2, timeElapsed: totalTime})
+                let score = document.getElementById("score").innerHTML
+                let body = JSON.stringify({item1: selected1, item2: selected2, timeElapsed: totalTime, score: score})
                 const response = await fetch( "/select", {
                     method:'POST',
                     headers: { 'Content-Type': 'application/json'},
