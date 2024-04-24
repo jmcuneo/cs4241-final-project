@@ -59,6 +59,7 @@ function App() {
 
     const usernames = ["Nick", "Lucas", "Trevor", "Jay", "Yuran"]
 
+    //Helper function returning boolean
     const checkUsernameExists = async (username: string) => {
         if (username === "") {
             return true;
@@ -79,7 +80,7 @@ function App() {
                 />
                 {/*<button onClick={checkUsernameExists}>Check Username</button>*/}
                 {/*{usernameExists ? <p>Username exists</p> : <p>Username available</p>}*/}
-                <button onClick={async () => {
+                <button onClick={async () => { //Check username button
                     try {
                         const exists = await checkUsernameExists(username);
                         setUsernameExists(exists);
@@ -89,6 +90,7 @@ function App() {
                 }}>
                     Check Username
                 </button>
+                {/*label for userNameExists state*/}
                 {usernameExists ? <p>Username exists</p> : <p>Username available</p>}
                 {/* basic word count/time/score */}
                 <div className="container">
