@@ -115,12 +115,6 @@ async function connect() {
 //   }
 // }
 
-function elapse(session) {
-  let sessionTime = session.lastTime
-  session.lastTime = time;
-  return time - sessionTime
-}
-
 // async function addBox(user, color) {
 //   const nextID = await getNextID(user);
 //   let newBox = { id: nextID, color: color };
@@ -252,7 +246,7 @@ app.post("/login", async (req, res, next) => {
       return res.redirect("/");
     });
   } else {
-    res.redirect("/")
+    res.redirect("/login_test.html?failed=1&user=" + req.body.user)
   }
 });
 
@@ -284,13 +278,6 @@ app.post("/login", async (req, res, next) => {
 //   return extraGB + prev;
 // }
 
-async function setGoatbucks(req, bucks) {
-  console.log(bucks)
-  let q = { user: req.user.username };
-  let ns = { $set: { score: bucks } };
-  let o = { upsert: true };
-  await userData.updateOne(q, ns, o);
-}
 
 async function createUser(user) {
   let newUser = {
@@ -302,7 +289,7 @@ async function createUser(user) {
   userData.insertOne(newUser)
 }
 
-app.get("/load", async (req, res) => {
+app.get("/load", auth, async (req, res) => {
   let userD = {}
   userD = await userData.findOne({user: req.user.username});
   res.writeHead(200, "OK", { "Content-Type": "application/json" });
@@ -310,15 +297,26 @@ app.get("/load", async (req, res) => {
   res.end();
 })
 
-app.post("/set_goatbucks", async (req, res) => {
-  let bux = req.body.goatbucks;
+app.post("/save", auth, async (req, res) => {
   console.log(req.body)
-  await userData.updateOne({user: req.user.username}, {$set: {goatbucks: bux}})
+  await userData.updateOne({user: req.user.username}, {$set: req.body})
 
   res.writeHead(200, "OK", { "Content-Type": "application/json" });
   res.write(JSON.stringify({"goatbucks": req.body.goatbucks}));
   res.end();
 });
+
+app.get("/scores", async (req, res) => {
+  const opts = {
+    projection: {"user": 1, "goatbucks": 1, "_id": 0},
+    sort: {goatbucks: -1}
+  }
+  let scores = await userData.find({}, opts).toArray()
+  console.log(scores)
+  res.writeHead(200, "OK", { "Content-Type": "application/json" });
+  res.write(JSON.stringify(scores));
+  res.end();
+})
 
 
 app.listen(3000);

@@ -9,12 +9,12 @@
     <body>
         <form action="/login" method="post">
             <label for="user">user</label>
-            <input type="text" id="user" name="user" value="test" />
+            <input type="text" id="user" name="user" value="test" oninput="checkUE()"/>
             <label for="pass">pass</label>
             <input type="text" id="pass" name="pass" value="moretest" />
-            <input type="submit" />
+            <input id="login_btn" type="submit" />
         </form>
-        <button id="set">Set</button>
-        <script type="module" src="/main.js"></script>
+        <div id="feedback">yeah</div>
+        <script src="js/login.js"></script>
     </body>
 </html>
