@@ -6,7 +6,8 @@ const express = require("express"),
   helpers = require("./helpers"),
   requests = require("./requests"),
   ghlogin = require("./gh-login"),
-  { ObjectId } = require("mongodb");
+  { ObjectId } = require("mongodb"),
+  url = require("url");
 
 var GitHubStrategy = require("passport-github2").Strategy,
   passport = require("passport");
@@ -34,7 +35,7 @@ db.run();
 let inMemCache = null;
 
 app.use((req, res, next) => {
-  if (1) {
+  if (db.exists) {
     next();
   } else {
     res.status(503).send();
@@ -42,7 +43,7 @@ app.use((req, res, next) => {
 });
 
 app.post("/add", async (req, res) => {
-  console.log(req.body);
+  console.log(req);
   const existsByUsername = await db.getUserByUsername(req.body.username);
   const existsByEmail = await db.getUserByEmail(req.body.email);
   console.log(existsByUsername);
@@ -73,8 +74,14 @@ app.post("/add", async (req, res) => {
       .send({ message: message ? message : "an unknown error hath occured" });
   }
 });
-app.post("/login", async (req, res) => {
-  console.log(req.body);
+app.get("/login", (req, res) =>{
+  res.sendFile(path.join(__dirname,"public", "login.html"))
+})
+app.get("/play-game", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"))
+})
+app.post("/login/auth", async (req, res) => {
+  console.log(await req.body);
   let user = await db.getUserByUsername(req.body.username);
   if (!user) user = await db.getUserByEmail(req.body.email);
   let validLogin = false;
@@ -127,7 +134,7 @@ app.post("/score", async (req, res) => {
 
 app.get(
   "/auth/github",
-  passport.authenticate("github", { scope: ["user:email"] })
+  passport.authenticate("github", { scope: ["user:email"] }), ()=>console.log("gh called")
 );
 
 app.get("/auth/github/callback", async function (req, res) {
@@ -135,20 +142,31 @@ app.get("/auth/github/callback", async function (req, res) {
   const emails = await requests.fetchEmailsByAccessToken(code);
   const user = await ghlogin.getUserWithGhEmail(emails);
   if(user){
+    let responseUrl = url.format({
+      pathname:"/play-game",
+      query: {
+         "token": auth.generateAccessToken({ username: user.username }),
+       }})
     res
-      .status(200)
-      .json(auth.generateAccessToken({ username: user.username }))
+    .status(200)
+
+    .redirect(responseUrl)
   } else {
     res.status(403).message("no user exists with any of the emails associated your github account")
   }
   console.log(code);
-  
   console.log();
 
   // Successful authentication, redirect home.
   /* res.redirect("/"); */
 });
 //DATABASE CONNECTION END
+app.post('/auth/test', auth.authenticateToken, (req, res) => {
 
-db.close();
+  console.log("success????")
+  res.status(200).end()
+})
+process.on('exit', () => {
+  db.close();
+});
 app.listen(process.env.PORT || 3000);
