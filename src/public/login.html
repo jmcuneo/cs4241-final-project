@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <script src="js/main.js"></script>
+        <script src="js/login.js"></script>
         <script src="js/card.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
         <link rel="stylesheet" href="css/grid.css">
@@ -21,7 +21,7 @@
                                 </div>
                                 <div class="field-body">
                                     <div class="control is-expanded">
-                                        <input class="input" type="text" placeholder="Create a display name">
+                                        <input class="input" type="text" id="signUpUser" placeholder="Create a display name">
                                     </div>
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                                 </div>
                                 <div class="field-body">
                                     <div class="control is-expanded">
-                                        <input class="input" type="email" placeholder="Enter your email">
+                                        <input class="input" type="email" id="signUpEmail" placeholder="Enter your email">
                                     </div>
                                 </div>
                             </div>
@@ -41,12 +41,12 @@
                                 </div>
                                 <div class="field-body">
                                     <div class="control is-expanded">
-                                        <input class="input" type="password" placeholder="Create a password">
+                                        <input class="input" type="password" id="signUpPass" placeholder="Create a password">
                                     </div>
                                 </div>
                             </div>
                             <div class="block">
-                                <button class="button">Sign Up</button>
+                                <button class="button" id="signUp">Sign Up</button>
                             </div>
                         </form>
                     </div>
@@ -64,7 +64,7 @@
                                 <div class="field-body">
                                     <div class="field">
                                         <div class="control is-expanded">
-                                            <input class="input" type="text" placeholder="username or email">
+                                            <input class="input" type="text" id="signInName" placeholder="username or email">
                                         </div>                                        
                                     </div>
                                 </div>
@@ -76,16 +76,16 @@
                                 <div class="field-body">
                                     <div class="field">
                                         <div class="control is-expanded">
-                                            <input class="input" type="password" placeholder="Enter your password">
+                                            <input class="input" type="password" id="signInPass" placeholder="Enter your password">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <button class="button">Sign In</button>
+                            <button class="button" id="signIn">Sign In</button>
                             <div class="content has-text-centered">
                                 <p class="is-6">or</p>
                             </div>
-                            <button class="button">Sign In with Github</button>
+                            <button class="button" id="githubSign">Sign In with Github</button>
                         </form>
                     </div>                    
                 </div>
