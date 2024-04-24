@@ -4,32 +4,34 @@ const express = require("express"),
   auth = require("./auth"),
   db = require("./db"),
   helpers = require("./helpers"),
-  { ObjectId } = require("mongodb"),
-  requests = require("./requests")
+  requests = require("./requests"),
+  ghlogin = require("./gh-login"),
+  { ObjectId } = require("mongodb");
 
-
-var GitHubStrategy = require('passport-github2').Strategy,
-  passport = require('passport');
+var GitHubStrategy = require("passport-github2").Strategy,
+  passport = require("passport");
 
 require("dotenv").config();
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
-passport.use(new GitHubStrategy({
-  clientID: process.env.GITHUB_CLIENT_ID,
-  clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: "http://127.0.0.1:3000/auth/github/callback"
-},
-function(accessToken, refreshToken, profile, cb) {
-  console.log("at: ", accessToken, "rt: ", refreshToken, profile, cb);
-  requests.fetchUserEmail(accessToken);
-}
-));
+passport.use(
+  new GitHubStrategy(
+    {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: "http://127.0.0.1:3000/auth/github/callback",
+    },
+    function (accessToken, refreshToken, profile, cb) {
+      console.log("at: ", accessToken, "rt: ", refreshToken, profile, cb);
+    }
+  )
+);
 /* const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
  */
-const uri = `mongodb+srv://ibixler:${process.env.PASS}@matchinglgbt.zyq3dy3.mongodb.net/?retryWrites=true&w=majority&appName=MatchingLGBT`;
-
 db.run();
+
+let inMemCache = null;
 
 app.use((req, res, next) => {
   if (1) {
@@ -61,8 +63,14 @@ app.post("/add", async (req, res) => {
   }
   if (result) res.status(200).send({ message: "user created" });
   /** TODO Implement the helper for the message */ else {
-    const message = await helpers.addUserMessageHelper(existsByUsername, existsByEmail, validEmail);
-    res.status(403).send({ message: message ? message : "an unknown error hath occured"});
+    const message = await helpers.addUserMessageHelper(
+      existsByUsername,
+      existsByEmail,
+      validEmail
+    );
+    res
+      .status(403)
+      .send({ message: message ? message : "an unknown error hath occured" });
   }
 });
 app.post("/login", async (req, res) => {
@@ -101,15 +109,45 @@ app.post("/update", async (req, res) => {
   res.json(result);
 });
 
-app.get('/auth/github',
-  passport.authenticate('github', { scope: [ 'user:email' ] }));
+app.get("/load", async (req, res) => {
+  inMemCache = db.getCards;
+  res.send(JSON.stringify(inMemCache))
+})
 
-app.get('/auth/github/callback', 
-  passport.authenticate('github', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  });
+app.post("/score", async (req, res) => {
+  let attempt = JSON.parse(req.body)
+  let item1 = attempt.item1,
+      item2 = attempt.item2,
+      curr_time = attempt.time, //not sure what to do with time...
+      curr_score = attempt.score + helpers.calculateScore(item1, item2);
+  
+  res.json({score: curr_score})
+  
+})
+
+app.get(
+  "/auth/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+
+app.get("/auth/github/callback", async function (req, res) {
+  const code = req.query.code;
+  const emails = await requests.fetchEmailsByAccessToken(code);
+  const user = await ghlogin.getUserWithGhEmail(emails);
+  if(user){
+    res
+      .status(200)
+      .json(auth.generateAccessToken({ username: user.username }))
+  } else {
+    res.status(403).message("no user exists with any of the emails associated your github account")
+  }
+  console.log(code);
+  
+  console.log();
+
+  // Successful authentication, redirect home.
+  /* res.redirect("/"); */
+});
 //DATABASE CONNECTION END
 
 db.close();
