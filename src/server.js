@@ -4,8 +4,9 @@ const express = require("express"),
   auth = require("./auth"),
   db = require("./db"),
   helpers = require("./helpers"),
-  { ObjectId } = require("mongodb"),
-  requests = require("./requests");
+  requests = require("./requests"),
+  ghlogin = require("./gh-login"),
+  { ObjectId } = require("mongodb");
 
 var GitHubStrategy = require("passport-github2").Strategy,
   passport = require("passport");
@@ -28,12 +29,9 @@ passport.use(
 );
 /* const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
  */
-const uri = `mongodb+srv://ibixler:${process.env.PASS}@matchinglgbt.zyq3dy3.mongodb.net/?retryWrites=true&w=majority&appName=MatchingLGBT`;
-
 db.run();
 
 let inMemCache = null;
-
 
 app.use((req, res, next) => {
   if (1) {
@@ -127,22 +125,6 @@ app.post("/score", async (req, res) => {
   
 })
 
-app.get("/load", async (req, res) => {
-  inMemCache = db.getCards;
-  res.send(JSON.stringify(inMemCache))
-})
-
-app.post("/score", async (req, res) => {
-  let attempt = JSON.parse(req.body)
-  let item1 = attempt.item1,
-      item2 = attempt.item2,
-      curr_time = attempt.time, //not sure what to do with time...
-      curr_score = attempt.score + helpers.calculateScore(item1, item2);
-  
-  res.json({score: curr_score})
-  
-})
-
 app.get(
   "/auth/github",
   passport.authenticate("github", { scope: ["user:email"] })
@@ -150,13 +132,21 @@ app.get(
 
 app.get("/auth/github/callback", async function (req, res) {
   const code = req.query.code;
-  const emails = await await requests.fetchEmailsByAccessToken(code);
+  const emails = await requests.fetchEmailsByAccessToken(code);
+  const user = await ghlogin.getUserWithGhEmail(emails);
+  if(user){
+    res
+      .status(200)
+      .json(auth.generateAccessToken({ username: user.username }))
+  } else {
+    res.status(403).message("no user exists with any of the emails associated your github account")
+  }
   console.log(code);
   
   console.log();
 
   // Successful authentication, redirect home.
-  res.redirect("/");
+  /* res.redirect("/"); */
 });
 //DATABASE CONNECTION END
 
