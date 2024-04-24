@@ -70,6 +70,30 @@ exports.createUser = async function (data) {
 };
 
 exports.getCards = async () => {
+  collection = await switcher("cards-people"); //CHANGE TO NAME OF PEOPLE DATABASE
+
+  let rand_arr, card_array = [];
+  while(rand_arr.length < 6){
+    let num = Math.floor(Math.random() * 10);
+    if(arr.indexOf(num) === -1) arr.push(num);
+}
+console.log(rand_arr); //TESTING
+let i = 0;
+while (i < rand_arr.length) {
+  card_array.push(await collection.findOne(/* The index in the rand array...? */))
+  i++
+}
+i = 0
+collection = await switcher("cards-events"); //CHANGE TO NAME OF EVENT DATABASE
+while (i < rand_arr.length) {
+  card_array.push(await collection.findOne(/* The index in the rand array...? */))
+  i++
+}
+/* This will format the card_array as 1, 2, 3, 4, 5,..., 1n, 2n, 3n, 4n, 5n... 
+  where each number is a random index pairing of people and events 
+  In order to check matching, we will have to check the index with + 6
+*/
+
 
 }
 
