@@ -1,16 +1,57 @@
-import {useEffect, useState} from 'react'
-import './App.css'
-//import {addScore, fetchScores, scoreEntry} from "./service/Score.ts";
-// import { useMutation, useQuery } from "@tanstack/react-query";
-// import {queryClient} from "./service/QueryClient.ts";
+import React, {useState} from 'react';
+import './App.css';
 
-export function App() {
-    //startWord
-    const [startWord, setStartWord] = useState('');
+export default function App() {
+    //list of words
+    const [words, setWords] = useState<string[]>([]);
+    //start, running, or end
+    const [game, setGame] = useState<string>("start");
+    //word count
+     const [wordCount, setWordCount] = useState(0);
+    //score
+     const [score, setScore] = useState(0);
     //username
     const [username, setUsername] = useState('');
+    //timer
+    const [seconds, setSeconds] = useState(10);
+    //inputValue
+    const[inputValue, setInputValue] = useState('');
+
+
+    /************************************* Timer *************************************/
+    const intervalRef = React.useRef();
+
+    const start = () => {
+        setSeconds((prev) => {
+            if (prev === 0) {
+                stop();
+                return 0;
+            }
+            return prev - 1;
+        })
+    }
+
+    const interval = () => {
+        // @ts-ignore
+        intervalRef.current = setInterval(() => {
+            start();
+        }, 1000);
+    }
+
+    const stop = () => {
+        clearInterval(intervalRef.current);
+        setGame("end");
+    }
+
+    const startButton = () => {
+        interval();
+        setGame("running");
+    }
+    /************************************* Timer *************************************/
+
+    //startWord
+    const [startWord, setStartWord] = useState('');
     const [usernameExists, setUsernameExists] = useState(false);
-    const [isGameStarted, setIsGameStarted] = useState(false);
     //display last word
     const [lastWord, setLastWord] = useState('');
     //whether timer running
@@ -25,14 +66,6 @@ export function App() {
     const [gameEnd,setGameEnd] = useState(false);
     //whether start the game
     const [showInput, setShowInput] = useState(false);
-    //word count
-     const [wordCount, setWordCount] = useState(0);
-    //score
-     const [score, setScore] = useState(0);
-    //timer
-     const [seconds, setSeconds] = useState(10);
-    //inputValue
-     const[inputValue, setInputValue] = useState('');
      //word used
     const [usedWord, setUsedWord] = useState<string[]>([]);
 
@@ -43,66 +76,44 @@ export function App() {
         setInputValue(event.target.value)
         handleSubmit(event)
      }
+
     //submit word
-    //feel free to change the code, should add the function to check the word here
-     // @ts-ignore
-    const handleSubmit = (event) => {
+    const handleSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
          if (event.key === 'Enter') {  //should add the function to check the word here
-             wordCountIncrement()
-             setUsedWord(prevState => [...prevState, inputValue])
+             setWordCount(wordCount + 1);
              setScore(prevScore => {
-                 setLastWord(inputValue);
                  const newScore = prevScore + inputValue.length;
                  setInputValue('');
                  return newScore;
              })
-             setSeconds(10)
+             setSeconds(10);
          }
      }
 
-    //timer
-      useEffect(() => {
-              const timer = setInterval(() => {
-                  setSeconds(prevSeconds => prevSeconds - 1)
-              }, 1000)
-              if (seconds === 0 && timerRunning) {
-                  setGameEnd(true)
-                  setShowInput(false)
-                  clearInterval(timer)
-                  setTimerRunning(false)
-              }
-              return () => clearInterval(timer);
-          }, [seconds]);
-
-
-    useEffect(() =>{
-        const timer = setInterval(() => {
-            setSeconds(prevSeconds => prevSeconds - 1)
-        }, 1000)
-        if(seconds ===0){
-            clearInterval(timer)
-        }
-        return () => clearInterval(timer);
-    }, [seconds]);
-
-
-    //word count increment
-    const wordCountIncrement = () =>{
-        setWordCount(wordCount + 1);
-    }
+    // //timer
+    //   useEffect(() => {
+    //           const timer = setInterval(() => {
+    //               setSeconds(prevSeconds => prevSeconds - 1)
+    //           }, 1000)
+    //           if (seconds === 0 && timerRunning) {
+    //               setGameEnd(true)
+    //               setShowInput(false)
+    //               clearInterval(timer)
+    //               setTimerRunning(false)
+    //           }
+    //           return () => clearInterval(timer);
+    //       }, [seconds]);
     //
-    const fetchStartWord = async () => {
-        try {
-            const response = await fetch('https://api.datamuse.com/words?sp=??????&max=1000'); // 获取所有单词
-            const data = await response.json();
-            // @ts-ignore
-            const filteredWords = data.filter(startWord => startWord.word.length > 4  && !/\s/.test(startWord.word));
-            const randomIndex = Math.floor(Math.random() * filteredWords.length);
-            setStartWord(filteredWords[randomIndex].word);
-        } catch (error) {
-            console.error('Error fetching random word:', error);
-        }
-    }
+    //
+    // useEffect(() =>{
+    //     const timer = setInterval(() => {
+    //         setSeconds(prevSeconds => prevSeconds - 1)
+    //     }, 1000)
+    //     if(seconds ===0){
+    //         clearInterval(timer)
+    //     }
+    //     return () => clearInterval(timer);
+    // }, [seconds]);
 
     const usernames = ["Nick", "Lucas", "Trevor", "Jay", "Yuran"]
 
@@ -114,76 +125,79 @@ export function App() {
         return usernames.includes(username);
     };
 
+    const fetchStartWord = async () => {
+        try {
+            setWords([]);
+            setGame("running");
+            // setTimerRunning(true)
+            setScore(0)
+            setWordCount(0)
+            // setUsedWord([])
+            setSeconds(10)
+            interval();
+            // setShowInput(true);
+            // setGameEnd(false);
+            // setNameSubmit(false);
+            // setNameYes(false);
+            const response = await fetch('https://api.datamuse.com/words?sp=??????&max=1000');
+            const data = await response.json();
+            // @ts-ignore
+            const filteredWords = data.filter(item => item.word.length > 4  && !/\s/.test(item.word));
+            const randomIndex = Math.floor(Math.random() * filteredWords.length);
+            words.push(filteredWords[randomIndex].word);
+        } catch (error) {
+            console.error('Error fetching random word:', error);
+        }
+    }
 
-
-    return (
-        <>
-            <div>
-                {/*//Enter username button and check if it exists*/}
-                <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                {/*<button onClick={checkUsernameExists}>Check Username</button>*/}
-                {/*{usernameExists ? <p>Username exists</p> : <p>Username available</p>}*/}
-                <button onClick={async () => { //Check username button
-                    try {
-                        const exists = await checkUsernameExists(username);
-                        setUsernameExists(exists);
-                    } catch (error) {
-                        console.error('Error: ', error);
-                    }
-                }}>
-                    Check Username
-                </button>
-                {/*label for userNameExists state*/}
-                {usernameExists ? <p>Username exists</p> : <p>Username available</p>}
-                {/* basic word count/time/score */}
-                <div className="container">
-                    <div className="column">
-                        <h1>Countdown Timer</h1>
-                        <p>{seconds} seconds left</p>
-                    </div>
-                    <div className="column">
-                        <h1>Word Counter</h1>
-                        <p>{wordCount}</p>
-                    </div>
-                    <div className="column">
-                        <h1>Score Counter</h1>
-                        <p>Score: {score}</p>
-                    </div>
-
-                </div>
-
-                {/* Start Word */}
-                <button onClick={fetchStartWord}>Start</button>
-                {startWord && <p>Start Word: {startWord}</p>}
-            </div>
-        </>
-    )
+    // return (
+    //     <>
+    //         <div>
+    //             {/*//Enter username button and check if it exists*/}
+    //             <input
+    //                 type="text"
+    //                 value={username}
+    //                 onChange={(e) => setUsername(e.target.value)}
+    //             />
+    //             {/*<button onClick={checkUsernameExists}>Check Username</button>*/}
+    //             {/*{usernameExists ? <p>Username exists</p> : <p>Username available</p>}*/}
+    //             <button onClick={async () => { //Check username button
+    //                 try {
+    //                     const exists = await checkUsernameExists(username);
+    //                     setUsernameExists(exists);
+    //                 } catch (error) {
+    //                     console.error('Error: ', error);
+    //                 }
+    //             }}>
+    //                 Check Username
+    //             </button>
+    //             {/*label for userNameExists state*/}
+    //             {usernameExists ? <p>Username exists</p> : <p>Username available</p>}
+    //             {/* basic word count/time/score */}
+    //             <div className="container">
+    //                 <div className="column">
+    //                     <h1>Countdown Timer</h1>
+    //                     <p>{seconds} seconds left</p>
+    //                 </div>
+    //                 <div className="column">
+    //                     <h1>Word Counter</h1>
+    //                     <p>{wordCount}</p>
+    //                 </div>
+    //                 <div className="column">
+    //                     <h1>Score Counter</h1>
+    //                     <p>Score: {score}</p>
+    //                 </div>
+    //
+    //             </div>
+    //
+    //             {/* Start Word */}
+    //             <button onClick={fetchStartWord}>Start</button>
+    //             {startWord && <p>Start Word: {startWord}</p>}
+    //         </div>
+    //     </>
+    // )
     //fetch startWord
-      const fetchStartWord = async () => {
-          try {
-              setTimerRunning(true)
-              setScore(0)
-              setWordCount(0)
-              setUsedWord([])
-              setSeconds(10)
-              setShowInput(true);
-              setGameEnd(false);
-              setNameSubmit(false);
-              setNameYes(false);
-              const response = await fetch('https://api.datamuse.com/words?sp=??????&max=1000');
-              const data = await response.json();
-              // @ts-ignore
-              const filteredWords = data.filter(item => item.word.length > 4  && !/\s/.test(item.word));
-              const randomIndex = Math.floor(Math.random() * filteredWords.length);
-              setLastWord(filteredWords[randomIndex].word)
-          } catch (error) {
-              console.error('Error fetching random word:', error);
-          }
-      }
+
 
       const displayName = () =>{
         if(nameYes){
@@ -230,47 +244,69 @@ export function App() {
         }
     }
 
-  // @ts-ignore
-    // @ts-ignore
-    return (
-    <>
-        <div>
-            {/*Counters*/}
-            {showInput && !gameEnd && (  <div className="container">
-                <div className="column">
-                    <h1>Countdown Timer</h1>
-                    <p>{seconds} seconds left</p>
-                </div>
-                <div className="column">
-                    <h1>Word Counter</h1>
-                    <p>{wordCount}</p>
-                </div>
-                <div className="column">
-                    <h1>Score</h1>
-                    <p>Score: {score}</p>
-                </div>
+    const renderWords = words.map((word) => {
+        return (
+            <>{word}</>
+        );
+    })
 
-            </div>)}
-            {!showInput && gameEnd &&(
-                <div>
-                    <h1>Game Over!</h1>
-                    <div className="container">
+    const renderGameState = () => {
+        if (game === "start") {
+            return (
+                <body>
+                    <div className={"instruction"}>
+                        <p>You have ten seconds to respond</p>
+                        <p>Avoid reusing any previously used words</p>
+                        <p>Input words must have a length greater than 4</p>
+                        <p>Scores are based on the length of words you input</p>
+                        <p>Good Luck!</p>
+                    </div>
+                    <button onClick={fetchStartWord}>Start Game</button>
+                </body>
+            );
+        } else if (game === "running") {
+            return (
+                <body>
+                <div className={"container"}>
+                    <div className={"column"}>
+                        <h1>Countdown Timer</h1>
+                        <p>{seconds} seconds left</p>
+                    </div>
                     <div className="column">
-                        <h1>Word Count</h1>
+                        <h1>Word Counter</h1>
                         <p>{wordCount}</p>
                     </div>
                     <div className="column">
                         <h1>Score</h1>
                         <p>Score: {score}</p>
                     </div>
+                </div>
+                {renderWords}
+                <input
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyUpCapture={handleSubmit}
+                    placeholder="Press Enter to Submit"
+                />
+                </body>
+            );
+        } else if (game === "end") {
+            return (
+                <body>
+                <div className={"container"}>
+                    <div className="column">
+                        <h1>Word Counter</h1>
+                        <p>{wordCount}</p>
+                    </div>
+                    <div className="column">
+                        <h1>Score</h1>
+                        <p>Score: {score}</p>
                     </div>
                 </div>
-            )}
-            {!showInput && gameEnd && !nameSubmit &&(
                 <p>
-                <button onClick={displayName}>Submit Your Name & Score</button></p>
-            )}
-            {!showInput && gameEnd && nameYes && !nameSubmit &&(
+                    <button onClick={displayName}>Submit Your Name & Score</button>
+                </p>
                 <p className="InputName">
                     <input
                         type="text"
@@ -280,47 +316,104 @@ export function App() {
                         placeholder="Press Enter to Submit Your Name"
                     />
                 </p>
-            )}
-            {!showInput && gameEnd && nameSubmit &&(
-                <p>Congratulations! You have submitted your name and score successfully</p>
-            ) }
+                <button onClick={fetchStartWord}>Start New Game</button>
+                </body>
+            );
+        }
+    }
 
 
-
-          {/* Start Word */}
-            {!showInput && !gameEnd &&(
-                <>
-                    <div className="instruction">
-                        <p>You have ten seconds to respond</p>
-                        <p>Avoid reusing any previously used words</p>
-                        <p>Input words must have a length greater than 4</p>
-                        <p>Scores are based on the length of words you input</p>
-                        <p>Good Luck!</p>
-                    </div>
-                <button onClick={fetchStartWord}>Start Game</button>
-                </>)}
-            {!showInput && gameEnd &&(<button onClick={fetchStartWord}>Start a New Game</button>)}
-            {showInput && lastWord && !gameEnd &&
-                <b><p>{lastWord}</p></b>}
-            <div className="InputWord">
-                {showInput && !gameEnd &&( <input
-                    type="text"
-                    value={inputValue}
-                    onChange={handleInput}
-                    onKeyUpCapture={handleSubmit}
-                    placeholder="Press Enter to Submit"
-                />
-                )}
-            <div className="array-container">
-                {showInput && !gameEnd && (
-                        usedWord.map((number, index) => (
-                    <div className="usedWord" key={index}>{number}</div>
-                        )
-                    ))}
-            </div>
-            </div>
-      </div>
-        <div id="fireworks-container"></div>
-    </>
-  );
+    return (
+        <>
+            {renderGameState()}
+            <div id="fireworks-container"></div>
+        </>
+    );
 }
+
+// {/*      <div>*/}
+// {/*          /!*Counters*!/*/}
+// {/*          {showInput && !gameEnd && (<div className="container">*/}
+// {/*              <div className="column">*/}
+// {/*                  <h1>Countdown Timer</h1>*/}
+// {/*                  <p>{seconds} seconds left</p>*/}
+// {/*              </div>*/}
+// {/*              <div className="column">*/}
+// {/*              <h1>Word Counter</h1>*/}
+// {/*              <p>{wordCount}</p>*/}
+// {/*          </div>*/}
+// {/*          <div className="column">*/}
+// {/*              <h1>Score</h1>*/}
+// {/*              <p>Score: {score}</p>*/}
+// {/*          </div>*/}
+//
+// {/*      </div>)}*/}
+// {/*      {!showInput && gameEnd &&(*/}
+// {/*          <div>*/}
+// {/*              <h1>Game Over!</h1>*/}
+// {/*              <div className="container">*/}
+// {/*              <div className="column">*/}
+// {/*                  <h1>Word Count</h1>*/}
+// {/*                  <p>{wordCount}</p>*/}
+// {/*              </div>*/}
+// {/*              <div className="column">*/}
+// {/*                  <h1>Score</h1>*/}
+// {/*                  <p>Score: {score}</p>*/}
+// {/*              </div>*/}
+// {/*              </div>*/}
+// {/*          </div>*/}
+// {/*      )}*/}
+// {/*      {!showInput && gameEnd && !nameSubmit &&(*/}
+// {/*          <p>*/}
+// {/*          <button onClick={displayName}>Submit Your Name & Score</button></p>*/}
+// {/*      )}*/}
+// {/*      {!showInput && gameEnd && nameYes && !nameSubmit &&(*/}
+// {/*          <p className="InputName">*/}
+// {/*              <input*/}
+// {/*                  type="text"*/}
+// {/*                  value={nameInput}*/}
+// {/*                  onChange={handleNameInput}*/}
+// {/*                  onKeyUpCapture={handleNameSubmit}*/}
+// {/*                  placeholder="Press Enter to Submit Your Name"*/}
+// {/*              />*/}
+// {/*          </p>*/}
+// {/*      )}*/}
+// {/*      {!showInput && gameEnd && nameSubmit &&(*/}
+// {/*          <p>Congratulations! You have submitted your name and score successfully</p>*/}
+// {/*      ) }*/}
+//
+//
+//
+// {/*    /!* Start Word *!/*/}
+// {/*      {!showInput && !gameEnd &&(*/}
+// {/*          <>*/}
+// {/*              <div className="instruction">*/}
+// {/*                  <p>You have ten seconds to respond</p>*/}
+// {/*                  <p>Avoid reusing any previously used words</p>*/}
+// {/*                  <p>Input words must have a length greater than 4</p>*/}
+// {/*                  <p>Scores are based on the length of words you input</p>*/}
+// {/*                  <p>Good Luck!</p>*/}
+// {/*              </div>*/}
+// {/*          <button onClick={fetchStartWord}>Start Game</button>*/}
+// {/*          </>)}*/}
+// {/*      {!showInput && gameEnd &&(<button onClick={fetchStartWord}>Start a New Game</button>)}*/}
+// {/*      {showInput && lastWord && !gameEnd &&*/}
+// {/*          <b><p>{lastWord}</p></b>}*/}
+// {/*      <div className="InputWord">*/}
+// {/*          {showInput && !gameEnd &&( <input*/}
+// {/*              type="text"*/}
+// {/*              value={inputValue}*/}
+// {/*              onChange={handleInput}*/}
+// {/*              onKeyUpCapture={handleSubmit}*/}
+// {/*              placeholder="Press Enter to Submit"*/}
+// {/*          />*/}
+// {/*          )}*/}
+// {/*      <div className="array-container">*/}
+// {/*          {showInput && !gameEnd && (*/}
+// {/*                  usedWord.map((number, index) => (*/}
+// {/*              <div className="usedWord" key={index}>{number}</div>*/}
+// {/*                  )*/}
+// {/*              ))}*/}
+// {/*      </div>*/}
+// {/*      </div>*/}
+// {/*</div>
