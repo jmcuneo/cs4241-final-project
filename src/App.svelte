@@ -23,9 +23,14 @@
     };
 
     function gameStart(e) {
-        game_data.state = "ChooseGame";
-        game_data.id = e.detail.room;
-        game_data.player = e.detail.player;
+        const obj = e.detail;
+        if (obj.hosting) {
+            game_data.state = "ChooseGame";
+        } else {
+            game_data.state = "InGame";
+        }
+        game_data.id = obj.room;
+        game_data.player = obj.player;
     }
 
     function gameChosen(e) {

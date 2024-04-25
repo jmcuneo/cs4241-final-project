@@ -6,11 +6,12 @@
     const dispatch = createEventDispatcher();
     let room = null;
 
-    function joinGame(game_id: string, player: string) {
+    function joinGame(game_id: string, player: string, hosting: bool = false) {
         console.log("Joining game");
         dispatch("gameStart", {
             room: game_id,
             player: player,
+            hosting,
         });
     }
 
@@ -38,13 +39,13 @@
         socket.on("room available", () => {
             errorMsg = room;
             // await create_game(room);
-            joinGame(room, "Player 1");
+            joinGame(room, "Player 1", true);
             // socket.emit("chat message",room,num,"Player " + num + " joined.");
         });
         socket.on("join success", (room, name) => {
             errorMsg = room;
             // socket.emit("chat message",room,name,"Player " + name + " joined.");
-            joinGame(room, name);
+            joinGame(room, name, false);
         });
     };
 </script>
