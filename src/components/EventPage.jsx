@@ -84,7 +84,7 @@ function EventPage({ onLogout }) {
             </div>
             <TopButtons onLogout={onLogout} showBackButton={true} showProfileButton={true}/>
             <GuestListComponent guestList={guestList}/>
-            <UserGuestListComponent onUpdate={handleUpdate}/>
+            <UserGuestListComponent onUpdate={handleUpdate} manage={false}/>
         </div>
     );
 }
