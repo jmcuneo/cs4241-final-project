@@ -68,7 +68,11 @@
         </div>
     {:else if game_data.state == "GameOver"}
         <div class="gameOver">
-            <GameEnd {game_data} on:backToHost={backToHost}></GameEnd>
+            <GameEnd
+                {game_data}
+                on:backToHost={backToHost}
+                on:gameStart={gameStart}
+            ></GameEnd>
         </div>
     {/if}
     <div class="chat">
