@@ -2,14 +2,14 @@ import React, { useEffect, useState, useRef  } from 'react';
 import { useParams } from "react-router-dom";
 import PropTypes from 'prop-types';
 
-function GuestListComponent() {
+function GuestListComponent({ onUpdate }) {
     const { eventName } = useParams();
     const [guestList, setGuestList] = useState([]);
     const guestNameRef = useRef(null);
 
     const getGuestList = async () => {
         try {
-            const response = await fetch('//localhost:3000/api/getGuestList', {
+            const response = await fetch('//localhost:3000/api/getUserGuestList', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ function GuestListComponent() {
             const guests = await response.json();
             setGuestList(guests);
         } catch (error) {
-            console.error('Error getting events:', error);
+            console.error('Error getting invited guests:', error);
         }
     }
 
@@ -47,15 +47,6 @@ function GuestListComponent() {
         }
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const guestName = guestNameRef.current.value;
-        // Update local state immediately for UI responsiveness
-        setGuestList(currentGuests => [...currentGuests, { guestName }]);
-        // Send the API request to add the guest on the backend 
-        addGuest(guestName); 
-    }
-
     const removeGuest = async (guestName) => {
         try {
             const response = await fetch('//localhost:3000/api/uninviteGuest', {
@@ -76,9 +67,21 @@ function GuestListComponent() {
         }
     }
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const guestName = guestNameRef.current.value;
+        // Update local state immediately for UI responsiveness
+        setGuestList(currentGuests => [...currentGuests, { guestName }]);
+        // Send the API request to add the guest on the backend 
+        addGuest(guestName); 
+        onUpdate(guestName, "add");
+        guestNameRef.current.value = '';
+    }
+    
     const handleRemove = async (guestName) => {
         removeGuest(guestName);
         setGuestList(currentGuests => currentGuests.filter(guest => guest.guestName !== guestName));
+        onUpdate(guestName, "remove");
     };
 
     useEffect(() => {

@@ -226,6 +226,29 @@ app.post('/api/getGuestList', async (req, res) => {
     }
 });
 
+app.post('/api/getUserGuestList', async (req, res) => {
+  try {
+      const { token, eventName } = req.body;
+      // Is not used, but will ensure that someone is logged in
+      /* eslint-disable-next-line no-unused-vars */
+      const username = getUsernameFromToken(token);
+
+      // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
+      // const user = await User.findOne({ username: username });
+      const event = await Event.findOne({ name: eventName });
+      const user = await User.findOne({ username: username });
+
+      const guestList = (await user.getInvitedGuests(event)).map(guest => {
+          return renameFieldInObject(hideFieldsFromObject(guest, 'id', '_id'), 'guest', 'guestName');
+      });
+
+      return res.json(guestList);
+  } catch (err) {
+      console.log(err);
+      return res.json({ error: "Failed to authenticate token" });
+  }
+});
+
 /**
  * eventBody: {
  *  name: String,
