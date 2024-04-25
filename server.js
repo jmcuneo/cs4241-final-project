@@ -13,6 +13,8 @@ const
   app = express(),
   port = 3000;
 
+database.set_up_db_store(app)
+
 app.use(express.json());
 
 const server = vite.listen(app, process.env.PORT || port)
@@ -26,18 +28,18 @@ io.on('connection', (socket) => {
     database.pushGame(room, 'chat', { "author": "Server", "msg": message });
     io.to(room).emit('message receive', "Server", message);
   }
-  socket.on('try host game', async(room)=>{
+  socket.on('try host game', async (room) => {
     console.log("Try host game called");
     room = room.toLowerCase();
     const existingGame = await database.getGameByRoomCode(room);
     // console.log("")
-    if(existingGame == null){
+    if (existingGame == null) {
       socket.emit('room available');
-    }else{
+    } else {
       socket.emit('room unavailable');
     }
   });
-  socket.on('host game', async (room,type) => {
+  socket.on('host game', async (room, type) => {
     room = room.toLowerCase();
     const existingGame = await database.getGameByRoomCode(room);
     if (existingGame != null) {
@@ -187,36 +189,36 @@ io.on('connection', (socket) => {
     //Set text to x/2 where x is the number of players who have selected it.
     console.log("Play again received");
     console.log(game);
-    if(game!=null && game.p1 != null && game.p2 != null){
-      console.log("Both players in game",name,game.playAgain_p1,game.playAgain_p2);
-      if(name=="Player 1"){
+    if (game != null && game.p1 != null && game.p2 != null) {
+      console.log("Both players in game", name, game.playAgain_p1, game.playAgain_p2);
+      if (name == "Player 1") {
         console.log("Player 1 time");
-        isPlayer1=true;
-        await database.updateGame(room,"playAgain_p1",true);
-        if(game.playAgain_p2){
-          startNewGame=true;
+        isPlayer1 = true;
+        await database.updateGame(room, "playAgain_p1", true);
+        if (game.playAgain_p2) {
+          startNewGame = true;
         }
         socket.to(game.p2.id).emit('play again selected');
-      }else{
-        await database.updateGame(room,"playAgain_p2",true);
+      } else {
+        await database.updateGame(room, "playAgain_p2", true);
         console.log("Player 2 time");
-        if(game.playAgain_p1){
-          startNewGame=true;
+        if (game.playAgain_p1) {
+          startNewGame = true;
         }
         socket.to(game.p1.id).emit('play again selected');
       }
     }
     if (startNewGame) {
       await database.deleteGame(room);
-      const newGame = await database.createNewGame(room,game.type);
-      await database.updateGame(room,"p1",{name:"Player 1",id:game.p1.id});
-      await database.updateGame(room,"p2",{name:"Player 2",id:game.p2.id});
-      io.to(game.p1.id).emit('host success',room,"Player 1");
-      io.to(game.p2.id).emit('join success',room,"Player 2");
-      sendServerChatMessage(room,"Player 1 joined the game.");
+      const newGame = await database.createNewGame(room, game.type);
+      await database.updateGame(room, "p1", { name: "Player 1", id: game.p1.id });
+      await database.updateGame(room, "p2", { name: "Player 2", id: game.p2.id });
+      io.to(game.p1.id).emit('host success', room, "Player 1");
+      io.to(game.p2.id).emit('join success', room, "Player 2");
+      sendServerChatMessage(room, "Player 1 joined the game.");
       // console.log(newGame);
-      io.to(game.p1.id).emit('game setup',newGame.board,newGame.answer_p1,newGame.flipped_p1,newGame.guessed_p1,newGame.chat);
-      io.to(game.p2.id).emit('game setup',newGame.board,newGame.answer_p2,newGame.flipped_p2,newGame.guessed_p2,newGame.chat);
+      io.to(game.p1.id).emit('game setup', newGame.board, newGame.answer_p1, newGame.flipped_p1, newGame.guessed_p1, newGame.chat);
+      io.to(game.p2.id).emit('game setup', newGame.board, newGame.answer_p2, newGame.flipped_p2, newGame.guessed_p2, newGame.chat);
     }
   });
 });
@@ -231,8 +233,6 @@ async function checkForDelete(game, room, otherPlayer) {
 }
 
 
-
-database.set_up_db_store(app)
 
 //run proxy
 if (false) {

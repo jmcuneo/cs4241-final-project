@@ -1,5 +1,5 @@
 //import session from 'express-session';
-import {MongoClient, ServerApiVersion, Timestamp} from 'mongodb';
+import { MongoClient, ServerApiVersion, Timestamp } from 'mongodb';
 //import MongoDBStore from 'connect-mongodb-session';
 
 
@@ -25,7 +25,7 @@ let minecraft_collection = null;
 
 let games_collection = null;
 
-const exp = { set_up_db_store, client, DB: null, getGameByRoomCode, updateGame, createNewGame, deleteGame, pushGame}
+const exp = { set_up_db_store, client, DB: null, getGameByRoomCode, updateGame, createNewGame, deleteGame, pushGame }
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -35,7 +35,7 @@ async function run() {
         // Update our collections
         pokemon_collection = client.db("ApproximateWhomst").collection("Pokemon")
         minecraft_collection = client.db("ApproximateWhomst").collection("Minecraft")
-        games_collection =  client.db("ApproximateWhomst").collection("Game_Objects")
+        games_collection = client.db("ApproximateWhomst").collection("Game_Objects")
     } catch (err) {
         console.log(err)
     }
@@ -43,16 +43,14 @@ async function run() {
 
 async function getNcards(N, collection) {
 
-    if(collection === "Pokemon")
-    {
+    if (collection === "Pokemon") {
         const cursor = await pokemon_collection.aggregate([
             // { $match: { a: n } },
             { $sample: { size: N } }
         ]);
         return await cursor.toArray();
     }
-    if(collection === "Minecraft")
-    {
+    if (collection === "Minecraft") {
         const cursor = await minecraft_collection.aggregate([
             // { $match: { a: n } },
             { $sample: { size: N } }
@@ -68,7 +66,7 @@ run().catch(console.dir);
 function set_up_db_store(app) {
     // check database exists
     app.use((req, res, next) => {
-        if (pokemon_collection !== null) {
+        if (pokemon_collection !== null && games_collection !== null && minecraft_collection !== null) {
             next()
         } else {
             res.status(503).send()
@@ -89,56 +87,54 @@ function set_up_db_store(app) {
 
 }
 
-async function getGameByRoomCode(code){
+async function getGameByRoomCode(code) {
     const docs = await games_collection.find(
         {
             roomCode: code
         }
     ).toArray()
 
-    if(docs[0] === undefined)
-    {
+    if (docs[0] === undefined) {
         //Room code not found
         return null;
     }
-    else
-    {
+    else {
         return docs[0];
     }
 }
 
-async function updateGame(code,variable,value){
+async function updateGame(code, variable, value) {
     const filter = {
-        roomCode:code
+        roomCode: code
     };
     const updateDocument = {
-        $set:{}
+        $set: {}
     };
-    updateDocument["$set"][variable]=value;
-    await games_collection.updateOne(filter,{
-        $set:{
-            "started":new Date()
+    updateDocument["$set"][variable] = value;
+    await games_collection.updateOne(filter, {
+        $set: {
+            "started": new Date()
         }
     });
-    return await games_collection.updateOne(filter,updateDocument);
+    return await games_collection.updateOne(filter, updateDocument);
 }
 
-async function pushGame(code,variable,value){
+async function pushGame(code, variable, value) {
     const filter = {
-        roomCode:code
+        roomCode: code
     };
     const updateDocument = {
-        $push:{
+        $push: {
 
         }
     }
-    updateDocument["$push"][variable]=value;
-    return await games_collection.updateOne(filter,updateDocument);
+    updateDocument["$push"][variable] = value;
+    return await games_collection.updateOne(filter, updateDocument);
 }
 
 
 
-async function createNewGame(code,gameType){
+async function createNewGame(code, gameType) {
 
     //Check if this game exists
     const docs = await games_collection.find(
@@ -147,36 +143,36 @@ async function createNewGame(code,gameType){
         }
     ).toArray()
 
-    if(docs[0] === undefined) //If a game of this code does not exist
+    if (docs[0] === undefined) //If a game of this code does not exist
     {
 
         //Create a game-board with 24 random tiles using the type [Returns an array of 24 DB objects]
         let board = await getNcards(24, gameType);
         let guessedArr = [];
-        for(let i = 0; i < 24; i++){
+        for (let i = 0; i < 24; i++) {
             guessedArr.push(false);
         }
 
         let newGame =
-            {
-                roomCode:code,
-                type:gameType,
-                board: board, //Replace with board when createNewBoard() is implemented
-                chat:[
-                    
-                ],
-                answer_p1:Math.floor(Math.random() * 24), //Do the random generation here?
-                answer_p2: Math.floor(Math.random() * 24),
-                flipped_p1:[...guessedArr],
-                flipped_p2:[...guessedArr],
-                guessed_p1:[...guessedArr],
-                guessed_p2:[...guessedArr],
-                started: new Date(),
-                p1:null,
-                p2:null,
-                playAgain_p1:false,
-                playAgain_p2:false
-            };
+        {
+            roomCode: code,
+            type: gameType,
+            board: board, //Replace with board when createNewBoard() is implemented
+            chat: [
+
+            ],
+            answer_p1: Math.floor(Math.random() * 24), //Do the random generation here?
+            answer_p2: Math.floor(Math.random() * 24),
+            flipped_p1: [...guessedArr],
+            flipped_p2: [...guessedArr],
+            guessed_p1: [...guessedArr],
+            guessed_p2: [...guessedArr],
+            started: new Date(),
+            p1: null,
+            p2: null,
+            playAgain_p1: false,
+            playAgain_p2: false
+        };
 
         const addGame = await games_collection.insertOne(newGame)
         console.log("Added new game!");
@@ -184,16 +180,14 @@ async function createNewGame(code,gameType){
         return newGame;
 
     }
-    else
-    {
+    else {
         console.log("Game already exists!");
         //Game code already exists
         return null;
     }
 }
 
-async function deleteGame(code)
-{
+async function deleteGame(code) {
     const docs = await games_collection.find(
         {
             roomCode: code
@@ -211,8 +205,7 @@ var now = new Date();
 let interval = 60 * 60 * 100; //10 minutes in MS
 var start = interval - (now.getMinutes() * 60 + now.getSeconds()) * 100 + now.getMilliseconds();
 
-setTimeout(async function delete_timeout_elements()
-{
+setTimeout(async function delete_timeout_elements() {
     console.log("Deleting all old elements")
 
     let last_interval = new Date();
@@ -221,7 +214,7 @@ setTimeout(async function delete_timeout_elements()
 
     let deletion = await games_collection.deleteMany(
         {
-            started: {$lt: last_interval}
+            started: { $lt: last_interval }
         }
     )
 
