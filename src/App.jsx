@@ -8,6 +8,7 @@ import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
 import Background from './background/Background';
 import TopButtons from './components/TopButtons';
+import "./App.css"
 
 
 function App() {

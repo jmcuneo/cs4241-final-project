@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
-
+import {useState, useEffect} from "react"
 
 function GuestListComponent() {
     const { eventName } = useParams();
@@ -37,6 +36,7 @@ function GuestListComponent() {
 
     //table with n rows and 2 columns: guestName and invitedBy
     //tr-cols | tbody-rows
+    //should get headers and events and pass to TableComponent
     return (
         <div className='guest-list'>
             <h1>Guest List</h1>

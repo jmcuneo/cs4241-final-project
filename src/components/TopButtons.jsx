@@ -21,8 +21,7 @@ function TopButtons({ onLogout, showProfileButton, showBackButton }) {
     <div className='top-right-buttons'>
       {showBackButton && (
         <button
-          style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }}
-          className="btn waves-effect waves-light"
+          className="btn btn-accent"
           type="button"
           id="backButton"
           onClick={handleBack}
@@ -33,8 +32,7 @@ function TopButtons({ onLogout, showProfileButton, showBackButton }) {
       )}
       {showProfileButton && (
         <button
-          style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }}
-          className="btn waves-effect waves-light"
+          className="btn btn-primary"
           type="button"
           id="profilePageButton"
           onClick={handleProfile}
@@ -44,8 +42,7 @@ function TopButtons({ onLogout, showProfileButton, showBackButton }) {
         </button>
       )}
       <button
-        style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(240, 91, 58)', color: 'black', fontWeight: 'bold' }}
-        className="btn waves-effect waves-light"
+        className="btn btn-accent"
         type="button"
         id="logoutButton"
         onClick={onLogout}
