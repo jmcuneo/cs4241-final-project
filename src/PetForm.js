@@ -64,24 +64,24 @@ function PetForm() {
   async function getLeaderboard() {
     const response = await fetch("http://localhost:3001/get");
     const data = await response.json();
+
+    data.sort((a, b) => a.raceTime - b.raceTime);
   
     const tableBody = document.querySelector("#leaderboard tbody");
     tableBody.innerHTML = ""; 
   
     data.forEach((item, index) => {
       let row = document.createElement("tr");
-      let counter = 1;
+      let counter = index + 1;
       row.innerHTML = `
         <td>${counter}</td>
         <td>${item.petName}</td>
         <td>${item.raceTime}</td>
-        <td>${item.petName}</td>
         <td>
           <button class="button" onclick="deleteRow('${item._id}')">Delete</button>
         </td>
       `;
       tableBody.appendChild(row);
-      counter++;
     });
   }
 

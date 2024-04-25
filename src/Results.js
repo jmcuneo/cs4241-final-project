@@ -48,7 +48,6 @@ function Results({ formData }) {
                 <th>Rank</th>
                 <th>Pet Name</th>
                 <th>Time</th>
-                <th>Owner</th>
                 <th>Actions</th>
               </tr>
             </thead>
