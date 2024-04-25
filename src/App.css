@@ -43,14 +43,13 @@
 .container {
   display: flex;
   justify-content: space-evenly;
+  background-color: #ecfaec;
 }
 
 .column {
   /*flex: 1;*/
   padding: 20px;
   width: 20vw;
-  /*background-color: #ecfaec;*/
-
 }
 #fireworks-container {
   position: absolute;
@@ -115,6 +114,7 @@ input{
   padding: 3px 5px;
   font-weight: bold;
   margin: 5px 10px;
+  color: black;
 }
 
 
