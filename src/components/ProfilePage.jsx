@@ -38,8 +38,8 @@ function ProfilePage({ onLogout }) {
     <div className='main-page-container'>
       <motion.div 
       className='center-page-container'
-      initial={{ scale: 0, x: '-50%', y: '-50%'}}
-      animate={{ scale: 1 }}
+      initial={{ scale: 0, x: '-50%', y: '-50%', rotate: 180 }}
+      animate={{ scale: 1, rotate: 360}}
       transition={{
         type: "spring",
         stiffness: 260,
