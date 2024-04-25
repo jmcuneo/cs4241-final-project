@@ -15,7 +15,7 @@
 
     function hostEnter(e) {
         if (e.key === "Enter") {
-            socket.emit("host game", e.target.value);
+            socket.emit("try host game", e.target.value);
             e.target.value = "";
         }
     }
@@ -27,13 +27,13 @@
     }
     let errorMsg = "";
     window.onload = function () {
-        socket.on("host failed", (msg) => {
+        socket.on("room unavalible", (msg) => {
             errorMsg = msg;
         });
         socket.on("join failed", (msg) => {
             errorMsg = msg;
         });
-        socket.on("host success", async function(room, name){
+        socket.on("room avalible", async function(room, name){
             errorMsg = room;
             // await create_game(room);
             joinGame(room,name);

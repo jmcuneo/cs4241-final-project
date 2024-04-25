@@ -5,7 +5,7 @@
 
     const GAMES = ["Pokemon", "Minecraft"];
     function setGame(index) {
-        dispatch("gameChosen", { index, name: GAMES[index] });
+        dispatch("gameChosen", { index, type: GAMES[index] });
     }
     const LOGOS = ["poke_logo.png", "mine_logo.png"];
     function getLogo(index) {
