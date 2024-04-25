@@ -10,8 +10,33 @@ function Login(props) {
 
     const email = createContext();
 
+    // const verifyAccount = () => {
+    //     navigate("/dashboard");
+    // }
     const verifyAccount = () => {
-        navigate("/dashboard");
+        if (!email || !password) {
+            alert('Username or password cannot be empty');
+            return;
+        }
+    
+        fetch('/signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: email, password }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                navigate("/dashboard");
+            } else {
+                alert(data.message); // Show error message
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     }
 
     return (

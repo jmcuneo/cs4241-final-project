@@ -10,9 +10,33 @@ function Register(props) {
 
     const email = createContext();
 
+    // const verifyAccount = () => {
+    //     window.alert("Account Created!");
+    //     navigate("/login");
+    // }
     const verifyAccount = () => {
-        window.alert("Account Created!");
-        navigate("/login");
+        const username = document.getElementById('username-input').value;
+        const password = document.getElementById('pswd').value;
+
+        fetch('http://localhost:3000/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.alert("Account Created!");
+                    navigate("/login");
+                } else {
+                    window.alert(data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 
     return (
