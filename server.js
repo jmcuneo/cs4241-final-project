@@ -26,13 +26,22 @@ io.on('connection', (socket) => {
     database.pushGame(room, 'chat', { "author": "Server", "msg": message });
     io.to(room).emit('message receive', "Server", message);
   }
-  socket.on('host game', async (room) => {
+  socket.on('try host game', async(room)=>{
+    room = room.toLowerCase();
+    const existingGame = await database.getGameByRoomCode(room);
+    if(existingGame != null){
+      socket.emit('room available');
+    }else{
+      socket.emit('room unavailable');
+    }
+  });
+  socket.on('host game', async (room,type) => {
     room = room.toLowerCase();
     const existingGame = await database.getGameByRoomCode(room);
     if (existingGame != null) {
       socket.emit('host failed', 'room in use');
     } else {
-      const game = await database.createNewGame(room, "Pokemon");
+      const game = await database.createNewGame(room, type);
       await database.updateGame(room, "p1", { name: "Player 1", id: socket.id });
 
       socket.join(room);
