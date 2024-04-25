@@ -225,6 +225,117 @@ app.post('/api/getGuestList', async (req, res) => {
 });
 
 /**
+ * eventBody: {
+ *  name: String,
+ *  date: String,
+ *  location: String,
+ *  guestLimit?: Int,
+ *  inviterLimit?: Int
+ * }
+ * 
+ * 		try {
+            const eventBody = {
+                name: 'My Temp Event',
+                location: 'The White House',
+                date: new Date(Date.now() + 20 * 60 * 60 * 1000)
+            }
+            const response = await fetch('//localhost:3000/api/createEvent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    token: localStorage.getItem('token'),
+                    eventBody: eventBody
+                }),
+            });
+
+            const events = await response.json();
+            console.log(events);
+        } catch (error) {
+            console.error('Error creating event:', error);
+        }
+ */
+app.post('/api/createEvent', async (req, res) => {
+    try {
+        const { token, eventBody } = req.body;
+        const username = getUsernameFromToken(token);
+
+        // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
+        const user = await User.findOne({ username: username });
+
+        if (eventBody.name === undefined || eventBody.date === undefined || eventBody.location === undefined) {
+            return res.json({ success: false });
+        }
+
+        const eventExists = await Event.findOne({ name: eventBody.name });
+        if (eventExists) {
+            return res.json({ success: false });
+        }
+        const event = await user.createEvent(eventBody);
+
+        return res.json(hideFieldsFromObject(event.toObject(), 'id', '_id', 'attendees'));
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+app.post('/api/inviteGuest', async (req, res) => {
+    try {
+        const { token, eventName, guestName } = req.body;
+        if (token === undefined || eventName === undefined || guestName === undefined) {
+            return res.json({ success: false });
+        }
+
+        const username = getUsernameFromToken(token);
+
+        // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
+        const user = await User.findOne({ username: username });
+        const event = await Event.findOne({ name: eventName });
+
+        const guestList = await event.getGuestList();
+        const guestExists = guestList.filter(guest => guest === guestName).length > 0;
+        if (guestExists) {
+            return res.json({ success: false });
+        }
+
+        const userInvited = typeof (await user.inviteGuests(event, guestName)) !== 'boolean';
+        return res.json({ success: userInvited });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+app.post('/api/uninviteGuest', async (req, res) => {
+    try {
+        const { token, eventName, guestName } = req.body;
+        if (token === undefined || eventName === undefined || guestName === undefined) {
+            return res.json({ success: false });
+        }
+
+        const username = getUsernameFromToken(token);
+
+        // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
+        const user = await User.findOne({ username: username });
+        const event = await Event.findOne({ name: eventName });
+
+        const guestList = await event.getGuestList();
+        const guestDoesNotExist = guestList.filter(guest => guest === guestName).length === 0;
+        if (guestDoesNotExist) {
+            return res.json({ success: false });
+        }
+
+        const userUninvited = typeof (await user.uninviteGuests(event, guestName)) !== 'boolean';
+        return res.json({ success: userUninvited });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+/**
  * Returns the given object without the provided fields
  * @param {*} obj 
  * @param  {...String} fields The fields to remove from the object
