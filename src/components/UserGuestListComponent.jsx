@@ -6,6 +6,7 @@ function GuestListComponent({ onUpdate }) {
     const { eventName } = useParams();
     const [guestList, setGuestList] = useState([]);
     const guestNameRef = useRef(null);
+    const [message, setMessage] = useState('');
 
     const getGuestList = async () => {
         try {
@@ -41,12 +42,16 @@ function GuestListComponent({ onUpdate }) {
                 }),
             });
             const result = await response.json();
-            if(response.ok){
+            if(result.success == true){
                 setGuestList(currentGuests => [...currentGuests, { guestName }]);
                 onUpdate(guestName, "add");
-                guestNameRef.current.value = '';
+                setMessage("");
             }
-            console.log(result);
+            else {
+                console.log(result);
+                setMessage("Error: " + result.error);
+            }
+            guestNameRef.current.value = '';
         } catch (error) {
             console.error('Error adding guest:', error);
         }
@@ -124,6 +129,7 @@ function GuestListComponent({ onUpdate }) {
                     <input type="text" id='addGuestName' placeholder='Guest Name' required ref={guestNameRef} style={{fontSize: "1.1rem", marginTop: "0.5rem"}}/>
                     <button className='add-guest-button' type="submit">Add Guest</button>
                 </form>
+                <div style={{ fontSize: '20px', marginLeft: '10px', marginTop: '10px' }}>{message}</div> 
             </div>
         </div>
     );

@@ -441,7 +441,7 @@ app.post('/api/inviteGuest', async (req, res) => {
         const event = await Event.findOne({ name: eventName });
 
         const guestList = await event.getGuestList();
-        const guestExists = guestList.filter(guest => guest === guestName).length > 0;
+        const guestExists = guestList.filter(guest => guest.guest === guestName).length > 0;
         if (guestExists) {
             return res.json({ success: false, error: 'Guest with that name already exists' });
         }
