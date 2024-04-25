@@ -22,7 +22,10 @@ function ManageEventPage({ onLogout }) {
         <h1>Manage Event Page</h1>
       </div>
       <TopButtons onLogout={onLogout} showBackButton={true} showProfileButton={true}></TopButtons>
-      <GuestListComponent />
+      <div className='guest-list'>
+        <h1 style={{marginRight: "2%"}}>Guest List</h1>
+        <GuestListComponent showInvite={true}/>
+      </div>
     </div>
   );
 }
