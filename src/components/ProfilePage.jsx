@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TopButtons from './TopButtons';
 import PropTypes from 'prop-types';
+import { motion } from 'framer-motion';
 
 function ProfilePage({ onLogout }) {
   const [userProfile, setUserProfile] = useState(null);
@@ -35,7 +36,16 @@ function ProfilePage({ onLogout }) {
 
   return (
     <div className='main-page-container'>
-      <div className='center-page-container'>
+      <motion.div 
+      className='center-page-container'
+      initial={{ scale: 0, x: '-50%', y: '-50%'}}
+      animate={{ scale: 1 }}
+      transition={{
+        type: "spring",
+        stiffness: 260,
+        damping: 20,
+      }}
+      >
         {userProfile ? (
           <div>
             <h1>Profile</h1> 
@@ -47,7 +57,7 @@ function ProfilePage({ onLogout }) {
         ) : (
           <div>Error loading profile</div>
         )}
-      </div>
+      </motion.div>
       <TopButtons onLogout={onLogout} showBackButton={true}></TopButtons>
     </div>
   );
