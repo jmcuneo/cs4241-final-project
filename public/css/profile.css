@@ -36,3 +36,21 @@ td {
     background-color: var(--background);
     color: var(--text);
 }
+
+#post-collection {
+    width: 60%;
+    max-height: 35vh;
+    overflow-y: auto;
+}
+
+.calendar {
+    width: 100px;
+    height: 100px;
+    text-align: center;
+}
+
+.events {
+    width: 100px;
+    height: 50px;
+    text-align: center;
+}

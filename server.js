@@ -198,24 +198,43 @@ app.get("/user-events", async (req, res) => {
     })
     .then((user) => user.events)
     .then((events) => {
-        if(events && events.len > 0) {
+        if (events.length === 0) {
+            return res.json([]);
+        } else {
             let query = {$or: []};
-            events.forEach((e) => query.$or.push({eventId: e.eventId}));
-            return eventsCollection.find(query).toArray().then((eventList) => res.json(eventList));
+            events.forEach((e) => query.$or.push({_id: new ObjectId(e.eventId)}));
+            return eventsCollection.find(query).toArray().then((eventList) => {console.log(eventList);res.json(eventList)});
         }
-
-        return res.json([]);
     });
 });
-let eventPost = []; //array to store all events
-let image; //for mopngoDB
-app.post('/upload', upload.single('image'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).send('No file uploaded.');
-    }
-    image = '/uploads/' + req.file.filename;
-    res.sendStatus(200);
+
+app.post("/add-user-event", express.json(), async (req, res) => {
+    res.send(await addUserEvent(req.user.userId, req.body.eventId));
 });
+
+const addUserEvent = async function (userId, eventId) {
+    return userCollection.findOne({
+        userId: userId
+    }).then((user) => user.events).then((events) => {
+        userCollection.updateOne(
+            {
+                userId: userId
+            }, {
+                $addToSet: {
+                    events: {eventId: eventId}
+            }
+        }).then((response) => {console.log(response); return response});
+    });
+}
+
+//let image; //for mopngoDB
+// app.post('/upload', upload.single('image'), (req, res) => {
+//     if (!req.file) {
+//         return res.status(400).send('No file uploaded.');
+//     }
+//     image = '/uploads/' + req.file.filename;
+//     res.sendStatus(200);
+// });
 let description; //mongoDB
 app.post("/description", async (req, res) => {
     if(req.body == ""){
@@ -227,28 +246,42 @@ app.post("/description", async (req, res) => {
 
 //submit - gets entry (name, date, time, loaction) from client checks for event of same time, name, location
 // adds to array and database and sends client updated array
-app.post("/submit", async (req, res) => {
+app.post("/submit", upload.single('image'), async (req, res) => {
     let data = req.body;
-    for(let i = 0; i < eventPost.length; i++){
-      if(data.event == eventPost[i].event){
+    console.log(data);
+    const eventExists = await eventsCollection.findOne({event: data.event});
+    console.log(eventExists);
+    if (eventExists != null) {
+        console.log("Event already posted!");
         res.send(JSON.stringify("Event already posted!"));
         return;
-      } 
     }
-    var entry = {
-      //name: req.user.username, fix after appened to login page
-      event: data.event,
-      date: data.date,
-      startTime: convertTime(data.startTime),
-      length: elapsedTime(data.startTime, data.endTime, data.date), 
-      location: data.location,
-      image: image,
-      description: description
-    };
-    eventPost.push(entry);
+    const event = data.event;
+    const date = data.date;
+    const startTime = data.startTime;
+    const endTime = data.endTime;
+    const location = data.location;
+    const description = data.description;
+    // Access uploaded file from req.file
+    console.log("File", req.file);
+    let image = "";
+    if (req.file !== undefined)
+        image = '/uploads/' + req.file.filename;
+    const entry = {
+        event: event,
+        date: date,
+        image: (image === "" ? null : image),
+        startTime: startTime,
+        endTime: endTime,
+        location: location,
+        description: description
+    }
+
     const result = await eventsCollection.insertOne(entry)
-    req.json = JSON.stringify(eventPost);
-    res.send(req.json);
+    console.log(result);
+    //req.json = JSON.stringify(eventPost);
+    res.json(await eventsCollection.find({}).toArray());
+    await addUserEvent(req.user.userId, result.insertedId.toString());
   });
 
   function convertTime(time) {
@@ -291,25 +324,11 @@ app.post("/info", async (req, res) => {
     const foundItem = await eventsCollection.findOne(filter);
     
     res.send(foundItem);
-    
-  });
-
-let mongoDataLoaded = false;
+});
 
 app.post("/refresh", express.json(), async (req, res) => {
-  if (!mongoDataLoaded) {
-    // Load all data from MongoDB only if it hasn't been loaded before
     const mongoData = await eventsCollection.find({}).toArray();
-    for(let i = 0; i < mongoData.length; i++){
-      eventPost.push(mongoData[i]);
-    }
-}
-  else{
-    console.log("mongo already loaded");
-  }
-  
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(eventPost));
+    res.json(mongoData);
 });
 
 //websocket initialization 
@@ -349,6 +368,13 @@ app.get('/messages', async (req, res) => {
     } else {
         //Return empty list
         res.json([]);
+    }
+});
+
+app.get('/personalPosts', async (req, res) => {
+    if (postCollection !== null) {
+        const messages = await postCollection.find({ username: req.user.username }).toArray();
+        res.json(messages);
     }
 });
 

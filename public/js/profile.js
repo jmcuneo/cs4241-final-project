@@ -1,11 +1,24 @@
 const getUsername = fetch("/user", { method: "GET" })
   .then(r => r.json());
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    document.body.classList.add("hidden");
     getUsername.then(d => document.getElementById("user").innerHTML = d.username);
     const today = new Date();
     document.querySelector("#month").value = `${today.getFullYear()}-${`${today.getMonth() + 1}`.padStart(2, "0")}`;
-    calendarView();
+
+    const loadPosts = fetch("/personalPosts", {
+        method: "GET",
+    })
+    .then(r => r.json())
+    .then(function (data) {
+        for (let message of data) {
+            appendMessage(message.username, message.content, message.datetime);
+        }
+    });
+
+    await Promise.all([calendarView(), loadPosts]);
+    document.body.classList.remove("hidden");
 });
 
 let personalEvents = [];
@@ -16,8 +29,8 @@ async function getPersonalCalendar() {
     })
     .then((response) => response.json())
     .then((data) => {
-        personalEvents = data;
-        const list = document.querySelector("#personal-events");
+        ///personalEvents = data;
+        /*const list = document.querySelector("#personal-events");
         list.innerHTML = "";
         if(data.length > 0) {
             data.forEach(e => {
@@ -29,7 +42,8 @@ async function getPersonalCalendar() {
             const item = document.createElement("li");
             item.textContent = "You have not created any events!";
             list.appendChild(item);
-        }
+        }*/
+        getUserEvents(null);
     });
 };
 
@@ -89,13 +103,13 @@ function createDayButton(year, month, day) {
     return button;
 }
 
-function getEventsOnDay(year, month, day) {
+async function getEventsOnDay(year, month, day) {
     document.querySelector("#date-specifier").textContent = `(${Intl.DateTimeFormat("en", { year: "numeric", month: "long", day: "numeric"}).format(new Date(year, month, day))})`;
     const eventsOnDay = personalEvents.filter(e => {
         const eventDate = new Date(e.datetime);
         return eventDate.getUTCFullYear() === year && eventDate.getUTCMonth() === month && eventDate.getUTCDate() === day;
     });
-    const list = document.querySelector("#personal-events");
+    /*const list = document.querySelector("#personal-events");
     list.innerHTML = "";
     eventsOnDay.forEach(e => {
         const item = document.createElement("li");
@@ -107,5 +121,111 @@ function getEventsOnDay(year, month, day) {
         const item = document.createElement("li");
         item.textContent = "You have not created any events!";
         list.appendChild(item);
+    }*/
+    await getUserEvents((e) => e.startTime.substr(0, 10) === `${year}-${month + 1 < 10 ? "0" : ""}${month + 1}-${day < 10 ? "0" : ""}${day}`);
+};
+
+function appendMessage(username, content, datetime) {
+    const wrapper = document.createElement("div");
+    const quillReadOnly = new Quill(wrapper, {
+        placeholder: 'MESSAGE EMPTY',
+        readOnly: true,
+        theme: 'snow',
+        modules: {
+            syntax: true
+        }
+    });
+    
+    let toAppend = [{insert: `${username}\n`}];
+    try {
+        toAppend = toAppend.concat(JSON.parse(content));
+    } catch(_) {
+        toAppend.push({insert: content + "\n"});
+    }
+    toAppend.push({insert: `${datetime}`});
+    quillReadOnly.setContents(toAppend);
+    document.querySelector("#post-collection").prepend(wrapper);
+}
+
+const getUserEvents = async function (filter) {
+    await fetch("/user-events", {
+        method: "GET"
+    }).then((response) => response.json()).then((data) => {
+        console.log(data);
+        console.log(filter);
+        personalEvents = filter === null ? data : data.filter(filter);
+        console.log(personalEvents);
+        const table = document.querySelector("#personal-events");
+        table.innerHTML = "<tr><th>Event</th><th>Date</th><th>Start Time</th><th>End Time</th><th>Location</th><th>Details</th></tr>";
+        for (e of personalEvents) {
+            const startDate = new Date(e.startTime);
+            const endDate = new Date(e.endTime);
+            table.innerHTML += `<tr><td class='events'>${e.event}</td>
+                                    <td class='events'>${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}</td>
+                                    <td class='events'>${startDate.getHours()}:${(startDate.getMinutes() < 10 ? "0" : "") + startDate.getMinutes()}</td>
+                                    <td class='events'>${endDate.getHours()}:${(endDate.getMinutes() < 10 ? "0" : "") + endDate.getMinutes()}</td>
+                                    <td class='events'>${e.location}</td>
+                                    <td class='events'><button class="info" onclick="info(this, '${e._id}')">See more details</button></td>`;
+        }
+    });
+};
+
+const info = async function (button, eventId) {
+    // Disable the more details button
+    button.disabled = true;
+
+    // Fetch event info
+    const reqObj = { eventId: eventId};
+    const response = await fetch("/info", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(reqObj),
+    });
+    const eventInfo = await response.json();
+
+    // Display event details
+    const detailsContainer = document.createElement('div');
+    detailsContainer.classList.add('event-details');
+
+    if (eventInfo.image) {
+        const imgElement = document.createElement('img');
+        imgElement.src = eventInfo.image;
+        detailsContainer.appendChild(imgElement);
+    }
+
+    if (eventInfo.description) {
+        const descElement = document.createElement('p');
+        descElement.textContent = eventInfo.description;
+        detailsContainer.appendChild(descElement);
+    }
+
+    if ((eventInfo.image == null) && (eventInfo.description == null)) {
+        console.log("nothing to display");
+        const descElement = document.createElement('p');
+        descElement.textContent = "No additional details";
+        detailsContainer.appendChild(descElement);
+
+    }
+
+    const tableRow = button.closest('tr');
+    const existingDetailsContainer = tableRow.querySelector('.event-details');
+    if (existingDetailsContainer) {
+        existingDetailsContainer.remove();
+    } else {
+        tableRow.appendChild(detailsContainer);
+    }
+
+    // Enable the "Show less" button if details are displayed
+    const showLessButton = document.querySelector('.show-less');
+    if (detailsContainer && !showLessButton) {
+        const showLessBtn = document.createElement('button');
+        showLessBtn.textContent = 'Show less';
+        showLessBtn.classList.add('show-less');
+        showLessBtn.addEventListener('click', function () {
+            detailsContainer.remove();
+            button.disabled = false;
+            this.remove();
+        });
+        tableRow.appendChild(showLessBtn);
     }
 };
