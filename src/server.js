@@ -77,8 +77,11 @@ app.post("/add", async (req, res) => {
 app.get("/login", (req, res) =>{
   res.sendFile(path.join(__dirname,"public", "login.html"))
 })
+app.get("/", (req, res) => {
+  res.redirect("/login")
+})
 app.get("/play-game", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"))
+  res.sendFile(path.join(__dirname, "public", "game.html"))
 })
 app.post("/login/auth", async (req, res) => {
   console.log(await req.body);
