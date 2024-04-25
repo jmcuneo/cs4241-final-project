@@ -51,7 +51,8 @@
         console.log("Joining game");
         dispatch("gameStart", {
             room:game_id,
-            player:player
+            player:player,
+            hosting:false
         });
     }
 
