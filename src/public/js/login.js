@@ -5,6 +5,8 @@ window.onload = function() {
     signInBtn.onclick = signIn
     const githubBtn = document.getElementById("githubSign")
     githubBtn.onclick = github
+    const guestLogin = document.getElementById("guestLogin")
+    guestLogin.onclick = guest
 }
 
 async function signUp() {
@@ -42,6 +44,13 @@ async function signIn() {
 
 async function github() {
     const response = await fetch( "/auth/github", {
+        method:'POST',
+        headers: { 'Content-Type': 'application/json'}
+    })   
+}
+
+async function guest() {
+    const response = await fetch( "/guest", {
         method:'POST',
         headers: { 'Content-Type': 'application/json'}
     })   
