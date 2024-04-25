@@ -65,7 +65,7 @@ function addCell(content) {
     let img = makeElem("img", "", null, imgWrap)
     img.src = content.img
     img.alt = content.alt
-    let cont = makeElem("p", "is-6", content.name, card)
+    let cont = makeElem("p", "is-size-7", content.name, card)
 }
 
 function makeElem(type, classType, inner, parent) {
