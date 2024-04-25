@@ -39,6 +39,6 @@ td {
 
 #post-collection {
     width: 60%;
-    max-height: 50vh;
+    max-height: 35vh;
     overflow-y: auto;
 }

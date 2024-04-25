@@ -1,14 +1,13 @@
 const getUsername = fetch("/user", { method: "GET" })
   .then(r => r.json());
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     document.body.classList.add("hidden");
     getUsername.then(d => document.getElementById("user").innerHTML = d.username);
     const today = new Date();
     document.querySelector("#month").value = `${today.getFullYear()}-${`${today.getMonth() + 1}`.padStart(2, "0")}`;
-    calendarView();
 
-    fetch("/personalPosts", {
+    const loadPosts = fetch("/personalPosts", {
         method: "GET",
     })
     .then(r => r.json())
@@ -17,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
             appendMessage(message.username, message.content, message.datetime);
         }
     });
+
+    await Promise.all([calendarView(), loadPosts]);
     document.body.classList.remove("hidden");
 });
 
