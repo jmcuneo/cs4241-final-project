@@ -1,5 +1,9 @@
 import React, {useState} from 'react';
 import './App.css';
+import {useMutation, useQuery} from "@tanstack/react-query";
+import {addScore, fetchScores, scoreEntry} from "./service/Score.ts";
+import {queryClient} from "./service/QueryClient.ts";
+import {query} from "express";
 
 export default function App() {
     //list of words
@@ -48,6 +52,20 @@ export default function App() {
         setGame("running");
     }
     /************************************* Timer *************************************/
+
+    const getGameScores = useQuery<scoreEntry[], Error>({
+        queryKey: ["scores"],
+        queryFn: () => fetchScores(),
+        refetchInterval: false
+    });
+
+    const postScore = useMutation({
+        mutationKey: ["scores"],
+        mutationFn: (body: any) => addScore(body),
+        onSuccess: () => {
+            return queryClient.invalidateQueries({queryKey: ["scores"]})
+        }
+    });
 
     //startWord
     const [startWord, setStartWord] = useState('');
