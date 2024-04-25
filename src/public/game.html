@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <script src="js/main.js"></script>
+        <script src="js/card.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+        <link rel="stylesheet" href="css/grid.css">
+    </head>
+    <body>
+        <div class="container is-fluid content">
+            <header>
+                <div class="block">
+                    <h1 class="title is-1 has-text-centered">LGBT History Matcher</h1>
+                </div>
+            </header>
+            <div class="columns is-centered" id="topDisplay">
+                <div class="column is-one-fifth">
+                    <div class="block has-text-centered">
+                        <span class="subtitle is-3">Score: </span> 
+                        <span class="subtitle is-3" id="score">0000</span> 
+                    </div>
+                </div>
+                <div class="column is-one-fifth">
+                    <div class="block has-text-centered" id="timer">
+                        <span class="subtitle is-3" id="min">00</span> 
+                        <span class="subtitle is-5">Min</span> 
+                        <span class="subtitle is-3" id="sec">00</span> 
+                        <span class="subtitle is-5">Sec</span> 
+                    </div>
+                </div>
+            </div>
+            <div class="columns" id="gameboard">
+                <div class="column is-one-fifth">
+                    <div class="block" id="infoBlock">
+                        <h2 class="title is-4 is-spaced has-text-centered">More Information</h2>
+                        <p class="subtitle is-5" id="info"></p>
+                    </div>
+                </div>
+                <div class="column is-three-fifths">
+                    <div class="fixed-grid has-4-cols">
+                        <div class="grid has-text-centered" id="grid">
+                            
+                        </div>
+                    </div>     
+                </div>
+                <div class="column is-one-fifth">
+                    <div class="block">
+                        <h2 class="title is-4 is-spaced has-text-centered">Leaderboard</h2>
+                        <table class="table is-striped is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="block has-text-centered" style="width: 100%">
+                <button class="button" id="startButton">Start Game</button>
+            </div>            
+        </div>
+    </body>
+</html>
