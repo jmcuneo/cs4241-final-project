@@ -208,9 +208,7 @@ function App() {
                 </>)}
             {!showInput && gameEnd &&(<button onClick={fetchStartWord}>Start a New Game</button>)}
             {showInput && lastWord && !gameEnd &&
-                <b>
-                    <p>{lastWord}</p>
-                </b>}
+                <b><p>{lastWord}</p></b>}
             <div className="InputWord">
                 {showInput && !gameEnd &&( <input
                     type="text"
