@@ -101,7 +101,7 @@ export default function App() {
     const handleSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
          if (event.key === 'Enter') {  //should add the function to check the word here
              setLastWord(inputValue)
-             words.push(lastWord)
+             setWords(prevState => [...prevState, inputValue])
              setWordCount(wordCount + 1);
              setScore(prevScore => {
                  const newScore = prevScore + inputValue.length;
@@ -148,7 +148,6 @@ export default function App() {
     };
     const fetchStartWord = async () => {
         try {
-            setWords([]);
             setGame("running");
             // setTimerRunning(true)
             setScore(0)
@@ -165,10 +164,9 @@ export default function App() {
             // @ts-ignore
             const filteredWords = data.filter(item => item.word.length > 4  && !/\s/.test(item.word));
             const randomIndex = Math.floor(Math.random() * filteredWords.length);
-            setLastWord(filteredWords[randomIndex].word)
-            words.push(lastWord);
-            console.log(words)
-            console.log(lastWord)
+            const startWord = filteredWords[randomIndex].word;
+            setLastWord(startWord)
+            setWords([startWord])
         } catch (error) {
             console.error('Error fetching random word:', error);
         }
