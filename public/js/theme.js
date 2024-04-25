@@ -1,7 +1,6 @@
 // Reads theme preference from cookies
 function setTheme() {
     const cookies = document.cookie.split(";");
-    console.log(cookies);
     if(cookies.map(c => c.trim()).filter(c => c.match("theme=dark")).length > 0) {
         document.body.classList.add("dark");
     } else if (cookies.filter(c => c.match("theme=light")).length > 0) {

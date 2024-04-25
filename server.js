@@ -352,6 +352,13 @@ app.get('/messages', async (req, res) => {
     }
 });
 
+app.get('/personalPosts', async (req, res) => {
+    if (postCollection !== null) {
+        const messages = await postCollection.find({ username: req.user.username }).toArray();
+        res.json(messages);
+    }
+});
+
 server.listen(3000, function listening() {
     console.log('WebSocket server is listening on port 3000');
 });

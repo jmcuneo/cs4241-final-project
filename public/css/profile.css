@@ -36,3 +36,9 @@ td {
     background-color: var(--background);
     color: var(--text);
 }
+
+#post-collection {
+    width: 60%;
+    max-height: 50vh;
+    overflow-y: auto;
+}

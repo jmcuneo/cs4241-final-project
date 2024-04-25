@@ -4,4 +4,6 @@
 
 #message-display {
     margin-bottom: 5vh;
+    max-height: 50vh;
+    overflow-y: auto;
 }

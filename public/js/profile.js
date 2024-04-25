@@ -2,10 +2,22 @@ const getUsername = fetch("/user", { method: "GET" })
   .then(r => r.json());
 
 document.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.add("hidden");
     getUsername.then(d => document.getElementById("user").innerHTML = d.username);
     const today = new Date();
     document.querySelector("#month").value = `${today.getFullYear()}-${`${today.getMonth() + 1}`.padStart(2, "0")}`;
     calendarView();
+
+    fetch("/personalPosts", {
+        method: "GET",
+    })
+    .then(r => r.json())
+    .then(function (data) {
+        for (let message of data) {
+            appendMessage(message.username, message.content, message.datetime);
+        }
+    });
+    document.body.classList.remove("hidden");
 });
 
 let personalEvents = [];
@@ -109,3 +121,25 @@ function getEventsOnDay(year, month, day) {
         list.appendChild(item);
     }
 };
+
+function appendMessage(username, content, datetime) {
+    const wrapper = document.createElement("div");
+    const quillReadOnly = new Quill(wrapper, {
+        placeholder: 'MESSAGE EMPTY',
+        readOnly: true,
+        theme: 'snow',
+        modules: {
+            syntax: true
+        }
+    });
+    
+    let toAppend = [{insert: `${username}\n`}];
+    try {
+        toAppend = toAppend.concat(JSON.parse(content));
+    } catch(_) {
+        toAppend.push({insert: content + "\n"});
+    }
+    toAppend.push({insert: `${datetime}`});
+    quillReadOnly.setContents(toAppend);
+    document.querySelector("#post-collection").prepend(wrapper);
+}
