@@ -41,10 +41,12 @@ const submit = async function (event) {
   var formData = new FormData();
   formData.append("image", file);
 
+  const date = dateInput.value;
+
   formData.append("event", eventInput.value);
-  formData.append("date", dateInput.value);
-  formData.append("startTime", startInput.value);
-  formData.append("endTime", endInput.value);
+  formData.append("date", date);
+  formData.append("startTime", `${date}T${startInput.value}:00`);
+  formData.append("endTime", `${date}T${endInput.value}:00`);
   formData.append("location", locationInput.value);
   formData.append("description", descriptionInput.value);
 

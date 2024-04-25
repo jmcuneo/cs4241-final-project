@@ -10,6 +10,9 @@ window.onload = async function () {
         document.getElementById("user").innerHTML = username;
     });
     await getUserEvents(null);
+    const today = new Date();
+    document.querySelector("#month").value = `${today.getFullYear()}-${`${today.getMonth() + 1}`.padStart(2, "0")}`;
+    calendarView();
 };
 
 let userEvents = [];
@@ -21,15 +24,16 @@ const getUserEvents = async function (filter) {
         userEvents = filter === null ? data : data.filter(filter);
         console.log(userEvents);
         const table = document.querySelector("#events");
-        table.innerHTML = "<tr><th>Event</th><th>Date</th><th>Start Time</th><th>End Time</th><th>Location</th></tr>";
+        table.innerHTML = "<tr><th>Event</th><th>Date</th><th>Start Time</th><th>End Time</th><th>Location</th><th>Details</th></tr>";
         for (e of userEvents) {
             const startDate = new Date(e.startTime);
             const endDate = new Date(e.endTime);
             table.innerHTML += `<tr><td class='events'>${e.event}</td>
                                     <td class='events'>${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}</td>
-                                    <td class='events'>${startDate.getHours()}:${startDate.getMinutes()}</td>
-                                    <td class='events'>${endDate.getHours()}:${endDate.getMinutes()}</td>
-                                    <td class='events'>${e.location}</td>`;
+                                    <td class='events'>${startDate.getHours()}:${(startDate.getMinutes() < 10 ? "0" : "") + startDate.getMinutes()}</td>
+                                    <td class='events'>${endDate.getHours()}:${(endDate.getMinutes() < 10 ? "0" : "") + endDate.getMinutes()}</td>
+                                    <td class='events'>${e.location}</td>
+                                    <td class='events'><button class="info" onclick="info(this, '${e._id}')">See more details</button></td>`;
         }
     });
 };
@@ -66,4 +70,64 @@ const calendarView = async function () {
 const getEventsOnDay = async function (year, month, day) {
     console.log(`${year}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""}${day}`);
     await getUserEvents((e) => e.startTime.substr(0, 10) === `${year}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""}${day}`);
+};
+
+const info = async function (button, eventId) {
+    // Disable the more details button
+    button.disabled = true;
+
+    // Fetch event info
+    const reqObj = { eventId: eventId};
+    const response = await fetch("/info", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(reqObj),
+    });
+    const eventInfo = await response.json();
+
+    // Display event details
+    const detailsContainer = document.createElement('div');
+    detailsContainer.classList.add('event-details');
+
+    if (eventInfo.image) {
+        const imgElement = document.createElement('img');
+        imgElement.src = eventInfo.image;
+        detailsContainer.appendChild(imgElement);
+    }
+
+    if (eventInfo.description) {
+        const descElement = document.createElement('p');
+        descElement.textContent = eventInfo.description;
+        detailsContainer.appendChild(descElement);
+    }
+
+    if ((eventInfo.image == null) && (eventInfo.description == null)) {
+        console.log("nothing to display");
+        const descElement = document.createElement('p');
+        descElement.textContent = "No additional details";
+        detailsContainer.appendChild(descElement);
+
+    }
+
+    const tableRow = button.closest('tr');
+    const existingDetailsContainer = tableRow.querySelector('.event-details');
+    if (existingDetailsContainer) {
+        existingDetailsContainer.remove();
+    } else {
+        tableRow.appendChild(detailsContainer);
+    }
+
+    // Enable the "Show less" button if details are displayed
+    const showLessButton = document.querySelector('.show-less');
+    if (detailsContainer && !showLessButton) {
+        const showLessBtn = document.createElement('button');
+        showLessBtn.textContent = 'Show less';
+        showLessBtn.classList.add('show-less');
+        showLessBtn.addEventListener('click', function () {
+            detailsContainer.remove();
+            button.disabled = false;
+            this.remove();
+        });
+        tableRow.appendChild(showLessBtn);
+    }
 };

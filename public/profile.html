@@ -18,25 +18,29 @@
     <h2 id="user"></h2>
     <button onclick="window.location.href = '/logout';">Logout</button>
     <br><br>
-    <input type="month" id="month">
-    <button onclick="calendarView()">Calendar View</button>
+    <input type="month" id="month" onchange="calendarView()">
     <br><br>
     <table id="calendar">
-        <tr><th>Sunday</th>
+        <tr>
+            <th>Sunday</th>
             <th>Monday</th>
             <th>Tuesday</th>
             <th>Wednesday</th>
             <th>Thursday</th>
             <th>Friday</th>
-            <th>Saturday</th></tr>
+            <th>Saturday</th>
+        </tr>
     </table>
     <br><br>
     <table id="events">
-        <tr><th>Event</th>
+        <tr>
+            <th>Event</th>
             <th>Date</th>
             <th>Start Time</th>
             <th>End Time</th>
-            <th>Location</th></tr>
+            <th>Location</th>
+            <th>Details</th>
+        </tr>
     </table>
 </body>
 

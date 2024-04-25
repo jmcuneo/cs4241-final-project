@@ -6,18 +6,18 @@ const addToTable = function (entry) {
                 <td>${entry.startTime}</td>
                 <td>${entry.endTime}</td>
                 <td>${entry.location}</td>
-                <td><button class="info" onclick="info(this, '${entry.event}')">See more details</button></td>
+                <td><button class="info" onclick="info(this, '${entry._id}')">See more details</button></td>
                 <td><button onclick="addToPersonal('${entry._id}');">Add</button></td>
               </tr>`;
   table.insertAdjacentHTML("beforeend", row);
 };
 
-const info = async function (button, eventName) {
+const info = async function (button, eventId) {
   // Disable the more details button
   button.disabled = true;
 
   // Fetch event info
-  const reqObj = { eventName: eventName };
+  const reqObj = { eventId: eventId};
   const response = await fetch("/info", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
