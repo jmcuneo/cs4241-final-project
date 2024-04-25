@@ -445,7 +445,7 @@ app.post('/api/uninviteGuest', async (req, res) => {
 
         const guestList = await event.getGuestList();
         console.log(guestName);
-        const guestDoesNotExist = guestList.filter(guest => guest === guestName).length === 0;
+        const guestDoesNotExist = guestList.filter(guest => guest.guest === guestName).length === 0;
         if (guestDoesNotExist) {
             return res.json({ success: false, error: 'Guest does not already exist' });
         }
