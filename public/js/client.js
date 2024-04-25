@@ -1,40 +1,36 @@
-//profile info 
+// client code for home page 
 
-window.onload = async function () {
-    fetch("/user", {
+window.onload = function() {
+    const profileInfo = fetch("/user", {
         method: "GET",
-    }).then(function (response) {
+      })
+      .then(function(response) {
         return response.json();
-    }).then(function (data) {
+      })
+      .then(function(data) {
         const username = data.username;
         document.getElementById("user").innerHTML = username;
-    });
-    await getUserEvents(null);
-};
+      });
 
-let userEvents = [];
-const getUserEvents = async function (filter) {
-    await fetch("/user-events", {
+}
+
+let personalEvents = [];
+
+const getPersonalCalendar = function() {
+    fetch("/user-events", {
         method: "GET"
-    }).then((response) => response.json()).then((data) => {
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        personalEvents = data;
         console.log(data);
-        userEvents = filter === null ? data : data.filter(filter);
-        console.log(userEvents);
-        const table = document.querySelector("#events");
-        table.innerHTML = "<tr><th>Event</th><th>Date</th><th>Start Time</th><th>End Time</th><th>Location</th></tr>";
-        for (e of userEvents) {
-            const startDate = new Date(e.startTime);
-            const endDate = new Date(e.endTime);
-            table.innerHTML += `<tr><td class='events'>${e.event}</td>
-                                    <td class='events'>${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}</td>
-                                    <td class='events'>${startDate.getHours()}:${startDate.getMinutes()}</td>
-                                    <td class='events'>${endDate.getHours()}:${endDate.getMinutes()}</td>
-                                    <td class='events'>${e.location}</td>`;
-        }
+        const list = document.querySelector("#events");
+        list.innerHTML = "";
+        data.forEach((e) => list.innerHTML += `<li>${JSON.stringify(e)}</li>`);
     });
 };
 
-const calendarView = async function () {
+const calendarView = async function() {
     const date = document.querySelector("#month").value;
     const year = parseInt(date.substr(0, 4));
     const century = parseInt(date.substr(0, 2));
@@ -63,7 +59,9 @@ const calendarView = async function () {
     await getUserEvents((e) => e.startTime.substr(0, 7) === date);
 };
 
-const getEventsOnDay = async function (year, month, day) {
-    console.log(`${year}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""}${day}`);
-    await getUserEvents((e) => e.startTime.substr(0, 10) === `${year}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""}${day}`);
+const getEventsOnDay = function(year, month, day) {
+    console.log(year + ", " + month + ", " + day);
 };
+
+
+

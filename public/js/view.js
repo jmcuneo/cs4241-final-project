@@ -42,7 +42,6 @@ const info = async function (button, eventName) {
   }
 
   if((eventInfo.image == null) && (eventInfo.description == null)){
-    console.log("nothing to display");
     const descElement = document.createElement('p');
     descElement.textContent = "No additional details";
     detailsContainer.appendChild(descElement);
@@ -81,9 +80,7 @@ const info = async function (button, eventName) {
     for(let i = 0; i < text.length; i++){
         addToTable(text[i]);
     }
-    console.log("page refreshed.");
   };
-
 
 window.onload = function () {
   //pull all data from mongo

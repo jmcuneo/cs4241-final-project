@@ -1,7 +1,11 @@
 const express = require('express'),
-    ViteExpress = require("vite-express");
+    ViteExpress = require("vite-express"),
     app = express(),
-    { MongoClient, ObjectId } = require("mongodb")
+    { MongoClient, ObjectId } = require("mongodb"),
+    WebSocket = require('ws'),
+    http = require('http'),
+    server = http.createServer(app),
+    wss = new WebSocket.Server({ server });
 
 //for sending files
 const multer = require('multer');
@@ -19,6 +23,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+
 app.use(express.static('public'))
 app.use(express.static('views'))
 app.use(express.json())
@@ -30,12 +35,14 @@ const client = new MongoClient(uri)
 
 let userCollection;
 let eventsCollection;
+let postCollection;
 
 (async function () {
     await client.connect()
     const database = client.db('finalProj')
     userCollection = database.collection('users')
     eventsCollection = database.collection("events");
+    postCollection = database.collection('posts')
 })();
 
 const cookieSession = require('cookie-session')
@@ -94,7 +101,6 @@ passport.use(new GitHubStrategy({
     }
 ));
 
-
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport.use(
     new GoogleStrategy({
@@ -137,6 +143,8 @@ const authCheck = (req, res, next) => {
 };
 
 //redirects to loggedIn.html if logged in
+let currentUsername 
+
 app.get('/loggedIn', authCheck, (req, res) => {
     console.log("ran loggedIn")
     res.sendFile(__dirname + '/public/loggedIn.html')
@@ -174,7 +182,6 @@ app.get('/profilePage', authCheck, (req, res) => {
     res.sendFile(__dirname + '/public/profile.html')
 })
 
-//send to post event page
 app.get('/eventBoard', authCheck, (req, res) => {
     res.sendFile(__dirname + '/public/eventBoard.html')
 })
@@ -184,6 +191,7 @@ app.get('/allEvents', authCheck, (req, res) => {
 })
 
 app.get('/user', (req, res) => {
+    currentUsername = req.user.username;
     console.log("fetching username")
     res.json({"username" : req.user.username});
 })
@@ -222,31 +230,9 @@ app.post("/add-user-event", express.json(), (req, res) => {
     });
 });
 
-//let image; //for mopngoDB
-// app.post('/upload', upload.single('image'), (req, res) => {
-//     if (!req.file) {
-//         return res.status(400).send('No file uploaded.');
-//     }
-//     image = '/uploads/' + req.file.filename;
-//     res.sendStatus(200);
-// });
-let description; //mongoDB
-app.post("/description", async (req, res) => {
-    console.log("description: ", req.body);
-    if(req.body == ""){
-        return res.send(JSON.stringify('No description uploaded.'))
-    }
-    description = req.body;
-    res.send(JSON.stringify("Uploaded successfully."));
-})
-
-//submit - gets entry (name, date, time, loaction) from client checks for event of same time, name, location
-// adds to array and database and sends client updated array
 app.post("/submit", upload.single('image'), async (req, res) => {
     let data = req.body;
-    console.log(data);
     const eventExists = await eventsCollection.findOne({event: data.event});
-    console.log(eventExists);
     if (eventExists != null) {
         console.log("Event already posted!");
         res.send(JSON.stringify("Event already posted!"));
@@ -271,7 +257,6 @@ app.post("/submit", upload.single('image'), async (req, res) => {
         }
 
     const result = await eventsCollection.insertOne(entry)
-    //req.json = JSON.stringify(eventPost);
     res.json(await eventsCollection.find({}).toArray());
   });
 
@@ -304,32 +289,13 @@ function elapsedTime(startTime, endTime, date) {
     return hours + ' hours ' + minutes + ' minutes';
 }
 
-// app.post("/view", async (req, res) => {
-//     console.log(eventPost);
-//     if (eventsCollection !== null) {
-//         const events = await eventsCollection.find({}).toArray()
-//         res.json( events )
-//       }
-//       //res.send(JSON.stringify(events))
-// })
 
 app.post("/info", async (req, res) => {
-    //console.log("index: ", req.body.entryIndex);
-    //const indexToRemove = req.body.entryIndex;
-    
-    // if (isNaN(indexToRemove) || indexToRemove < 0 || indexToRemove >= eventPost.length) {
-    //   return res.status(400).send(JSON.stringify("Invalid index"));
-    // }
-
-    //const details = eventPost[indexToRemove];
-    //console.log("details: ", details);
     const eventName = req.body.eventName;  
   
-    // Use the attribute 'name' of the object to remove data from MongoDB
-    const filter = { event: eventName }; // Filter to find the document by the original item
+    const filter = { event: eventName };
     const foundItem = await eventsCollection.findOne(filter);
     
-    console.log(foundItem);
     res.send(foundItem);
     
   });
@@ -337,7 +303,51 @@ app.post("/info", async (req, res) => {
 app.post("/refresh", express.json(), async (req, res) => {
     const mongoData = await eventsCollection.find({}).toArray();
     res.json(mongoData);
+//websocket initialization 
+wss.on('connection', (ws, req) => {
+    ws.on('message', (message) => {
+        const decodedMessage = Buffer.from(message, 'base64').toString('utf-8');
+  
+        const post = {
+            username: decodeURIComponent(req.url.split("=")[1]),
+            anonymous: false,
+            datetime: new Date().toLocaleString(),
+            content: decodedMessage,
+            upvotes: 0,
+            downvotes: 0
+        };
+
+        postCollection.insertOne(post)
+            .then(() => {
+                
+                wss.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify(post));
+                    }
+                });
+            })
+            .catch((error) => {
+                console.error('Error saving message:', error);
+            });
+    });
+});
+});
+
+
+
+
+app.get('/messages', async (req, res) => {
+    if(postCollection !== null){
+        const messages = await postCollection.find().toArray();
+        console.log("these are the stored messages before being sent\n" + messages.map(m => m.content))
+        res.json(messages);
+    }
+});
+
+server.listen(3000, function listening() {
+    console.log('WebSocket server is listening on port 3000');
 });
 
 //app.listen(process.env.PORT);
-ViteExpress.listen(app, 3000);
+//ViteExpress.listen(app, 3000);
+ViteExpress.bind( app, server )

@@ -8,6 +8,7 @@
     <meta name="description" content="Access to CampusConnect Home Page">
     <!-- get rid of favicon error -->
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="stylesheet" href="css/profile.css">
 </head>
 
 <body>
@@ -16,11 +17,23 @@
     <button  onclick="window.location.href = '/eventBoard';">Register Club Event</button>
     <button onclick="window.location.href = '/allEvents';">View Events</button>
     <button>Personal Calendar</button>
+    <button>Register Event</button>
+    <button>View Events</button>
     <button onclick="window.location.href = '/profilePage';">View Profile</button>
     <button onclick="window.location.href = '/logout';">Logout</button>
     <hr class="dashed-line">
+
+    <h2>CampusConnect Message Board</h2>
+    <h3>Make a new post:</h3>
+    <div id="messageContainer">
+        <input type="text" id="messageInput" placeholder="Type a message...">
+        <button id="sendButton">Post</button>
+    </div>
+    <h3>Feed:</h3>
+    <div id="messageDisplay"></div>
+    <script src="js/homepageClient.js"></script>
+
 </body>
-<button>+New Post</button>
-<article>Feed</article>
+
 
 </html>

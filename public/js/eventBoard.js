@@ -12,7 +12,6 @@ function isEmpty(str) {
   return !str || str.length === 0;
 }
 
-//submit
 const submit = async function (event) {
   event.preventDefault();
   const eventInput = document.querySelector("#event");
@@ -56,7 +55,6 @@ const submit = async function (event) {
 
   const text = await response.json();
   alert("event added");
-  //generateTable(text);
   resetTextBoxes();
 };
 
