@@ -2,21 +2,26 @@
 <html lang="en">
 
 <head>
-    <title>Profile Page</title>
+    <title>Campus Connect Home Page</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Your profile">
+    <meta name="description" content="Access to CampusConnect Home Page">
     <link rel="icon" href="./res/favicon.ico">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.snow.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="./css/common.css">
-    <link rel="stylesheet" type="text/css" href="./css/profile.css">
+    <link rel="stylesheet" type="text/css" href="./css/home.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.js"></script>
     <script src="./js/theme.js"></script>
-    <script src="./js/profile.js"></script>
+    <script src="./js/home.js"></script>
 </head>
+
 <body>
     <script>setTheme();</script>
     <header class="header">
-        <h1><span id="user">User</span>'s Profile</h1>
+        <h1>Campus Connect Dashboard</h1>
         <div id="theme-switch">
             <svg id="dark-switch" tabindex="0" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
                 <path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/>
@@ -35,29 +40,14 @@
             <a class="center hoverable" href = "/profilePage">View Profile</a>
             <a class="center hoverable" href = "/logout">Logout</a>
         </div>
-        <div class="center">
-            <h2>Posts</h2>
-            <div id="post-collection"></div>
-            <h2>Your Events <span id="date-specifier"></span></h2>
-            <ul id="personal-events"></ul>
-            <button type="button" class="hoverable" onclick="getPersonalCalendar()">Refresh Events</button>
-            <label for="month">Select a month:</label>
-            <input type="month" id="month">
-            <table id="calendar">
-                <tr>
-                    <th id="cal-yr-m" colspan="7" class="header"></th>
-                </tr>
-                <tr>
-                    <th>Sunday</th>
-                    <th>Monday</th>
-                    <th>Tuesday</th>
-                    <th>Wednesday</th>
-                    <th>Thursday</th>
-                    <th>Friday</th>
-                    <th>Saturday</th>
-                </tr>
-            </table>
-            <button type="button" class="hoverable" onclick="calendarView()">Refresh Calendar</button>
+        <div id="content" class="center">
+        <h3>Make a new post:</h3>
+        <div id="message-container">
+            <div id="message-input"></div>
+            <button id="send-button">Post</button>
+        </div>
+        <h3>Feed:</h3>
+        <div id="message-display"></div>
         </div>
     </main>
 </body>

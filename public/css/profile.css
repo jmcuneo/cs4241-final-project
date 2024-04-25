@@ -1,3 +1,29 @@
+h2 {
+    width: 100%;
+    text-align: center;
+}
+
+#personal-events {
+    margin: 0 auto;
+    width: max-content;
+}
+#personal-events li {
+    width: max-content;
+}
+
+#month {
+    margin-bottom: 1vh;
+}
+
+button {
+    padding: 1vw;
+    border: none;
+    border-radius: 1000000px;
+    margin: 2vh 0;
+    background-color: var(--sub-header);
+    color: var(--header-text);
+}
+
 table, td, th {
     border: 1px solid;
     border-collapse: collapse;
@@ -7,4 +33,6 @@ td {
     width: 100px;
     height: 100px;
     text-align: center;
+    background-color: var(--background);
+    color: var(--text);
 }

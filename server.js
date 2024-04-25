@@ -1,7 +1,11 @@
 const express = require('express'),
-    ViteExpress = require("vite-express");
+    ViteExpress = require("vite-express"),
     app = express(),
-    { MongoClient, ObjectId } = require("mongodb")
+    { MongoClient, ObjectId } = require("mongodb"),
+    WebSocket = require('ws'),
+    http = require('http'),
+    server = http.createServer(app),
+    wss = new WebSocket.Server({ server });
 
 //for sending files
 const multer = require('multer');
@@ -30,12 +34,14 @@ const client = new MongoClient(uri)
 
 let userCollection;
 let eventsCollection;
+let postCollection;
 
 (async function () {
-    await client.connect()
-    const database = client.db('finalProj')
-    userCollection = database.collection('users')
+    await client.connect();
+    const database = client.db('finalProj');
+    userCollection = database.collection('users');
     eventsCollection = database.collection("events");
+    postCollection = database.collection('posts')
 })();
 
 const cookieSession = require('cookie-session')
@@ -64,9 +70,13 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-    userCollection.findOne({ "userId": id }).then((user) => {
-        done(null, user);
-    });
+    if(userCollection) {
+        userCollection.findOne({ "userId": id }).then((user) => {
+            done(null, user);
+        });
+    } else {
+        console.error("User collection object not initialized when deserializing user!");
+    }
 });
 
 passport.use(new GitHubStrategy({
@@ -86,14 +96,12 @@ passport.use(new GitHubStrategy({
                     "events": []
                 }
                 userCollection.insertOne(newUser).then(user => {
-                    console.log("new user created:" + newUser)
-                    done(null, newUser)
+                    done(null, newUser);
                 })
             }
         })
     }
 ));
-
 
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport.use(
@@ -105,8 +113,7 @@ passport.use(
         (accessToken, refreshToken, profile, done) => {
             userCollection.findOne({ "userId": profile.id }).then((currentUser) => {
                 if (currentUser) {
-                    console.log(currentUser)
-                    done(null, currentUser)
+                    done(null, currentUser);
                 } else {
                     const newUser = {
                         "userId": profile.id,
@@ -114,8 +121,7 @@ passport.use(
                         "events": []
                     }
                     userCollection.insertOne(newUser).then(user => {
-                        console.log("new user created:" + newUser)
-                        done(null, newUser)
+                        done(null, newUser);
                     })
                 }
             });
@@ -138,8 +144,7 @@ const authCheck = (req, res, next) => {
 
 //redirects to loggedIn.html if logged in
 app.get('/loggedIn', authCheck, (req, res) => {
-    console.log("ran loggedIn")
-    res.sendFile(__dirname + '/public/loggedIn.html')
+    res.sendFile(__dirname + '/public/home.html')
 });
 
 //defaults to login page 
@@ -166,39 +171,40 @@ app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => 
 
 app.get('/logout', (req, res) => {
     req.logout();
-    req.session.login = false
+    req.session.login = false;
     res.redirect('/');
 });
 
 app.get('/profilePage', authCheck, (req, res) => {
-    res.sendFile(__dirname + '/public/profile.html')
+    res.sendFile(__dirname + '/public/profile.html');
 })
 
 //send to post event page
 app.get('/eventBoard', authCheck, (req, res) => {
-    res.sendFile(__dirname + '/public/eventBoard.html')
+    res.sendFile(__dirname + '/public/eventBoard.html');
 })
 
 app.get('/allEvents', authCheck, (req, res) => {
-    res.sendFile(__dirname + '/public/viewEvents.html')
+    res.sendFile(__dirname + '/public/viewEvents.html');
 })
 
 app.get('/user', (req, res) => {
-    console.log("fetching username")
     res.json({"username" : req.user.username});
 })
 
 app.get("/user-events", async (req, res) => {
-    console.log("fetching user events");
     userCollection.findOne({
         userId: req.user.userId
     })
     .then((user) => user.events)
     .then((events) => {
-        console.log(events);
-        let query = {$or: []};
-        events.forEach((e) => query.$or.push({eventId: e.eventId}));
-        return eventsCollection.find(query).toArray().then((eventList) => res.json(eventList));
+        if(events && events.len > 0) {
+            let query = {$or: []};
+            events.forEach((e) => query.$or.push({eventId: e.eventId}));
+            return eventsCollection.find(query).toArray().then((eventList) => res.json(eventList));
+        }
+
+        return res.json([]);
     });
 });
 let eventPost = []; //array to store all events
@@ -212,7 +218,6 @@ app.post('/upload', upload.single('image'), (req, res) => {
 });
 let description; //mongoDB
 app.post("/description", async (req, res) => {
-    console.log("description: ", req.body);
     if(req.body == ""){
         return res.send(JSON.stringify('No description uploaded.'))
     }
@@ -224,11 +229,8 @@ app.post("/description", async (req, res) => {
 // adds to array and database and sends client updated array
 app.post("/submit", async (req, res) => {
     let data = req.body;
-    console.log("type of startTime server: ", typeof(data.startTime))
-    console.log(data);
     for(let i = 0; i < eventPost.length; i++){
       if(data.event == eventPost[i].event){
-        console.log("Event already posted!");
         res.send(JSON.stringify("Event already posted!"));
         return;
       } 
@@ -243,7 +245,6 @@ app.post("/submit", async (req, res) => {
       image: image,
       description: description
     };
-    console.log("length ", (eventPost.length + 1));
     eventPost.push(entry);
     const result = await eventsCollection.insertOne(entry)
     req.json = JSON.stringify(eventPost);
@@ -279,32 +280,16 @@ function elapsedTime(startTime, endTime, date) {
     return hours + ' hours ' + minutes + ' minutes';
 }
 
-// app.post("/view", async (req, res) => {
-//     console.log(eventPost);
-//     if (eventsCollection !== null) {
-//         const events = await eventsCollection.find({}).toArray()
-//         res.json( events )
-//       }
-//       //res.send(JSON.stringify(events))
-// })
-
 app.post("/info", async (req, res) => {
-    console.log("index: ", req.body.entryIndex);
     const indexToRemove = req.body.entryIndex;
-    
-    // if (isNaN(indexToRemove) || indexToRemove < 0 || indexToRemove >= eventPost.length) {
-    //   return res.status(400).send(JSON.stringify("Invalid index"));
-    // }
 
     const details = eventPost[indexToRemove];
-    console.log("details: ", details);
     const eventName = details.event;  
   
     // Use the attribute 'name' of the object to remove data from MongoDB
     const filter = { event: eventName }; // Filter to find the document by the original item
     const foundItem = await eventsCollection.findOne(filter);
     
-    console.log(foundItem);
     res.send(foundItem);
     
   });
@@ -327,5 +312,50 @@ app.post("/refresh", express.json(), async (req, res) => {
   res.end(JSON.stringify(eventPost));
 });
 
+//websocket initialization 
+wss.on('connection', (ws, req) => {
+    ws.on('message', (message) => {
+        const decodedMessage = Buffer.from(message, 'base64').toString('utf-8');
+  
+        const post = {
+            username: decodeURIComponent(req.url.split("=")[1]),
+            anonymous: false,
+            datetime: new Date().toLocaleString(),
+            content: decodedMessage,
+            upvotes: 0,
+            downvotes: 0
+        };
+
+        postCollection.insertOne(post)
+            .then(() => {
+                
+                wss.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify(post));
+                    }
+                });
+            })
+            .catch((error) => {
+                console.error('Error saving message:', error);
+            });
+    });
+});
+
+
+app.get('/messages', async (req, res) => {
+    if(postCollection !== null){
+        const messages = await postCollection.find().toArray();
+        res.json(messages);
+    } else {
+        //Return empty list
+        res.json([]);
+    }
+});
+
+server.listen(3000, function listening() {
+    console.log('WebSocket server is listening on port 3000');
+});
+
 //app.listen(process.env.PORT);
-ViteExpress.listen(app, 3000);
+//ViteExpress.listen(app, 3000);
+ViteExpress.bind( app, server )
