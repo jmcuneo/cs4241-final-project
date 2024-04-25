@@ -95,8 +95,13 @@ let selectedColor = "rgb(116, 138, 227)";
 let totalTime = 0;
 let minute = 0;
 let second = 0;
-
+const giimmeComkie = () => {
+  var cookie = localStorage.getItem('token');
+  console.log(cookie)
+  if(cookie) document.cookie = `token=${cookie}`;
+}
 window.onload = async function () {
+  giimmeComkie();
   const logoutBtn = document.getElementById("logoutButton");
   logoutBtn.style.display = "none";
   const gameboard = document.getElementById("gameboard");

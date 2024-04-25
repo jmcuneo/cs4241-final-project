@@ -146,7 +146,7 @@ app.get("/auth/github/callback", async function (req, res) {
   const user = await ghlogin.getUserWithGhEmail(emails);
   if(user){
     let responseUrl = url.format({
-      pathname:"/play-game",
+      pathname:"/auth/github/callback/cookie",
       query: {
          "token": auth.generateAccessToken({ username: user.username }),
        }})
@@ -163,6 +163,9 @@ app.get("/auth/github/callback", async function (req, res) {
   // Successful authentication, redirect home.
   /* res.redirect("/"); */
 });
+app.get('/auth/github/callback/cookie', async (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "redirect.html"))
+})
 //DATABASE CONNECTION END
 app.post('/auth/test', auth.authenticateToken, (req, res) => {
 
