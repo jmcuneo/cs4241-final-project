@@ -179,13 +179,13 @@ function App() {
                 <button onClick={displayName}>Submit Your Name & Score</button></p>
             )}
             {!showInput && gameEnd && nameYes && !nameSubmit &&(
-                <p>
+                <p className="InputName">
                     <input
                         type="text"
                         value={nameInput}
                         onChange={handleNameInput}
                         onKeyUpCapture={handleNameSubmit}
-                        placeholder="Your Name Here"
+                        placeholder="Press Enter to Submit Your Name"
                     />
                 </p>
             )}
@@ -197,8 +197,11 @@ function App() {
           {/* Start Word */}
             {!showInput && !gameEnd &&(<button onClick={fetchStartWord}>Start Game</button>)}
             {!showInput && gameEnd &&(<button onClick={fetchStartWord}>Start a New Game</button>)}
-            {showInput && lastWord && !gameEnd && <p>{lastWord}</p>}
-            <div>
+            {showInput && lastWord && !gameEnd &&
+                <b>
+                    <p>{lastWord}</p>
+                </b>}
+            <div className="InputWord">
                 {showInput && !gameEnd &&( <input
                     type="text"
                     value={inputValue}
