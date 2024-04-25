@@ -42,11 +42,13 @@
 
 .container {
   display: flex;
+  justify-content: space-evenly;
 }
 
 .column {
   /*flex: 1;*/
   padding: 20px;
+  width: 20vw;
   /*background-color: #ecfaec;*/
 
 }
