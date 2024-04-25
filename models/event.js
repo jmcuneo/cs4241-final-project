@@ -160,9 +160,14 @@ const eventSchema = new Schema({
          */
         async getGuestList(event) {
             if (!event) return [];
-            return (await this.findById(event._id).
-                select('attendees').exec())?.
-                attendees ?? [];
+            const guestList = await this.findById(event._id).
+                select('attendees').populate('attendees.inviter').exec();
+            return guestList?.attendees.map(attendee => {
+                // Populate inviter but hide everything other than fullName
+                const { inviter, ...rest } = attendee.toObject();
+                const { fullName } = inviter;
+                return { invitedBy: fullName, ...rest };
+            }) ?? [];
         },
 
         /**

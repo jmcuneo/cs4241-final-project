@@ -24,7 +24,7 @@ function App() {
           },
           body: JSON.stringify({ token }),
         });
-  
+
         const data = await response.json();
         console.log(data)
         setAuthenticated(data.valid === true);
@@ -33,8 +33,8 @@ function App() {
         setAuthenticated(false);
       }
     };
-  
-    verifyToken(); 
+
+    verifyToken();
   }, [token]);
 
   const handleLogin = (newToken) => {
@@ -49,19 +49,19 @@ function App() {
 
   return (
     <Router>
-      <Background />{}
+      <Background />{ }
       <Routes>
         {/*LOGIN AND REGISTER*/}
         {!authenticated && <Route exact path="/login" element={<LoginPage onLogin={handleLogin} />} />}
-        <Route exact path="/register" element={<RegisterPage onRegister={handleLogin}/>} />
-        
+        <Route exact path="/register" element={<RegisterPage onRegister={handleLogin} />} />
+
         {/*PROTECTED ROUTES*/}
         {authenticated && (
           <>
-            <Route exact path="/main" element={<MainPage onLogout={handleLogout}/>} />
-            <Route exact path="/event/manage" element={<ManageEventPage onLogout={handleLogout} />} />
-            <Route exact path="/profile" element={<ProfilePage onLogout={handleLogout}/>} />
-            <Route exact path="/event" element={<EventPage onLogout={handleLogout}/>} />
+            <Route exact path="/main" element={<MainPage onLogout={handleLogout} />} />
+            <Route exact path="/event/manage/:eventName" element={<ManageEventPage onLogout={handleLogout} />} />
+            <Route exact path="/profile" element={<ProfilePage onLogout={handleLogout} />} />
+            <Route exact path="/event/:eventName" element={<EventPage onLogout={handleLogout} />} />
           </>
         )}
         {/* Redirect to main page if authenticated */}

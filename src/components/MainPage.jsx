@@ -10,7 +10,7 @@ function MainPage({ onLogout }) {
 
 	const handleEventPage = async (event) => {
 		event.preventDefault();
-		navigate("/event");
+		navigate("/event/Dummy%20Event");
 	}
 
 	const getUpcomingEvents = async () => {

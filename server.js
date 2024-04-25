@@ -13,6 +13,7 @@ import bodyParser from 'body-parser';
 import passport from './passport.js';
 import cors from 'cors';
 import User from './models/user.js';
+import Event from './models/event.js';
 
 const app = express();
 const port = 3000;
@@ -165,6 +166,26 @@ app.post('/api/getProfile', async (req, res) => {
         // Why does this double fire?
         return res.json(hideFieldsFromObject(
             renameFieldInObject(profile.toObject(), 'prettyAccountType', 'accountType'), 'id', '_id'));
+    } catch (err) {
+        console.log(err);
+        return res.json({ error: "Failed to authenticate token" });
+    }
+});
+
+app.post('/api/getGuestList', async (req, res) => {
+    try {
+        const { token, eventName } = req.body;
+        const username = getUsernameFromToken(token);
+
+        // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
+        const user = await User.findOne({ username: username });
+        const event = await Event.findOne({ name: eventName });
+
+        const guestList = (await event.getGuestList()).map(guest => {
+            return renameFieldInObject(hideFieldsFromObject(guest, 'id', '_id'), 'guest', 'guestName');
+        });
+
+        return res.json(guestList);
     } catch (err) {
         console.log(err);
         return res.json({ error: "Failed to authenticate token" });
