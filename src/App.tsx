@@ -118,6 +118,23 @@ function App() {
            setNameYes(false)
            setNameSubmit(true)
            setNameInput('')
+            //firework animation
+            const fireworksContainer = document.getElementById('fireworks-container');
+            for (let i = 0; i < 20; i++) {
+                createFirework();
+            }
+            function createFirework() {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.left = `${Math.random() * 100}%`;
+                firework.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                // @ts-ignore
+                fireworksContainer.appendChild(firework);
+
+                setTimeout(() => {
+                    firework.remove();
+                }, 1000);
+            }
         }
     }
 
@@ -147,7 +164,7 @@ function App() {
                     <h1>Game Over!</h1>
                     <div className="container">
                     <div className="column">
-                        <h1>Word Counter</h1>
+                        <h1>Word Count</h1>
                         <p>{wordCount}</p>
                     </div>
                     <div className="column">
@@ -178,7 +195,7 @@ function App() {
 
 
           {/* Start Word */}
-            {!showInput && !gameEnd &&(<button onClick={fetchStartWord}>Start the Game</button>)}
+            {!showInput && !gameEnd &&(<button onClick={fetchStartWord}>Start Game</button>)}
             {!showInput && gameEnd &&(<button onClick={fetchStartWord}>Start a New Game</button>)}
             {showInput && lastWord && !gameEnd && <p>{lastWord}</p>}
             <div>
@@ -197,6 +214,7 @@ function App() {
             </div>
             </div>
       </div>
+        <div id="fireworks-container"></div>
     </>
   )
 }
