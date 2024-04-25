@@ -103,8 +103,8 @@ button:focus-visible {
   display: flex;
   position: absolute;  /* Position absolutely relative to parent */
   flex-direction: row; /* Stacks elements horizontally */
-  top: -2%;              /* Place at top */
-  left: 1%;             /* Place at right */
+  top: -1.5rem;              /* Place at top */
+  left: 1rem;             /* Place at right */
   justify-content: center; /* Centers elements vertically */
   align-items: center; /* Centers elements horizontally */
   width: fit-content; /* Adjusts width to content */
@@ -112,8 +112,8 @@ button:focus-visible {
 
 .top-right-buttons {
   position: absolute;  /* Position absolutely relative to parent */
-  top: 1%;              /* Place at top */
-  right: 1%;             /* Place at right */
+  top: 0.5rem;              /* Place at top */
+  right: 1rem;             /* Place at right */
   display: flex; /* Keeps buttons together */
   justify-content: flex-end; /* Push buttons to the right */
 }
@@ -124,14 +124,14 @@ button:focus-visible {
   align-items: center; /* Centers elements horizontally */
   justify-content: center; /* Centers elements vertically */
   position: absolute; /* Positions the container absolutely */
-  top: 25%; /* Positions the top at 30% viewport height */
-  left: 9%; /* Positions the left at 10% viewport width */
+  top: 12rem; /* Positions the top at 30% viewport height */
+  left: 10rem; /* Positions the left at 10% viewport width */
   transform: translate(-50%, -50%); /* Adjusts for margins/padding */
   width: fit-content; /* Adjusts widths to content */
 }
 
 .guest-list table {
-  margin-top: -5%;
+  margin-top: -2rem;
   border: 2px solid rgb(255, 255, 255);
   border-collapse: collapse;
 }
@@ -139,5 +139,5 @@ button:focus-visible {
 .guest-list th, 
 .guest-list td {
   border: 2px solid rgb(255, 255, 255);
-  padding: 5px 10px;
+  padding: 0.25rem 1rem;
 }
