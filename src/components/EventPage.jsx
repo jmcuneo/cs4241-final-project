@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import GuestListComponent from "./GuestListComponent.jsx";
 import TopButtons from './TopButtons.jsx';
 import PropTypes from 'prop-types';
+import UserGuestInviteList from "./UserGuestInviteList.jsx";
 
 function EventPage({ onLogout }) {
     const navigate = useNavigate();
