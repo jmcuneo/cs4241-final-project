@@ -12,7 +12,7 @@ import session from 'express-session';
 import bodyParser from 'body-parser';
 import passport from './passport.js';
 import cors from 'cors';
-import User from './models/user.js';
+import User, { ACCOUNT_TYPE } from './models/user.js';
 import Event from './models/event.js';
 
 const app = express();
@@ -39,6 +39,10 @@ app.use(session({
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Connect to the database
+connectToDB().catch(err => console.log(err));
+
 
 // Register Route
 app.post('/register', async (req, res) => {
@@ -126,6 +130,34 @@ app.post('/api/verifyToken', (req, res) => {
         return res.json({ valid: false });
     }
 });
+
+app.post('/api/verifyAdmin', async (req, res) => {
+    try {
+        const { token } = req.body;
+        if (!token) {
+            // If token is null
+            // Prevent jwt.verify throwing an error and cluttering the console
+            // This can be removed if the console.log is removed from the catch
+            return res.json({ valid: false });
+        }
+        const decoded = jwt.verify(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
+
+        if (decoded.exp < Date.now() / 1000)
+            return res.json({ valid: false });
+
+        const user = await User.findOne({ username: decoded.username });
+        const isAdmin = user.accountType === ACCOUNT_TYPE.ADMIN;
+        return res.json({ valid: isAdmin });
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            console.log('Token expired.');
+        } else {
+            console.error(error)
+        }
+        return res.json({ valid: false });
+    }
+});
+
 
 app.post('/api/getUsernameFromToken', (req, res) => {
     try {
@@ -223,9 +255,6 @@ export function renameFieldInObject(obj, oldFieldName, newFieldName) {
     const { [oldFieldName]: fieldValue, ...rest } = obj;
     return { [newFieldName]: fieldValue, ...rest };
 }
-
-// Connect to the database
-connectToDB().catch(err => console.log(err));
 
 /**
  * @description Connects to the MongoDB database using USER, PASS, and HOST in the .env file
