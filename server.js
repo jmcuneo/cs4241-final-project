@@ -198,13 +198,13 @@ app.get("/user-events", async (req, res) => {
     })
     .then((user) => user.events)
     .then((events) => {
-        if(events && events.len > 0) {
+        if (events.length === 0) {
+            return res.json([]);
+        } else {
             let query = {$or: []};
-            events.forEach((e) => query.$or.push({eventId: e.eventId}));
-            return eventsCollection.find(query).toArray().then((eventList) => res.json(eventList));
+            events.forEach((e) => query.$or.push({_id: new ObjectId(e.eventId)}));
+            return eventsCollection.find(query).toArray().then((eventList) => {console.log(eventList);res.json(eventList)});
         }
-
-        return res.json([]);
     });
 });
 

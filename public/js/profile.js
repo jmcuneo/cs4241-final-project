@@ -29,8 +29,8 @@ async function getPersonalCalendar() {
     })
     .then((response) => response.json())
     .then((data) => {
-        personalEvents = data;
-        const list = document.querySelector("#personal-events");
+        ///personalEvents = data;
+        /*const list = document.querySelector("#personal-events");
         list.innerHTML = "";
         if(data.length > 0) {
             data.forEach(e => {
@@ -42,7 +42,8 @@ async function getPersonalCalendar() {
             const item = document.createElement("li");
             item.textContent = "You have not created any events!";
             list.appendChild(item);
-        }
+        }*/
+        getUserEvents(null);
     });
 };
 
@@ -102,13 +103,13 @@ function createDayButton(year, month, day) {
     return button;
 }
 
-function getEventsOnDay(year, month, day) {
+async function getEventsOnDay(year, month, day) {
     document.querySelector("#date-specifier").textContent = `(${Intl.DateTimeFormat("en", { year: "numeric", month: "long", day: "numeric"}).format(new Date(year, month, day))})`;
     const eventsOnDay = personalEvents.filter(e => {
         const eventDate = new Date(e.datetime);
         return eventDate.getUTCFullYear() === year && eventDate.getUTCMonth() === month && eventDate.getUTCDate() === day;
     });
-    const list = document.querySelector("#personal-events");
+    /*const list = document.querySelector("#personal-events");
     list.innerHTML = "";
     eventsOnDay.forEach(e => {
         const item = document.createElement("li");
@@ -120,7 +121,8 @@ function getEventsOnDay(year, month, day) {
         const item = document.createElement("li");
         item.textContent = "You have not created any events!";
         list.appendChild(item);
-    }
+    }*/
+    await getUserEvents((e) => e.startTime.substr(0, 10) === `${year}-${month + 1 < 10 ? "0" : ""}${month + 1}-${day < 10 ? "0" : ""}${day}`);
 };
 
 function appendMessage(username, content, datetime) {
@@ -150,11 +152,12 @@ const getUserEvents = async function (filter) {
         method: "GET"
     }).then((response) => response.json()).then((data) => {
         console.log(data);
-        userEvents = filter === null ? data : data.filter(filter);
-        console.log(userEvents);
-        const table = document.querySelector("#events");
+        console.log(filter);
+        personalEvents = filter === null ? data : data.filter(filter);
+        console.log(personalEvents);
+        const table = document.querySelector("#personal-events");
         table.innerHTML = "<tr><th>Event</th><th>Date</th><th>Start Time</th><th>End Time</th><th>Location</th><th>Details</th></tr>";
-        for (e of userEvents) {
+        for (e of personalEvents) {
             const startDate = new Date(e.startTime);
             const endDate = new Date(e.endTime);
             table.innerHTML += `<tr><td class='events'>${e.event}</td>
