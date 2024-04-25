@@ -109,8 +109,9 @@ app.post("/update", async (req, res) => {
   res.json(result);
 });
 
-app.get("/load", async (req, res) => {
-  inMemCache = db.getCards;
+app.post("/load", async (req, res) => {
+  inMemCache = await db.getCards();
+  console.log(inMemCache);
   res.send(JSON.stringify(inMemCache))
 })
 
