@@ -27,13 +27,13 @@
     }
     let errorMsg = "";
     window.onload = function () {
-        socket.on("room unavalible", (msg) => {
+        socket.on("room unavailable", (msg) => {
             errorMsg = msg;
         });
         socket.on("join failed", (msg) => {
             errorMsg = msg;
         });
-        socket.on("room avalible", async function(room, name){
+        socket.on("room available", async function(room, name){
             errorMsg = room;
             // await create_game(room);
             joinGame(room,name);
