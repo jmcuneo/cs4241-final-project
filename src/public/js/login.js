@@ -14,44 +14,52 @@ async function signUp() {
           email = document.querySelector("#signUpEmail"),
           pass = document.querySelector("#signUpPass")
     let body = {username: user.value, email: email.value, password: pass.value}
+    body = JSON.stringify(body);
     const response = await fetch( "/add", {
         method:'POST',
         headers: { 'Content-Type': 'application/json'},
         body
     })
+    console.log(await response);
 }
 
-async function signIn() {
+async function signIn(event) {
+    event.preventDefault()
     let username = null
     let email = null    
     const userEmail = document.querySelector("#signInName"),
-          pass = document.querySelector("#signInPass")
+    pass = document.querySelector("#signInPass")
     let parsedName = userEmail.value.match( /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
-
+    
     if(parsedName != null) {
         email = parsedName
     } else {
         username = userEmail.value
     }
-
+    
     let body = {username: username, email: email, password: pass.value}
-    const response = await fetch( "/login", {
+    
+    body = JSON.stringify(body);
+    const response = await fetch( "/login/auth", {
         method:'POST',
         headers: { 'Content-Type': 'application/json'},
         body
+    }).then(response => response.json())
+    .then(response =>{
+        if(response !== "bad login"){
+            document.cookie = `token=${response}`;
+            window.location = "/play-game"
+            return false;
+        }
+        else console.log("bad login");
     })
 }
 
-async function github() {
-    const response = await fetch( "/auth/github", {
-        method:'POST',
-        headers: { 'Content-Type': 'application/json'}
-    })   
-}
-
-async function guest() {
-    const response = await fetch( "/guest", {
-        method:'POST',
-        headers: { 'Content-Type': 'application/json'}
-    })   
+function github() {
+    try {
+        window.location = "/auth/github";
+        return false;
+    } catch (error) {
+        console.error("Error redirecting to GitHub authentication:", error);
+    }   
 }
