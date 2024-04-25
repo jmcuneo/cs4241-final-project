@@ -97,6 +97,8 @@ let minute = 0;
 let second = 0;
 
 window.onload = async function () {
+  const logoutBtn = document.getElementById("logoutButton");
+  logoutBtn.style.display = "none";
   const gameboard = document.getElementById("gameboard");
   gameboard.style.display = "none";
   const startBtn = document.getElementById("startButton");
@@ -111,6 +113,12 @@ window.onload = async function () {
         Authorization: `Bearer ${document.cookie.substring(6)}`,
       },
     }).then(response => response.text).then(response => console.log(response));
+    logoutBtn.style.display = "inline-flex"
+    logoutBtn.onclick = () => {
+      document.cookie = "token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
+      window.location = "/"
+      return false
+    }
   }
 };
 
