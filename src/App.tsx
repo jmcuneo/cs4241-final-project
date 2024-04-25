@@ -1,5 +1,8 @@
 import {useEffect, useState} from 'react'
 import './App.css'
+import {addScore, fetchScores, scoreEntry} from "./service/Score.ts";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {queryClient} from "./service/QueryClient.ts";
 
 function App() {
     //startWord
@@ -283,6 +286,7 @@ function App() {
             ) }
 
 
+
           {/* Start Word */}
             {!showInput && !gameEnd &&(
                 <>
@@ -318,7 +322,5 @@ function App() {
       </div>
         <div id="fireworks-container"></div>
     </>
-  )
+  );
 }
-
-export default App
