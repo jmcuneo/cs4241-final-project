@@ -124,5 +124,5 @@ button:focus-visible {
   top: 25%; /* Positions the top at 30% viewport height */
   left: 9%; /* Positions the left at 10% viewport width */
   transform: translate(-50%, -50%); /* Adjusts for margins/padding */
-  width: fit-content; /* Adjusts width to content */
+  width: fit-content; /* Adjusts widths to content */
 }

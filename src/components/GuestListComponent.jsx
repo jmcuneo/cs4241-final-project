@@ -41,14 +41,12 @@ function GuestListComponent() {
         <div className='guest-list'>
             <h1>Guest List</h1>
             <table>
-
                 <thead>
                     <tr>
                         <th>Guest Name</th>
                         <th>Invited By</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     {guestList.map((guest, index) => (
                         <tr key={index}>
@@ -57,7 +55,6 @@ function GuestListComponent() {
                         </tr>
                     ))}
                 </tbody>
-
             </table>
         </div>
     );

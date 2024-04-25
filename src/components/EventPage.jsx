@@ -7,11 +7,6 @@ import PropTypes from 'prop-types';
 function EventPage({ onLogout }) {
     const navigate = useNavigate();
     const { eventName } = useParams();
-    const handleMainPage = async (event) => {
-        event.preventDefault();
-        navigate("/main");
-    }
-
     const handleManageEventPage = async (event) => {
         event.preventDefault();
         navigate("/event/manage/" + encodeURI(eventName));
@@ -27,7 +22,6 @@ function EventPage({ onLogout }) {
                     id="manageEventPageButton"
                     onClick={handleManageEventPage}>Manage Event</button>
             </div>
-
             <TopButtons onLogout={onLogout} showBackButton={true} showProfileButton={true}></TopButtons>
             <GuestListComponent />
         </div>
