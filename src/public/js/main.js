@@ -56,7 +56,7 @@ function addCell(content) {
 
     let grid = document.getElementById("grid")
     let cell = makeElem("div", "cell", "", grid)
-    cell.id = content.event
+    cell.id = content.name
     cell.addEventListener("click", select)
     cell.addEventListener("mouseenter", showInfo)
     let card = makeElem("div", "card has-text-weight-bold", "", cell)

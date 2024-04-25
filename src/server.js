@@ -116,14 +116,20 @@ app.post("/load", async (req, res) => {
 })
 
 app.post("/select", async (req, res) => {
-  let attempt = JSON.parse(req.body)
-  let item1 = attempt.item1,
-      item2 = attempt.item2,
-      curr_time = attempt.timeElapsed, //not sure what to do with time...
-      curr_score = attempt.score + helpers.calculateScore(item1, item2);
+  console.log(req.body)
+  let item1 = req.body.item1,
+      item2 = req.body.item2,
+      curr_time = req.body.timeElapsed, //not sure what to do with time...
+      
+      curr_score = 9 + helpers.calculateScore(item1, item2);
+      console.log(curr_score)
   
   res.json({score: curr_score})
   
+})
+
+app.post("/leaderboard", async (req, res) => {
+  //TBA
 })
 
 app.get(
