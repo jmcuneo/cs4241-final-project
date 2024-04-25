@@ -63,3 +63,8 @@ function github() {
         console.error("Error redirecting to GitHub authentication:", error);
     }   
 }
+
+function guest() {
+    window.location = "/play-game"
+    return false
+}
