@@ -100,8 +100,10 @@ const giimmeComkie = () => {
   console.log(cookie)
   if(cookie) document.cookie = `token=${cookie}`;
 }
+
 window.onload = async function () {
   giimmeComkie();
+  openFullscreen();
   const logoutBtn = document.getElementById("logoutButton");
   logoutBtn.style.display = "none";
   const gameboard = document.getElementById("gameboard");
