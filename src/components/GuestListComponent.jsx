@@ -27,7 +27,6 @@ function GuestListComponent({ showInvite }) {
             }
         }
     getGuestList();
-    removeGuest("lhsbfs")
     }, [eventName]);
 
     const removeGuest = async (guestName) => {
