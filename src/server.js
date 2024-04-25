@@ -120,8 +120,8 @@ app.post("/select", async (req, res) => {
   let item1 = req.body.item1,
       item2 = req.body.item2,
       curr_time = req.body.timeElapsed, //not sure what to do with time...
-      
-      curr_score = 9 + helpers.calculateScore(item1, item2);
+
+      curr_score = helpers.calculateScore(item1, item2, inMemCache);
       console.log(curr_score)
   
   res.json({score: curr_score})
