@@ -312,7 +312,7 @@ app.post('/api/uninviteGuest', async (req, res) => {
     try {
         const { token, eventName, guestName } = req.body;
         if (token === undefined || eventName === undefined || guestName === undefined) {
-            return res.json({ success: false });
+            return res.json({ success: false, message: "undefined" });
         }
 
         const username = getUsernameFromToken(token);
@@ -322,16 +322,17 @@ app.post('/api/uninviteGuest', async (req, res) => {
         const event = await Event.findOne({ name: eventName });
 
         const guestList = await event.getGuestList();
+        console.log(guestName);
         const guestDoesNotExist = guestList.filter(guest => guest === guestName).length === 0;
         if (guestDoesNotExist) {
-            return res.json({ success: false });
+            return res.json({ success: false, message: "guest does not exist" });
         }
 
         const userUninvited = typeof (await user.uninviteGuests(event, guestName)) !== 'boolean';
         return res.json({ success: userUninvited });
     } catch (err) {
         console.log(err);
-        return res.json({ success: false });
+        return res.json({ success: false, message: err});
     }
 });
 

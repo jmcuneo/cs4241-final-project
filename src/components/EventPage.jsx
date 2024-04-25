@@ -22,8 +22,15 @@ function EventPage({ onLogout }) {
                     id="manageEventPageButton"
                     onClick={handleManageEventPage}>Manage Event</button>
             </div>
-            <TopButtons onLogout={onLogout} showBackButton={true} showProfileButton={true}></TopButtons>
-            <GuestListComponent />
+            <TopButtons onLogout={onLogout} showBackButton={true} showProfileButton={true}/>
+            <div className='guest-list'>
+                <h1 style={{marginRight: "20px"}}>Guest List</h1>
+                <GuestListComponent showInvite={true}/>
+            </div>
+            <div className='guest-list' style={{left: "70%"}}>
+                <h1 style={{marginTop: "90px"}}>Your Guests</h1>
+                <GuestListComponent showInvite={false}/>
+            </div>
         </div>
     );
 }
