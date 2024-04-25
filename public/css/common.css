@@ -56,10 +56,13 @@ body {
     justify-content: center;
 }
 
-.hoverable {
-    transition: 0.3s linear filter;
+.hoverable, input, button {
     cursor: pointer;
     user-select: none;
+}
+
+.hoverable {
+    transition: 0.3s linear filter;
 }
 .hoverable:hover {
     filter: brightness(80%);
@@ -102,7 +105,6 @@ body:not(.dark) #light-switch {
     background-color: var(--sub-header);
     text-decoration: none;
     font-weight: bolder;
-    user-select: none;
 }
 
 .ql-snow .ql-stroke {
