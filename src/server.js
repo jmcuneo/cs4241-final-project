@@ -111,15 +111,15 @@ app.post("/update", async (req, res) => {
 
 app.post("/load", async (req, res) => {
   inMemCache = await db.getCards();
-  console.log(inMemCache);
+  
   res.send(JSON.stringify(inMemCache))
 })
 
-app.post("/score", async (req, res) => {
+app.post("/select", async (req, res) => {
   let attempt = JSON.parse(req.body)
   let item1 = attempt.item1,
       item2 = attempt.item2,
-      curr_time = attempt.time, //not sure what to do with time...
+      curr_time = attempt.timeElapsed, //not sure what to do with time...
       curr_score = attempt.score + helpers.calculateScore(item1, item2);
   
   res.json({score: curr_score})

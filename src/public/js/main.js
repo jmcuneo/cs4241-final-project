@@ -52,20 +52,20 @@ async function start() {
 }
 
 function addCell(content) {
-    infoArr.push({title: content.title, info: content.info})
+    infoArr.push({title: content.name, info: content.info})
 
     let grid = document.getElementById("grid")
     let cell = makeElem("div", "cell", "", grid)
-    cell.id = content.title
+    cell.id = content.event
     cell.addEventListener("click", select)
     cell.addEventListener("mouseenter", showInfo)
     let card = makeElem("div", "card has-text-weight-bold", "", cell)
     let imgCard = makeElem("div", "card-image", "", card)
     let imgWrap = makeElem("figure", "image is-4by3", "", imgCard)
     let img = makeElem("img", "", null, imgWrap)
-    img.src = content.link
+    img.src = content.img
     img.alt = content.alt
-    let cont = makeElem("p", "is-6", content.title, card)
+    let cont = makeElem("p", "is-6", content.name, card)
 }
 
 function makeElem(type, classType, inner, parent) {

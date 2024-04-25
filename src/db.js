@@ -82,13 +82,13 @@ exports.getCards = async () => {
       i++
     }
 }
-console.log(rand_arr); //TESTING
+
 i = 0;
 while (i < 6) {
   card_array.push(await collection.findOne({"index": rand_arr[i]}))
   i++
 }
-console.log(card_array)
+
 i = 0
 collection = await switcher("cards-events"); //CHANGE TO NAME OF EVENT DATABASE
 while (i < rand_arr.length) {
@@ -99,7 +99,6 @@ while (i < rand_arr.length) {
   where each number is a random index pairing of people and events 
   In order to check matching, we will have to check the index with + 6
 */
-console.log(card_array)
 
   return card_array
 }
