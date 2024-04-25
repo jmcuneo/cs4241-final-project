@@ -195,7 +195,17 @@ function App() {
 
 
           {/* Start Word */}
-            {!showInput && !gameEnd &&(<button onClick={fetchStartWord}>Start Game</button>)}
+            {!showInput && !gameEnd &&(
+                <>
+                    <div className="instruction">
+                        <p>You have ten seconds to respond</p>
+                        <p>Avoid reusing any previously used words</p>
+                        <p>Input words must have a length greater than 4</p>
+                        <p>Scores are based on the length of words you input</p>
+                        <p>Good Luck!</p>
+                    </div>
+                <button onClick={fetchStartWord}>Start Game</button>
+                </>)}
             {!showInput && gameEnd &&(<button onClick={fetchStartWord}>Start a New Game</button>)}
             {showInput && lastWord && !gameEnd &&
                 <b>
@@ -210,10 +220,12 @@ function App() {
                     placeholder="Press Enter to Submit"
                 />
                 )}
-            <div>
-                {showInput && !gameEnd && usedWord.map((number, index) => (
-                    <p key={index}>{number}</p>
-                ))}
+            <div className="array-container">
+                {showInput && !gameEnd && (
+                        usedWord.map((number, index) => (
+                    <div className="usedWord" key={index}>{number}</div>
+                        )
+                    ))}
             </div>
             </div>
       </div>
