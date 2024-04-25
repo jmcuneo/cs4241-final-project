@@ -32,6 +32,17 @@ function Dashboard(props) {
                         canvas.height = 800;
                         //console.log(canvas.width, canvas.height);
                         const ctx = canvas.getContext('2d');
+
+                        let formData = new FormData();
+                        formData.append('image', file);
+                        const response = fetch("/upload", {
+                            method: 'POST',
+                            body: formData,
+                            }).then(response => {response.blob()})
+                                .then(blob => {console.log(blob)})
+                                    .catch(error => {console.error(error)});
+
+
                         //console.log(ctx);
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height / imageAspectRatio);
                         //download image
