@@ -41,6 +41,11 @@ function GuestListComponent({ onUpdate }) {
                 }),
             });
             const result = await response.json();
+            if(response.ok){
+                setGuestList(currentGuests => [...currentGuests, { guestName }]);
+                onUpdate(guestName, "add");
+                guestNameRef.current.value = '';
+            }
             console.log(result);
         } catch (error) {
             console.error('Error adding guest:', error);
@@ -61,6 +66,10 @@ function GuestListComponent({ onUpdate }) {
                 }),
             });
             const result = await response.json();
+            if(response.ok) {
+                setGuestList(currentGuests => currentGuests.filter(guest => guest.guestName !== guestName));
+                onUpdate(guestName, "remove");
+            }
             console.log(result);
         } catch (error) {
             console.error('Error removing guest:', error);
@@ -70,18 +79,11 @@ function GuestListComponent({ onUpdate }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         const guestName = guestNameRef.current.value;
-        // Update local state immediately for UI responsiveness
-        setGuestList(currentGuests => [...currentGuests, { guestName }]);
-        // Send the API request to add the guest on the backend 
         addGuest(guestName); 
-        onUpdate(guestName, "add");
-        guestNameRef.current.value = '';
     }
     
     const handleRemove = async (guestName) => {
         removeGuest(guestName);
-        setGuestList(currentGuests => currentGuests.filter(guest => guest.guestName !== guestName));
-        onUpdate(guestName, "remove");
     };
 
     useEffect(() => {
