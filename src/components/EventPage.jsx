@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import GuestListComponent from "./GuestListComponent.jsx";
 import TopButtons from './TopButtons.jsx';
 import PropTypes from 'prop-types';
+import UserGuestInviteList from "./UserGuestInviteList.jsx";
+import AddGuest from "./AddGuest.jsx";
 
 function EventPage({ onLogout }) {
     const navigate = useNavigate();
@@ -17,13 +19,15 @@ function EventPage({ onLogout }) {
             <div className='header-section'>
                 <h1>Event Page</h1>
                 <button style={{ marginLeft: '20px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }}
-                    className="btn waves-effect waves-light"
-                    type="button"
-                    id="manageEventPageButton"
-                    onClick={handleManageEventPage}>Manage Event</button>
+                        className="btn waves-effect waves-light"
+                        type="button"
+                        id="manageEventPageButton"
+                        onClick={handleManageEventPage}>Manage Event</button>
             </div>
             <TopButtons onLogout={onLogout} showBackButton={true} showProfileButton={true}></TopButtons>
             <GuestListComponent />
+            <AddGuest/>
+            <UserGuestInviteList/>
         </div>
     );
 }
