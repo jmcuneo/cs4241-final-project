@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 
 /**
  * @author Jack Weinstein
@@ -59,18 +60,8 @@ function LoginPage({onLogin}) {
     navigate("/register");
   };
 
-  const handleMainPage = async (event) => {
-    event.preventDefault();
-    navigate("/main");
-  }
-
-  const handleEventPage = async (event) => {
-    event.preventDefault();
-    navigate("/event");
-  }
-
   return (
-    <div className="row" style={{ marginLeft: '20px' }}> 
+    <div className="center-page-container"> 
       <h1 style={{ marginLeft: '30px' }}>Event List Sign-In</h1> 
       <form className="col s12" id="loginForm" onSubmit={handleSubmit}>
         <div className="col"> 
@@ -82,7 +73,7 @@ function LoginPage({onLogin}) {
             <div><label style={{ fontSize: '20px', color: 'white' }} htmlFor="password">Password</label></div>
             <input className="validate" type="password" id="password" name="password" required ref={passwordRef}/>
           </div>
-          <button style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(3, 252, 98)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light"type="submit" id="loginButton">Login</button>
+          <button style={{marginTop: '10px', backgroundColor: 'rgb(3, 252, 98)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light"type="submit" id="loginButton">Login</button>
           <button style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="registerButton" onClick={handleRegister}>Register</button>
         </div>
       </form>
@@ -90,5 +81,9 @@ function LoginPage({onLogin}) {
     </div>
   );
 }
+
+LoginPage.propTypes = {
+  onLogin: PropTypes.func.isRequired
+};
 
 export default LoginPage;

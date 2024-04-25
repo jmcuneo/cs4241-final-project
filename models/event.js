@@ -97,7 +97,7 @@ const eventSchema = new Schema({
                     const hasAllPerms = user.permissions && user.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS);
                     const canInviteToEvent = event.allowedInviters && event.isUserAllowedToInvite(user);
                     const isBelowGuestLimit = event && event.guestLimit ? event.attendees.length < event.guestLimit : true; // TODO test this
-                    const previousInvites = (await event.getInvitesByInviter(user)).length // TODO Test this
+                    const previousInvites = (await event.getInvitesByInviter(user)).length
                     const isBelowInviterLimit = event && event.inviterLimit ? previousInvites < event.inviterLimit : true; // TODO test this
                     return (hasAllPerms || canInviteToEvent) && isBelowGuestLimit && isBelowInviterLimit;
                 },
@@ -126,7 +126,7 @@ const eventSchema = new Schema({
         guestCount: {
             type: String,
             get() {
-                return this.attendees.length;
+                return this?.attendees?.length ?? 0;
             }
         }
     },
@@ -147,12 +147,9 @@ const eventSchema = new Schema({
          */
         async getInviteIdsByInviter(event, user) {
             if (!event || !user) return [];
-            return (await this.findById(event._id).
-                where('attendees.inviter').
-                equals(user).
-                select('attendees').
-                exec())?.
-                attendees.
+            const foundEvent = await this.findOne({ _id: event._id });
+            return foundEvent?.
+                attendees.filter(attendee => attendee.inviter.equals(user._id)).
                 map(attendee => attendee.guest);
         },
 
@@ -163,9 +160,14 @@ const eventSchema = new Schema({
          */
         async getGuestList(event) {
             if (!event) return [];
-            return (await this.findById(event._id).
-                select('attendees').exec())?.
-                attendees ?? [];
+            const guestList = await this.findById(event._id).
+                select('attendees').populate('attendees.inviter').exec();
+            return guestList?.attendees.map(attendee => {
+                // Populate inviter but hide everything other than fullName
+                const { inviter, ...rest } = attendee.toObject();
+                const { fullName } = inviter;
+                return { invitedBy: fullName, ...rest };
+            }) ?? [];
         },
 
         /**
@@ -179,7 +181,7 @@ const eventSchema = new Schema({
             // if (!user) return [];
             const currentDate = new Date().toISOString();
             return (await this.
-                where('date').gte(currentDate)
+                where('date').gte(currentDate).select('name date location attendees guestCount').populate('attendees').exec()
             );
         },
     },
@@ -196,13 +198,13 @@ const eventSchema = new Schema({
          *          // It is preferred if you use this:
          *          await event.getInvitesByInviter(user);
          * 
-         * @param {mongoose.Model} user The inviter whom invited people
+         * @param {mongoose.Model} inviter The inviter whom invited people
          * @returns {null | Promise<Array<mongoose.ObjectId>>} An array of the id's of users who were invited by the given user
          * @author Alexander Beck
          * @see {@link Event.getInviteIdsByInviter}
          */
-        async getInviteIdsByInviter(user) {
-            return await Event.getInviteIdsByInviter(this, user);
+        async getInviteIdsByInviter(inviter) {
+            return await Event.getInviteIdsByInviter(this, inviter);
         },
 
         /**

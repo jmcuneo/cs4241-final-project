@@ -9,11 +9,11 @@ import jwt from 'jsonwebtoken';
 
 import Account from './models/account.js';
 import session from 'express-session';
-import MongoStore from 'connect-mongo';
 import bodyParser from 'body-parser';
 import passport from './passport.js';
 import cors from 'cors';
 import User from './models/user.js';
+import Event from './models/event.js';
 
 const app = express();
 const port = 3000;
@@ -33,7 +33,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: { secure: true }
-  }));
+}));
 
 
 // Passport Middleware
@@ -68,15 +68,15 @@ app.post('/register', async (req, res) => {
 //login route
 app.post('/login', passport.authenticate('local', { failureMessage: true }), async (req, res) => {
     const user = await Account.findOne({ username: req.body.username });
-    if (!user) 
+    if (!user)
         return res.status(404).json({ success: false, message: "User not found" });
-    
+
     const token = generateToken(user);
-    req.session.user = { id: user._id, username: req.username };
+    res.setHeader('Authorization', `Bearer ${token}`);
     res.json({ success: true, token, message: "Login successful" });
 });
 
-function generateToken(user){
+function generateToken(user) {
     const payload = {
         username: user.username,
     };
@@ -84,17 +84,148 @@ function generateToken(user){
     return jwt.sign(payload, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!", { expiresIn: '1h' });     //MAKE A NEW KEY EVENTUALLY AND MOVE TO .ENV
 }
 
-// Connect to the database
-connectToDB().catch(err => console.log(err));
+//Token stored in localStorage
+function getUsernameFromToken(token) {
+    try {
+        const decoded = jwt.decode(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
+        const username = decoded.username;
+
+        return username;
+    } catch (error) {
+        console.log("Failed to get username from token");
+    }
+}
 
 /*
 #################################################
-WILL DELETE ENTIRE DB ON EVERY LOAD!!!!!!!!!!!!!!
-Only keep when in DEVELOPMENT. 
+API ENDPOITNS
 #################################################
 */
-// testDB();
-await createDummyUsers();
+app.post('/api/verifyToken', (req, res) => {
+    try {
+        const { token } = req.body;
+        if (!token) {
+            // If token is null
+            // Prevent jwt.verify throwing an error and cluttering the console
+            // This can be removed if the console.log is removed from the catch
+            return res.json({ valid: false });
+        }
+        const decoded = jwt.verify(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
+        console.log(decoded)
+
+        if (decoded.exp < Date.now() / 1000)
+            return res.json({ valid: false });
+
+        return res.json({ valid: true });
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            console.log('Token expired.');
+        } else {
+            console.error(error)
+        }
+        return res.json({ valid: false });
+    }
+});
+
+app.post('/api/getUsernameFromToken', (req, res) => {
+    try {
+        const { token } = req.body;
+        const decoded = jwt.decode(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
+        const username = decoded.username;
+
+        console.log(username)
+        return res.json({ username });
+    } catch (error) {
+        return res.json({ error: "Failed to get username from token" });
+    }
+});
+
+
+app.post('/api/getUpcomingEvents', async (req, res) => {
+    try {
+        const { token } = req.body;
+        const username = getUsernameFromToken(token);
+        const user = await User.findOne({ username: username });
+
+        const events = await user.getUpcomingEvents();
+
+        // Why does this double fire?
+        return res.json(events);
+    } catch (err) {
+        console.log(err);
+        return res.json({ error: "Failed to authenticate token" });
+    }
+});
+
+app.post('/api/getProfile', async (req, res) => {
+    try {
+        const { token } = req.body;
+        const username = getUsernameFromToken(token);
+        const profile = await User.findOne({ username: username }).select('fullName username prettyAccountType').populate('firstName lastName').exec();
+
+        // Why does this double fire?
+        return res.json(hideFieldsFromObject(
+            renameFieldInObject(profile.toObject(), 'prettyAccountType', 'accountType'), 'id', '_id'));
+    } catch (err) {
+        console.log(err);
+        return res.json({ error: "Failed to authenticate token" });
+    }
+});
+
+app.post('/api/getGuestList', async (req, res) => {
+    try {
+        const { token, eventName } = req.body;
+        const username = getUsernameFromToken(token);
+
+        // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
+        const user = await User.findOne({ username: username });
+        const event = await Event.findOne({ name: eventName });
+
+        const guestList = (await event.getGuestList()).map(guest => {
+            return renameFieldInObject(hideFieldsFromObject(guest, 'id', '_id'), 'guest', 'guestName');
+        });
+
+        return res.json(guestList);
+    } catch (err) {
+        console.log(err);
+        return res.json({ error: "Failed to authenticate token" });
+    }
+});
+
+/**
+ * Returns the given object without the provided fields
+ * @param {*} obj 
+ * @param  {...String} fields The fields to remove from the object
+ * @returns {*} The object without the given fields
+ */
+export function hideFieldsFromObject(obj, ...fields) {
+    if (fields.length === 0) return obj;
+    let newObj = obj;
+    fields.forEach(field => {
+        /* eslint-disable-next-line */
+        const { [field]: ignore, ...rest } = newObj;
+        newObj = rest;
+    });
+    return newObj;
+}
+
+/**
+ * Does not mutlilate the object.
+ * @param {*} obj 
+ * @param  {String} oldFieldName The field to rename
+ * @param {String} newFieldName The new name
+ * @returns {*} The given object with field changed to newName
+ */
+export function renameFieldInObject(obj, oldFieldName, newFieldName) {
+    if (!obj) return undefined;
+    if (!oldFieldName || !newFieldName) return obj;
+
+    const { [oldFieldName]: fieldValue, ...rest } = obj;
+    return { [newFieldName]: fieldValue, ...rest };
+}
+
+// Connect to the database
+connectToDB().catch(err => console.log(err));
 
 /**
  * @description Connects to the MongoDB database using USER, PASS, and HOST in the .env file
@@ -111,3 +242,12 @@ async function connectToDB() {
 ViteExpress.listen(app, process.env.PORT || port, () => {
     console.log("Server listening on port " + (process.env.PORT ? process.env.PORT : port));
 });
+
+/*
+#################################################
+WILL DELETE ENTIRE DB ON EVERY LOAD!!!!!!!!!!!!!!
+Only keep when in DEVELOPMENT. 
+#################################################
+*/
+// testDB();
+await createDummyUsers();
