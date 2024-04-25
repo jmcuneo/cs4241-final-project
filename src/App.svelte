@@ -30,7 +30,7 @@
 
     function gameChosen(e) {
         game_data.state = "InGame";
-        socket.emit("host game", e.detail.type);
+        socket.emit("host game", game_data.id, e.detail.type);
     }
 
     function gameEnd(e) {
