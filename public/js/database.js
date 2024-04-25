@@ -1,7 +1,5 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
-
-
 const dbPwd = "admin"
 
 const uri = `mongodb+srv://admin:${dbPwd}@cluster0.wsalwot.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -150,5 +148,5 @@ async function concludeGame(gameID, winnerID, loserIDs){
 }
 
 module.exports = {
-    addWin
+    addWin,
 }
