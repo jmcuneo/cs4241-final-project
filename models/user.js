@@ -28,6 +28,7 @@ export const PERMISSIONS = Object.freeze({
     UNINVITE_TO_ALL_EVENTS: 'UNINVITE_TO_ALL_EVENTS', // Uninvite guests from all events
     GIFT_ADMIN: 'GIFT_ADMIN', // Make other users admin
     CREATE_EVENT: 'CREATE_EVENT', // Create events
+    DELETE_EVENT: 'DELETE_EVENT'
 });
 
 /**
@@ -227,11 +228,40 @@ const userSchema = new Schema({
                 });
                 await Logger.create({
                     action: EVENTS.CREATE_EVENT,
-                    event: event
+                    event: event,
+                    subject: this
                 });
                 return event;
             } else {
                 // Not allowed to create an event
+                return false;
+            }
+        },
+        /**
+         * @requires {@link PERMISSIONS.DELETE_EVENT}
+         * @author Alexander Beck
+         * @param {*} eventName The event name
+         * @returns {Promise<Boolean>} A boolean representing the success of deleting the event
+         * @example await user.deleteEvent('Christmas Party');
+         */
+        async deleteEvent(eventName) {
+            if (eventName === undefined) return false;
+            const event = await Event.findOne({ name: eventName });
+            // If user is admin, has PERMISSIONS.DELETE_EVENT, or is the event's creator
+            // eventDetails is an added to check to ensure that it is not empty
+            if (eventName && (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.DELETE_EVENT) || event.creator.equals(this._id))) {
+                const unsavedLog = new Logger({
+                    action: EVENTS.DELETE_EVENT,
+                    event: event,
+                    subject: this
+                });
+
+                await Event.deleteOne({ name: eventName });
+
+                await unsavedLog.save();
+                return true;
+            } else {
+                // Not allowed to delete an event
                 return false;
             }
         },
@@ -427,9 +457,10 @@ const userSchema = new Schema({
         async getInvitedGuests(event) {
             // Used for frontend
             if (!event) return false;
+            const thisFullName = await this.fullName;
             return Promise.all((await event.getInvitesByInviter(this)).map(async (invite) => {
-                if (typeof invite === 'string') return invite;
-                return await invite.fullName;
+                const guestName = typeof invite === 'string' ? invite : await invite.fullName;
+                return { guest: guestName, invitedBy: thisFullName };
             }));
         },
     },
