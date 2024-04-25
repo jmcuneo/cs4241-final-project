@@ -5,6 +5,8 @@ window.onload = function() {
     signInBtn.onclick = signIn
     const githubBtn = document.getElementById("githubSign")
     githubBtn.onclick = github
+    const guestLogin = document.getElementById("guestLogin")
+    guestLogin.onclick = guest
 }
 
 async function signUp() {
@@ -59,9 +61,5 @@ function github() {
         return false;
     } catch (error) {
         console.error("Error redirecting to GitHub authentication:", error);
-    }
-    /* const response = await fetch( "/auth/github", {
-        method:'GET',
-        headers: { 'Content-Type': 'application/json'}
-    }) */   
+    }   
 }
