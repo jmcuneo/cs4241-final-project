@@ -4,15 +4,14 @@ import './Login.css';
 
 function Login(props) {
     const [showPassword, setShowPassword] = useState(true);
+    const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
+    
     document.body.style.height = '0';
 
     const email = createContext();
 
-    // const verifyAccount = () => {
-    //     navigate("/dashboard");
-    // }
     const verifyAccount = () => {
         if (!email || !password) {
             alert('Username or password cannot be empty');
@@ -38,7 +37,7 @@ function Login(props) {
             console.error('Error:', error);
         });
     }
-
+    
     return (
         <div>
             {props.setEmail("")}
