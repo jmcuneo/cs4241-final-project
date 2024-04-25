@@ -427,9 +427,10 @@ const userSchema = new Schema({
         async getInvitedGuests(event) {
             // Used for frontend
             if (!event) return false;
+            const thisFullName = await this.fullName;
             return Promise.all((await event.getInvitesByInviter(this)).map(async (invite) => {
-                if (typeof invite === 'string') return invite;
-                return await invite.fullName;
+                const guestName = typeof invite === 'string' ? invite : await invite.fullName;
+                return { guest: guestName, invitedBy: thisFullName };
             }));
         },
     },
