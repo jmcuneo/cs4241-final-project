@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
-
+import PropTypes from 'prop-types';
 
 function GuestListComponent({ showInvite }) {
     const { eventName } = useParams();
@@ -52,7 +52,7 @@ function GuestListComponent({ showInvite }) {
     const handleRemove = async (guestName) => {
         console.log("removing guest:  " + guestName);
         removeGuest(guestName);
-      };
+    };
 
     //table with n rows and 2 columns: guestName and invitedBy
     //tr-cols | tbody-rows
@@ -60,11 +60,11 @@ function GuestListComponent({ showInvite }) {
         <table>
             {showInvite && (
                 <thead>
-                <tr>
-                    <th>Guest Name</th>
-                    <th>Invited By</th>
-                </tr>
-            </thead>
+                    <tr>
+                        <th>Guest Name</th>
+                        <th>Invited By</th>
+                    </tr>
+                </thead>
             )}
             <tbody>
                 {guestList.map((guest, index) => (
@@ -76,7 +76,7 @@ function GuestListComponent({ showInvite }) {
                         {!showInvite && (
                             <td>
                                 <button
-                                    style={{backgroundColor: 'rgb(240, 91, 58)', color: 'black', fontWeight: 'bold' }}
+                                    style={{ backgroundColor: 'rgb(240, 91, 58)', color: 'black', fontWeight: 'bold' }}
                                     className="btn waves-effect waves-light"
                                     type="button"
                                     id={"removeButton" + index}
@@ -90,6 +90,10 @@ function GuestListComponent({ showInvite }) {
             </tbody>
         </table>
     );
+}
+
+GuestListComponent.propTypes = {
+    showInvite: PropTypes.bool
 }
 
 export default GuestListComponent;
