@@ -1,27 +1,41 @@
 import React, { useState, useRef } from 'react';
-import Popup from 'reactjs-popup';
+import { useParams } from "react-router-dom";
 
 function AddGuest(){
+    const { eventName } = useParams();
+    const guestNameRef = useRef(null);
+
+    const addGuest = async (guestName) => {
+        try {
+            const response = await fetch('//localhost:3000/api/inviteGuest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    token: localStorage.getItem('token'),
+                    eventName: eventName,
+                    guestName: guestNameRef.current.value
+                }),
+            });
+            const result = await response.json();
+            console.log(result);
+        } catch (error) {
+            console.error('Error adding guest:', error);
+        }
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        //add to database
+        addGuest();
     }
 
     return(
-        <div>
-            <Popup trigger={<button> Add Guest </button>} modal nested>
-                {close => (
-                    <div className='modal'>
-                        <div className='content'>
-                            <form onSubmit={handleSubmit}>
-                                <input type="text" />
-                                <button onClick={() => close()}>Back</button>
-                                <button type="submit">Submit</button>
-                            </form>
-                        </div>
-                    </div>
-                )}
-            </Popup>
+        <div className='add-guest'>
+            <form onSubmit={handleSubmit}>
+                <input type="text" id='addGuestName' placeholder='Guest Name' required ref={guestNameRef} style={{fontSize: "1.1rem", marginTop: "0.5rem"}}/>
+                <button className='add-guest-button' type="submit">Add Guest</button>
+            </form>
         </div>
     )
 }
