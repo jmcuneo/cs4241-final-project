@@ -4,6 +4,9 @@
 
     export let game_data;
 
+    let chatWindow;
+    let messages = [];
+
     function keydown(e) {
         if (e.key === "Enter") {
             // console.log("Enter pressed");
@@ -17,7 +20,6 @@
             e.target.value = "";
         }
     }
-    let messages = [];
 
     socket.on("message receive", (name, msg) => {
         let player_num = 0;
@@ -31,12 +33,20 @@
 
         messages.push({ name: name, message: msg, player_num });
         messages = messages;
-
         console.log(name, msg);
+        setTimeout(scroll);
     });
+
+    function scroll(height) {
+        chatWindow.scroll(0, chatWindow.scrollHeight);
+    }
+    //let oldHeight;
+    //let actualHeight;
+    // function scroll() {}
+    // $: actualHeight, scroll();
 </script>
 
-<div class="chat-window">
+<div class="chat-window" bind:this={chatWindow}>
     {#each messages as { name, message, player_num }}
         <ChatMessage {name} {message} player_id={player_num}></ChatMessage>
     {/each}
