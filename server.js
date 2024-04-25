@@ -27,8 +27,10 @@ io.on('connection', (socket) => {
     io.to(room).emit('message receive', "Server", message);
   }
   socket.on('try host game', async(room)=>{
+    console.log("Try host game called");
     room = room.toLowerCase();
     const existingGame = await database.getGameByRoomCode(room);
+    // console.log("")
     if(existingGame != null){
       socket.emit('room available');
     }else{
