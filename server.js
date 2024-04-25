@@ -198,14 +198,13 @@ app.get("/user-events", async (req, res) => {
     })
     .then((user) => user.events)
     .then((events) => {
-        console.log(events);
-        if (events.length === 0) {
-            return res.json([]);
-        } else {
+        if(events && events.len > 0) {
             let query = {$or: []};
-            events.forEach((e) => query.$or.push({_id: new ObjectId(e.eventId)}));
-            return eventsCollection.find(query).toArray().then((eventList) => {console.log(eventList);res.json(eventList)});
+            events.forEach((e) => query.$or.push({eventId: e.eventId}));
+            return eventsCollection.find(query).toArray().then((eventList) => res.json(eventList));
         }
+
+        return res.json([]);
     });
 });
 
@@ -315,22 +314,17 @@ function elapsedTime(startTime, endTime, date) {
 }
 
 app.post("/info", async (req, res) => {
-    //console.log("index: ", req.body.entryIndex);
-    //const indexToRemove = req.body.entryIndex;
-    
-    // if (isNaN(indexToRemove) || indexToRemove < 0 || indexToRemove >= eventPost.length) {
-    //   return res.status(400).send(JSON.stringify("Invalid index"));
-    // }
+    const indexToRemove = req.body.entryIndex;
 
-    //const details = eventPost[indexToRemove];
-    //console.log("details: ", details);
+    const details = eventPost[indexToRemove];
+    const eventName = details.event;  
+  
     // Use the attribute 'name' of the object to remove data from MongoDB
-    const filter = { _id: new ObjectId(req.body.eventId) }; // Filter to find the document by the original item
+    const filter = { event: eventName }; // Filter to find the document by the original item
     const foundItem = await eventsCollection.findOne(filter);
     
     res.send(foundItem);
-    
-  });
+});
 
 app.post("/refresh", express.json(), async (req, res) => {
     const mongoData = await eventsCollection.find({}).toArray();
@@ -374,6 +368,13 @@ app.get('/messages', async (req, res) => {
     } else {
         //Return empty list
         res.json([]);
+    }
+});
+
+app.get('/personalPosts', async (req, res) => {
+    if (postCollection !== null) {
+        const messages = await postCollection.find({ username: req.user.username }).toArray();
+        res.json(messages);
     }
 });
 
