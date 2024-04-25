@@ -31,7 +31,7 @@ io.on('connection', (socket) => {
     room = room.toLowerCase();
     const existingGame = await database.getGameByRoomCode(room);
     // console.log("")
-    if(existingGame != null){
+    if(existingGame == null){
       socket.emit('room available');
     }else{
       socket.emit('room unavailable');
