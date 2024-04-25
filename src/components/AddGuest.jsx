@@ -13,12 +13,15 @@ function AddGuest(){
                     close => (
                         <div className='modal'>
                             <div className='content'>
-                                Content
+                                <input type="text"><input/>
                             </div>
                             <div>
                                 <button onClick=
                                             {() => close()}>
-                                    Close Popup
+                                    Back
+                                </button>
+                                <button onSubmit={}>
+                                    Submit
                                 </button>
                             </div>
                         </div>
@@ -26,7 +29,7 @@ function AddGuest(){
                 }
             </Popup>
         </div>
-    )
+)
 }
 
 export default AddGuest;

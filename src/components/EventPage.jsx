@@ -4,7 +4,6 @@ import GuestListComponent from "./GuestListComponent.jsx";
 import TopButtons from './TopButtons.jsx';
 import PropTypes from 'prop-types';
 import UserGuestInviteList from "./UserGuestInviteList.jsx";
-import AddGuest from "./AddGuest.jsx";
 
 function EventPage({ onLogout }) {
     const navigate = useNavigate();
@@ -26,7 +25,6 @@ function EventPage({ onLogout }) {
             </div>
             <TopButtons onLogout={onLogout} showBackButton={true} showProfileButton={true}></TopButtons>
             <GuestListComponent />
-            <AddGuest/>
             <UserGuestInviteList/>
         </div>
     );
