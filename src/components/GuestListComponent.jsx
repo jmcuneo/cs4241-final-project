@@ -50,8 +50,8 @@ function GuestListComponent({ showInvite }) {
     }
 
     const handleRemove = async (guestName) => {
-        console.log("removing guest:  " + guestName);
         removeGuest(guestName);
+        setGuestList(currentGuests => currentGuests.filter(guest => guest.guestName !== guestName));
     };
 
     //table with n rows and 2 columns: guestName and invitedBy
