@@ -123,6 +123,8 @@ window.onload = async function () {
 };
 
 async function start() {
+  const logoutBtn = document.getElementById("logoutButton")
+  logoutBtn.parentElement.style.paddingTop = "0px"
   const startBtn = document.getElementById("startButton");
   const gameboard = document.getElementById("gameboard");
   gameboard.style.display = "flex";
