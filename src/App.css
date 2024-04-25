@@ -111,10 +111,16 @@ input{
 
 .usedWord{
   background-color:#cfe2f3;
+  color: grey;
   padding: 3px 5px;
   font-weight: bold;
   margin: 5px 10px;
-  color: black;
+
+}
+
+.lastWord{
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
 

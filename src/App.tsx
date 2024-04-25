@@ -308,9 +308,9 @@ export default function App() {
                         <p>Score: {score}</p>
                     </div>
                 </div>
-                <b>
+                <div className={"lastWord"}>
                     <p>{lastWord}</p>
-                </b>
+                </div>
                 <input
                     type="text"
                     value={inputValue}
