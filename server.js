@@ -1,34 +1,43 @@
-/*
-1. Open up a socket server
-2. Maintain a list of clients connected to the socket server
-3. When a client sends a message to the socket server, forward it to all
-connected clients
-*/
+const express = require("express"),
+      { MongoClient, ObjectId } = require("mongodb"),
+      socketIO = require('socket.io'),
+      dotenv = require('dotenv').config({ path: "./.env" }),
+      http = require('http'),
+      app = express()
 
-import express from 'express'
-import session from 'express-session'
-import axios from 'axios'
-import path from 'path'
-import http from 'http'
-import { WebSocketServer } from 'ws'
+app.use( express.static('public') )
+app.use( express.json() )
 
-const app = express()
+const server = http.createServer( app )
 
-const server = http.createServer( app ),
-    socketServer = new WebSocketServer({ server }),
-    clients = []
+var io = socketIO(server);
 
-socketServer.on( 'connection', client => {
-    console.log( 'connect!' )
+// make connection with user from server side
+io.on('connection', (socket) => {
+    console.log('New user connected');
+    //emit message from server to user
+    socket.emit('newMessage',
+        {
+            from: 'jen@mds',
+            text: 'hepppp',
+            createdAt: 123
+        });
 
-    // when the server receives a message from this client...
-    client.on( 'message', msg => {
-        // send msg to every client EXCEPT the one who originally sent it
-        clients.forEach( c => { c.send( msg ) })
-    })
+    // listen for message from user
+    socket.on('createMessage',
+        (newMessage) => {
+            console.log('newMessage', newMessage);
+        });
 
-    // add client to client list
-    clients.push( client )
-})
+    // when server disconnects from user
+    socket.on('disconnect',
+        () => {
+            console.log('disconnected from user');
+        });
+});
+ 
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/index.html");
+});
 
 server.listen( 3000 )
