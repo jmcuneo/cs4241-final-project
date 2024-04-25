@@ -208,7 +208,7 @@ io.on('connection', (socket) => {
     }
     if (startNewGame) {
       await database.deleteGame(room);
-      const newGame = await database.createNewGame(room,"Pokemon");
+      const newGame = await database.createNewGame(room,game.type);
       await database.updateGame(room,"p1",{name:"Player 1",id:game.p1.id});
       await database.updateGame(room,"p2",{name:"Player 2",id:game.p2.id});
       io.to(game.p1.id).emit('host success',room,"Player 1");
