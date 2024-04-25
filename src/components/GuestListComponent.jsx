@@ -26,8 +26,7 @@ function GuestListComponent({ showInvite }) {
                 console.error('Error getting events:', error);
             }
         }
-        getGuestList();
-        // removeGuest("lhsbfs")
+    getGuestList();
     }, [eventName]);
 
     const removeGuest = async (guestName) => {
