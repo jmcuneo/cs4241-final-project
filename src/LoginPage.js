@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PetForm from './PetForm';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Row, Col, Container } from 'react-bootstrap';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -35,14 +35,30 @@ function LoginPage() {
         <PetForm />
       ) : (
         <div>
+          <h1>Race-a-Pet</h1>
+          <p>Welcome to Race-a-Pet! Where you create a pet and see how far it can run!</p>
+          <h2>Instructions</h2>
+          <ol>
+            <li>Log In with your Race-a-Pet account</li>
+            <li>Create your Pet</li>
+            <ol>
+                <li>Give your pet a name.</li>
+                <li>Pick what pet you want.</li>
+                <li>Give it a diet.</li>
+                <li>Deside how much it exercises.</li>
+            </ol>
+            <li>Race your Pet!</li>
+          </ol>
+        
           <h2>Login</h2>
-          <Form>
+          <Form class= 'p-1 bg-dark'>
             <Form.Group controlId="formBasicUsername">
               <Form.Control
                 type="text"
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                //class = "bg-dark"
               />
             </Form.Group>
 
@@ -52,39 +68,18 @@ function LoginPage() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                //class = "bg-dark"
               />
             </Form.Group>
+            
 
             <Button variant="primary" onClick={handleLogin}>
               Login
             </Button>
           </Form>
-
-          <h2>Register</h2>
-          <Form>
-            <Form.Group controlId="formBasicNewUsername">
-              <Form.Control
-                type="text"
-                placeholder="New Username"
-                value={newUsername}
-                onChange={(e) => setNewUsername(e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="formBasicNewPassword">
-              <Form.Control
-                type="password"
-                placeholder="New Password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
-            </Form.Group>
-
-            <Button variant="primary" onClick={handleRegistration}>
-              Register
-            </Button>
-          </Form>
+      
         </div>
+        
       )}
     </div>
   );
