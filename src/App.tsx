@@ -1,10 +1,10 @@
 import {useEffect, useState} from 'react'
 import './App.css'
-import {addScore, fetchScores, scoreEntry} from "./service/Score.ts";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import {queryClient} from "./service/QueryClient.ts";
+//import {addScore, fetchScores, scoreEntry} from "./service/Score.ts";
+// import { useMutation, useQuery } from "@tanstack/react-query";
+// import {queryClient} from "./service/QueryClient.ts";
 
-function App() {
+export function App() {
     //startWord
     const [startWord, setStartWord] = useState('');
     //username
