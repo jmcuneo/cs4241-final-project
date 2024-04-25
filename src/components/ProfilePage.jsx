@@ -1,20 +1,70 @@
-import React, { useState, useRef } from 'react';
-import { useNavigate } from "react-router-dom"
+import React, { useState, useEffect, useRef } from 'react';
+import TopButtons from './TopButtons';
+import PropTypes from 'prop-types';
+import { motion } from 'framer-motion';
 
-function ProfilePage() {
-  const navigate = useNavigate()
-  const handleMainPage = async (event) => {
-    event.preventDefault();
-    navigate("/main");
+function ProfilePage({ onLogout }) {
+  const [userProfile, setUserProfile] = useState(null);
+  const getProfile = async () => {
+    try {
+      const response = await fetch('//localhost:3000/api/getProfile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: localStorage.getItem('token') }),
+      });
+
+      let profile = await response.json();
+      console.log(profile);
+      return profile;
+    } catch (error) {
+      console.error('Error getting profile:', error);
+      return null;
+    }
   }
 
-  return(
-      <div>
-        <h1>Profile Page</h1>
-        <button style={{marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold'}} className="btn waves-effect waves-light" type="button" id="mainPageButton" onClick={handleMainPage}>Main Page</button>
+  useEffect(() => {
+    getProfile()
+      .then(profile => {
+        setUserProfile(profile);
+      })
+      .catch(error => {
+        console.error('Error getting profile:', error);
+      });
+  }, []);
 
-      </div>
+  return (
+    <div className='main-page-container'>
+      <motion.div 
+      className='center-page-container'
+      initial={{ scale: 0, x: '-50%', y: '-50%'}}
+      animate={{ scale: 1 }}
+      transition={{
+        type: "spring",
+        stiffness: 260,
+        damping: 20,
+      }}
+      >
+        {userProfile ? (
+          <div>
+            <h1>Profile</h1> 
+            <h2>Username: {userProfile.username}</h2>
+            <h2>First Name: {userProfile.firstName}</h2>
+            <h2>Last Name: {userProfile.lastName}</h2>
+            <h2>Account Type: {userProfile.accountType}</h2>
+          </div>
+        ) : (
+          <div>Error loading profile</div>
+        )}
+      </motion.div>
+      <TopButtons onLogout={onLogout} showBackButton={true}></TopButtons>
+    </div>
   );
+}
+
+ProfilePage.propTypes = {
+  onLogout: PropTypes.func.isRequired
 }
 
 export default ProfilePage;
