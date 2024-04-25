@@ -1,20 +1,15 @@
 // Reads theme preference from cookies
 function setTheme() {
     const cookies = document.cookie.split(";");
+    console.log(cookies);
     if(cookies.map(c => c.trim()).filter(c => c.match("theme=dark")).length > 0) {
         document.body.classList.add("dark");
     } else if (cookies.filter(c => c.match("theme=light")).length > 0) {
         document.body.classList.remove("dark");
     } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.body.classList.add("dark");
+        document.cookie = "theme=dark";
     }
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-        if(event.matches) {
-            document.body.classList.add("dark");
-        } else {
-            document.body.classList.remove("dark");
-        }
-    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -104,3 +104,13 @@ body:not(.dark) #light-switch {
     font-weight: bolder;
     user-select: none;
 }
+
+.ql-snow .ql-stroke {
+    stroke: var(--text);
+}
+.ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
+    fill: var(--text);
+}
+.ql-snow .ql-picker:not(.ql-expanded) {
+    color: var(--text);
+}
