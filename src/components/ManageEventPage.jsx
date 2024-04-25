@@ -1,12 +1,12 @@
-import React, { useState, useProps, useRef } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef } from 'react';
+import { useNavigate, useParams } from "react-router-dom";
 import GuestListComponent from "./GuestListComponent.jsx";
 import TopButtons from './TopButtons.jsx';
 import PropTypes from 'prop-types';
 
 function ManageEventPage({ onLogout }) {
   const navigate = useNavigate();
-  const { eventName } = useProps();
+  const { eventName } = useParams();
   const handleMainPage = async (event) => {
     event.preventDefault();
     navigate("/main");

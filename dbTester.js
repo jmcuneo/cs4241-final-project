@@ -139,8 +139,10 @@ export async function createDummyUsers() {
 
     if (!dummyEvent.isUserAllowedToInvite(user))
         await admin.makeAllowedToInvite(dummyEvent, user);
-    if (!dummyEvent.attendees.filter(attendee => attendee.guest === 'Debby'))
+    if (dummyEvent.attendees.filter(attendee => attendee.guest === 'Debby').length === 0)
         await user.inviteGuests(dummyEvent, 'Debby');
+    if (dummyEvent.attendees.filter(attendee => attendee.guest === 'Joe Biden').length === 0)
+        await admin.inviteGuests(dummyEvent, 'Joe Biden');
 }
 
 async function clearEntireDB() {
