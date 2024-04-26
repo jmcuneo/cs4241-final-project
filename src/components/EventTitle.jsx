@@ -59,7 +59,7 @@ function EventTitle({ eventName }) {
 
   return (
     <div>
-      <table className="table table-zebra bg-neutral">
+      <table className="table bg-neutral rounded-none">
         <thead>
           <tr style={{fontSize:  "1rem"}}>
             <th>{eventName}</th>
