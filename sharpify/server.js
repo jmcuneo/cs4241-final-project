@@ -146,9 +146,8 @@ app.post("/register", async (request, response) => {
 //send the image
 
 
-
+let uploadedImage;
 app.post("/upload", upload.single('image'), async (request, response) => {
-    let uploadedImage;
     console.log(request.file.path);
     const tempPath = request.file.path;
     const targetPath = path.join(__dirname, "./uploads/uploadedImage.jpg");
@@ -163,7 +162,14 @@ app.post("/upload", upload.single('image'), async (request, response) => {
         uploadedImage = targetPath;
 
         //TENSORFLOW and POTRACE
-        const model = await tf.loadLayersModel('file://model/model.json');
+      
+    }})
+})
+
+app.get("/enhance", async (request, response) => {
+    if(uploadedImage === undefined) {
+} else{
+const model = await tf.loadLayersModel('file://model/model.json');
         const image = await Jimp.read(uploadedImage);
         const tensor = tf.browser.fromPixels(image.bitmap);
 
@@ -180,10 +186,10 @@ app.post("/upload", upload.single('image'), async (request, response) => {
                     console.log("success")
                     fs.writeFileSync(path.join(__dirname, "./uploads/output.svg"), svg);
                     }
-});
-    }})
+            
 })
-
+  
+}})
 
 //get reqeust to retrieeve the image
 
