@@ -98,10 +98,10 @@ app.post("/login", async (req, res, next) => {
     let user = {username: req.body.user};
     req.login(user, function(err) {
       if (err) { return next(err); }
-      return res.redirect("/");
+      return res.redirect("/game.html");
     });
   } else {
-    res.redirect("/login_test.html?failed=1&user=" + req.body.user)
+    res.redirect("/index.html?failed=1&user=" + req.body.user)
   }
 });
 
@@ -110,7 +110,23 @@ async function createUser(user) {
     "user": user,
     "time": 0,
     "goatbucks": 0,
-    "restaurant": []
+    "clickWorth": 1,
+    "passive": 0,
+    "restaurant": {
+      "1upgrade1": false,
+      "1upgrade2": false,
+      "1upgrade3": false,
+      "2upgrade1": false,
+      "2upgrade2": false,
+      "2upgrade3": false,
+      "3upgrade1": false,
+      "3upgrade2": false,
+      "3upgrade3": false,
+      "4upgrade1": false,
+      "4upgrade2": false,
+      "4upgrade3": false,
+    },
+    "highscore": 0
   }
   userData.insertOne(newUser)
 }
@@ -124,7 +140,6 @@ app.get("/load", auth, async (req, res) => {
 })
 
 app.post("/save", auth, async (req, res) => {
-  console.log(req.body)
   await userData.updateOne({user: req.user.username}, {$set: req.body})
 
   res.writeHead(200, "OK", { "Content-Type": "application/json" });
@@ -134,10 +149,13 @@ app.post("/save", auth, async (req, res) => {
 
 app.get("/scores", async (req, res) => {
   const opts = {
-    projection: {"user": 1, "goatbucks": 1, "_id": 0},
-    sort: {goatbucks: -1}
+    projection: {"user": 1, "highscore": 1, "_id": 0},
+    sort: {highscore: -1}
   }
-  let scores = await userData.find({}, opts).toArray()
+  const query = {
+    "highscore": {$gt: 0}
+  }
+  let scores = await userData.find(query, opts).toArray()
   console.log(scores)
   res.writeHead(200, "OK", { "Content-Type": "application/json" });
   res.write(JSON.stringify(scores));
