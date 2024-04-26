@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
+import PropTypes from 'prop-types';
 
 
 function GuestListComponent({guestList}) {
-    const { eventName } = useParams();
 
     //table with n rows and 2 columns: guestName and invitedBy
     //tr-cols | tbody-rows
@@ -28,6 +27,10 @@ function GuestListComponent({guestList}) {
             </table>
         </div>
     );
+}
+
+GuestListComponent.propTypes = {
+    guestList: PropTypes.array.isRequired
 }
 
 export default GuestListComponent;
