@@ -2,7 +2,7 @@ const express = require("express"),
       axios = require("axios"),
       path = require("path"),
       session = require("express-session"),
-      { MongoClient, ServerApiVersion } = require("mongodb"),
+      { MongoClient, ServerApiVersion, ObjectId } = require("mongodb"),
       socketIO = require('socket.io'),
       dotenv = require('dotenv').config({ path: "./.env" }),
       http = require('http'),
@@ -30,6 +30,8 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
+
+let userdata = [];
 
 async function run() {
     try {
@@ -113,11 +115,16 @@ app.get("/auth/github/login", (req, res) => {
         Authorization: `token ${req.session.accessToken}`,
       },
     });
-    const userData = response.data;
-    user = userData.name;
+    const data = response.data;
+    userdata.push({name: data.name, id: data.id, pfp: data.avatar_url});
 
-    res.sendFile(path.join(__dirname, "public", "home.html"));
+    res.sendFile(path.join(__dirname, "public", "home2.html"));
   });
+
+  app.get("/userdata", async (req, res) => {
+    console.log(userdata);
+    res.json(userdata);
+  })
 
 run().catch(console.dir);
 
