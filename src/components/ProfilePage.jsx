@@ -2,9 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import TopButtons from './TopButtons';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
+import GuestListComponent from "./GuestListComponent.jsx";
+
 
 function ProfilePage({ onLogout }) {
   const [userProfile, setUserProfile] = useState(null);
+  const [guestList, setGuestList] = useState([]);
   const getProfile = async () => {
     try {
       const response = await fetch('//localhost:3000/api/getProfile', {
@@ -36,6 +39,7 @@ function ProfilePage({ onLogout }) {
 
   return (
     <div className='main-page-container'>
+      
       <motion.div 
       className='center-page-container'
       initial={{ scale: 0, x: '-50%', y: '-50%', rotate: 180 }}
@@ -55,7 +59,7 @@ function ProfilePage({ onLogout }) {
             <h2>Account Type: {userProfile.accountType}</h2>
           </div>
         ) : (
-          <div>Error loading profile</div>
+          <div style={{ fontSize: '20px', marginLeft: '10px', marginTop: '10px', color: 'white'}}>Error loading profile</div>
         )}
       </motion.div>
       <TopButtons onLogout={onLogout} showBackButton={true}></TopButtons>
@@ -68,3 +72,4 @@ ProfilePage.propTypes = {
 }
 
 export default ProfilePage;
+

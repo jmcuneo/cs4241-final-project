@@ -96,55 +96,57 @@ function GuestListComponent({ onUpdate, manage }) {
     }, [eventName]);
 
     let title = "Your Guests";
-    let leftPos = "60rem";
     let apiPoint = "//localhost:3000/api/getUserGuestList"
     if (manage) {
         title = "Guest List";
-        leftPos = "20rem";
         apiPoint = "//localhost:3000/api/getGuestList"
     }
     return (
-        <div className='guest-list' style={{left: leftPos}}>
-            <h1>{title}</h1>
-            <table style={{position:"fixed", top:"13rem"}}>
-                <thead>
-                    <tr>
-                        <th>Guest Name</th>
-                        {manage && (
-                            <th>Invited By</th>
-                        )}
-                    </tr>
-                </thead>
-                <tbody>
-                    {guestList.map((guest, index) => (
-                        <tr key={index}>
-                            <td>{guest.guestName}</td>
+        <div className='guest-list'  style = {{display: 'grid', gridTemplateColumns: '50% 50%'}}>
+            <div className='center-container'>
+                <h1>{title}</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Guest Name</th>
                             {manage && (
-                                <td>{guest.invitedBy}</td>
+                                <th>Invited By</th>
                             )}
-                            <td>
-                                <button
-                                    style={{ backgroundColor: 'rgb(240, 91, 58)', color: 'black', fontWeight: 'bold' }}
-                                    className="btn waves-effect waves-light"
-                                    type="button"
-                                    id={"removeButton" + index}
-                                    onClick={() => handleRemove(guest.guestName)}
-                                >Remove
-                                </button>
-                            </td>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-            {!manage && (
-                <div className='add-guest'>
-                <form onSubmit={(e) => handleSubmit(e)}>
-                    <input type="text" id='addGuestName' placeholder='Guest Name' required ref={guestNameRef} style={{fontSize: "1.1rem", marginTop: "0.5rem"}}/>
-                    <button className='add-guest-button' type="submit">Add Guest</button>
-                </form>
-                <div style={{ fontSize: '20px', marginLeft: '10px', marginTop: '10px', color: 'white'}}>{message}</div> 
+                    </thead>
+                    <tbody>
+                        {guestList.map((guest, index) => (
+                            <tr key={index}>
+                                <td>{guest.guestName}</td>
+                                {manage && (
+                                    <td>{guest.invitedBy}</td>
+                                )}
+                                <td>
+                                    <button
+                                        style={{ backgroundColor: 'rgb(240, 91, 58)', color: 'black', fontWeight: 'bold' }}
+                                        className="btn waves-effect waves-light"
+                                        type="button"
+                                        id={"removeButton" + index}
+                                        onClick={() => handleRemove(guest.guestName)}
+                                    >Remove
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
-            )}
+            <div className='center-container'>
+                {!manage && (
+                    <div className='add-guest'>
+                    <form onSubmit={(e) => handleSubmit(e)}>
+                        <input type="text" id='addGuestName' placeholder='Guest Name' required ref={guestNameRef} style={{fontSize: "1.1rem", marginTop: "0.5rem"}}/>
+                        <button className='add-guest-button' type="submit">Add Guest</button>
+                    </form>
+                    <div style={{ fontSize: '20px', marginLeft: '10px', marginTop: '10px', color: 'white'}}>{message}</div> 
+                </div>
+                )}
+            </div>
         </div>
     );
 }
