@@ -133,7 +133,6 @@ app.get("/auth/github/login", (req, res) => {
   })
 
 app.get("/userInfo", async (req, res) => {
-    await createGame();
     let userID = userdata[0].username;
     let myUser = await getUserInfo(userID);
     res.json(myUser);
