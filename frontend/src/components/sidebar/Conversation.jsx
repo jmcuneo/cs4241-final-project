@@ -18,7 +18,7 @@ const Conversation = () => {
 
     return (
         <>
-            <div className="bg-dark w-[99.5%] h-[72px] mb-0.5 mr-0.5 ml-0 flex items-center  justify-between hover:bg-cyan-700">
+            <div className="bg-dark w-[99.5%] h-[72px] mb-0.5 mr-0.5 ml-0 flex items-center  justify-between hover:bg-cyan-700 cursor-pointer">
                 <div className="avatar placeholder ml-4">
                     <div style={{ backgroundColor: avatarColor }} className="rounded-full w-14 flex items-center justify-center">
                         <span className="text-xl text-black">JD</span>

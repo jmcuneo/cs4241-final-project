@@ -8,7 +8,7 @@ const Home = () => {
       <Sidebar />
 
       {/* Main content */}
-      <div className="flex-1 bg-[#262626] h-[94%]">
+      <div className="flex-1 bg-[#262626] h-[100%]">
         <div>Home Content</div>
       </div>
 

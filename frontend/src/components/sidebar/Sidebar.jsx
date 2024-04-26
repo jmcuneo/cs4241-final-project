@@ -5,7 +5,7 @@ import CurrentUserCard from './CurrentUserCard'
 
 const Sidebar = () => {
   return (
-    <div className="bg-[#414141] h-[94%] w-[26%] min-w-[26%] p-r-1 flex flex-col">
+    <div className="bg-[#414141] h-[100%] w-[26%] min-w-[26%] p-r-1 flex flex-col">
 
 
       <div className="bg-[#414141] h-[100%] w-[100%] min-w-[26%] p-r-1 flex flex-col">
