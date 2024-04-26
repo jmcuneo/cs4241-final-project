@@ -135,6 +135,10 @@ app.post("/score", async (req, res) => {
   
 })
 
+app.post("/add-leaderboard-entry", auth.authenticateToken, (req, res) => {
+  console.log(req.username)
+})
+
 app.get(
   "/auth/github",
   passport.authenticate("github", { scope: ["user:email"] }), ()=>console.log("gh called")

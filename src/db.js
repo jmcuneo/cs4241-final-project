@@ -121,9 +121,7 @@ exports.addLeaderboardEntry = async (entry) => {
   const datetime = date.toUTCString(); 
   entry.date = datetime;
   console.log(entry);
-  await collection.insert(entry);
-  /* const whyme = await collection.insert(entry); */
-  
+  await collection.insertOne(entry);  
 }
 
 const switcher = async (desired) => {
