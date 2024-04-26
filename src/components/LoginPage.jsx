@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import PropTypes from 'prop-types';
+import { motion } from 'framer-motion';
+
 
 /**
  * @author Jack Weinstein
@@ -61,7 +63,16 @@ function LoginPage({onLogin}) {
   };
 
   return (
-    <div className="center-page-container"> 
+    <motion.div 
+    className="center-page-container"
+    initial={{ scale: 0, x: '-50%', y: '-50%'}}
+    animate={{ scale: 1 }}
+    transition={{
+      type: "spring",
+      stiffness: 260,
+      damping: 20,
+    }}
+    > 
       <h1 style={{ marginLeft: '30px' }}>Event List Sign-In</h1> 
       <form className="col s12" id="loginForm" onSubmit={handleSubmit}>
         <div className="col"> 
@@ -77,8 +88,8 @@ function LoginPage({onLogin}) {
           <button style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="registerButton" onClick={handleRegister}>Register</button>
         </div>
       </form>
-      <div style={{ fontSize: '20px', marginLeft: '30px', marginTop: '10px' }}>{message}</div> 
-    </div>
+      <div style={{ fontSize: '20px', marginLeft: '30px', marginTop: '10px', color: 'white'}}>{message}</div> 
+    </motion.div>
   );
 }
 

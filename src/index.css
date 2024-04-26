@@ -35,7 +35,7 @@ h1 {
   line-height: 1.1;
   color: #ffffff;
 }
-h2{
+h2,th,td{
   color: #ffffff;
 }
 
@@ -90,6 +90,19 @@ button:focus-visible {
   width: fit-content; /* Adjusts width to content */
 }
 
+.center-container {
+  width: 100%;
+  height: 100%;
+  display: flex; /* Enables flexbox for positioning */
+  flex-direction: column; /* Stacks elements vertically */
+  align-items: center; /* Centers elements horizontally */
+  justify-content: center; /* Centers elements vertically */
+  position: relative; /* Positions the container absolutely */
+  top: 50%; /* Positions the top at 50% viewport height */
+  left: 50%; /* Positions the left at 50% viewport width */
+  transform: translate(-50%, -50%); /* Adjusts for margins/padding */
+  width: fit-content; /* Adjusts width to content */
+}
 
 /* In App.css or a dedicated CSS file for MainPage */
 .main-page-container {
@@ -123,19 +136,18 @@ button:focus-visible {
   flex-direction: column; /* Stacks elements vertically */
   align-items: center; /* Centers elements horizontally */
   justify-content: center; /* Centers elements vertically */
-  position: absolute; /* Positions the container absolutely */
-  top: 5rem; 
-  left: 20rem; 
+  position: relative; /* Positions the container absolutely */
   width:fit-content /* Adjusts widths to content */
 }
 
 .guest-list table {
-  margin-top: -2rem;
+  justify-content: center;
   border: 2px solid rgb(255, 255, 255);
   border-collapse: collapse;
+  position: relative; /* Positions the container relatively */
 }
 
-.guest-list th, 
+.guest-list th,
 .guest-list td {
   border: 2px solid rgb(255, 255, 255);
   padding: 0.25rem 1rem;
@@ -144,9 +156,7 @@ button:focus-visible {
 .add-guest {
   display: flex; /* Enables flexbox for positioning */
   flex-direction: column; /* Stacks elements horizontally */
-  position: absolute; /* Positions the container absolutely */
-  top: 6rem; 
-  left: 21rem; 
+  position: relative; /* Positions the container relatively */
   width: fit-content; /* Adjusts widths to content */
 }
 
