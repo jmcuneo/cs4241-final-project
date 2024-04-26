@@ -12,6 +12,8 @@ const express = require("express"),
     GridFsStorage = require('multer-gridfs-storage'),
     Grid = require('gridfs-stream'),
     Jimp = require('jimp'),
+    http = require('https'),
+    FormData = require('form-data'),
     fetch = require('node-fetch'),
     port = 3000;
 
@@ -166,31 +168,38 @@ app.post("/upload", upload.single('image'), async (request, response) => {
     }})
 })
 
-app.get("/enhance", async (request, response) => {
+app.post("/enhance", async (request, response) => {
+//FOR A NEW ENHANCE BUTTON
     if(uploadedImage === undefined) {
 } else{
-const model = await tf.loadLayersModel('file://model/model.json');
-        const image = await Jimp.read(uploadedImage);
-        const tensor = tf.browser.fromPixels(image.bitmap);
+    //
+         const form = new FormData();
+    form.append("upscale_factor", "x2");
+    form.append("image_url","https://picsart.io/wp-content/uploads/2024/02/97ff2ec7-2f17-44a9-86a6-20d19db6ecd8.jpg");
 
-        const enhancedImage = model.predict(tensor.expandDims(0));
+    const options = {
+      method: 'POST',
+      host: 'api.picsart.io',
+      path: '/tools/1.0/upscale',
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
+        'accept': 'application/json',
+        'x-picsart-api-key': process.env.API_KEY
+      }
+    };
 
-          // Save enhanced image
-            const enhancedImagePath = path.join(__dirname, "./uploads/enhancedImage.jpg");
-            await new Jimp({ data: enhancedImage, width: image.bitmap.width, height: image.bitmap.height }).writeAsync(enhancedImagePath);
-
-            potrace.trace(enhancedImagePath, (err, svg) => {
-                if(err) {
-                    console.log("error")
-                } else{
-                    console.log("success")
-                    fs.writeFileSync(path.join(__dirname, "./uploads/output.svg"), svg);
-                    }
-            
+    const req = http.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        console.log(data);
+        response.send(data);
+      });
+    });   
+}
 })
-  
-}})
-
 //get reqeust to retrieeve the image
 
 // Delete Image
