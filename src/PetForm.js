@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Results from './Results';
 import { Button, Form } from 'react-bootstrap';
 
@@ -9,6 +9,7 @@ function PetForm() {
   const [exerciseLevel, setExerciseLevel] = useState(50);
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState(null);
+  const [leaderboardData, setLeaderboardData] = useState([]);
 
   function handleInputChange(event) {
     const { name, value } = event.target;
@@ -61,6 +62,19 @@ function PetForm() {
     getLeaderboard();
   }
 
+  useEffect(() => {
+    getLeaderboard();
+  }, []);
+
+  async function getLeaderboard() {
+    const response = await fetch("http://localhost:3001/get");
+    const data = await response.json();
+
+    data.sort((a, b) => a.raceTime - b.raceTime);
+    setLeaderboardData(data);
+  }
+
+  /*
   async function getLeaderboard() {
     const response = await fetch("http://localhost:3001/get");
     const data = await response.json();
@@ -84,8 +98,10 @@ function PetForm() {
       tableBody.appendChild(row);
     });
   }
+  */
 
   async function deleteRow(itemID) {
+    console.log(itemID)
     const json = { _id: itemID },
       body = JSON.stringify(json);
     await fetch("http://localhost:3001/delete", {
@@ -97,7 +113,7 @@ function PetForm() {
   }
 
   if (submitted) {
-    return <Results formData={formData} />;
+    return <Results formData={formData} leaderboardData={leaderboardData} deleteRow={deleteRow} />;
   }
 
   function calculateRaceTime(animalType, dietType, exerciseLevel) {

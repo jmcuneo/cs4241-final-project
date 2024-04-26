@@ -1,5 +1,5 @@
 const express = require("express");
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 const cors = require("cors"); // Import CORS middleware
 const app = express();
 const path = require("path");
@@ -45,7 +45,9 @@ app.get("/get", async (req, res) => {
 });
 
 app.post("/delete", async (req, res) => {
-  await dataCollection.deleteOne({ _id: new ObjectId(req.body._id) });
+  console.log(req.body._id)
+  const result = await dataCollection.deleteOne({ _id: new ObjectId(req.body._id) });
+  console.log(result.deletedCount)
   const data = await dataCollection.find().toArray();
   res.json(data);
 });

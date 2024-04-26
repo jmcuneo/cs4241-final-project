@@ -17,7 +17,7 @@ function getImageUrl(animalType) {
     }
 }
 
-function Results({ formData }) {
+function Results({ formData, leaderboardData, deleteRow }) {
     // Check if formData exists before accessing its properties
     if (!formData) {
         return <div>Loading...</div>;
@@ -52,7 +52,16 @@ function Results({ formData }) {
               </tr>
             </thead>
             <tbody>
-              {/* Add leaderboard rows dynamically here */}
+              {leaderboardData.map((item, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{item.petName}</td>
+                  <td>{item.raceTime}</td>
+                  <td>
+                    <Button onClick={() => deleteRow(item._id)}>Delete</Button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </Table>
         </Col>
