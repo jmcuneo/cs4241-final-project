@@ -135,9 +135,14 @@ app.post("/score", async (req, res) => {
   
 })
 
-app.post("/add-leaderboard-entry", auth.authenticateToken, (req, res) => {
+app.post("/auth/add-leaderboard-entry", auth.authenticateToken, (req, res) => {
   console.log(req.username)
 })
+app.post("/leaderboard", async (req, res) => {
+ const leaderboard =  await db.getLeaderboard();
+ res.json(leaderboard)
+})
+
 
 app.get(
   "/auth/github",

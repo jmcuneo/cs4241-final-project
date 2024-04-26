@@ -267,12 +267,14 @@ async function showLeaderboard() {
   let board = document.getElementById("leaderboard");
   const response = await fetch("/leaderboard", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json",
+                'Authorization': `Bearer ${document.cookie.substring(6)}`
+              },
   });
   const resp = await response.json();
   for (let i = 0; i < resp.length; i++) {
     let row = makeElem("tr", "", "", board);
-    makeElem("td", "", resp[i].user, row);
+    makeElem("td", "", resp[i].username, row);
     makeElem("td", "", resp[i].score, row);
   }
 }
