@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import GuestListComponent from "./GuestListComponent.jsx";
 import UserGuestListComponent from "./UserGuestListComponent.jsx";
 import Navbar from "./Navbar.jsx";
@@ -7,7 +7,6 @@ import PropTypes from "prop-types";
 import EventTitle from "./EventTitle.jsx";
 
 function EventPage({ onLogout }) {
-  const navigate = useNavigate();
   const { eventName } = useParams();
   const [guestList, setGuestList] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
@@ -87,7 +86,7 @@ function EventPage({ onLogout }) {
       ></Navbar>
       <div className="main-page-container">
         <div>
-          <EventTitle eventName={eventName} isAdmin={isAdmin}/>
+          <EventTitle eventName={eventName} isAdmin={isAdmin} />
         </div>
         <div className="relative grid grid-cols-2 justify-start mt-3 w-screen">
           <div className="ml-1">

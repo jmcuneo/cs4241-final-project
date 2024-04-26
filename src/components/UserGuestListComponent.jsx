@@ -112,7 +112,7 @@ function GuestListComponent({ onUpdate, manage }) {
               {manage && <td>{guest.invitedBy}</td>}
               <td>
                 <button
-                  className="btn btn-red-500 hover:btn-red-600 text-black font-bold "
+                  className="btn bg-red-500 hover:bg-red-600 text-black font-bold "
                   type="button"
                   id={"removeButton" + index}
                   onClick={() => handleRemove(guest.guestName)}
