@@ -128,6 +128,7 @@ app.get("/auth/github/login", (req, res) => {
   })
 
 app.get("/userInfo", async (req, res) => {
+    await createGame();
     let userID = userdata[0].username;
     let myUser = await getUserInfo(userID);
     res.json(myUser);
@@ -152,6 +153,34 @@ async function addUser(userID){
         };
         const result = await collection.insertOne(document);
         console.log(`Inserted document with _id: ${result.insertedId}`);
+    } catch (err) {
+        console.error("Error inserting document:", err);
+    }
+}
+
+// Creates a game entry and returns the game ID as a string. All other fields are empty as default
+async function createGame(){
+    try {
+        const db = client.db("webwareFinal");
+        const collection = db.collection("games");
+
+        // Define the document you want to insert
+        const document = {
+            gameID: "",
+            playerIDs: [],
+            winner: "",
+            winnerOrder: [],
+        };
+        const result = await collection.insertOne(document);
+        console.log(`Inserted document with _id: ${result.insertedId}`);
+
+        const stringID = result.insertedId.toString()
+
+        const result2 = await collection.updateOne({ _id: result.insertedId },
+            { $set: { gameID: stringID} });
+
+        return stringID;
+
     } catch (err) {
         console.error("Error inserting document:", err);
     }
@@ -267,6 +296,22 @@ async function concludeGame(gameID, winnerID, loserIDs){
     }
 
     console.log(`The game is over! ${winnerID} wins!`)
+}
+
+// Set the winner order of a game.
+async function setWinnerOrder(gameID, playerArray){
+    try {
+        const db = client.db("webwareFinal");
+        const collection = db.collection("users");
+        const result = await collection.updateOne(
+            {gameID: gameID},
+           { $set: { winnerOrder: playerArray } }
+        );
+
+    } catch (err) {
+        console.error("Error setting winner: ", err);
+    }
+
 }
 
 // Get database entry for userID
