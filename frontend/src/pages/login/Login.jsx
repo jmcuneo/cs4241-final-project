@@ -1,4 +1,5 @@
 import React from 'react'
+import CustomButton from '../../components/CustomButton.jsx';
 
 const Login = ({ onSignUpClick }) => {
   return (
@@ -25,9 +26,10 @@ const Login = ({ onSignUpClick }) => {
             </label>
           </div>
 
-          <button className="btn btn-wide bg-secondary text-[#ffffff] hover:bg-[#515151] border-none mt-8">Log In</button>
+          <CustomButton text="Log In"></CustomButton>
 
-          <button className='text-cyan-500 hover:text-cyan-700 ' onClick={onSignUpClick}>Don't Have an Account?</button>
+          <button className='text-cyan-500 hover:text-cyan-700 font-inter ' onClick={onSignUpClick}>Don't Have an Account?</button>
+         
           
 
         </div>

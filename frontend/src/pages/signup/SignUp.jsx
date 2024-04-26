@@ -1,4 +1,5 @@
 import React from 'react'
+import CustomButton from '../../components/CustomButton.jsx';
 
 const SignUp = ({ onLoginClick }) => {
   return (
@@ -44,9 +45,9 @@ const SignUp = ({ onLoginClick }) => {
 
             </div>
 
-            <button className="btn btn-wide bg-secondary text-[#ffffff] hover:bg-[#515151] border-none mt-8">Sign Up</button>
+            <CustomButton text="Sign Up"></CustomButton>
 
-            <button className='text-cyan-500 hover:text-cyan-700'  onClick={onLoginClick}>Already Have An Account?</button>
+            <button className='text-cyan-500 hover:text-cyan-700 font-inter'  onClick={onLoginClick}>Already Have An Account?</button>
 
 
           </div>

@@ -13,7 +13,7 @@ export default {
         primary: '#262626', // Dark shade
         secondary: '#404040', // Medium dark shade
         tertiary: '#A8A8A8', // Light shade
-        dark: '171717', //dark color
+        dark: '#171717', //dark color
       }
     },
   },
