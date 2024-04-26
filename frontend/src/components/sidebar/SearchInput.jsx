@@ -10,7 +10,7 @@ const handleSubmit = (event) => {
 const SearchInput = () => {
   return (
     <form onSubmit={handleSubmit}>
-            <div className="bg-dark w-[100%] h-[6.81%] mb-0.5 mr-0.5 ml-0 flex items-center justify-center">
+            <div className="bg-dark w-[100%] h-[6.81%] mb-0.5 mr-0.5 ml-0 flex items-center justify-center mt-3 mb-3">
                 <label className="input flex h-[63%] w-[97%] bg-[#404040] items-center gap-2 justify-center">
                     <input type="text" className="text-[#A1A4A6] flex items-center justify-center placeholder-[#A1A4A6]" placeholder="Search..." />
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#A1A4A6" className="w-6 h-6 opacity-70 flex items-center justify-center">
