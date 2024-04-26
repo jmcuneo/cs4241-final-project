@@ -1,8 +1,8 @@
 import React, { useState, useProps, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import GuestListComponent from "./GuestListComponent.jsx";
-import TopButtons from './TopButtons.jsx';
 import PropTypes from 'prop-types';
+import Navbar from "./Navbar.jsx"
 
 function ManageEventPage({ onLogout }) {
   const navigate = useNavigate();
@@ -17,11 +17,16 @@ function ManageEventPage({ onLogout }) {
     navigate("/event/:eventName");
   }
   return (
-    <div className='main-page-container'>
-      <div className='header-section'>
+    <div className="main-page-container">
+      <div className="header-section">
         <h1>Manage Event Page</h1>
       </div>
-      <TopButtons onLogout={onLogout} showBackButton={true} showProfileButton={true}></TopButtons>
+      <Navbar
+        onLogout={onLogout}
+        showBackButton={true}
+        showProfileButton={true}
+      ></Navbar>
+      
       <GuestListComponent />
     </div>
   );

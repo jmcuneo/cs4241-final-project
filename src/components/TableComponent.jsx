@@ -2,17 +2,15 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 function TableComponent({ headers, rows, isEvent }) {
-  console.log(JSON.stringify(rows));
+  // console.log(JSON.stringify(rows));
   const navigate = useNavigate();
 
   function handleClick(eventName) {
-    console.log(`navigating to ${encodeURI(eventName)}`);
     navigate("/event/" + encodeURI(eventName));
   }
-  console.log(isEvent)
   return (
     <div className="overflow-x-auto">
-      <table className="table table-zebra">
+      <table className="table table-zebra bg-neutral">
         <thead>
           <tr>
             {headers.map((header, index) => (
@@ -28,7 +26,9 @@ function TableComponent({ headers, rows, isEvent }) {
               onClick={() => (isEvent ? handleClick(row.name) : () => false)}
             >
               {Object.entries(row).map(([_, value], rowIdx) => (
-                <td key={rowIdx}>{value}</td>
+                <td key={rowIdx}>
+                  {value}
+                </td>
               ))}
             </tr>
           ))}

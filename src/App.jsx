@@ -7,7 +7,6 @@ import ManageEventPage from './components/ManageEventPage';
 import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
 import Background from './background/Background';
-import TopButtons from './components/TopButtons';
 import "./App.css"
 
 
@@ -27,7 +26,6 @@ function App() {
         });
 
         const data = await response.json();
-        console.log(data)
         setAuthenticated(data.valid === true);
       } catch (error) {
         console.error('Error verifying token:', error);
