@@ -146,17 +146,27 @@ app.post("/register", async (request, response) => {
 
 
 app.post("/upload", upload.single('image'), async (request, response) => {
-     console.log(request.file.path);
+    let uploadedImage;
+    console.log(request.file.path);
     const tempPath = request.file.path;
     const targetPath = path.join(__dirname, "./uploads/uploadedImage.jpg");
-    fs.rename(tempPath, targetPath, err => 
+    fs.rename(tempPath, targetPath, async err => 
  {
         if (err) {
             console.log("error")
         }
         else {
             console.log("uploaded")
-        }
+            //console.log(targetPath);
+        uploadedImage = targetPath;
+
+        //TENSORFLOW and POTRACE
+        const model = await tf.loadLayersModel('file://model/model.json');
+        const image = fs.readFileSync(uploadedImage);
+        const decodedImage = tf.node.decodeImage(image, 3);
+        const resizedImage = tf.image.resizeBilinear(decodedImage, [28, 28]);
+        
+}
     })
 })
 
