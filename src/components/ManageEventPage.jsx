@@ -3,18 +3,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import UserGuestListComponent from "./UserGuestListComponent.jsx";
 import PropTypes from "prop-types";
 import Navbar from "./Navbar.jsx";
-import EventTitle from "./EventTitle.jsx";
+import EventTitleManager from "./EventTitleManager.jsx";
 
 function ManageEventPage({ onLogout }) {
   const navigate = useNavigate();
   const { eventName } = useParams();
   const [guestList, setGuestList] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
-
-  const handleManageEventPage = async (event) => {
-    event.preventDefault();
-    navigate("/event/manage/" + encodeURI(eventName));
-  };
 
   const getGuestList = async () => {
     try {
@@ -90,10 +85,34 @@ function ManageEventPage({ onLogout }) {
       />
 
       <div className="main-page-container">
-        <div className="header-section">
-          <EventTitle eventName={eventName}/>
+        <div>
+          <EventTitleManager eventName={eventName}/>
         </div>
         <UserGuestListComponent onUpdate={handleUpdate} manage={true} />
+        <div>
+        <label className="text-lg text-slate-50" htmlFor="totalLimitInput" style={{marginLeft:"0.7rem"}}>
+          Total Guest Limit
+        </label>
+        <input
+          className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent"
+          type="number"
+          id="totalLimitInput"
+          name="totalLimitInput"
+          placeholder={eventName}
+          style={{marginLeft:"0.5rem"}}
+        />
+        <label className="text-lg text-slate-50" htmlFor="userLimitInput" style={{marginLeft:"14.7rem"}}>
+          User Guest Limit
+        </label>
+        <input
+          className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent"
+          type="number"
+          id="userLimitInput"
+          name="userLimitInput"
+          placeholder={eventName}
+          style={{marginLeft:"0.5rem"}}
+        />
+        </div>
       </div>
     </>
   );
