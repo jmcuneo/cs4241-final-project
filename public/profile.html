@@ -42,7 +42,16 @@
             <h2>Your Posts</h2>
             <div id="post-collection"></div>
             <h2>Your Events <span id="date-specifier"></span></h2>
-            <ul id="personal-events"></ul>
+            <table id="personal-events">
+                <tr>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Location</th>
+                    <th>Details</th>
+                </tr>
+            </table>
             <button type="button" class="hoverable" onclick="getPersonalCalendar()">Refresh Events</button>
             <label for="month">Select a month:</label>
             <input type="month" id="month">
@@ -60,7 +69,6 @@
                     <th>Saturday</th>
                 </tr>
             </table>
-            <button type="button" class="hoverable" onclick="calendarView()">Refresh Calendar</button>
         </div>
     </main>
 </body>
