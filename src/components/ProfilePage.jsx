@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
 
+
 function ProfilePage({ onLogout }) {
   const [userProfile, setUserProfile] = useState(null);
   const getProfile = async () => {
@@ -38,10 +39,11 @@ function ProfilePage({ onLogout }) {
     <>
       <Navbar onLogout={onLogout} showBackButton={true}></Navbar>
       <div className="main-page-container">
+      
         <motion.div
           className="center-page-container"
-          initial={{ scale: 0, x: "-50%", y: "-50%" }}
-          animate={{ scale: 1 }}
+          initial={{ scale: 0, x: "-50%", y: "-50%" , rotate: 180 }}
+          animate={{ scale: 1, rotate: 360}}
           transition={{
             type: "spring",
             stiffness: 260,
@@ -57,7 +59,7 @@ function ProfilePage({ onLogout }) {
               <h2>Account Type: {userProfile.accountType}</h2>
             </div>
           ) : (
-            <div>Error loading profile</div>
+            <div style={{ fontSize: '20px', marginLeft: '10px', marginTop: '10px', color: 'white'}}>Error loading profile</div>
           )}
         </motion.div>
       </div>
@@ -70,3 +72,4 @@ ProfilePage.propTypes = {
 };
 
 export default ProfilePage;
+

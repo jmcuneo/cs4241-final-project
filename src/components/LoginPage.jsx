@@ -1,6 +1,7 @@
-import  { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import { motion } from "framer-motion";
 
 /**
  * @author Jack Weinstein
@@ -58,7 +59,16 @@ function LoginPage({ onLogin }) {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col justify-center mx-auto items-center prose">
+    <motion.div 
+    className="center-page-container relative flex min-h-screen flex-col justify-center mx-auto items-center prose"
+    initial={{ scale: 0, x: '-50%', y: '-50%'}}
+    animate={{ scale: 1 }}
+    transition={{
+      type: "spring",
+      stiffness: 260,
+      damping: 20,
+    }}
+    > 
       <h1>Event List Sign-In</h1>
       <form id="loginForm" onSubmit={handleSubmit}>
         <div>
@@ -111,10 +121,17 @@ function LoginPage({ onLogin }) {
           </div>
         </div>
       </form>
-      <div>
-        <p>{message}</p>
+      <div
+        style={{
+          fontSize: "20px",
+          marginLeft: "30px",
+          marginTop: "10px",
+          color: "white",
+        }}
+      >
+        {message}
       </div>
-    </div>
+    </motion.div>
   );
 }
 

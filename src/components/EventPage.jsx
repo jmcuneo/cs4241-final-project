@@ -1,4 +1,4 @@
-import  { useState,  useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import GuestListComponent from "./GuestListComponent.jsx";
 import UserGuestListComponent from "./UserGuestListComponent.jsx";
@@ -87,7 +87,7 @@ function EventPage({ onLogout }) {
         onLogout={onLogout}
         showBackButton={true}
         showProfileButton={true}
-      />
+      ></Navbar>
       <div className="main-page-container">
         <div className="header-section">
           <h1>Event Page</h1>
@@ -98,7 +98,7 @@ function EventPage({ onLogout }) {
               color: "black",
               fontWeight: "bold",
             }}
-            className="btn waves-effect waves-light"
+            className="btn btn-primary"
             type="button"
             id="manageEventPageButton"
             onClick={handleManageEventPage}
@@ -106,8 +106,23 @@ function EventPage({ onLogout }) {
             Manage Event
           </button>
         </div>
-        <GuestListComponent guestList={guestList} />
-        <UserGuestListComponent onUpdate={handleUpdate} manage={false} />
+        <div
+          style =
+          {{
+            position: "absolute",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            justifyContent: "start",
+            marginTop: "60px",
+            width: "100%",
+          }}>
+          <div style={{ marginLeft: "10px" }}>
+            <GuestListComponent guestList={guestList} />
+          </div>
+          <div>
+            <UserGuestListComponent onUpdate={handleUpdate} manage={false} />
+          </div>
+        </div>
       </div>
     </>
   );

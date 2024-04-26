@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
-
+import { motion } from "framer-motion";
 /**
  * @author Jack Weinstein
  */
@@ -46,7 +46,16 @@ function RegisterPage() {
   };
 
   return (
-    <div className="center-page-container relative flex min-h-screen flex-col justify-center mx-auto items-center prose">
+    <motion.div
+      className="center-page-container relative flex min-h-screen flex-col justify-center mx-auto items-center prose"
+      initial={{ scale: 0, x: "-50%", y: "-50%" }}
+      animate={{ scale: 1 }}
+      transition={{
+        type: "spring",
+        stiffness: 260,
+        damping: 20,
+      }}
+    >
       <h1>Register</h1>
       <form className="" id="registerForm" onSubmit={handleSubmit}>
         <div className="">
@@ -132,8 +141,17 @@ function RegisterPage() {
           </div>
         </div>
       </form>
-      <div>{message}</div>
-    </div>
+      <div
+        style={{
+          fontSize: "20px",
+          marginLeft: "30px",
+          marginTop: "10px",
+          color: "white",
+        }}
+      >
+        {message}
+      </div>
+    </motion.div>
   );
 }
 
