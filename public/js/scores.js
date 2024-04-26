@@ -19,6 +19,19 @@ var getScores = async function () {
   return scores
 } 
 
+var getPersonal = async function () {
+  var response = await fetch ( "/getPersonal", {
+    method:"GET"
+  })
+
+  // Parses the returned data into a readable format
+  var text = await response.text();
+  let score = JSON.parse(text);
+
+  // Returns to the function caller
+  return score
+}
+
 /**
  * Adds a book to the database from a post request.
  * @param {*} event 
@@ -71,13 +84,14 @@ async function addDataToTable(table){
   let classNames = ["","username","score"]
   let width = ["width:25px", "width:40%", "width:40%"]
   let tableHead = table.createTHead();
-  let row = tableHead.insertRow();
+  let tableBody = table.createTBody();
+  let row = tableBody.insertRow();
   let count = 0;
 
   // For each score in the list, it builds out a row with that entry
   for (let score of scores){
     delete score['_id'];
-    let row = table.insertRow();
+    let row = tableBody.insertRow();
     row.setAttribute("scope", "row")
     if(count===0){
       let medal = row.insertCell()
@@ -97,6 +111,10 @@ async function addDataToTable(table){
       img.setAttribute("src", "/images/bronzeMedal.png")
       img.setAttribute("style","width:20px;height:20px;")
       medal.appendChild(img)
+    } else {
+      let position = row.insertCell()
+      let content = document.createTextNode(count+1);
+      position.appendChild(content)
     }
 
     for (const property in score) {
@@ -111,11 +129,11 @@ async function addDataToTable(table){
 
   if(scores.length<10){
     for(let count = 0; count<10-scores.length; count++){
-        let row = table.insertRow();
+        let row = tableBody.insertRow();
         row.setAttribute("scope", "row")
         for (const property in columnNames) {
             let data = row.insertCell();
-            data.setAttribute("class",classNames[property]);
+            data.setAttribute("class", classNames[property]);
             if(property==0){
               var content = document.createTextNode((10-(10-count))+scores.length+1);
             } else {
@@ -127,7 +145,33 @@ async function addDataToTable(table){
     }
   }
 
+  let blankRow = tableBody.insertRow();
+  blankRow.setAttribute("scope", "row");
+  blankRow.insertCell();
+  blankRow.insertCell();
+  blankRow.insertCell();
+
+  let personalRecord = await getPersonal();
+  let personalRow = tableBody.insertRow();
+
+  if(personalRecord.ranking==undefined){
+    for (const property in classNames) {
+      let data = personalRow.insertCell();
+      data.setAttribute("class", classNames[property]);
+      let content = document.createTextNode("-");
+      data.appendChild(content);
+    }
+  } else {
+    for (const property in personalRecord) {
+      let data = personalRow.insertCell();
+      data.setAttribute("class", property);
+      let content = document.createTextNode(personalRecord[property]);
+      data.appendChild(content);
+    }
+  }
+
   // Adds the table headers (column names)
+  let rowHead  = tableHead.insertRow();
   for (let count = 0; count<3; count++){
     let th = document.createElement("th");
     let cName = document.createTextNode(columnNames[count]);
@@ -135,6 +179,6 @@ async function addDataToTable(table){
     th.appendChild(cName);
     th.setAttribute("class", classNames[count])
     th.setAttribute("style", width[count])
-    row.appendChild(th);
+    rowHead.appendChild(th);
   }
 };

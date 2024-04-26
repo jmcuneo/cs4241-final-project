@@ -87,7 +87,7 @@ app.get( '/', (req,res) => {
 
 // add some middleware that always sends unauthenicaetd users to the login page
 app.use( function( req,res,next) {
-  if( req.session.login === true )
+  if( req.session.login === true && currentUserLoggedIn != null )
     next()
   else
     res.render('index', { msg:'<div class="w-50 mx-auto bg-danger p-3 rounded text-center"><b class="my-auto">Your login failed! Please try again with a new username or a valid password.</b></div>', layout:false })
@@ -132,8 +132,32 @@ app.get( '/getScores', async (req, res) => {
 
 })
 
-/* Route that adds a book to the database
-app.post( '/submitAdd', (req, res) => {
+// Route for the API that returns a user's highest score ranking
+app.get( '/getPersonal', async (req, res) => {
+
+  const docs = await collectionScores.find({}).sort({score:-1}).toArray();
+  let count = 0;
+  let ranking = {}
+  for(item in docs){
+    count++;
+    if(docs[item].username == currentUserLoggedIn){
+      ranking = {ranking: count, username: docs[item].username, score: docs[item].score}
+      break
+    }
+  }
+  res.end( JSON.stringify(ranking) )
+
+})
+
+app.get('/getHighScore', async (req, res) =>{
+
+  const score = await collectionScores.find({username: currentUserLoggedIn}).sort({score:-1}).limit(1).toArray();
+  res.end(JSON.stringify(score))
+
+})
+
+// Route that submits a score to the database
+app.post( '/submitScore', (req, res) => {
   let dataString = ""
 
   req.on( "data", function( data ) {
@@ -145,14 +169,14 @@ app.post( '/submitAdd', (req, res) => {
     let url = req.url;
     let data = JSON.parse( dataString )
 
-    data.username = currentUserLoggedIn
 
-    const result = await collectionScores.insertOne( data)
+    record = {username: currentUserLoggedIn, score: data.score };
+    const result = await collectionScores.insertOne( record )
 
     res.writeHead( 200, "OK", {"Content-Type": "text/plain" })
     res.end()
   })
-}) */
+})
 
 app.listen( process.env.PORT || 3000 )
 

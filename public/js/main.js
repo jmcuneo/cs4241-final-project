@@ -1,14 +1,21 @@
+// Control Constants
+const MOVE_LEFT = 'ArrowLeft';
+const MOVE_RIGHT = 'ArrowRight';
+const SOFT_DROP = 'ArrowDown';
+const ROTATE_CLOCKWISE = 'x';
+const ROTATE_COUNTER_CLOCKWISE = 'z';
+const HARD_DROP = ' ';
+const RESTART = 'r';
 
 
-// Model
 
-var cellSize = 25;
-var boardWidth = 10;
-var boardHeight = 20;
+
+
 
 // Game board
 class Board {
   constructor(width, height, cS) {
+      this.score = 0;
       this.width = width;
       this.height = height;
       this.cellSize = cS;
@@ -19,13 +26,16 @@ class Board {
       this.activePiece; // the piece that's currently being controlled by the player
       this.cells = []; // the current state of the board (not including the activePiece)
       this.initBoard();
+      this.isGameActive = true;
+      this.hasGameStarted = true;
+      
   }
 
   initBoard() {
-    for(let y = 0; y < 20; y++) {
+    for(let y = 0; y < boardHeight; y++) {
         let row = [];
 
-        for(let x = 0; x < 10; x++) {
+        for(let x = 0; x < boardWidth; x++) {
             row.push(new Cell(true, 'gray', x, y))
         }
 
@@ -51,36 +61,188 @@ class Board {
       }
   }
 
+  // hard drop the active piece to the bottom of the board
+  hardDrop() {
+    while(this.movePieceDown() == 0){
+      this.updateScore(2);
+    }
+  }
+  
+  // return 1 if move makes it to the bottom, 0 otherwise
+  movePieceDown() {
+    // try moving a copy of the active piece down first, if it hits something then don't let the active piece move
+    let dummyPiece = Object.assign(Object.create(Object.getPrototypeOf(this.activePiece)), this.activePiece);
+    dummyPiece.move(dummyPiece, dummyPiece.x, dummyPiece.y + 1);
+    if(!this.hasPieceNotReachedBottom(dummyPiece)) {
+      this.lockInPiece();
+      return 1
+    }
+    else {
+      this.activePiece.move(this.activePiece, this.activePiece.x, this.activePiece.y + 1);
+      return 0
+    }
+  }
+
   drawBoard() {
     this.drawBackground();
 
-    this.cells.forEach((cell) => {
-        cell.draw();
-    })
+    this.cells.forEach((row) => {
+      row.forEach((cell) => {
+        if(!cell.isEmpty) {
+          cell.draw();
+        }
+      });
+    });
 
     this.activePiece.draw();
   }
 
+  // grabs the next piece from the queue
   spawnPiece() {
     let piece = next.getNextPiece();
-    this.activePiece = piece;
+    piece.setCanvas('board');
+    this.activePiece = Object.assign(Object.create(Object.getPrototypeOf(piece)), piece);
+    this.activePiece.x = 3;
+    this.activePiece.y = 0;
+    this.activePiece.draw();
+
+    // check for loss condition
+    if(!this.hasPieceNotReachedBottom(this.activePiece)) {
+      this.isGameActive = false;
+      sendScore(this.score);
+    }
   }
 
-  // converts active piece to cells
+
+
+  // converts active piece to cells (eg. for when a piece reaches the bottom of the board)
   lockInPiece() { 
-    for(let row = 0; row < activePiece.shape[0].length; row++) {
-        for(let col = 0; col < activePiece.shape[row].length; col++) {
-            if(activePiece.shape[row][col] == 1) {
-                let x = activePiece.x + row;
-                let y = activePiece.y + col;
-                this.cells[x][y] = new Cell(false, activePiece.color, x, y);
+    for(let row = 0; row < this.activePiece.shape.length; row++) {
+        for(let col = 0; col < this.activePiece.shape[row].length; col++) {
+            if(this.activePiece.shape[row][col] == 1) {
+                let x = this.activePiece.x + col;
+                let y = this.activePiece.y + row;
+                this.cells[y][x] = new Cell(false, this.activePiece.color, x, y);
             }
         }
     }
-    this.activePiece = null;
+    // console.log(this.cells);
+
+    this.spawnPiece();
   }
 
+  // returns true if piece's location is valid given the current state of the board cells
+  hasPieceNotReachedBottom(piece) {
+    for(let row = 0; row < piece.shape.length; row++){
+      for(let col = 0; col < piece.shape[row].length; col++) {
+        if(piece.shape[row][col] == 1) {
+          let x = piece.x + col;
+          let y = piece.y + row;
+
+          if(y > 19) {
+            return false;
+          }
+          else if(!this.cells[y][x].isEmpty) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
+  }
+
+  isPieceInBounds(piece) {
+    for(let row = 0; row < piece.shape.length; row++){
+      for(let col = 0; col < piece.shape[row].length; col++) {
+        if(piece.shape[row][col] == 1) {
+          let x = piece.x + col;
+          let y = piece.y + row;
+
+          if(x < 0 || x >= boardWidth || y < 0 || y >= boardHeight || !this.cells[y][x].isEmpty) {
+            return false;
+          }
+        }
+      }
+    }
+
+    // Return true only after checking all cells of the piece
+    return true;
+  }
   
+
+  updateScore(scoreToAdd){
+    var csElement = document.getElementById("currentScore");
+    this.score = this.score + scoreToAdd
+    csElement.innerHTML = this.score
+
+    var hsElement = document.getElementById("highScore");
+    if(hsElement.innerHTML < this.score){
+      hsElement.innerHTML = this.score;
+    }
+
+  }
+
+  // helper function to check if an individual row at cells[index] has been filled
+  isRowFilled(index) {
+    for(let col = 0; col < boardWidth; col++){
+      if(this.cells[index][col].isEmpty) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // helper function to remove an individual row from the board and add a blank one to the top
+  clearRow(index) {
+    // Remove the row at the given index
+    this.cells.splice(index, 1);
+  
+    // Create a new row
+    let row = [];
+    for(let x = 0; x < boardWidth; x++) {
+      row.push(new Cell(true, 'gray', x, 0));  // The y-coordinate is 0 for the new top row
+    }
+  
+    // Add the new row at the top of the cells array
+    this.cells.unshift(row);
+  
+    // Update the y-coordinates of all cells
+    for(let y = 0; y < boardHeight; y++) {
+      for(let x = 0; x < boardWidth; x++) {
+        this.cells[y][x].y = y;
+      }
+    }
+  }
+  
+  // clears all filled rows on the board, and returns the appropriate score for the rows cleared (or 0 if none cleared)
+  clearFilledRows() {
+    let rowsCleared = 0;
+
+    for(let row = 0; row < boardHeight; row++){
+      if(this.isRowFilled(row)){
+        this.clearRow(row);
+        rowsCleared++;
+      }
+    }
+
+    // TODO add 400 point bonus for back-to-back tetris?
+    switch (rowsCleared) {
+      case 1:
+        this.updateScore(100)
+        break;
+      case 2:
+        this.updateScore(300)
+        break;
+      case 3:
+        this.updateScore(500)
+        break;
+      case 4:
+        this.updateScore(800)
+        break;
+    }
+  }
 }
 
 class Cell {
@@ -100,8 +262,8 @@ class Cell {
 }
 
 class Piece {
-  constructor(shape, color, orientations) {
-    this.ctx = document.getElementById('board').getContext('2d');
+  constructor(shape, color, orientations, canvasName) {
+    this.ctx = document.getElementById(canvasName).getContext('2d');
     this.shape = shape;
     this.color = color;
     this.x = 0;
@@ -121,6 +283,10 @@ class Piece {
     });   
   }
 
+  setCanvas(canvas) {
+    this.ctx = document.getElementById(canvas).getContext('2d');
+  }
+
   rotate(dir) {
     this.angle = (this.angle + dir) % 360
     if(this.angle < 0){this.angle += 360}
@@ -135,60 +301,61 @@ class Piece {
 }
 
 class PieceI extends Piece {
-  constructor() {
-      super([[0, 0, 0, 0,], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0,]], 'cyan', 
-      {0: [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]], 90: [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]], 
-       180: [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0]], 270: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]});
+  constructor(canvasName = 'board') {
+    super([[0, 0, 0, 0,], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0,]], 'cyan',
+    {0: [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]], 90: [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]],
+     180: [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0]], 270: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]}, canvasName);
   }
 }
 
 class PieceJ extends Piece {
-  constructor() {
-      super([[1, 0, 0], [1, 1, 1], [0, 0, 0]], 'blue', 
-      {0: [[1, 0, 0], [1, 1, 1], [0, 0, 0]], 90: [[0, 1, 1], [0, 1, 0], [0, 1, 0]], 
-        180: [[0, 0, 0], [1, 1, 1], [0, 0, 1]], 270: [[0, 1, 0], [0, 1, 0], [1, 1, 0]]});
+  constructor(canvasName = 'board') {
+    super([[1, 0, 0], [1, 1, 1], [0, 0, 0]], 'blue',
+    {0: [[1, 0, 0], [1, 1, 1], [0, 0, 0]], 90: [[0, 1, 1], [0, 1, 0], [0, 1, 0]],
+      180: [[0, 0, 0], [1, 1, 1], [0, 0, 1]], 270: [[0, 1, 0], [0, 1, 0], [1, 1, 0]]}, canvasName);
   }
 }
 
 class PieceL extends Piece {
-  constructor() {
-      super([[0, 0, 1], [1, 1, 1], [0, 0, 0]], 'orange',
-    {0: [[0, 0, 1], [1, 1, 1], [0, 0, 0]], 90: [[0, 1, 0], [0, 1, 0], [0, 1, 1]], 
-      180: [[0, 0, 0], [1, 1, 1], [1, 0, 0]], 270: [[1, 1, 0], [0, 1, 0], [0, 1, 0]]});
+  constructor(canvasName = 'board') {
+    super([[0, 0, 1], [1, 1, 1], [0, 0, 0]], 'orange',
+    {0: [[0, 0, 1], [1, 1, 1], [0, 0, 0]], 90: [[0, 1, 0], [0, 1, 0], [0, 1, 1]],
+      180: [[0, 0, 0], [1, 1, 1], [1, 0, 0]], 270: [[1, 1, 0], [0, 1, 0], [0, 1, 0]]},canvasName);
   }
 }
 
 class PieceO extends Piece {
-  constructor() {
+  constructor(canvasName = 'board') {
       super([[1, 1], [1, 1]], 'yellow',
       {0: [[1, 1], [1, 1]], 90: [[1, 1], [1, 1]], 
-        180: [[1, 1], [1, 1]], 270: [[1, 1], [1, 1]]});
+        180: [[1, 1], [1, 1]], 270: [[1, 1], [1, 1]]}, canvasName);
   }
 }
 
 class PieceS extends Piece {
-  constructor() {
+  constructor(canvasName = 'board') {
       super([[0, 1, 1], [1, 1, 0], [0, 0, 0]], 'green', 
       {0: [[0, 1, 1], [1, 1, 0], [0, 0, 0]], 90: [[0, 1, 0], [0, 1, 1], [0, 0, 1]], 
-        180: [[0, 0, 0], [0, 1, 1], [1, 1, 0]], 270: [[1, 0, 0], [1, 1, 0], [0, 1, 0]]});
+        180: [[0, 0, 0], [0, 1, 1], [1, 1, 0]], 270: [[1, 0, 0], [1, 1, 0], [0, 1, 0]]}, canvasName);
   }
 }
 
 class PieceT extends Piece {
-  constructor() {
+  constructor(canvasName = 'board') {
       super([[0, 1, 0], [1, 1, 1]], 'purple',
       {0: [[0, 1, 0], [1, 1, 1]], 90: [[0, 1, 0], [0, 1, 1], [0, 1, 0]], 
-        180: [[0, 0, 0], [1, 1, 1], [0, 1, 0]], 270: [[1, 1, 0], [0, 1, 0], [0, 1, 0]]});
+        180: [[0, 0, 0], [1, 1, 1], [0, 1, 0]], 270: [[1, 1, 0], [0, 1, 0], [0, 1, 0]]}, canvasName);
   }
 }
 
 class PieceZ extends Piece {
-  constructor() {
+  constructor(canvasName = 'board') {
       super([[1, 1, 0], [0, 1, 1], [0, 0, 0]], 'red',
       {0: [[1, 1, 0], [0, 1, 1], [0, 0, 0]], 90: [[0, 0, 1], [0, 1, 1], [0, 1, 0]], 
-        180: [[0, 0, 0], [1, 1, 0], [0, 1, 1]], 270: [[0, 1, 0], [1, 1, 0], [1, 0, 0]]});
+        180: [[0, 0, 0], [1, 1, 0], [0, 1, 1]], 270: [[0, 1, 0], [1, 1, 0], [1, 0, 0]]}, canvasName);
   }
 }
+
 
 // Instantiate the pieces
 let pieceI = new PieceI();
@@ -200,73 +367,37 @@ let pieceT = new PieceT();
 let pieceZ = new PieceZ();
 
 
-let board = new Board(boardWidth, boardHeight, cellSize);
-board.drawBackground();
-
-
-// TEST DRAW TEST DRAW TEST DRAW TESRT DAR
-// pieceJ.x = 3;
-// pieceJ.y = 1;
-// pieceJ.rotate(0);
-// pieceJ.draw();
-
-pieceZ.x = 3;
-pieceZ.y = 1;
-pieceZ.rotate(270);
-pieceZ.draw();
-
-pieceO.x = 1;
-pieceO.y = 17;
-pieceO.rotate(0);
-pieceO.draw();
-
-// pieceL.x = 3;
-// pieceL.y = 1;
-// pieceL.rotate(0);
-// pieceL.draw();
-
-// pieceI.x = 3;
-// pieceI.y = 1;
-// pieceI.rotate(90);
-// pieceI.draw();
-
-// pieceT.x = 3;
-// pieceT.y = 1;
-// pieceT.rotate(90);
-// pieceT.draw();
-
 // View
 
 class Next {
   constructor(bW, bH, cS) {
-      this.canvas = document.getElementById('next');
-      this.ctx = this.canvas.getContext('2d');
-      this.width = bW/2;
-      this.height = bH/2;
-      this.canvas.width = this.width * cS;
-      this.canvas.height = this.height * cS;
-      this.pieceQueue = [];
-      this.initQueue();
-      this.drawBackground();
+    this.cellSize = cS;
+    this.canvas = document.getElementById('next');
+    this.ctx = this.canvas.getContext('2d');
+    this.width = bW/2;
+    this.height = bH;
+    this.canvas.width = this.width * cS;
+    this.canvas.height = this.height * cS;
+    this.pieceQueue = [];
+    this.initQueue();
+    this.drawBackground();
+    this.renderPieces();
   }
 
   drawBackground() {
-      this.ctx.fillStyle = 'black';
-      this.ctx.strokeStyle = 'grey';
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillStyle = 'black';
+    //this.ctx.strokeStyle = 'grey';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  drawPiece(piece) {
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      piece.shape.forEach((row, i) => {
-          row.forEach((value, j) => {
-              if (value > 0) {
-                  this.ctx.fillStyle = piece.color;
-                  this.ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
-              }
-          });
-      });
+  renderPieces(){
+    this.pieceQueue.forEach((piece, i) => {
+      piece.x = 1;
+      piece.y = (i + 0.25) * 4;
+      piece.draw();
+    })
   }
+
 
   drawQueue() {
     this.pieceQueue.forEach((piece) => {
@@ -275,9 +406,21 @@ class Next {
   }
 
   getRandomPiece() {
-    let pieceNumber = Math.floor(Math.random() * 7);
-    let pieces = [pieceI, pieceJ, pieceL, pieceO, pieceS, pieceZ];
-    return pieces[pieceNumber];
+    let pieceNumber = Math.floor(Math.random() * 6);
+    switch (pieceNumber) {
+      case 0:
+        return new PieceI('next');
+      case 1:
+        return new PieceJ('next');
+      case 2:
+        return new PieceL('next');
+      case 3:
+        return new PieceO('next');
+      case 4:
+        return new PieceS('next');
+      case 5:
+        return new PieceZ('next');
+    }
   }
 
   initQueue() {
@@ -294,7 +437,163 @@ class Next {
   
 }
 
+// Controller
+
+// Settings
+var cellSize = 25;
+var boardWidth = 10;
+var boardHeight = 20;
+let board = new Board(boardWidth, boardHeight, cellSize);
 let next = new Next(boardWidth, boardHeight, cellSize);
 
+// Game Constants
 
-// Controller
+const FRAMES_PER_SECOND = 7;
+let fps = 7; // controls the speed of the game in frames per second
+const SOFTDROP_SPEED = fps * 4;
+
+// Main game loop
+// Initializes game
+function init() {
+  board.spawnPiece();
+  board.drawBoard();
+
+  setTimeout(() => {
+    requestAnimationFrame(nextFrame);
+  }, 1000 / fps);
+}
+
+// Advances game one frame
+function nextFrame() {
+  board.movePieceDown();
+  board.drawBoard();
+  next.drawBackground();
+  next.renderPieces();
+
+  board.clearFilledRows();
+
+  if(board.isGameActive) {
+    setTimeout(() => {
+      requestAnimationFrame(nextFrame);
+    }, 1000 / fps);
+  }
+}
+
+
+// Side Functions
+window.onload = function() {
+  displayHighScore();
+  board.updateScore(0)
+};
+
+async function displayHighScore(){
+  var hsElement = document.getElementById("highScore");
+  var response = await fetch ( "/getHighScore", {
+    method:"GET"
+  })
+  var text = await response.text();
+  let highScore = JSON.parse(text);
+  if(highScore.length!=0){
+    hsElement.innerHTML = highScore[0].score;
+  } else {
+    hsElement.innerHTML = "0"
+  }
+}
+
+async function sendScore(score){
+  let json = { score: score }
+  let body = JSON.stringify( json );
+
+  // Makes the post request with the body data
+  const response = await fetch( "/submitScore", {
+    method:"POST",
+    body 
+  })
+
+  // Resets the forms to clear the values and then refreshes the table data to reflect changes
+  const text = await response.text();
+}
+
+init();
+
+document.addEventListener(
+  "keydown",
+  (event) => {
+
+    if(board.isGameActive){
+      
+    
+      const keyName = event.key;
+      console.log(keyName);
+
+      let dummyPiece = Object.assign(Object.create(Object.getPrototypeOf(board.activePiece)), board.activePiece);
+      switch (keyName) {
+        case ROTATE_COUNTER_CLOCKWISE:
+          dummyPiece.rotate(-90);
+          if(board.isPieceInBounds(dummyPiece)) {
+            board.activePiece.rotate(-90);
+            board.drawBoard();
+          }
+          break;
+        case ROTATE_CLOCKWISE:
+          dummyPiece.rotate(90);
+          if(board.isPieceInBounds(dummyPiece)) {
+            board.activePiece.rotate(90);
+            board.drawBoard();
+          }
+          break;
+        case MOVE_LEFT:
+          dummyPiece.move(dummyPiece, dummyPiece.x-1, dummyPiece.y);
+          if(board.isPieceInBounds(dummyPiece)) {
+            board.activePiece.move(board.activePiece, board.activePiece.x-1, board.activePiece.y);
+            board.drawBoard();
+          }
+          break;
+        case MOVE_RIGHT:
+          dummyPiece.move(dummyPiece, dummyPiece.x+1, dummyPiece.y);
+          if(board.isPieceInBounds(dummyPiece)) {
+            board.activePiece.move(board.activePiece, board.activePiece.x+1, board.activePiece.y);
+            board.drawBoard();
+          }
+          break;
+        case HARD_DROP:
+          board.hardDrop();
+          break;
+        case SOFT_DROP:
+          fps = SOFTDROP_SPEED;
+          break;
+        case RESTART:
+          window.location.reload();
+          break;
+      }
+    } else {
+      const keyName = event.key;
+      switch(keyName){
+        case RESTART:
+          window.location.reload();
+          break;
+      }
+    }
+  },
+  false,
+);
+
+document.addEventListener('keyup', (event) => {
+  if(board.isGameActive){
+    const keyName = event.key;
+    if(keyName == SOFT_DROP){
+      fps = FRAMES_PER_SECOND;
+    }
+  }
+}, false);
+
+
+function flipCanvas() {
+  let element = document.getElementById('board'); // Replace 'board' with the id of your element
+  element.style.transform = 'scaleY(1)'; // Replace '1' with the scale factor you want
+}
+
+function flipCanvasDown() {
+  let element = document.getElementById('board'); // Replace 'board' with the id of your element
+  element.style.transform = 'scaleY(-1)'; // Replace '1' with the scale factor you want
+}
