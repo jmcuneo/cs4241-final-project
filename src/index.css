@@ -79,8 +79,6 @@ button:focus-visible {
 }
 
 .center-page-container {
-  width: 100%;
-  height: 100%;
   display: flex; /* Enables flexbox for positioning */
   flex-direction: column; /* Stacks elements vertically */
   align-items: center; /* Centers elements horizontally */
@@ -134,8 +132,6 @@ button:focus-visible {
 }
 
 .guest-list {
-  width: 100%;
-  height: 100%;
   display: flex; /* Enables flexbox for positioning */
   flex-direction: column; /* Stacks elements vertically */
   align-items: center; /* Centers elements horizontally */
