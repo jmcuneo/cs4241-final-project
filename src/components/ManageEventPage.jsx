@@ -90,7 +90,7 @@ function ManageEventPage({ onLogout }) {
       />
 
       <div className="main-page-container">
-        <div className="header-section" style={{marginTop: "5rem"}}>
+        <div className="header-section">
           <EventTitle eventName={eventName}/>
         </div>
         <UserGuestListComponent onUpdate={handleUpdate} manage={true} />
