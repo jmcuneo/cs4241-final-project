@@ -74,8 +74,8 @@ function EventPage({ onLogout }) {
       .catch((error) => {
         console.error("Error getting profile:", error);
       });
-    if (userProfile && userProfile.accountType === "Admin") setIsAdmin(true);
-  }, [eventName]);
+      if (userProfile && userProfile.accountType === "Admin") setIsAdmin(true);
+  }, [eventName, userProfile]);
 
   return (
     <>
