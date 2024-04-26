@@ -1,79 +1,138 @@
-import React, { useState, useRef } from 'react';
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import { useState, useRef } from "react";
 
 /**
  * @author Jack Weinstein
  */
 
 function RegisterPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
   const firstNameRef = useRef(null);
   const lastNameRef = useRef(null);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleLogin = async (event) => {
     event.preventDefault();
     navigate("/");
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setMessage('Registering');
+    setMessage("Registering");
 
     try {
-      const response = await fetch('//localhost:3000/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("//localhost:3000/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username: usernameRef.current.value,
           password: passwordRef.current.value,
           firstName: firstNameRef.current.value,
-          lastName: lastNameRef.current.value
-        })
+          lastName: lastNameRef.current.value,
+        }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        setMessage('Registration successful! You can now log in.');
+        setMessage("Registration successful! You can now log in.");
       } else {
-        setMessage('Registration failed: ' + data.message);
+        setMessage("Registration failed: " + data.message);
       }
-
     } catch (error) {
-      console.error('Registration error:', error.message);
-      setMessage('An error occurred during registration: ' + error.message);
+      console.error("Registration error:", error.message);
+      setMessage("An error occurred during registration: " + error.message);
     }
   };
 
-  return(
-    <div className="center-page-container"> 
-      <h1>Register</h1> 
-      <form className="col s12" id="regsiterForm" onSubmit={handleSubmit}>
-        <div className="col"> 
-          <div className="input-field col s6">
-            <div><label style={{ fontSize: '20px', color: 'white' }} htmlFor="username">First Name</label></div>
-            <input className="validate" type="text" id="firstName" name="firstName" data-length="10" required ref={firstNameRef}/>
+  return (
+    <div className="center-page-container relative flex min-h-screen flex-col justify-center mx-auto items-center prose">
+      <h1>Register</h1>
+      <form className="" id="registerForm" onSubmit={handleSubmit}>
+        <div className="">
+          <div className="">
+            <div>
+              <label className="text-lg text-slate-50" htmlFor="username">
+                First Name
+              </label>
+            </div>
+            <input
+              className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent"
+              type="text"
+              id="firstName"
+              name="firstName"
+              data-length="10"
+              required
+              ref={firstNameRef}
+            />
           </div>
-          <div className="input-field col s6">
-            <div><label style={{ fontSize: '20px', color: 'white' }} htmlFor="username">Last Name</label></div>
-            <input className="validate" type="text" id="lastName" name="lastName" data-length="10" required ref={lastNameRef}/>
+          <div className="">
+            <div>
+              <label className="text-lg text-slate-50" htmlFor="username">
+                Last Name
+              </label>
+            </div>
+            <input
+              className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent"
+              type="text"
+              id="lastName"
+              name="lastName"
+              data-length="10"
+              required
+              ref={lastNameRef}
+            />
           </div>
-          <div className="input-field col s6">
-            <div><label style={{ fontSize: '20px', color: 'white' }} htmlFor="username">Username</label></div>
-            <input className="validate" type="text" id="username" name="username" data-length="10" required ref={usernameRef}/>
+          <div className="">
+            <div>
+              <label className="text-lg text-slate-50" htmlFor="username">
+                Username
+              </label>
+            </div>
+            <input
+              className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent"
+              type="text"
+              id="username"
+              name="username"
+              data-length="10"
+              required
+              ref={usernameRef}
+            />
           </div>
-          <div className="input-field col s6">
-            <div><label style={{ fontSize: '20px', color: 'white' }} htmlFor="password">Password</label></div>
-            <input className="validate" type="password" id="password" name="password" required ref={passwordRef}/>
+          <div className="mb-2">
+            <div>
+              <label className="text-lg text-slate-50" htmlFor="password">
+                Password
+              </label>
+            </div>
+            <input
+              className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent"
+              type="password"
+              id="password"
+              name="password"
+              required
+              ref={passwordRef}
+            />
           </div>
-          <button style={{marginTop: '10px', backgroundColor: 'rgb(235, 79, 52)', color: 'black', fontWeight: 'bold'}} className="btn waves-effect waves-light" type="button" id="logoutButton" onClick={handleLogin}>Back</button>
-          <button style={{marginTop: '10px', marginLeft: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="submit" id="registerButton">Register</button>
+          <div className="flex justify-between w-full">
+            <button
+              className="btn btn-ghost"
+              type="button"
+              id="logoutButton"
+              onClick={handleLogin}
+            >
+              Back
+            </button>
+            <button
+              className="btn btn-primary"
+              type="submit"
+              id="registerButton"
+            >
+              Register
+            </button>
+          </div>
         </div>
       </form>
-      <div style={{ fontSize: '20px', marginLeft: '30px', marginTop: '10px' }}>{message}</div> 
+      <div>{message}</div>
     </div>
   );
 }

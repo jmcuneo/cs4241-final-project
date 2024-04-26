@@ -1,0 +1,23 @@
+.avatar {
+  filter: invert(100%) sepia(0%) saturate(7492%) hue-rotate(339deg)
+    brightness(100%) contrast(97%);
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+}
+.header:nth-last-child(1) {
+  margin-left: auto;
+  justify-self: flex-end;
+}
+
+a:last-of-type {
+  margin-left:auto;
+  display: flex;
+}
+
+:root {
+  color: white;
+  background-color: #191919;
+}

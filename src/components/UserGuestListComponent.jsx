@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef  } from 'react';
+import  { useEffect, useState, useRef  } from 'react';
 import { useParams } from "react-router-dom";
 import PropTypes from 'prop-types';
 
@@ -150,7 +150,8 @@ function GuestListComponent({ onUpdate, manage }) {
 }
 
 GuestListComponent.propTypes = {
-    showInvite: PropTypes.bool
+    onUpdate: PropTypes.func,
+    manage: PropTypes.bool
 }
 
 export default GuestListComponent;
