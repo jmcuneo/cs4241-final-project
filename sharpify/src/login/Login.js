@@ -74,10 +74,10 @@ function Login(props) {
                         verifyAccount();
                     }}>Login</button>
                     <div>
-                        <label>New to your fitness journey?&nbsp;</label>
+                        <label>New to Sharpify?&nbsp;</label>
                         <a className="orange-link" onClick={() => { navigate("/register"); }}>Click here to register!</a>
                     </div>
-                    <div className="copy-right">Powered by Group 7</div>
+                    <div className="copy-right">Powered by Group 24</div>
                 </div>
             </div>
         </div>
