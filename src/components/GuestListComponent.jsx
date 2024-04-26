@@ -14,7 +14,7 @@ function GuestListComponent({ guestList }) {
         </thead>
         <tbody>
           {guestList.map((guest, index) => (
-            <tr key={index} className="hover">
+            <tr key={index}>
               <td>{guest.guestName}</td>
               <td>{guest.invitedBy}</td>
             </tr>

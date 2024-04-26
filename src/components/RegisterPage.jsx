@@ -47,7 +47,7 @@ function RegisterPage() {
 
   return (
     <motion.div
-      className="center-page-container relative flex min-h-screen flex-col justify-center mx-auto items-center prose"
+      className="center-page-container  overflow-hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex min-h-max flex-col justify-center mx-auto items-center prose"
       initial={{ scale: 0, x: "-50%", y: "-50%" }}
       animate={{ scale: 1 }}
       transition={{
@@ -141,16 +141,7 @@ function RegisterPage() {
           </div>
         </div>
       </form>
-      <div
-        style={{
-          fontSize: "20px",
-          marginLeft: "30px",
-          marginTop: "10px",
-          color: "white",
-        }}
-      >
-        {message}
-      </div>
+      <div className="text-xl ml-7 mt-2.5 color-white">{message}</div>
     </motion.div>
   );
 }

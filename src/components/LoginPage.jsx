@@ -58,21 +58,24 @@ function LoginPage({ onLogin }) {
     navigate("/register");
   };
 
+
+
+
   return (
-    <motion.div 
-    className="center-page-container relative flex min-h-screen flex-col justify-center mx-auto items-center prose"
-    initial={{ scale: 0, x: '-50%', y: '-50%'}}
-    animate={{ scale: 1 }}
-    transition={{
-      type: "spring",
-      stiffness: 260,
-      damping: 20,
-    }}
-    > 
+    <motion.div
+      className="center-page-container absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex min-h-max flex-col justify-center mx-auto items-center prose"
+      initial={{ scale: 0, x: "-50%", y: "-50%" }}
+      animate={{ scale: 1 }}
+      transition={{
+        type: "spring",
+        stiffness: 260,
+        damping: 20,
+      }}
+    >
       <h1>Event List Sign-In</h1>
       <form id="loginForm" onSubmit={handleSubmit}>
         <div>
-          <div className="">
+          <div>
             <div>
               <label className="text-lg text-slate-50" htmlFor="username">
                 Username
@@ -89,7 +92,7 @@ function LoginPage({ onLogin }) {
               ref={usernameRef}
             />
           </div>
-          <div className="mb-2  ">
+          <div className="mb-2">
             <div>
               <label className="text-lg text-slate-50" htmlFor="password">
                 Password
@@ -121,16 +124,7 @@ function LoginPage({ onLogin }) {
           </div>
         </div>
       </form>
-      <div
-        style={{
-          fontSize: "20px",
-          marginLeft: "30px",
-          marginTop: "10px",
-          color: "white",
-        }}
-      >
-        {message}
-      </div>
+      <div className="text-xl ml-7 mt-2.5 color-white">{message}</div>
     </motion.div>
   );
 }
