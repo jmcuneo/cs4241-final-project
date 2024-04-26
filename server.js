@@ -23,10 +23,11 @@ dotenv.config();
 
 //Account code
 app.use(cors());
-app.use(express.static("dist"));
+//app.use(express.static("dist"));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+ViteExpress.config({mode: 'development'});
 
 app.use(session({
     secret: '5O$5HP^xg2zV0duE',     //MAKE A NEW KEY EVENTUALLY AND MOVE TO .ENV
@@ -520,7 +521,6 @@ async function connectToDB() {
     const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
     await mongoose.connect(uri, { dbName: process.env.DBNAME });
 }
-
 
 ViteExpress.listen(app, process.env.PORT || port, () => {
     console.log("Server listening on port " + (process.env.PORT ? process.env.PORT : port));
