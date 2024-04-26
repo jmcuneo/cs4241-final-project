@@ -37,6 +37,10 @@ td {
     color: var(--text);
 }
 
+td.hoverable {
+    background-color: #FFFFFF;
+}
+
 #post-collection {
     width: 60%;
     max-height: 35vh;

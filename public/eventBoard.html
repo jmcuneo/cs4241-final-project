@@ -7,9 +7,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="./res/favicon.ico">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.snow.css" rel="stylesheet" />
   <link rel="stylesheet" type="text/css" href="./css/common.css">
   <link rel="stylesheet" href="./css/eventBoard.css">
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.js"></script>
   <script src="./js/theme.js"></script>
   <script src="./js/eventBoard.js"></script>
 </head>
@@ -37,27 +41,63 @@
       <a class="center hoverable" href="/profilePage">View Profile</a>
       <a class="center hoverable" href="/logout">Logout</a>
     </div>
-    <div class="cloumn1">
-      <form class="formsubmit">
-        <input type="text" id="event" value="" placeholder="Enter Event Name">
-        <input type="date" id="date" value="" placeholder="Date" min="2024-04-20" />
-        <input type="time" id="startTime" min="12:00" max="24:00" required />
-        <input type="time" id="endTime" min="12:00" max="24:00" required />
-        <input type="text" id="location" value="" placeholder="Enter Event Location">
-        <button id="submit" class="btn btn-warning">Post</button>
-      </form>
-    </div>
-    <h3>Upload a flyer (optional)</h3>
-
-    <input type="file" id="imageInput" accept="image/*">
-    <div id="imagePreview"></div>
-    </div>
-    <form>
-      <h3><label for="description">Upload an event description (Optional)</label></h3>
-      <textarea id="description" rows="4" cols="50"></textarea>
+    <form id="event-data">
+      <label for="event-data">
+        <h1>Enter Event Information</h1>
+      </label>
+      <div>
+        <label for="event">
+          <h3>Name</h3>
+        </label>
+        <input type="text" id="event" value="" placeholder="Enter Event Name" required>
+      </div>
+      <div>
+        <label for="date">
+          <h3>Date & Time</h3>
+        </label>
+        <input type="date" id="date" value="" required>
+      </div>
+      <div>
+        <label for="startTime">
+          <h5>Start Time</h5>
+        </label>
+        <input type="time" id="startTime" min="12:00" max="24:00" required>
+      </div>
+      <div>
+        <label for="endTime">
+          <h5>End Time</h5>
+        </label>
+        <input type="time" id="endTime" min="12:00" max="24:00" required>
+      </div>
+      <div>
+        <label for="location">
+          <h3>Location</h3>
+        </label>
+        <input type="text" id="location" value="" placeholder="Enter Event Location" required>
+      </div>
+      <div>
+        <label for="image-input">
+          <h3>Upload a flyer (optional)</h3>
+        </label>
+        <input type="file" id="image-input" accept="image/*" class="hoverable">
+      </div>
+      <img id="image-preview" class="hidden hoverable" title="flyer">
+      <div>
+        <label for="description">
+          <h3>Upload an event description (Optional)</h3>
+        </label>
+        <div id="description"></div>
+      </div>
+      <button id="submit" class="btn btn-warning hoverable" type="submit">Post</button>
     </form>
     <div class="flex-container"></div>
   </main>
+  <div id="image-popup-wrapper" class="hidden">
+    <div id="image-border-box" class="center">
+      <img id="image-popup" title="Flyer (full size)">
+    </div>
+    <p id="close-popup" class="hoverable">X</p>
+  </div>
 </body>
 
 </html>

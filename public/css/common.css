@@ -1,12 +1,12 @@
 :root {
-    --fixed-background: #FFFFFF;
+    --fixed-background: #efefef;
     --fixed-text: #000000;
     --fixed-header: #AC2B37;
     --fixed-sub-header: #902530;
     --fixed-header-text: #FFFFFF;
     --fixed-accent: #A9B0B7;
 
-    --background: #FFFFFF;
+    --background: #efefef;
     --text: #000000;
     --header: #AC2B37;
     --sub-header: #902530;
@@ -115,4 +115,7 @@ body:not(.dark) #light-switch {
 }
 .ql-snow .ql-picker:not(.ql-expanded) {
     color: var(--text);
+}
+.ql-editor {
+    background-color: #FFFFFF;
 }
