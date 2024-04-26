@@ -203,7 +203,6 @@ const userSchema = new Schema({
             }
             return false;
         },
-
         /**
          * @requires {@link PERMISSIONS.CREATE_EVENT}
          * @author Alexander Beck
@@ -262,6 +261,51 @@ const userSchema = new Schema({
                 return true;
             } else {
                 // Not allowed to delete an event
+                return false;
+            }
+        },
+
+        /**
+ * @requires name, {@link PERMISSIONS.MODIFY_EVENTS}
+ * @author Alexander Beck
+ * @param {mongoose.Model} event The event to modify
+ * @param {*} eventDetails The schema details of an event.
+ * @returns {Promise<mongoose.Model> | Promise<Boolean>} An edited event, or false if it fails
+ */
+        async modifyEvent(event, eventDetails) {
+            if (!event) return false;
+            // If user is admin or user has PERMISSIONS.MODIFY_EVENT
+            // eventDetails is an added to check to ensure that it is not empty
+            const isEventCreator = event.creator.equals(this._id);
+            if (eventDetails !== undefined && (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS)) || isEventCreator) {
+                const validProperties = ['location', 'date', 'guestLimit', 'inviterLimit'];
+                const sanitizedProperties = [];
+
+                // Only get the allowed properties from the input, ignore the rest
+                Object.keys(eventDetails).forEach(property => {
+                    if (validProperties.includes(property)) {
+                        sanitizedProperties.push(property);
+                    }
+                });
+                try {
+                    sanitizedProperties.forEach(key => {
+                        event[key] = eventDetails[key];
+                    });
+
+                    await event.save();
+
+                    await Logger.create({
+                        action: EVENTS.MODIFY_EVENT,
+                        event: event,
+                        subject: this
+                    });
+                    return event;
+                } catch (error) {
+                    console.error(error);
+                    return false;
+                }
+            } else {
+                // Not allowed to modify the event
                 return false;
             }
         },
