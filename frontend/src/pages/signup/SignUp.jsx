@@ -3,6 +3,7 @@ import CustomButton from '../../components/CustomButton.jsx';
 
 const SignUp = ({ onLoginClick }) => {
   return (
+    <div className='p-4 h-screen flex items-center justify-center'>
     <div>
       <div className="flex items-center justify-center h-screen">
         <div>
@@ -55,6 +56,7 @@ const SignUp = ({ onLoginClick }) => {
 
         </div>
       </div>
+    </div>
     </div>
   )
 }

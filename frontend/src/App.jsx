@@ -9,12 +9,12 @@ function App() {
 
   return (
     <div>
-      <div className='p-4 h-screen flex items-center justify-center'>
-        {showLogin ? <Login onSignUpClick={() => setShowLogin(false)} /> : <Signup onLoginClick={() => setShowLogin(true)} />}
-      </div>
       <div>
-        {/* <Home/>  */}
-      </div>
+        {/* {showLogin ? <Login onSignUpClick={() => setShowLogin(false)} /> : <Signup onLoginClick={() => setShowLogin(true)} />} */}
+      
+      
+        <Home/> 
+        </div>
     </div>
 
   )
