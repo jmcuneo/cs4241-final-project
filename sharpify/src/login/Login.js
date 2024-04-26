@@ -13,6 +13,9 @@ function Login(props) {
     const email = createContext();
 
     const verifyAccount = () => {
+        const email = document.getElementById('email-input').value;
+        const password = document.getElementById('pswd').value;
+
         if (!email || !password) {
             alert('Username or password cannot be empty');
             return;
@@ -23,7 +26,7 @@ function Login(props) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username: email, password }),
+            body: JSON.stringify({ email: email, password: password }),
         })
         .then(response => response.json())
         .then(data => {
@@ -59,7 +62,7 @@ function Login(props) {
                     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"></link>
                     <div className="login-label">Login</div>
                     <div className="email-label">Email</div>
-                    <input id="email-input" type="text" placeholder="Enter Your Username" name="uname" required />
+                    <input id="email-input" type="text" placeholder="Enter Your Email" name="uname" required />
                     <div className="pswd-label">Password</div>
                     <div>
                         <input id="pswd" type={showPassword ? "password" : "text"} placeholder="Enter Your Password" name="psw" required />

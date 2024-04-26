@@ -114,23 +114,22 @@ let userId = "";
 
 app.post("/signin", async (request, response) => {
     console.log("sign in post request received")
-    const {username, password} = request.body;
-    console.log("username:" + username, "password:" + password)
-    const user = await users.findOne({username: username});
+    const {email, password} = request.body;
+    const user = await users.findOne({email: email});
     if (user && user.password === password) {
         userId = user._id.toString();
         response.cookie('userId', userId);
         response.json({status: 'success', user: user});
     }
-    else if (user){
+    else {
         response.json({status: 'error', message: 'Invalid username or password' });
     }
 });
 
 app.post("/register", async (request, response) => {
     console.log("register post request received")
-    const {username, password} = request.body;
-    const newUser = {username: username, password: password};
+    const {username, password, email} = request.body;
+    const newUser = {username: username, password: password, email: email};
     await users.insertOne(newUser);
     const userData = await db.collection('userData').findOne({userId: newUser._id});
     userId = newUser._id.toString();
