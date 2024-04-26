@@ -83,8 +83,8 @@ function EventPage({ onLogout }) {
                     onClick={handleManageEventPage}>Manage Event</button>
             </div>
             <TopButtons onLogout={onLogout} showBackButton={true} showProfileButton={true}/>
-            <div style = {{position: 'absolute', display: 'grid', gridTemplateColumns: '1fr 1fr', justifyContent: 'start', padding: '30px', marginTop: '60px', width: '100%'}}>
-                <div>
+            <div style = {{position: 'absolute', display: 'grid', gridTemplateColumns: '1fr 1fr', justifyContent: 'start', marginTop: '60px', width: '100%'}}>
+                <div style ={{marginLeft: '10px'}}>
                   <GuestListComponent guestList={guestList}/>
                 </div>
                 <div>
