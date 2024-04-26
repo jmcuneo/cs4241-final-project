@@ -2,7 +2,7 @@ const express = require("express"),
       axios = require("axios"),
       path = require("path"),
       session = require("express-session"),
-      { MongoClient, ServerApiVersion, ObjectId } = require("mongodb"),
+      { MongoClient, ServerApiVersion } = require("mongodb"),
       socketIO = require('socket.io'),
       dotenv = require('dotenv').config({ path: "./.env" }),
       http = require('http'),
@@ -156,6 +156,20 @@ async function addUser(userID){
         console.error("Error inserting document:", err);
     }
 }
+
+async function userExists(userID){
+    try {
+        const db = client.db("webwareFinal");
+        const collection = db.collection("users");
+
+        // Define the document you want to insert
+        const user = await collection.findOne({ userID: userID });
+        return !!user;
+    } catch (err) {
+        console.error("Error checking users:", err);
+    }
+}
+
 // Add a win to a user's account
 async function addWin(userID){
     try {
@@ -265,5 +279,22 @@ async function getUserInfo(userID){
         return myUser;
     } catch (err) {
         console.error("Error adding loss:", err);
+    }
+}
+// Get array of game data from user info
+async function getUserGameHistory(userID){
+    try {
+        const db = client.db("webwareFinal");
+        const collection = db.collection("users");
+        const myUser = await collection.findOne({userID: userID});
+        const history = myUser.history
+        let gameData = []
+        for(let gameID of history){
+            let game = await db.collection("games").findOne({gameID: gameID})
+            gameData.push(game)
+        }
+        return gameData;
+    } catch (err) {
+        console.error("Error getting user game history: ", err);
     }
 }
