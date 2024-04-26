@@ -156,6 +156,20 @@ async function addUser(userID){
         console.error("Error inserting document:", err);
     }
 }
+
+async function userExists(userID){
+    try {
+        const db = client.db("webwareFinal");
+        const collection = db.collection("users");
+
+        // Define the document you want to insert
+        const user = await collection.findOne({ userID: userID });
+        return !!user;
+    } catch (err) {
+        console.error("Error checking users:", err);
+    }
+}
+
 // Add a win to a user's account
 async function addWin(userID){
     try {
