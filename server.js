@@ -281,3 +281,20 @@ async function getUserInfo(userID){
         console.error("Error adding loss:", err);
     }
 }
+// Get array of game data from user info
+async function getUserGameHistory(userID){
+    try {
+        const db = client.db("webwareFinal");
+        const collection = db.collection("users");
+        const myUser = await collection.findOne({userID: userID});
+        const history = myUser.history
+        let gameData = []
+        for(let gameID of history){
+            let game = await db.collection("games").findOne({gameID: gameID})
+            gameData.push(game)
+        }
+        return gameData;
+    } catch (err) {
+        console.error("Error getting user game history: ", err);
+    }
+}
