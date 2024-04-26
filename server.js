@@ -164,7 +164,10 @@ async function userExists(userID){
 
         // Define the document you want to insert
         const user = await collection.findOne({ userID: userID });
-        return !!user;
+        if (user == null){
+            await addUser(userID);
+        }
+        return;
     } catch (err) {
         console.error("Error checking users:", err);
     }
