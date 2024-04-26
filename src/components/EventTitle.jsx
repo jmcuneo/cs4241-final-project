@@ -1,7 +1,9 @@
-import { faRemoveFormat } from "@fortawesome/free-solid-svg-icons/faRemoveFormat";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types"
 
-function EventTitle({ eventName }) {
+function EventTitle({ eventName, isAdmin }) {
+    const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [eventDate, setEventDate] = useState("");
     const [eventLocation, setEventLocation] = useState("");
@@ -45,6 +47,11 @@ function EventTitle({ eventName }) {
         }
       };
 
+    const handleManageEventPage = async (event) => {
+        event.preventDefault();
+        navigate("/event/manage/" + encodeURI(eventName));
+    };
+
     useEffect(() => {
       getUpcomingEvents();
       thisEvent = events.find(event => event.name === eventName)
@@ -67,11 +74,28 @@ function EventTitle({ eventName }) {
             <th>Location: {eventLocation}</th>
             <th>Total Guests: {eventGuests}</th>
             <th>Your Guest Count: {eventUserGuests}</th>
+            {isAdmin && (
+                <th>
+                    <button
+                    className="btn btn-primary ml-2 mt-3 text-black font-bold"
+                    type="button"
+                    id="manageEventPageButton"
+                    onClick={handleManageEventPage}
+                    >
+                    Manage Event
+                    </button>
+                </th>
+            )}
           </tr>
         </thead>
       </table>
     </div>
   );
+}
+
+EventTitle.propTypes = {
+  eventName: PropTypes.string,
+  isAdmin: PropTypes.bool
 }
 
 export default EventTitle;

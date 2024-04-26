@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import GuestListComponent from "./GuestListComponent.jsx";
 import UserGuestListComponent from "./UserGuestListComponent.jsx";
 import Navbar from "./Navbar.jsx";
@@ -7,15 +7,10 @@ import PropTypes from "prop-types";
 import EventTitle from "./EventTitle.jsx";
 
 function EventPage({ onLogout }) {
-  const navigate = useNavigate();
   const { eventName } = useParams();
   const [guestList, setGuestList] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
-
-  const handleManageEventPage = async (event) => {
-    event.preventDefault();
-    navigate("/event/manage/" + encodeURI(eventName));
-  };
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const getGuestList = async () => {
     try {
@@ -79,6 +74,7 @@ function EventPage({ onLogout }) {
       .catch((error) => {
         console.error("Error getting profile:", error);
       });
+    if (userProfile && userProfile.accountType === "Admin") setIsAdmin(true);
   }, [eventName]);
 
   return (
@@ -90,15 +86,7 @@ function EventPage({ onLogout }) {
       ></Navbar>
       <div className="main-page-container">
         <div>
-          <EventTitle eventName={eventName}/>
-          <button
-            className="btn btn-primary ml-2 mt-3 text-black font-bold"
-            type="button"
-            id="manageEventPageButton"
-            onClick={handleManageEventPage}
-          >
-            Manage Event
-          </button>
+          <EventTitle eventName={eventName} isAdmin={isAdmin} />
         </div>
         <div className="relative grid grid-cols-2 justify-start mt-3 w-screen">
           <div className="ml-1">
