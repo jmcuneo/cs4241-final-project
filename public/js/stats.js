@@ -27,7 +27,7 @@ async function makeWinRate() {
     let mydata = JSON.parse(text)
 
     let data = {win: mydata.wins, loss: mydata.losses};
-    
+
     let percent = data.win / (data.win + data.loss);
 
     var margin = {top: 20, right: 100, bottom: 20, left: 40},
@@ -58,7 +58,7 @@ async function makeWinRate() {
                 if(d.data.key == 'win') {
                     return '#007559';
                 } else {
-                    return '#DC0D4B';
+                    return '#9A9A9A';
                 }
             })
             .attr("stroke", "none")
