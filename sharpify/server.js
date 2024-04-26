@@ -6,11 +6,13 @@ const express = require("express"),
     mime = require("mime"),
     cookieParser = require('cookie-parser'),
     dir = "public/",
-    tf = require("@tensorflow/tfjs"),
+    tf = require("@tensorflow/tfjs-node"),
     potrace = require('potrace'),
     multer = require('multer'), 
     GridFsStorage = require('multer-gridfs-storage'),
     Grid = require('gridfs-stream'),
+    Jimp = require('jimp'),
+    fetch = require('node-fetch'),
     port = 3000;
 
 app.use(express.json());
@@ -162,12 +164,24 @@ app.post("/upload", upload.single('image'), async (request, response) => {
 
         //TENSORFLOW and POTRACE
         const model = await tf.loadLayersModel('file://model/model.json');
-        const image = fs.readFileSync(uploadedImage);
-        const decodedImage = tf.node.decodeImage(image, 3);
-        const resizedImage = tf.image.resizeBilinear(decodedImage, [28, 28]);
-        
-}
-    })
+        const image = await Jimp.read(uploadedImage);
+        const tensor = tf.browser.fromPixels(image.bitmap);
+
+        const enhancedImage = model.predict(tensor.expandDims(0));
+
+          // Save enhanced image
+            const enhancedImagePath = path.join(__dirname, "./uploads/enhancedImage.jpg");
+            await new Jimp({ data: enhancedImage, width: image.bitmap.width, height: image.bitmap.height }).writeAsync(enhancedImagePath);
+
+            potrace.trace(enhancedImagePath, (err, svg) => {
+                if(err) {
+                    console.log("error")
+                } else{
+                    console.log("success")
+                    fs.writeFileSync(path.join(__dirname, "./uploads/output.svg"), svg);
+                    }
+});
+    }})
 })
 
 
