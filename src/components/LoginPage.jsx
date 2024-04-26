@@ -88,7 +88,7 @@ function LoginPage({onLogin}) {
           <button style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'rgb(178, 114, 238)', color: 'black', fontWeight: 'bold' }} className="btn waves-effect waves-light" type="button" id="registerButton" onClick={handleRegister}>Register</button>
         </div>
       </form>
-      <div style={{ fontSize: '20px', marginLeft: '30px', marginTop: '10px' }}>{message}</div> 
+      <div style={{ fontSize: '20px', marginLeft: '30px', marginTop: '10px', color: 'white'}}>{message}</div> 
     </motion.div>
   );
 }

@@ -142,7 +142,7 @@ function GuestListComponent({ onUpdate, manage }) {
                     <input type="text" id='addGuestName' placeholder='Guest Name' required ref={guestNameRef} style={{fontSize: "1.1rem", marginTop: "0.5rem"}}/>
                     <button className='add-guest-button' type="submit">Add Guest</button>
                 </form>
-                <div style={{ fontSize: '20px', marginLeft: '10px', marginTop: '10px' }}>{message}</div> 
+                <div style={{ fontSize: '20px', marginLeft: '10px', marginTop: '10px', color: 'white'}}>{message}</div> 
             </div>
             )}
         </div>
