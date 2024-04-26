@@ -116,9 +116,14 @@ app.get("/auth/github/login", (req, res) => {
       },
     });
     const data = response.data;
-    //console.log(data)
     userdata.push({username: data.login, name: data.name, id: data.id, pfp: data.avatar_url});
-
+    const exists = await userExists(data.login);
+    if (exists == null || exists == false){
+        console.log("User does not exist in database, adding now")
+        await addUser(data.login);
+    } else{
+        console.log("User exists in database")
+    }
     res.sendFile(path.join(__dirname, "public", "home.html"));
   });
 
