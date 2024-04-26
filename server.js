@@ -126,6 +126,12 @@ app.get("/auth/github/login", (req, res) => {
     res.json(userdata);
   })
 
+app.get("/userInfo", async (req, res) => {
+    let userID = userdata[0].username;
+    let myUser = await getUserInfo(userID);
+    res.json(myUser);
+})
+
 run().catch(console.dir);
 
 server.listen( 3000 )
@@ -149,7 +155,6 @@ async function addUser(userID){
         console.error("Error inserting document:", err);
     }
 }
-
 // Add a win to a user's account
 async function addWin(userID){
     try {
@@ -247,4 +252,17 @@ async function concludeGame(gameID, winnerID, loserIDs){
     }
 
     console.log(`The game is over! ${winnerID} wins!`)
+}
+
+// Get database entry for userID
+async function getUserInfo(userID){
+    try {
+        const db = client.db("webwareFinal");
+        const collection = db.collection("users");
+        const myUser = collection.findOne({userID: userID});
+        console.log(myUser);
+        return myUser;
+    } catch (err) {
+        console.error("Error adding loss:", err);
+    }
 }

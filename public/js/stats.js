@@ -1,8 +1,13 @@
+async function fillStats() {
+    const response = await fetch("/userInfo", {
+        method: "GET"
+    })
+    const text = await response.text()
+    console.log("Data from Server: ", text);
+    let mydata = JSON.parse(text)
 
-function fillStats() {
-
-    let wins = 10;
-    let games = 32;
+    let wins = mydata.wins;
+    let games = mydata.wins + mydata.losses;
 
     let games_stat = document.getElementById("games-played");
     let win_stat = document.getElementById("total-wins");
