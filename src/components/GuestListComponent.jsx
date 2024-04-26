@@ -2,38 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 
 
-function GuestListComponent() {
+function GuestListComponent({guestList}) {
     const { eventName } = useParams();
-    const [guestList, setGuestList] = useState([]);
-    // const guestList = [
-    //     { guestName: 'guest1', invitedBy: 'guest2' },
-    //     { guestName: 'guest3', invitedBy: 'guest2' },
-    // ] //eventually get table from database
-
-
-    useEffect(() => {
-        const getGuestList = async () => {
-            try {
-                const response = await fetch('//localhost:3000/api/getGuestList', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        token: localStorage.getItem('token'),
-                        eventName: eventName
-                    }),
-                });
-
-                const guests = await response.json();
-                setGuestList(guests);
-            } catch (error) {
-                console.error('Error getting events:', error);
-            }
-        }
-        getGuestList();
-    }, [eventName]);
-
 
     //table with n rows and 2 columns: guestName and invitedBy
     //tr-cols | tbody-rows

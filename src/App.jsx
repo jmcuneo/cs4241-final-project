@@ -13,6 +13,7 @@ import TopButtons from './components/TopButtons';
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [authenticated, setAuthenticated] = useState(false);
+  const [admin, setAdmin] = useState(false);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -34,7 +35,27 @@ function App() {
       }
     };
 
+    const verifyAdmin = async () => {
+      try {
+        const response = await fetch('//localhost:3000/api/verifyAdmin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token }),
+        });
+
+        const data = await response.json();
+        console.log(data)
+        setAdmin(data.valid === true);
+      } catch (error) {
+        console.error('Error verifying token:', error);
+        setAdmin(false);
+      }
+    }
+
     verifyToken();
+    verifyAdmin();
   }, [token]);
 
   const handleLogin = (newToken) => {
@@ -59,11 +80,13 @@ function App() {
         {authenticated && (
           <>
             <Route exact path="/main" element={<MainPage onLogout={handleLogout} />} />
-            <Route exact path="/event/manage/:eventName" element={<ManageEventPage onLogout={handleLogout} />} />
             <Route exact path="/profile" element={<ProfilePage onLogout={handleLogout} />} />
             <Route exact path="/event/:eventName" element={<EventPage onLogout={handleLogout} />} />
           </>
         )}
+
+        {authenticated && admin && <Route exact path="/event/manage/:eventName" element={<ManageEventPage onLogout={handleLogout} />} />}
+
         {/* Redirect to main page if authenticated */}
         {authenticated && <Route path="*" element={<Navigate to="/main" />} />}
         {/* Redirect to login page if not authenticated */}

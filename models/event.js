@@ -246,7 +246,7 @@ const eventSchema = new Schema({
             // Why this is in event.js instead of user.js? I have no idea.
             // Should it be in user.js? Probably.
             // Am I going to change it? I might. But probably not.
-            if (!user) return false;
+            if (!user || user === undefined) return false;
             if (guestLimit === undefined) return false;
 
             if (user.accountType === ACCOUNT_TYPE.ADMIN || user.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || this.creator === user._id) {

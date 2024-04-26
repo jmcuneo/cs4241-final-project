@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import express, { json } from 'express';
 import mongoose from 'mongoose';
 import ViteExpress from 'vite-express';
-import { testDB, createDummyUsers } from './dbTester.js';
+import { createDummyUsers } from './dbTester.js';
 import jwt from 'jsonwebtoken';
 
 import Account from './models/account.js';
@@ -12,7 +12,7 @@ import session from 'express-session';
 import bodyParser from 'body-parser';
 import passport from './passport.js';
 import cors from 'cors';
-import User from './models/user.js';
+import User, { ACCOUNT_TYPE } from './models/user.js';
 import Event from './models/event.js';
 
 const app = express();
@@ -39,6 +39,10 @@ app.use(session({
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Connect to the database
+connectToDB().catch(err => console.log(err));
+
 
 // Register Route
 app.post('/register', async (req, res) => {
@@ -127,6 +131,34 @@ app.post('/api/verifyToken', (req, res) => {
     }
 });
 
+app.post('/api/verifyAdmin', async (req, res) => {
+    try {
+        const { token } = req.body;
+        if (!token) {
+            // If token is null
+            // Prevent jwt.verify throwing an error and cluttering the console
+            // This can be removed if the console.log is removed from the catch
+            return res.json({ valid: false });
+        }
+        const decoded = jwt.verify(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
+
+        if (decoded.exp < Date.now() / 1000)
+            return res.json({ valid: false });
+
+        const user = await User.findOne({ username: decoded.username });
+        const isAdmin = user.accountType === ACCOUNT_TYPE.ADMIN;
+        return res.json({ valid: isAdmin });
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            console.log('Token expired.');
+        } else {
+            console.error(error)
+        }
+        return res.json({ valid: false });
+    }
+});
+
+
 app.post('/api/getUsernameFromToken', (req, res) => {
     try {
         const { token } = req.body;
@@ -175,10 +207,12 @@ app.post('/api/getProfile', async (req, res) => {
 app.post('/api/getGuestList', async (req, res) => {
     try {
         const { token, eventName } = req.body;
+        // Is not used, but will ensure that someone is logged in
+        /* eslint-disable-next-line no-unused-vars */
         const username = getUsernameFromToken(token);
 
         // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
-        const user = await User.findOne({ username: username });
+        // const user = await User.findOne({ username: username });
         const event = await Event.findOne({ name: eventName });
 
         const guestList = (await event.getGuestList()).map(guest => {
@@ -189,6 +223,261 @@ app.post('/api/getGuestList', async (req, res) => {
     } catch (err) {
         console.log(err);
         return res.json({ error: "Failed to authenticate token" });
+    }
+});
+
+app.post('/api/getUserGuestList', async (req, res) => {
+  try {
+      const { token, eventName } = req.body;
+      // Is not used, but will ensure that someone is logged in
+      /* eslint-disable-next-line no-unused-vars */
+      const username = getUsernameFromToken(token);
+
+      // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
+      // const user = await User.findOne({ username: username });
+      const event = await Event.findOne({ name: eventName });
+      const user = await User.findOne({ username: username });
+
+      const guestList = (await user.getInvitedGuests(event)).map(guest => {
+          return renameFieldInObject(hideFieldsFromObject(guest, 'id', '_id'), 'guest', 'guestName');
+      });
+
+      return res.json(guestList);
+  } catch (err) {
+      console.log(err);
+      return res.json({ error: "Failed to authenticate token" });
+  }
+});
+
+/**
+ * eventBody: {
+ *  name: String,
+ *  date: String,
+ *  location: String,
+ *  guestLimit?: Int,
+ *  inviterLimit?: Int
+ * }
+ * 
+ * 		try {
+            const eventBody = {
+                name: 'My Temp Event',
+                location: 'The White House',
+                date: new Date(Date.now() + 20 * 60 * 60 * 1000)
+            }
+            const response = await fetch('//localhost:3000/api/createEvent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    token: localStorage.getItem('token'),
+                    eventBody: eventBody
+                }),
+            });
+
+            const events = await response.json();
+            console.log(events);
+        } catch (error) {
+            console.error('Error creating event:', error);
+        }
+ */
+app.post('/api/createEvent', async (req, res) => {
+    try {
+        const { token, eventBody } = req.body;
+        if (eventBody.name === undefined || eventBody.date === undefined || eventBody.location === undefined) {
+            // Don't need to waste resources validating if the user is authenticated if the event
+            // provided will fail regardless
+            return res.json({ success: false, error: 'Recieved undefined value in eventBody' });
+        }
+
+        const username = getUsernameFromToken(token);
+        const user = await User.findOne({ username: username });
+
+        const eventExists = await Event.findOne({ name: eventBody.name });
+        if (eventExists) {
+            return res.json({ success: false, error: 'Event with this name already exists' });
+        }
+        const event = await user.createEvent(eventBody);
+
+        return res.json(hideFieldsFromObject(event.toObject(), 'id', '_id', 'attendees'));
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+app.post('/api/deleteEvent', async (req, res) => {
+    try {
+        const { token, eventName } = req.body;
+        if (eventName === undefined) {
+            return res.json({ success: false, error: 'eventName is undefined' });
+        }
+
+        const username = getUsernameFromToken(token);
+        const user = await User.findOne({ username: username });
+
+        const eventExists = await Event.findOne({ name: eventName });
+        if (!eventExists || eventExists === undefined) {
+            return res.json({ success: false, error: 'Event with this name not found' });
+        }
+
+        const eventDeleted = await user.deleteEvent(eventName);
+
+        return res.json({ success: eventDeleted });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+app.post('/api/setGuestLimit', async (req, res) => {
+    try {
+        const { token, eventName, guestLimit } = req.body;
+        if (eventName === undefined || guestLimit === undefined) {
+            return res.json({ success: false, error: 'eventName or guestList is undefined' });
+        }
+
+        const username = getUsernameFromToken(token);
+        const user = await User.findOne({ username: username });
+
+        const event = await Event.findOne({ name: eventName });
+        if (!event || event === undefined) {
+            return res.json({ success: false, error: 'Event with that name not found' });
+        }
+
+        const changeSuccess = await event.setGuestLimit(user, guestLimit);
+
+        return res.json({ success: changeSuccess });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+app.post('/api/setInviteLimit', async (req, res) => {
+    try {
+        const { token, eventName, inviteLimit } = req.body;
+        if (eventName === undefined || inviteLimit === undefined) {
+            return res.json({ success: false, error: 'eventName or inviteLimit are undefined' });
+        }
+
+        const username = getUsernameFromToken(token);
+        const user = await User.findOne({ username: username });
+
+        const event = await Event.findOne({ name: eventName });
+        if (!event || event === undefined) {
+            return res.json({ success: false, error: 'Event with that name not found' });
+        }
+
+        const changeSuccess = await event.setInviteLimit(user, inviteLimit);
+
+        return res.json({ success: changeSuccess });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+app.post('/api/addAllowedInviter', async (req, res) => {
+    try {
+        const { token, eventName, inviterName } = req.body;
+        if (eventName === undefined || inviterName === undefined) {
+            return res.json({ success: false, error: 'eventName or inviterName is undefined' });
+        }
+
+        const username = getUsernameFromToken(token);
+
+        const user = await User.findOne({ username: username });
+        const event = await Event.findOne({ name: eventName });
+
+        const inviter = await User.findOne({ username: inviterName });
+        if (!inviter) {
+            return res.json({ success: false, error: 'Inviter not found' });
+        }
+
+        const addedSuccessfully = await user.makeAllowedToInvite(event, inviter);
+        return res.json({ success: addedSuccessfully });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+app.post('/api/removeAllowedInviter', async (req, res) => {
+    try {
+        const { token, eventName, inviterName } = req.body;
+        if (eventName === undefined || inviterName === undefined) {
+            return res.json({ success: false, error: 'eventName or inviterName is undefined' });
+        }
+
+        const username = getUsernameFromToken(token);
+
+        const user = await User.findOne({ username: username });
+        const event = await Event.findOne({ name: eventName });
+
+        const inviter = await User.findOne({ username: inviterName });
+        if (!inviter) {
+            return res.json({ success: false, error: 'Inviter not found' });
+        }
+
+        const removedSuccessfully = await user.makeUnableToInvite(event, inviter);
+        return res.json({ success: removedSuccessfully });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+app.post('/api/inviteGuest', async (req, res) => {
+    try {
+        const { token, eventName, guestName } = req.body;
+        if (eventName === undefined || guestName === undefined) {
+            return res.json({ success: false, error: 'eventName or guestName is undefined' });
+        }
+
+        const username = getUsernameFromToken(token);
+
+        const user = await User.findOne({ username: username });
+        const event = await Event.findOne({ name: eventName });
+
+        const guestList = await event.getGuestList();
+        const guestExists = guestList.filter(guest => guest.guest === guestName).length > 0;
+        if (guestExists) {
+            return res.json({ success: false, error: 'Guest with that name already exists' });
+        }
+
+        const userInvited = typeof (await user.inviteGuests(event, guestName)) !== 'boolean';
+        return res.json({ success: userInvited });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+app.post('/api/uninviteGuest', async (req, res) => {
+    try {
+        const { token, eventName, guestName } = req.body;
+        if (eventName === undefined || guestName === undefined) {
+            return res.json({ success: false, error: 'eventName or guestname is undefined' });
+        }
+
+        const username = getUsernameFromToken(token);
+
+        const user = await User.findOne({ username: username });
+        const event = await Event.findOne({ name: eventName });
+
+        const guestList = await event.getGuestList();
+        console.log(guestName);
+        const guestDoesNotExist = guestList.filter(guest => guest.guest === guestName).length === 0;
+        if (guestDoesNotExist) {
+            return res.json({ success: false, error: 'Guest does not already exist' });
+        }
+
+        const userUninvited = typeof (await user.uninviteGuests(event, guestName)) !== 'boolean';
+        return res.json({ success: userUninvited });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false, message: err});
     }
 });
 
@@ -224,9 +513,6 @@ export function renameFieldInObject(obj, oldFieldName, newFieldName) {
     return { [newFieldName]: fieldValue, ...rest };
 }
 
-// Connect to the database
-connectToDB().catch(err => console.log(err));
-
 /**
  * @description Connects to the MongoDB database using USER, PASS, and HOST in the .env file
  */
@@ -234,9 +520,6 @@ async function connectToDB() {
     const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`;
     await mongoose.connect(uri, { dbName: process.env.DBNAME });
 }
-
-// Random todo: Obfusicate ACCOUNT_TYPE.ADMIN? Would only take a couple sends to do and would
-// make the application much more secure, especially considering it will be open source
 
 
 ViteExpress.listen(app, process.env.PORT || port, () => {
