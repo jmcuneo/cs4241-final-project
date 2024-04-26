@@ -1,4 +1,5 @@
 async function fillStats() {
+
     const response = await fetch("/userInfo", {
         method: "GET"
     })
@@ -16,9 +17,17 @@ async function fillStats() {
     win_stat.innerHTML = win_stat.innerHTML + wins;
 }
 
-function makeWinRate() {
+async function makeWinRate() {
 
-    let data = {win: 3, loss: 2};
+    const response = await fetch("/userInfo", {
+        method: "GET"
+    })
+    const text = await response.text()
+    console.log("Data from Server: ", text);
+    let mydata = JSON.parse(text)
+
+    let data = {win: mydata.wins, loss: mydata.losses};
+    
     let percent = data.win / (data.win + data.loss);
 
     var margin = {top: 20, right: 100, bottom: 20, left: 40},
