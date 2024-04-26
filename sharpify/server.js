@@ -6,11 +6,14 @@ const express = require("express"),
     mime = require("mime"),
     cookieParser = require('cookie-parser'),
     dir = "public/",
-    tf = require("@tensorflow/tfjs"),
     potrace = require('potrace'),
     multer = require('multer'), 
     GridFsStorage = require('multer-gridfs-storage'),
     Grid = require('gridfs-stream'),
+    Jimp = require('jimp'),
+    http = require('https'),
+    FormData = require('form-data'),
+    fetch = require('node-fetch'),
     port = 3000;
 
 app.use(express.json());
@@ -144,23 +147,58 @@ app.post("/register", async (request, response) => {
 //send the image
 
 
-
+let uploadedImage;
 app.post("/upload", upload.single('image'), async (request, response) => {
-     console.log(request.file.path);
+    console.log(request.file.path);
     const tempPath = request.file.path;
     const targetPath = path.join(__dirname, "./uploads/uploadedImage.jpg");
-    fs.rename(tempPath, targetPath, err => 
+    fs.rename(tempPath, targetPath, async err => 
  {
         if (err) {
             console.log("error")
         }
         else {
             console.log("uploaded")
-        }
-    })
+            //console.log(targetPath);
+        uploadedImage = targetPath;
+
+        //TENSORFLOW and POTRACE
+      
+    }})
 })
 
+app.post("/enhance", async (request, response) => {
+//FOR A NEW ENHANCE BUTTON
+    if(uploadedImage === undefined) {
+} else{
+    //
+         const form = new FormData();
+    form.append("upscale_factor", "x2");
+    form.append("image_url","https://picsart.io/wp-content/uploads/2024/02/97ff2ec7-2f17-44a9-86a6-20d19db6ecd8.jpg");
 
+    const options = {
+      method: 'POST',
+      host: 'api.picsart.io',
+      path: '/tools/1.0/upscale',
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
+        'accept': 'application/json',
+        'x-picsart-api-key': process.env.API_KEY
+      }
+    };
+
+    const req = http.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        console.log(data);
+        response.send(data);
+      });
+    });   
+}
+})
 //get reqeust to retrieeve the image
 
 // Delete Image
