@@ -20,10 +20,8 @@ const submit = async function( event ) {
       body 
     })
 
-    const data = await response.json();
-    console.log(data.msg);
-    if(data.success) {
-      window.location.href = '/game';
+    if(response.status = 200) {
+      window.location.href = '/game.html';
     } else {
       health.value = '';
       players.value = '';

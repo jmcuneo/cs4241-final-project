@@ -2,13 +2,14 @@ const express = require("express"),
       axios = require("axios"),
       path = require("path"),
       session = require("express-session"),
-      { MongoClient, ServerApiVersion, ObjectId } = require("mongodb"),
+      { MongoClient, ObjectId, ServerApiVersion } = require("mongodb"),
       socketIO = require('socket.io'),
       dotenv = require('dotenv').config({ path: "./.env" }),
       http = require('http'),
       app = express(),
       clientID = process.env.GITHUB_ID,
-      clientSecret = process.env.GITHUB_SECRET;
+      clientSecret = process.env.GITHUB_SECRET,
+      { Server } = require("socket.io");
 
 app.use( express.static('public') )
 app.use( express.json() )
@@ -31,7 +32,10 @@ const client = new MongoClient(uri, {
     }
 });
 
-let userdata = [];
+let numberOfPlayer;
+let startingHealth;
+let players = [];
+let clients = [];
 
 async function run() {
     try {
@@ -48,8 +52,7 @@ async function run() {
 }
 
 const server = http.createServer( app )
-
-var io = socketIO(server);
+const io = new Server(server);
 
 // make connection with user from server side
 io.on('connection', (socket) => {
@@ -57,11 +60,20 @@ io.on('connection', (socket) => {
     //emit message from server to user
     socket.emit('newMessage',
         {
-            from: 'jen@mds',
-            text: 'hepppp',
-            createdAt: 123
+            startingHealth: startingHealth,
+            numberOfPlayer: numberOfPlayer
         });
 
+    socket.on('joined',
+        (newMessage) => {
+            players.push({
+                username: newMessage.user,
+                health: startingHealth,
+                isAlive: true
+            })
+            console.log(newMessage)
+        }
+    )
     // listen for message from user
     socket.on('createMessage',
         (newMessage) => {
@@ -74,7 +86,14 @@ io.on('connection', (socket) => {
             console.log('disconnected from user');
         });
 });
- 
+
+
+app.post("/createGame", (req,res) =>{
+    numberOfPlayer = req.body.players
+    startingHealth = req.body.health
+    res.sendStatus(200)
+})
+
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
@@ -115,16 +134,11 @@ app.get("/auth/github/login", (req, res) => {
         Authorization: `token ${req.session.accessToken}`,
       },
     });
-    const data = response.data;
-    userdata.push({name: data.name, id: data.id, pfp: data.avatar_url});
+    const userData = response.data;
+    user = userData.name;
 
-    res.sendFile(path.join(__dirname, "public", "home2.html"));
+    res.sendFile(path.join(__dirname, "public", "home.html"));
   });
-
-  app.get("/userdata", async (req, res) => {
-    console.log(userdata);
-    res.json(userdata);
-  })
 
 run().catch(console.dir);
 

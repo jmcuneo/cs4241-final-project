@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Health Tracker</title>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
+    <script src="js/game.js"></script>
+    <link rel="stylesheet" href="css/game.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+    <div class="player-container">
+        <label for="numPlayers">Number of Players:</label>
+        <input type="number" id="numPlayers" min="1">
+        <button onclick="generatePlayers()">Generate Players</button>
+        <button id="sendMessageBtn">Send Message to Server</button>
+    </div>
+
+</body>
+
+</html>
