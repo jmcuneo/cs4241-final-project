@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types"
 
 function EventTitle({ eventName, isAdmin }) {
     const navigate = useNavigate();
@@ -65,7 +66,7 @@ function EventTitle({ eventName, isAdmin }) {
 
   return (
     <div>
-      <table className="table table-zebra bg-neutral">
+      <table className="table bg-neutral rounded-none">
         <thead>
           <tr style={{fontSize:  "1rem"}}>
             <th>{eventName}</th>
@@ -76,7 +77,7 @@ function EventTitle({ eventName, isAdmin }) {
             {isAdmin && (
                 <th>
                     <button
-                    className="btn btn-primary ml-2 text-black font-bold"
+                    className="btn btn-primary ml-2 mt-3 text-black font-bold"
                     type="button"
                     id="manageEventPageButton"
                     onClick={handleManageEventPage}
@@ -90,6 +91,11 @@ function EventTitle({ eventName, isAdmin }) {
       </table>
     </div>
   );
+}
+
+EventTitle.propTypes = {
+  eventName: PropTypes.string,
+  isAdmin: PropTypes.bool
 }
 
 export default EventTitle;
