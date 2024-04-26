@@ -1,16 +1,28 @@
 
-function makeFiveGame() {
+function fillStats() {
+
+    let wins = 10;
+    let games = 32;
+
+    let games_stat = document.getElementById("games-played");
+    let win_stat = document.getElementById("total-wins");
+
+    games_stat.innerHTML = games_stat.innerHTML + games;
+    win_stat.innerHTML = win_stat.innerHTML + wins;
+}
+
+function makeWinRate() {
 
     let data = {win: 3, loss: 2};
     let percent = data.win / (data.win + data.loss);
 
-    var margin = {top: 20, right: 20, bottom: 20, left: 20},
-        width = 400 - margin.left - margin.right,
-        height = 400 - margin.top - margin.bottom;
+    var margin = {top: 20, right: 100, bottom: 20, left: 40},
+        width = 440 - margin.left - margin.right,
+        height = 340 - margin.top - margin.bottom;
 
     var radius = Math.min(width, height) / 2 - margin.top;
 
-    var svg = d3.select("#svg-five-game").append('svg')
+    var svg = d3.select("#svg-win-rate").append('svg')
             .attr("width", width)
             .attr("height", height)
         .append("g")
@@ -46,7 +58,7 @@ function makeFiveGame() {
 
 }
 
-function makeWinRate() {
+function makeWinRateTime() {
 
     let data = [0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1];
     let winrate = [];
@@ -56,11 +68,11 @@ function makeWinRate() {
         winrate.push(cur);
     }
 
-    var margin = {top: 30, right: 30, bottom: 30, left: 30},
+    var margin = {top: 20, right: 20, bottom: 20, left: 60},
             width = 600 - margin.left - margin.right,
             height = 300 - margin.top - margin.bottom;
 
-    var svg = d3.select("#svg-win-rate").append("svg")
+    var svg = d3.select("#svg-win-rate-time").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -105,11 +117,9 @@ function makeGameDist() {
     });
 
     let domain = []
-    for(let i = 0; i < sums.length; i++) {
+    for(let i = 1; i <= sums.length; i++) {
         domain.push(i);
     }
-
-    console.log(sums);
 
     var margin = {top: 30, right: 30, bottom: 30, left: 30},
             width = 600 - margin.left - margin.right,
@@ -145,7 +155,7 @@ function makeGameDist() {
         .data(sums)
         .enter()
         .append("rect")
-            .attr("x", function (d, i) { return x(i); })
+            .attr("x", function (d, i) { return x(i + 1); })
             .attr("y", function (d) { return y(d); })
             .attr("width", x.bandwidth())
             .attr("height", function(d) { return height - y(d); })
@@ -154,7 +164,8 @@ function makeGameDist() {
 }
 
 window.onload = () => {
-    makeFiveGame();
+    fillStats();
     makeWinRate();
+    makeWinRateTime();
     makeGameDist();
 }

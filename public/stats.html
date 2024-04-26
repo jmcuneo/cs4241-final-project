@@ -14,11 +14,30 @@
         <script src="js/stats.js"></script>
     </head>
 
+    <style>
+
+        body {
+            margin-left: 15%;
+            margin-right: 15%;
+        }
+
+        #content-win-rate {
+            display: flex;
+        }
+
+    </style>
+
     <body>
 
         <h1>Stats</h1>
-        <div id="svg-five-game"></div>
-        <div id="svg-win-rate"></div>
+        <h6 id="games-played">Games Played: </h6>
+        <h6 id="total-wins">Wins: </h6>
+        <h3>Win Rate Total and Overtime</h3>
+        <div id="content-win-rate">
+            <div id="svg-win-rate"></div>
+            <div id="svg-win-rate-time"></div>
+        </div>
+        <h3>Placement Distribution</h3>
         <div id="svg-game-dist"></div>
 
     </body>
