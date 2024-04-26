@@ -4,6 +4,7 @@ import GuestListComponent from "./GuestListComponent.jsx";
 import UserGuestListComponent from "./UserGuestListComponent.jsx";
 import Navbar from "./Navbar.jsx";
 import PropTypes from "prop-types";
+import EventTitle from "./EventTitle.jsx";
 
 function EventPage({ onLogout }) {
   const navigate = useNavigate();
@@ -47,7 +48,6 @@ function EventPage({ onLogout }) {
       });
 
       let profile = await response.json();
-      console.log(profile);
       return profile;
     } catch (error) {
       console.error("Error getting profile:", error);
@@ -89,8 +89,8 @@ function EventPage({ onLogout }) {
         showProfileButton={true}
       ></Navbar>
       <div className="main-page-container">
-        <div className="header-section">
-          <h1>Event Page</h1>
+        <div>
+          <EventTitle eventName={eventName}/>
           <button
             style={{
               marginLeft: "20px",

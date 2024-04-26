@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import UserGuestListComponent from "./UserGuestListComponent.jsx";
 import PropTypes from "prop-types";
 import Navbar from "./Navbar.jsx";
+import EventTitle from "./EventTitle.jsx";
 
 function ManageEventPage({ onLogout }) {
   const navigate = useNavigate();
@@ -89,8 +90,8 @@ function ManageEventPage({ onLogout }) {
       />
 
       <div className="main-page-container">
-        <div className="header-section">
-          <h1>Manage Event Page</h1>
+        <div className="header-section" style={{marginTop: "5rem"}}>
+          <EventTitle eventName={eventName}/>
         </div>
         <UserGuestListComponent onUpdate={handleUpdate} manage={true} />
       </div>
