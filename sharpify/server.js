@@ -115,6 +115,7 @@ let userId = "";
 app.post("/signin", async (request, response) => {
     console.log("sign in post request received")
     const {username, password} = request.body;
+    console.log("username:" + username, "password:" + password)
     const user = await users.findOne({username: username});
     if (user && user.password === password) {
         userId = user._id.toString();
