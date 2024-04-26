@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <title>Stats Page</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <!-- get rid of favicon error -->
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura-earthly.css" type="text/css">
+        <!-- <link rel="stylesheet" href="css/index.css"> -->
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+        <script src="js/stats.js"></script>
+    </head>
+
+    <style>
+
+        body {
+            margin-left: 15%;
+            margin-right: 15%;
+        }
+
+        #content-win-rate {
+            display: flex;
+        }
+
+    </style>
+
+    <body>
+
+        <h1>Stats</h1>
+        <h6 id="games-played">Games Played: </h6>
+        <h6 id="total-wins">Wins: </h6>
+        <h3>Win Rate Total and Overtime</h3>
+        <div id="content-win-rate">
+            <div id="svg-win-rate"></div>
+            <div id="svg-win-rate-time"></div>
+        </div>
+        <h3>Placement Distribution</h3>
+        <div id="svg-game-dist"></div>
+
+    </body>
+</html>

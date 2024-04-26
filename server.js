@@ -31,6 +31,8 @@ const client = new MongoClient(uri, {
     }
 });
 
+let userdata = [];
+
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -113,11 +115,23 @@ app.get("/auth/github/login", (req, res) => {
         Authorization: `token ${req.session.accessToken}`,
       },
     });
-    const userData = response.data;
-    user = userData.name;
+    const data = response.data;
+    //console.log(data)
+    userdata.push({username: data.login, name: data.name, id: data.id, pfp: data.avatar_url});
 
     res.sendFile(path.join(__dirname, "public", "home.html"));
   });
+
+  app.get("/userdata", async (req, res) => {
+    console.log(userdata);
+    res.json(userdata);
+  })
+
+app.get("/userInfo", async (req, res) => {
+    let userID = userdata[0].username;
+    let myUser = await getUserInfo(userID);
+    res.json(myUser);
+})
 
 run().catch(console.dir);
 
@@ -142,7 +156,6 @@ async function addUser(userID){
         console.error("Error inserting document:", err);
     }
 }
-
 // Add a win to a user's account
 async function addWin(userID){
     try {
@@ -240,4 +253,17 @@ async function concludeGame(gameID, winnerID, loserIDs){
     }
 
     console.log(`The game is over! ${winnerID} wins!`)
+}
+
+// Get database entry for userID
+async function getUserInfo(userID){
+    try {
+        const db = client.db("webwareFinal");
+        const collection = db.collection("users");
+        const myUser = collection.findOne({userID: userID});
+        console.log(myUser);
+        return myUser;
+    } catch (err) {
+        console.error("Error adding loss:", err);
+    }
 }
