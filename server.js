@@ -57,6 +57,8 @@ const io = new Server(server);
 // make connection with user from server side
 io.on('connection', (socket) => {
     console.log('New user connected');
+    clients.push(socket)
+    console.log(clients.length)
     //emit message from server to user
     socket.emit('newMessage',
         {
@@ -64,7 +66,7 @@ io.on('connection', (socket) => {
             numberOfPlayer: numberOfPlayer
         });
 
-    socket.on('joined',
+    socket.on('join',
         (newMessage) => {
             players.push({
                 username: newMessage.user,
@@ -72,6 +74,10 @@ io.on('connection', (socket) => {
                 isAlive: true
             })
             console.log(newMessage)
+            if(players.length == numberOfPlayer){
+                console.log("Number of players reached")
+                clients.forEach( c => {c.emit('maxPlayersReached', players ) })
+            }
         }
     )
     // listen for message from user
@@ -84,7 +90,11 @@ io.on('connection', (socket) => {
     socket.on('disconnect',
         () => {
             console.log('disconnected from user');
+            clients.splice(socket)
+            console.log(clients.length)
         });
+
+    
 });
 
 

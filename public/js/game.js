@@ -2,10 +2,24 @@ let user = "Kombucha";
 
 const socket = io('http://localhost:3000');
 
+let numPlayers;
+
 // Listen for 'newMessage' event from the server
 socket.on('newMessage', (message) => {
     console.log('Received message from server:', message);
+    numPlayers = message.numberOfPlayer
 });
+
+// Listen for 'disconnect' event from the server
+socket.on('disconnect', () => {
+    console.log('Disconnected from server');
+});
+
+socket.on('maxPlayersReached', ()=>{
+    console.log("maxPlayersReached")
+    generateButtons(numPlayers)
+})
+
 
 // Function to send a message to the server
 function join() {
@@ -16,12 +30,6 @@ function join() {
     // Emit 'createMessage' event to the server with the new message
     socket.emit('join', newMessage);
 }
-
-// Listen for 'disconnect' event from the server
-socket.on('disconnect', () => {
-    console.log('Disconnected from server');
-});
-
 
 const getUser = async function(  ) {
     // stop form submission from trying to load
@@ -37,6 +45,24 @@ const getUser = async function(  ) {
 
 function generatePlayers() {
     const numPlayers = document.getElementById("numPlayers").value;
+    const playerContainer = document.querySelector(".player-container");
+    playerContainer.innerHTML = ""; // Clear previous players
+
+    for (let i = 1; i <= numPlayers; i++) {
+        const playerDiv = document.createElement("div");
+        playerDiv.classList.add("player");
+        playerDiv.innerHTML = `
+            <button id="player${i}"></button>
+            <button onclick="increaseHealth(${i})">+</button>
+            <button onclick="decreaseHealth(${i})">-</button>
+        `;
+        playerContainer.appendChild(playerDiv);
+    }
+
+    updatePlayerStatus(); // Initial update
+}
+
+function generateButtons(numPlayers){
     const playerContainer = document.querySelector(".player-container");
     playerContainer.innerHTML = ""; // Clear previous players
 
