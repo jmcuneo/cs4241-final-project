@@ -27,7 +27,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-ViteExpress.config({mode: 'development'});
+ViteExpress.config({ mode: 'development' });
 
 app.use(session({
     secret: '5O$5HP^xg2zV0duE',     //MAKE A NEW KEY EVENTUALLY AND MOVE TO .ENV
@@ -194,11 +194,13 @@ app.post('/api/getProfile', async (req, res) => {
     try {
         const { token } = req.body;
         const username = getUsernameFromToken(token);
-        const profile = await User.findOne({ username: username }).select('fullName username prettyAccountType').populate('firstName lastName').exec();
+        const profile = await User.findOne({ username: username }).select('fullName username accountType prettyAccountType').populate('firstName lastName').exec();
 
         // Why does this double fire?
         return res.json(hideFieldsFromObject(
-            renameFieldInObject(profile.toObject(), 'prettyAccountType', 'accountType'), 'id', '_id'));
+            renameFieldInObject(hideFieldsFromObject(profile.toObject(), 'accountType'),
+                'prettyAccountType', 'accountType'),
+            'id', '_id'));
     } catch (err) {
         console.log(err);
         return res.json({ error: "Failed to authenticate token" });
@@ -228,26 +230,26 @@ app.post('/api/getGuestList', async (req, res) => {
 });
 
 app.post('/api/getUserGuestList', async (req, res) => {
-  try {
-      const { token, eventName } = req.body;
-      // Is not used, but will ensure that someone is logged in
-      /* eslint-disable-next-line no-unused-vars */
-      const username = getUsernameFromToken(token);
+    try {
+        const { token, eventName } = req.body;
+        // Is not used, but will ensure that someone is logged in
+        /* eslint-disable-next-line no-unused-vars */
+        const username = getUsernameFromToken(token);
 
-      // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
-      // const user = await User.findOne({ username: username });
-      const event = await Event.findOne({ name: eventName });
-      const user = await User.findOne({ username: username });
+        // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
+        // const user = await User.findOne({ username: username });
+        const event = await Event.findOne({ name: eventName });
+        const user = await User.findOne({ username: username });
 
-      const guestList = (await user.getInvitedGuests(event)).map(guest => {
-          return renameFieldInObject(hideFieldsFromObject(guest, 'id', '_id'), 'guest', 'guestName');
-      });
+        const guestList = (await user.getInvitedGuests(event)).map(guest => {
+            return renameFieldInObject(hideFieldsFromObject(guest, 'id', '_id'), 'guest', 'guestName');
+        });
 
-      return res.json(guestList);
-  } catch (err) {
-      console.log(err);
-      return res.json({ error: "Failed to authenticate token" });
-  }
+        return res.json(guestList);
+    } catch (err) {
+        console.log(err);
+        return res.json({ error: "Failed to authenticate token" });
+    }
 });
 
 /**
@@ -477,7 +479,7 @@ app.post('/api/uninviteGuest', async (req, res) => {
         return res.json({ success: userUninvited });
     } catch (err) {
         console.log(err);
-        return res.json({ success: false, message: err});
+        return res.json({ success: false, message: err });
     }
 });
 
