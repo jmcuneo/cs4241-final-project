@@ -47,6 +47,8 @@ function Results({ formData, leaderboardData, deleteRow }) {
               <tr>
                 <th>Rank</th>
                 <th>Pet Name</th>
+                <th>Diet</th>
+                <th>Exercise Level</th>
                 <th>Time</th>
                 <th>Actions</th>
               </tr>
@@ -56,6 +58,8 @@ function Results({ formData, leaderboardData, deleteRow }) {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{item.petName}</td>
+                  <td>{item.dietType}</td>
+                  <td>{item.exercise}</td>
                   <td>{item.raceTime}</td>
                   <td>
                     <Button onClick={() => deleteRow(item._id)}>Delete</Button>
