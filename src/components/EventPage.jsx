@@ -88,17 +88,11 @@ function EventPage({ onLogout }) {
         showBackButton={true}
         showProfileButton={true}
       ></Navbar>
-      <div className="main-page-container">
+      <div className="main-page-container prose">
         <div className="header-section">
-          <h1>Event Page</h1>
+          <h1 className="ml-2">Event Page</h1>
           <button
-            style={{
-              marginLeft: "20px",
-              backgroundColor: "rgb(178, 114, 238)",
-              color: "black",
-              fontWeight: "bold",
-            }}
-            className="btn btn-primary"
+            className="btn btn-primary ml-2 text-black font-bold"
             type="button"
             id="manageEventPageButton"
             onClick={handleManageEventPage}
@@ -106,17 +100,8 @@ function EventPage({ onLogout }) {
             Manage Event
           </button>
         </div>
-        <div
-          style =
-          {{
-            position: "absolute",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            justifyContent: "start",
-            marginTop: "60px",
-            width: "100%",
-          }}>
-          <div style={{ marginLeft: "10px" }}>
+        <div className="relative grid grid-cols-2 justify-start mt-3 w-screen">
+          <div className="ml-1">
             <GuestListComponent guestList={guestList} />
           </div>
           <div>
