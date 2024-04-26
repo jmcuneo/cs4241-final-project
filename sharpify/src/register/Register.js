@@ -17,13 +17,14 @@ function Register(props) {
     const verifyAccount = () => {
         const username = document.getElementById('username-input').value;
         const password = document.getElementById('pswd').value;
-
+        const emailInput = document.getElementById('email-input').value;
+    
         fetch('http://localhost:3000/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ username, password, email: emailInput}),
         })
             .then(response => response.json())
             .then(data => {
