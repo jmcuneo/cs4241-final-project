@@ -7,6 +7,7 @@
     import socket from "./socket.js";
 
     export let game_data;
+    export let game_setup;
 
     import { createEventDispatcher } from "svelte";
     const dispatch = createEventDispatcher();
@@ -15,41 +16,32 @@
     const height = 4;
     const bingo = "WHOMST";
 
+    let images = new Promise((req, res) => {});
+
+    $: game_setup, get_board(game_setup);
+
     // prefetch all images before rendering board
-    async function get_board(serverBoard, flipped, guessed) {
-        const board = serverBoard;
-        const proms = board.board.map(
+    async function get_board(game_setup) {
+        if (!game_setup.board) {
+            return images;
+        }
+        const proms = game_setup.board.map(
             (e, index) =>
                 new Promise((res, rej) => {
                     e.img = new Image();
                     e.img.onload = res;
                     e.img.onerror = rej;
                     e.img.src = e.link;
-                    e.flipped = flipped[index];
-                    e.perm_flip = guessed[index];
+                    e.flipped = game_setup.flipped[index];
+                    e.perm_flip = game_setup.guessed[index];
                 }),
         );
         await Promise.all(proms);
-        return board;
-}
-
-
-    let images = new Promise((req, res) => {});
-    let display_board = true;
-
-    socket.on("game setup", (gameBoard, whomst, flipped, guessed, chat) => {
-        let serverBoard = { board: [], whomst: -1 };
-        serverBoard.whomst = whomst;
-        serverBoard.board = [];
-        for (let i = 0; i < gameBoard.length; i++) {
-            serverBoard.board.push({
-                name: gameBoard[i].label,
-                link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(gameBoard[i].unique_id + "").padStart(3, "0")}.png`,
-            });
-        }
-        display_board = true;
-        images = get_board(serverBoard, flipped, guessed);
-    });
+        images = Promise.resolve({
+            board: game_setup.board,
+            whomst: game_setup.whomst,
+        });
+    }
 
     let guess_data = null;
     async function flip(e, index: Number) {
@@ -171,13 +163,12 @@
     {/if}
     <div
         class="grid grid-grow"
-        class:hidden={!display_board}
         class:stop_events={guess_data != null}
         style="grid-template-columns: repeat({width}, 1fr);"
     >
         {#each Array(height * width) as _, j}
             {@const card = board.board[j]}
-                <Card
+            <Card
                 img={card.img}
                 name={card.name}
                 whomst={j == board.whomst}

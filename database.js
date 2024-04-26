@@ -22,7 +22,6 @@ const client = new MongoClient(uri, {
 
 let pokemon_collection = null;
 let minecraft_collection = null;
-
 let games_collection = null;
 
 const exp = { set_up_db_store, client, DB: null, getGameByRoomCode, updateGame, createNewGame, deleteGame, pushGame }

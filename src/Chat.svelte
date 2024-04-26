@@ -3,9 +3,21 @@
     import socket from "./socket.js";
 
     export let game_data;
+    export let start_chat;
 
     let chatWindow;
     let messages = [];
+    let messages_loaded = false;
+
+    function set_msgs() {
+        if (!messages_loaded && start_chat) {
+            messages_loaded = true;
+            messages = start_chat.map(msg_map).concat(messages);
+            setTimeout(scroll);
+        }
+    }
+
+    $: start_chat, set_msgs();
 
     function keydown(e) {
         if (e.key === "Enter") {
@@ -21,19 +33,23 @@
         }
     }
 
-    socket.on("message receive", (name, msg) => {
+    function msg_map(e) {
         let player_num = 0;
-        if (name == "Server") {
+        if (e.author == "Server") {
             player_num = 2;
-        } else if (name == "Player 1") {
+        } else if (e.author == "Player 1") {
             player_num = 0;
         } else {
             player_num = 1;
         }
 
-        messages.push({ name: name, message: msg, player_num });
+        return { name: e.author, message: e.msg, player_num };
+    }
+
+    socket.on("message receive", (author, msg) => {
+        messages.push(msg_map({ author, msg }));
         messages = messages;
-        console.log(name, msg);
+        console.log(author, msg);
         setTimeout(scroll);
     });
 
@@ -53,4 +69,4 @@
 </div>
 <p class="code">Code: {game_data.id}</p>
 <label for="msginput">Type a Message:</label>
-<input id="msginput" on:keydown={keydown}/>
+<input id="msginput" on:keydown={keydown} />

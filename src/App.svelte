@@ -55,7 +55,18 @@
         game_data.correct_name = null;
         game_data.correct_url = null;
     }
+
+    let game_setup = {};
+    socket.on("game setup", (gameBoard, whomst, flipped, guessed, chat) => {
+        let new_game_setup = { whomst, flipped, guessed, chat };
+        new_game_setup.board = gameBoard.map((e) => ({
+            name: e.label,
+            link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(e.unique_id + "").padStart(3, "0")}.png`,
+        }));
+        game_setup = new_game_setup;
+    });
 </script>
+
 <svelte:head>
     <title>Approximate Whomst - {game_data.state}</title>
 </svelte:head>
@@ -67,7 +78,7 @@
 {:else}
     {#if game_data.state == "In Game"}
         <div class="board">
-            <Board {game_data} on:gameEnd={gameEnd}></Board>
+            <Board {game_data} {game_setup} on:gameEnd={gameEnd}></Board>
         </div>
     {:else if game_data.state == "Game Over"}
         <div class="gameOver">
@@ -79,6 +90,6 @@
         </div>
     {/if}
     <div class="chat">
-        <Chat {game_data}></Chat>
+        <Chat {game_data} start_chat={game_setup.chat}></Chat>
     </div>
 {/if}
