@@ -102,9 +102,20 @@ function GuestListComponent({ onUpdate, manage }) {
         apiPoint = "//localhost:3000/api/getGuestList"
     }
     return (
-        <div className='guest-list'  style = {{display: 'grid', gridTemplateColumns: '50% 50%'}}>
-            <div className='center-container'>
+        <div className='guest-list'>
+            <div>
                 <h1>{title}</h1>
+                <div className='center-container'>
+                {!manage && (
+                    <div className='add-guest'>
+                    <form onSubmit={(e) => handleSubmit(e)}>
+                        <input type="text" id='addGuestName' placeholder='Guest Name' required ref={guestNameRef}/>
+                        <button className='add-guest-button' type="submit">Add Guest</button>
+                    </form>
+                    <div style={{ fontSize: '20px', color: 'white'}}>{message}</div> 
+                </div>
+                )}
+            </div>
                 <table>
                     <thead>
                         <tr>
@@ -135,17 +146,6 @@ function GuestListComponent({ onUpdate, manage }) {
                         ))}
                     </tbody>
                 </table>
-            </div>
-            <div className='center-container'>
-                {!manage && (
-                    <div className='add-guest'>
-                    <form onSubmit={(e) => handleSubmit(e)}>
-                        <input type="text" id='addGuestName' placeholder='Guest Name' required ref={guestNameRef} style={{fontSize: "1.1rem", marginTop: "0.5rem"}}/>
-                        <button className='add-guest-button' type="submit">Add Guest</button>
-                    </form>
-                    <div style={{ fontSize: '20px', marginLeft: '10px', marginTop: '10px', color: 'white'}}>{message}</div> 
-                </div>
-                )}
             </div>
         </div>
     );
