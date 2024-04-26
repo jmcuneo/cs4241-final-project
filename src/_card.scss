@@ -47,11 +47,11 @@
         background: DimGray;
 
         & .card-img {
-            filter: grayscale(100%)
+            filter: grayscale(100%) brightness(0.5);
         }
 
-        & .card-inner {
-            filter: brightness(.50);
+        & .card-name{
+            color: white;
         }
     }
 

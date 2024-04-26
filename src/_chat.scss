@@ -1,8 +1,8 @@
 .player1 {
-    color: red;
+    color: rgb(79, 0, 0);
 
     & .message {
-        color: darkred;
+        color: rgb(71, 5, 5);
     }
 }
 
@@ -15,10 +15,10 @@
 }
 
 .server {
-    color: darkorange;
+    color: rgb(105, 0, 67);
     font-weight: bold;
 
     & .message {
-        color: goldenrod;
+        color: rgb(127, 21, 97);
     }
 }

@@ -14,7 +14,7 @@
         correct_name: string;
         correct_url: string;
     } = {
-        state: "HostJoin",
+        state: "Host or Join",
         id: null,
         player: null,
         winner: null,
@@ -25,22 +25,22 @@
     function gameStart(e) {
         const obj = e.detail;
         if (obj.hosting) {
-            game_data.state = "ChooseGame";
+            game_data.state = "Choose Game";
         } else {
-            game_data.state = "InGame";
+            game_data.state = "In Game";
         }
         game_data.id = obj.room;
         game_data.player = obj.player;
     }
 
     function gameChosen(e) {
-        game_data.state = "InGame";
+        game_data.state = "In Game";
         socket.emit("host game", game_data.id, e.detail.type);
     }
 
     function gameEnd(e) {
         let obj = e.detail;
-        game_data.state = "GameOver";
+        game_data.state = "Game Over";
         game_data.correct = obj.board[obj.answer];
         game_data.winner = obj.winner;
     }
@@ -48,7 +48,7 @@
     function backToHost(e) {
         //TODO: Write this on server.
         socket.emit("complete game left", game_data.id, game_data.player);
-        game_data.state = "HostJoin";
+        game_data.state = "Host or Join";
         game_data.id = null;
         game_data.player = null;
         game_data.winner = null;
@@ -56,17 +56,20 @@
         game_data.correct_url = null;
     }
 </script>
+<svelte:head>
+    <title>Approximate Whomst - {game_data.state}</title>
+</svelte:head>
 
-{#if game_data.state == "HostJoin"}
+{#if game_data.state == "Host or Join"}
     <HostJoin on:gameStart={gameStart}></HostJoin>
-{:else if game_data.state == "ChooseGame"}
+{:else if game_data.state == "Choose Game"}
     <ChooseGame on:gameChosen={gameChosen}></ChooseGame>
 {:else}
-    {#if game_data.state == "InGame"}
+    {#if game_data.state == "In Game"}
         <div class="board">
             <Board {game_data} on:gameEnd={gameEnd}></Board>
         </div>
-    {:else if game_data.state == "GameOver"}
+    {:else if game_data.state == "Game Over"}
         <div class="gameOver">
             <GameEnd
                 {game_data}
