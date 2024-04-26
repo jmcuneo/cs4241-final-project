@@ -37,7 +37,7 @@
         setTimeout(scroll);
     });
 
-    function scroll(height) {
+    function scroll() {
         chatWindow.scroll(0, chatWindow.scrollHeight);
     }
     //let oldHeight;
