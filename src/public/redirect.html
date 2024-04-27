@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- <link rel="stylesheet" href="css/grid.css"> -->
+  </head>
+  <footer>
+    <script>
+      const load = () => {
+        const currentUrl = window.location.href;
+        console.log(currentUrl);
+        const urlParams = new URLSearchParams(window.location.search);
+        const cookie = urlParams.get("token");
+        document.cookie = "token=" + cookie;
+        console.log(cookie);
+        localStorage.setItem('token', cookie);
+        window.location = "/play-game";
+        return false;
+      };
+      load();
+    </script>
+  </footer>
+</html>

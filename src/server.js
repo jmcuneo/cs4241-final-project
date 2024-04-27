@@ -138,9 +138,15 @@ app.post("/select", async (req, res) => {
   
 })
 
-app.post("/leaderboard", async (req, res) => {
-  //TBA
+
+app.post("/auth/add-leaderboard-entry", auth.authenticateToken, (req, res) => {
+  console.log(req.user)
 })
+app.post("/leaderboard", async (req, res) => {
+ const leaderboard =  await db.getLeaderboard();
+ res.json(leaderboard)
+})
+
 
 app.get(
   "/auth/github",
@@ -153,7 +159,7 @@ app.get("/auth/github/callback", async function (req, res) {
   const user = await ghlogin.getUserWithGhEmail(emails);
   if(user){
     let responseUrl = url.format({
-      pathname:"/play-game",
+      pathname:"/auth/github/callback/cookie",
       query: {
          "token": auth.generateAccessToken({ username: user.username }),
        }})
@@ -170,6 +176,9 @@ app.get("/auth/github/callback", async function (req, res) {
   // Successful authentication, redirect home.
   /* res.redirect("/"); */
 });
+app.get('/auth/github/callback/cookie', async (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "redirect.html"))
+})
 //DATABASE CONNECTION END
 app.post('/auth/test', auth.authenticateToken, (req, res) => {
 
