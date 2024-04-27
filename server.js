@@ -209,14 +209,14 @@ app.post('/api/getProfile', async (req, res) => {
 
 app.post('/api/getGuestList', async (req, res) => {
     try {
-        const { token, eventName } = req.body;
+        const { token, eventId } = req.body;
         // Is not used, but will ensure that someone is logged in
         /* eslint-disable-next-line no-unused-vars */
         const username = getUsernameFromToken(token);
 
         // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
         // const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ name: eventName });
+        const event = await Event.findOne({ _id: eventId });
 
         const uncleanedGuestList = await event.getGuestList();
         const guestList = uncleanedGuestList.map(guest => {
@@ -232,14 +232,14 @@ app.post('/api/getGuestList', async (req, res) => {
 
 app.post('/api/getUserGuestList', async (req, res) => {
     try {
-        const { token, eventName } = req.body;
+        const { token, eventId } = req.body;
         // Is not used, but will ensure that someone is logged in
         /* eslint-disable-next-line no-unused-vars */
         const username = getUsernameFromToken(token);
 
         // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
         // const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ name: eventName });
+        const event = await Event.findOne({ _id: eventId });
         const user = await User.findOne({ username: username });
 
         const guestList = (await user.getInvitedGuests(event)).map(guest => {
@@ -297,13 +297,13 @@ app.post('/api/createEvent', async (req, res) => {
         const username = getUsernameFromToken(token);
         const user = await User.findOne({ username: username });
 
-        const eventExists = await Event.findOne({ name: eventBody.name });
-        if (eventExists) {
-            return res.json({ success: false, error: 'Event with this name already exists' });
-        }
+        // const eventExists = await Event.findOne({ name: eventBody.name });
+        // if (eventExists) {
+        //     return res.json({ success: false, error: 'Event with this name already exists' });
+        // }
         const event = await user.createEvent(eventBody);
 
-        return res.json(hideFieldsFromObject(event.toObject(), 'id', '_id', 'attendees'));
+        return res.json(hideFieldsFromObject(event.toObject(), 'id', 'attendees'));
     } catch (err) {
         console.log(err);
         return res.json({ success: false });
@@ -312,20 +312,20 @@ app.post('/api/createEvent', async (req, res) => {
 
 app.post('/api/deleteEvent', async (req, res) => {
     try {
-        const { token, eventName } = req.body;
-        if (eventName === undefined) {
-            return res.json({ success: false, error: 'eventName is undefined' });
+        const { token, eventId } = req.body;
+        if (eventId === undefined) {
+            return res.json({ success: false, error: 'eventId is undefined' });
         }
 
         const username = getUsernameFromToken(token);
         const user = await User.findOne({ username: username });
 
-        const eventExists = await Event.findOne({ name: eventName });
+        const eventExists = await Event.findOne({ _id: eventId });
         if (!eventExists || eventExists === undefined) {
             return res.json({ success: false, error: 'Event with this name not found' });
         }
 
-        const eventDeleted = await user.deleteEvent(eventName);
+        const eventDeleted = await user.deleteEvent(eventId);
 
         return res.json({ success: eventDeleted });
     } catch (err) {
@@ -337,23 +337,23 @@ app.post('/api/deleteEvent', async (req, res) => {
 app.post('/api/modifyEvent', async (req, res) => {
     try {
         const { token, eventBody } = req.body;
-        if (eventBody.name === undefined) {
+        if (eventBody._id === undefined) {
             // Don't need to waste resources validating if the user is authenticated if the event
             // provided will fail regardless
-            return res.json({ success: false, error: 'Recieved an undefined eventBody.name' });
+            return res.json({ success: false, error: 'Recieved an undefined eventBody._id' });
         }
 
         const username = getUsernameFromToken(token);
         const user = await User.findOne({ username: username });
 
-        const event = await Event.findOne({ name: eventBody.name });
+        const event = await Event.findOne({ _id: eventBody._id });
 
         const result = await user.modifyEvent(event, eventBody);
         if (typeof result === 'boolean' || result === undefined) {
             return res.json({ success: false });
         }
 
-        return res.json(hideFieldsFromObject(event.toObject(), 'id', '_id', 'attendees'));
+        return res.json(hideFieldsFromObject(event.toObject(), 'id', 'attendees'));
     } catch (err) {
         console.log(err);
         return res.json({ success: false });
@@ -362,15 +362,15 @@ app.post('/api/modifyEvent', async (req, res) => {
 
 app.post('/api/setGuestLimit', async (req, res) => {
     try {
-        const { token, eventName, guestLimit } = req.body;
-        if (eventName === undefined || guestLimit === undefined) {
-            return res.json({ success: false, error: 'eventName or guestList is undefined' });
+        const { token, eventId, guestLimit } = req.body;
+        if (eventId === undefined || guestLimit === undefined) {
+            return res.json({ success: false, error: 'eventId or guestList is undefined' });
         }
 
         const username = getUsernameFromToken(token);
         const user = await User.findOne({ username: username });
 
-        const event = await Event.findOne({ name: eventName });
+        const event = await Event.findOne({ _id: eventId });
         if (!event || event === undefined) {
             return res.json({ success: false, error: 'Event with that name not found' });
         }
@@ -386,15 +386,15 @@ app.post('/api/setGuestLimit', async (req, res) => {
 
 app.post('/api/setInviteLimit', async (req, res) => {
     try {
-        const { token, eventName, inviteLimit } = req.body;
-        if (eventName === undefined || inviteLimit === undefined) {
-            return res.json({ success: false, error: 'eventName or inviteLimit are undefined' });
+        const { token, eventId, inviteLimit } = req.body;
+        if (eventId === undefined || inviteLimit === undefined) {
+            return res.json({ success: false, error: 'eventId or inviteLimit are undefined' });
         }
 
         const username = getUsernameFromToken(token);
         const user = await User.findOne({ username: username });
 
-        const event = await Event.findOne({ name: eventName });
+        const event = await Event.findOne({ _id: eventId });
         if (!event || event === undefined) {
             return res.json({ success: false, error: 'Event with that name not found' });
         }
@@ -410,15 +410,15 @@ app.post('/api/setInviteLimit', async (req, res) => {
 
 app.post('/api/addAllowedInviter', async (req, res) => {
     try {
-        const { token, eventName, inviterName } = req.body;
-        if (eventName === undefined || inviterName === undefined) {
-            return res.json({ success: false, error: 'eventName or inviterName is undefined' });
+        const { token, eventId, inviterName } = req.body;
+        if (eventId === undefined || inviterName === undefined) {
+            return res.json({ success: false, error: 'eventId or inviterName is undefined' });
         }
 
         const username = getUsernameFromToken(token);
 
         const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ name: eventName });
+        const event = await Event.findOne({ _id: eventId });
 
         const inviter = await User.findOne({ username: inviterName });
         if (!inviter) {
@@ -435,15 +435,15 @@ app.post('/api/addAllowedInviter', async (req, res) => {
 
 app.post('/api/removeAllowedInviter', async (req, res) => {
     try {
-        const { token, eventName, inviterName } = req.body;
-        if (eventName === undefined || inviterName === undefined) {
-            return res.json({ success: false, error: 'eventName or inviterName is undefined' });
+        const { token, eventId, inviterName } = req.body;
+        if (eventId === undefined || inviterName === undefined) {
+            return res.json({ success: false, error: 'eventId or inviterName is undefined' });
         }
 
         const username = getUsernameFromToken(token);
 
         const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ name: eventName });
+        const event = await Event.findOne({ _id: eventId });
 
         const inviter = await User.findOne({ username: inviterName });
         if (!inviter) {
@@ -460,15 +460,15 @@ app.post('/api/removeAllowedInviter', async (req, res) => {
 
 app.post('/api/inviteGuest', async (req, res) => {
     try {
-        const { token, eventName, guestName } = req.body;
-        if (eventName === undefined || guestName === undefined) {
-            return res.json({ success: false, error: 'eventName or guestName is undefined' });
+        const { token, eventId, guestName } = req.body;
+        if (eventId === undefined || guestName === undefined) {
+            return res.json({ success: false, error: 'eventId or guestName is undefined' });
         }
 
         const username = getUsernameFromToken(token);
 
         const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ name: eventName });
+        const event = await Event.findOne({ _id: eventId });
 
         const guestList = await event.getGuestList();
         const guestExists = guestList.filter(guest => guest.guest === guestName).length > 0;
@@ -486,15 +486,15 @@ app.post('/api/inviteGuest', async (req, res) => {
 
 app.post('/api/uninviteGuest', async (req, res) => {
     try {
-        const { token, eventName, guestName } = req.body;
-        if (eventName === undefined || guestName === undefined) {
-            return res.json({ success: false, error: 'eventName or guestname is undefined' });
+        const { token, eventId, guestName } = req.body;
+        if (eventId === undefined || guestName === undefined) {
+            return res.json({ success: false, error: 'eventId or guestname is undefined' });
         }
 
         const username = getUsernameFromToken(token);
 
         const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ name: eventName });
+        const event = await Event.findOne({ _id: eventId });
 
         const guestList = await event.getGuestList();
         const guestDoesNotExist = guestList.filter(guest => guest.guest === guestName).length === 0;
