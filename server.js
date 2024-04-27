@@ -218,7 +218,8 @@ app.post('/api/getGuestList', async (req, res) => {
         // const user = await User.findOne({ username: username });
         const event = await Event.findOne({ name: eventName });
 
-        const guestList = (await event.getGuestList()).map(guest => {
+        const uncleanedGuestList = await event.getGuestList();
+        const guestList = uncleanedGuestList.map(guest => {
             return renameFieldInObject(hideFieldsFromObject(guest, 'id', '_id'), 'guest', 'guestName');
         });
 
