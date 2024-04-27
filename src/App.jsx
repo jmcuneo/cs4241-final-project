@@ -80,7 +80,7 @@ function App() {
           <>
             <Route exact path="/main" element={<MainPage onLogout={handleLogout} />} />
             <Route exact path="/profile" element={<ProfilePage onLogout={handleLogout} />} />
-            <Route exact path="/event/:eventId" element={<EventPage onLogout={handleLogout} />} />
+            <Route exact path="/event/:eventId" element={<EventPage isAdmin={admin} onLogout={handleLogout} />} />
           </>
         )}
 

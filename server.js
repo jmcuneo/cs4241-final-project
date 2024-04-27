@@ -207,6 +207,25 @@ app.post('/api/getProfile', async (req, res) => {
     }
 });
 
+app.post('/api/getEvent', async (req, res) => {
+    try {
+        const { token, eventId } = req.body;
+        /* eslint-disable-next-line no-unused-vars */
+        const username = getUsernameFromToken(token);
+
+        // Why does this double fire?
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
+        if (!event || event === undefined) {
+            return res.json({ success: false, error: 'Event with this id not found' });
+        }
+
+        return res.json(hideFieldsFromObject(event.toObject(), 'id', 'attendees', 'allowedInviters'));
+    } catch (err) {
+        console.log(err);
+        return res.json({ error: "Failed to authenticate token" });
+    }
+});
+
 app.post('/api/getGuestList', async (req, res) => {
     try {
         const { token, eventId } = req.body;
@@ -216,7 +235,7 @@ app.post('/api/getGuestList', async (req, res) => {
 
         // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
         // const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ _id: eventId });
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
 
         const uncleanedGuestList = await event.getGuestList();
         const guestList = uncleanedGuestList.map(guest => {
@@ -239,7 +258,7 @@ app.post('/api/getUserGuestList', async (req, res) => {
 
         // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
         // const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ _id: eventId });
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
         const user = await User.findOne({ username: username });
 
         const guestList = (await user.getInvitedGuests(event)).map(guest => {
@@ -253,38 +272,6 @@ app.post('/api/getUserGuestList', async (req, res) => {
     }
 });
 
-/**
- * eventBody: {
- *  name: String,
- *  date: String,
- *  location: String,
- *  guestLimit?: Int,
- *  inviterLimit?: Int
- * }
- * 
- * 		try {
-            const eventBody = {
-                name: 'My Temp Event',
-                location: 'The White House',
-                date: new Date(Date.now() + 20 * 60 * 60 * 1000)
-            }
-            const response = await fetch('//localhost:3000/api/createEvent', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    token: localStorage.getItem('token'),
-                    eventBody: eventBody
-                }),
-            });
-
-            const events = await response.json();
-            console.log(events);
-        } catch (error) {
-            console.error('Error creating event:', error);
-        }
- */
 app.post('/api/createEvent', async (req, res) => {
     try {
         const { token, eventBody } = req.body;
@@ -320,12 +307,12 @@ app.post('/api/deleteEvent', async (req, res) => {
         const username = getUsernameFromToken(token);
         const user = await User.findOne({ username: username });
 
-        const eventExists = await Event.findOne({ _id: eventId });
+        const eventExists = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
         if (!eventExists || eventExists === undefined) {
-            return res.json({ success: false, error: 'Event with this name not found' });
+            return res.json({ success: false, error: 'Event with this id not found' });
         }
 
-        const eventDeleted = await user.deleteEvent(eventId);
+        const eventDeleted = await user.deleteEvent(mongoose.Types.ObjectId.createFromHexString(eventId));
 
         return res.json({ success: eventDeleted });
     } catch (err) {
@@ -346,14 +333,18 @@ app.post('/api/modifyEvent', async (req, res) => {
         const username = getUsernameFromToken(token);
         const user = await User.findOne({ username: username });
 
-        const event = await Event.findOne({ _id: eventBody._id });
+        if (eventBody.date && new Date(eventBody.date) <= new Date()) {
+            return res.json({ success: false, error: 'Date must not be in the past!' });
+        }
+
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventBody._id) });
 
         const result = await user.modifyEvent(event, eventBody);
         if (typeof result === 'boolean' || result === undefined) {
             return res.json({ success: false });
         }
 
-        return res.json(hideFieldsFromObject(event.toObject(), 'id', 'attendees'));
+        return res.json(hideFieldsFromObject(event.toObject(), 'id', 'creator', 'allowedInviters', 'attendees'));
     } catch (err) {
         console.log(err);
         return res.json({ success: false });
@@ -370,7 +361,7 @@ app.post('/api/setGuestLimit', async (req, res) => {
         const username = getUsernameFromToken(token);
         const user = await User.findOne({ username: username });
 
-        const event = await Event.findOne({ _id: eventId });
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
         if (!event || event === undefined) {
             return res.json({ success: false, error: 'Event with that name not found' });
         }
@@ -394,7 +385,7 @@ app.post('/api/setInviteLimit', async (req, res) => {
         const username = getUsernameFromToken(token);
         const user = await User.findOne({ username: username });
 
-        const event = await Event.findOne({ _id: eventId });
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
         if (!event || event === undefined) {
             return res.json({ success: false, error: 'Event with that name not found' });
         }
@@ -418,7 +409,7 @@ app.post('/api/addAllowedInviter', async (req, res) => {
         const username = getUsernameFromToken(token);
 
         const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ _id: eventId });
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
 
         const inviter = await User.findOne({ username: inviterName });
         if (!inviter) {
@@ -443,7 +434,7 @@ app.post('/api/removeAllowedInviter', async (req, res) => {
         const username = getUsernameFromToken(token);
 
         const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ _id: eventId });
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
 
         const inviter = await User.findOne({ username: inviterName });
         if (!inviter) {
@@ -468,7 +459,7 @@ app.post('/api/inviteGuest', async (req, res) => {
         const username = getUsernameFromToken(token);
 
         const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ _id: eventId });
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
 
         const guestList = await event.getGuestList();
         const guestExists = guestList.filter(guest => guest.guest === guestName).length > 0;
@@ -494,7 +485,7 @@ app.post('/api/uninviteGuest', async (req, res) => {
         const username = getUsernameFromToken(token);
 
         const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ _id: eventId });
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
 
         const guestList = await event.getGuestList();
         const guestDoesNotExist = guestList.filter(guest => guest.guest === guestName).length === 0;
@@ -557,8 +548,8 @@ ViteExpress.listen(app, process.env.PORT || port, () => {
 /*
 #################################################
 WILL DELETE ENTIRE DB ON EVERY LOAD!!!!!!!!!!!!!!
-Only keep when in DEVELOPMENT. 
+Only keep when in DEVELOPMENT.
 #################################################
 */
 // testDB();
-await createDummyUsers();
+// await createDummyUsers();

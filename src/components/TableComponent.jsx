@@ -23,9 +23,9 @@ function TableComponent({ headers, rows, isEvent }) {
             <tr
               key={rowsIdx}
               className="hover cursor-pointer"
-              onClick={() => (isEvent ? handleClick(row.name) : () => false)}
+              onClick={() => (isEvent ? handleClick(row._id) : () => false)}
             >
-              {Object.entries(row).map(([, value], rowIdx) => (
+              {Object.entries(row).filter(([key]) => key !== '_id').map(([, value], rowIdx) => (
                 <td key={rowIdx}>
                   {value}
                 </td>
