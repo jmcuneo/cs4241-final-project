@@ -73,17 +73,23 @@ exports.createUser = async function (data) {
 exports.getCards = async () => {
   collection = await switcher("cards-people"); //CHANGE TO NAME OF PEOPLE DATABASE
 
-  let rand_arr, card_array = [];
+  const rand_arr = [], 
+        card_array = [];
+  let i = 0;
   while(rand_arr.length < 6){
     let num = Math.floor(Math.random() * 10);
-    if(arr.indexOf(num) === -1) arr.push(num);
+    if(rand_arr.indexOf(num) === -1) {
+      rand_arr.push(num);
+      i++
+    }
 }
-console.log(rand_arr); //TESTING
-let i = 0;
-while (i < rand_arr.length) {
+
+i = 0;
+while (i < 6) {
   card_array.push(await collection.findOne({"index": rand_arr[i]}))
   i++
 }
+
 i = 0
 collection = await switcher("cards-events"); //CHANGE TO NAME OF EVENT DATABASE
 while (i < rand_arr.length) {

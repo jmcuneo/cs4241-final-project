@@ -101,10 +101,16 @@ const giimmeComkie = () => {
   if(cookie) document.cookie = `token=${cookie}`;
 }
 
+let matches = 0;
+
 window.onload = async function () {
   giimmeComkie();
   const logoutBtn = document.getElementById("logoutButton");
-  logoutBtn.style.display = "none";
+	logoutBtn.onclick = () => {
+		document.cookie = "token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
+		window.location = "/"
+		return false
+	}	
   const gameboard = document.getElementById("gameboard");
   gameboard.style.display = "none";
   const startBtn = document.getElementById("startButton");
@@ -119,16 +125,16 @@ window.onload = async function () {
         Authorization: `Bearer ${document.cookie.substring(6)}`,
       },
     }).then(response => response.text).then(response => console.log(response));
-    logoutBtn.style.display = "inline-flex"
-    logoutBtn.onclick = () => {
-      document.cookie = "token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
-      window.location = "/"
-      return false
-    }
-  }
+  } else {
+		logoutBtn.innerHTML = "Log In"
+	}
+
+
 };
 
 async function start() {
+  const logoutBtn = document.getElementById("logoutButton")
+  logoutBtn.parentElement.style.paddingTop = "0px"
   const startBtn = document.getElementById("startButton");
   const gameboard = document.getElementById("gameboard");
   gameboard.style.display = "flex";
@@ -146,20 +152,20 @@ async function start() {
 }
 
 function addCell(content) {
-  infoArr.push({ title: content.title, info: content.info });
+    infoArr.push({title: content.name, info: content.info})
 
-  let grid = document.getElementById("grid");
-  let cell = makeElem("div", "cell", "", grid);
-  cell.id = content.title;
-  cell.addEventListener("click", select);
-  cell.addEventListener("mouseenter", showInfo);
-  let card = makeElem("div", "card has-text-weight-bold", "", cell);
-  let imgCard = makeElem("div", "card-image", "", card);
-  let imgWrap = makeElem("figure", "image is-4by3", "", imgCard);
-  let img = makeElem("img", "", null, imgWrap);
-  img.src = content.link;
-  img.alt = content.alt;
-  let cont = makeElem("p", "is-6", content.title, card);
+    let grid = document.getElementById("grid")
+    let cell = makeElem("div", "cell", "", grid)
+    cell.id = content.name
+    cell.addEventListener("click", select)
+    cell.addEventListener("mouseenter", showInfo)
+    let card = makeElem("div", "card has-text-weight-bold", "", cell)
+    let imgCard = makeElem("div", "card-image", "", card)
+    let imgWrap = makeElem("figure", "image is-4by3", "", imgCard)
+    let img = makeElem("img", "", null, imgWrap)
+    img.src = content.img
+    img.alt = content.alt
+    let cont = makeElem("p", "is-size-7", content.name, card)
 }
 
 function makeElem(type, classType, inner, parent) {
@@ -213,30 +219,36 @@ function showInfo(event) {
 }
 
 function stopWatch() {
-  totalTime++;
-  second++;
-  if (second == 60) {
-    minute++;
-    second = 0;
-  }
-  let minString = minute;
-  let secString = second;
+	if(matches < 6) {
+		totalTime++;
+		second++;
+		if (second == 60) {
+			minute++;
+			second = 0;
+		}
+		let minString = minute;
+		let secString = second;
 
-  if (minute < 10) {
-    minString = "0" + minString;
-  }
+		if (minute < 10) {
+			minString = "0" + minString;
+		}
 
-  if (second < 10) {
-    secString = "0" + secString;
-  }
+		if (second < 10) {
+			secString = "0" + secString;
+		}
 
-  document.getElementById("min").innerHTML = minString;
-  document.getElementById("sec").innerHTML = secString;
+		document.getElementById("min").innerHTML = minString;
+		document.getElementById("sec").innerHTML = secString;        
+	} else {
+		gameover();
+		matches = 0;
+	}
 }
 
 function handleGuess(resp) {
   let score = resp.score;
-  let match = resp.validMatch;
+  let match = !(score == 0);
+  if (match) {matches++}
 
   displayScore(score);
 
@@ -279,28 +291,13 @@ async function showLeaderboard() {
   }
 }
 
-//Old vanilla selection code
-// if(id != selected1 && id != selected2) {
-//     if (selected2 != null) {
-//         let oldSelected = document.getElementById(selected1).childNodes[0]
-//         // oldSelected.style.border = "none"
-//         oldSelected.style.backgroundColor = defaultColor
-//         selected1 = selected2
-//         selected2 = id
-//     } else if (selected1 != null){
-//         selected2 = id
-//     } else {
-//         selected1 = id
-//     }
-//     // elem.style.border = "3px solid " + selectedColor
-//     elem.style.backgroundColor = selectedColor
-// } else if (id == selected2) {
-//     let oldSelected = document.getElementById(selected2).childNodes[0]
-//     oldSelected.style.backgroundColor = defaultColor
-//     selected2 = null
-// } else if (id == selected1) {
-//     let oldSelected = document.getElementById(selected1).childNodes[0]
-//     oldSelected.style.backgroundColor = defaultColor
-//     selected1 = selected2
-//     selected2 = null
-// }
+async function gameover(){
+	let score = document.getElementById("score").innerHTML;
+	let body = JSON.stringify({score: score})
+	const response = await fetch("/auth/add-leaderboard-entry", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body
+	});
+	const resp = await response.json();
+}

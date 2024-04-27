@@ -119,21 +119,25 @@ app.post("/update", async (req, res) => {
   res.json(result);
 });
 
-app.get("/load", async (req, res) => {
-  inMemCache = db.getCards;
+app.post("/load", async (req, res) => {
+  inMemCache = await db.getCards();
+  
   res.send(JSON.stringify(inMemCache))
 })
 
-app.post("/score", async (req, res) => {
-  let attempt = JSON.parse(req.body)
-  let item1 = attempt.item1,
-      item2 = attempt.item2,
-      curr_time = attempt.time, //not sure what to do with time...
-      curr_score = attempt.score + helpers.calculateScore(item1, item2);
+app.post("/select", async (req, res) => {
+  console.log(req.body)
+  let item1 = req.body.item1,
+      item2 = req.body.item2,
+      curr_time = req.body.timeElapsed, //not sure what to do with time...
+
+      curr_score = helpers.calculateScore(item1, item2, inMemCache);
+      console.log(curr_score)
   
   res.json({score: curr_score})
   
 })
+
 
 app.post("/auth/add-leaderboard-entry", auth.authenticateToken, (req, res) => {
   console.log(req.user)
