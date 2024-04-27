@@ -45,7 +45,8 @@ function EventTitleManager({ eventName }) {
             body: JSON.stringify({ token: localStorage.getItem("token") }),
           });
 
-          if (response.ok) setIsFormOpen(false);
+          const _events = await response.json();
+          setEvents(_events);
   
         } catch (error) {
           console.error("Error getting events:", error);
@@ -61,12 +62,11 @@ function EventTitleManager({ eventName }) {
             },
             body: JSON.stringify({ 
               token: localStorage.getItem("token"),
-              eventBody: {newEventName, newEventDate, newEventLocation}
+              eventBody: {name: newEventName, date: newEventDate, location: newEventLocation}
             }),
           });
-  
-            const _events = await response.json();
-            setEvents(_events);
+          console.log(await response.json());
+          if (response.ok) setIsFormOpen(false);
         } catch (error) {
           console.error("Error updating event:", error);
         }
@@ -80,6 +80,11 @@ function EventTitleManager({ eventName }) {
       if (newEventName == "") newEventName = eventName;
       if (newEventDate == "") newEventDate = eventDate;
       if (newEventLocation == "") newEventLocation = eventLocation;
+      newEventDate = formatEventDate(newEventDate);
+      newEventDate > new Date();
+      console.log(newEventName);
+      console.log(newEventDate);
+      console.log(newEventLocation);
       updateEvent(newEventName, newEventDate, newEventLocation);
     };
 
