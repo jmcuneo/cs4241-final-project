@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function refreshPage() {
-  fetch("/refresh", { method: "POST" })
+  await fetch("/refresh", { method: "POST" })
   .then(r => r.json())
   .then(result => {
     const eventsList = document.querySelector("#personal-events");
