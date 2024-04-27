@@ -90,7 +90,7 @@
 input:hover {
   border-color: #646cffaa;
 }
-input{
+input {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   background-color: #f9f9f9;
   border: 3px solid #ccc;
@@ -98,6 +98,7 @@ input{
   width: 200px;
   outline: none;
   font-size: 0.8em;
+  color: black;
 }
 
 .array-container{
