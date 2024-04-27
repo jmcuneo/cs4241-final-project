@@ -96,6 +96,8 @@ let totalTime = 0;
 let minute = 0;
 let second = 0;
 
+let matches = 0;
+
 window.onload = async function () {
   const logoutBtn = document.getElementById("logoutButton");
   logoutBtn.style.display = "none";
@@ -209,30 +211,33 @@ function showInfo(event) {
 }
 
 function stopWatch() {
-  totalTime++;
-  second++;
-  if (second == 60) {
-    minute++;
-    second = 0;
-  }
-  let minString = minute;
-  let secString = second;
+    if(matches < 6) {
+			totalTime++;
+			second++;
+			if (second == 60) {
+				minute++;
+				second = 0;
+			}
+			let minString = minute;
+			let secString = second;
 
-  if (minute < 10) {
-    minString = "0" + minString;
-  }
+			if (minute < 10) {
+				minString = "0" + minString;
+			}
 
-  if (second < 10) {
-    secString = "0" + secString;
-  }
+			if (second < 10) {
+				secString = "0" + secString;
+			}
 
-  document.getElementById("min").innerHTML = minString;
-  document.getElementById("sec").innerHTML = secString;
+			document.getElementById("min").innerHTML = minString;
+			document.getElementById("sec").innerHTML = secString;        
+    }
 }
 
 function handleGuess(resp) {
   let score = resp.score;
   let match = !(score == 0);
+  if (match) {matches++}
 
   displayScore(score);
 
