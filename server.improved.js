@@ -66,9 +66,13 @@ app.post( '/login', async (req,res)=> {
     if(dbResult.password === req.body.password){
 
       req.session.login = true
-      currentUserLoggedIn = req.body.username
+      if(req.body.username !== '') {
+        currentUserLoggedIn = req.body.username
+      } else {
+        currentUserLoggedIn = 'Guest'
+      }
       res.redirect( 'main.html' )
-
+      
     } else {
 
       req.session.login = false

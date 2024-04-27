@@ -6,6 +6,7 @@ const ROTATE_CLOCKWISE = 'x';
 const ROTATE_COUNTER_CLOCKWISE = 'z';
 const HARD_DROP = ' ';
 const RESTART = 'r';
+const START = 's';
 
 
 
@@ -26,8 +27,8 @@ class Board {
       this.activePiece; // the piece that's currently being controlled by the player
       this.cells = []; // the current state of the board (not including the activePiece)
       this.initBoard();
-      this.isGameActive = true;
-      this.hasGameStarted = true;
+      this.isGameActive = false;
+      this.gameOver = false;
       
   }
 
@@ -109,6 +110,7 @@ class Board {
     // check for loss condition
     if(!this.hasPieceNotReachedBottom(this.activePiece)) {
       this.isGameActive = false;
+      this.gameOver = true;
       sendScore(this.score);
     }
   }
@@ -379,9 +381,9 @@ class Next {
     this.canvas.width = this.width * cS;
     this.canvas.height = this.height * cS;
     this.pieceQueue = [];
-    this.initQueue();
+    //this.initQueue();
     this.drawBackground();
-    this.renderPieces();
+    //this.renderPieces();
   }
 
   drawBackground() {
@@ -455,9 +457,9 @@ const SOFTDROP_SPEED = fps * 4;
 // Main game loop
 // Initializes game
 function init() {
+  next.initQueue()
   board.spawnPiece();
   board.drawBoard();
-
   setTimeout(() => {
     requestAnimationFrame(nextFrame);
   }, 1000 / fps);
@@ -514,15 +516,13 @@ async function sendScore(score){
   const text = await response.text();
 }
 
-init();
+board.drawBackground()
 
 document.addEventListener(
   "keydown",
   (event) => {
 
     if(board.isGameActive){
-      
-    
       const keyName = event.key;
       console.log(keyName);
 
@@ -571,6 +571,12 @@ document.addEventListener(
       switch(keyName){
         case RESTART:
           window.location.reload();
+          break;
+        case START:
+          if(!board.gameOver){
+            board.isGameActive = true
+            init();
+          }
           break;
       }
     }
