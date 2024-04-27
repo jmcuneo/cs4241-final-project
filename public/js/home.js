@@ -1,6 +1,7 @@
 let quill;
-document.addEventListener("DOMContentLoaded", () => {
-    fetch("/messages", {
+document.addEventListener("DOMContentLoaded", async () => {
+    document.body.classList.add("hidden");
+    const loadMessages = fetch("/messages", {
         method: "GET",
     })
     .then(r => r.json())
@@ -24,6 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
             ]
         }
     });
+    
+    await loadMessages;
+    document.body.classList.remove("hidden");
 });
 
 //websocket comm stuff 
@@ -72,7 +76,6 @@ function appendMessage(username, content, datetime) {
         toAppend.push({insert: content + "\n"});
     }
     toAppend.push({insert: `${datetime}`});
-    console.log(toAppend);
     quillReadOnly.setContents(toAppend);
     document.querySelector("#message-display").prepend(wrapper);
 }

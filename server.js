@@ -13,10 +13,10 @@ const path = require('path');
 //set up mutler
 // Set up Multer to handle file uploads
 const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
+    destination: function (req, file, cb) {
         cb(null, 'uploads/'); // Specify the directory where images will be stored
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname)); // Rename the file to avoid conflicts
     }
 });
@@ -70,7 +70,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-    if(userCollection) {
+    if (userCollection) {
         userCollection.findOne({ "userId": id }).then((user) => {
             done(null, user);
         });
@@ -87,8 +87,7 @@ passport.use(new GitHubStrategy({
     (accessToken, refreshToken, profile, done) => {
         userCollection.findOne({ "userId": profile.id }).then((currentUser) => {
             if (currentUser) {
-                console.log(currentUser)
-                done(null, currentUser)
+                done(null, currentUser);
             } else {
                 const newUser = {
                     "userId": profile.id,
@@ -189,30 +188,30 @@ app.get('/allEvents', authCheck, (req, res) => {
 })
 
 app.get('/user', (req, res) => {
-    res.json({"username" : req.user.username});
+    res.json({ "username": req.user.username });
 })
 
 app.get("/user-events", async (req, res) => {
     userCollection.findOne({
         userId: req.user.userId
     })
-    .then((user) => user.events)
-    .then((events) => {
-        if (events.length === 0) {
-            return res.json([]);
-        } else {
-            let query = {$or: []};
-            events.forEach((e) => query.$or.push({_id: new ObjectId(e.eventId)}));
-            return eventsCollection.find(query).toArray().then((eventList) => {console.log(eventList);res.json(eventList)});
-        }
-    });
+        .then((user) => user.events)
+        .then((events) => {
+            if (events.length === 0) {
+                return res.json([]);
+            } else {
+                let query = { $or: [] };
+                events.forEach((e) => query.$or.push({ _id: new ObjectId(e.eventId) }));
+                return eventsCollection.find(query).toArray().then(eventList => res.json(eventList));
+            }
+        });
 });
 
 app.post("/add-user-event", express.json(), async (req, res) => {
     res.send(await addUserEvent(req.user.userId, req.body.eventId));
 });
 
-const addUserEvent = async function (userId, eventId) {
+async function addUserEvent(userId, eventId) {
     return userCollection.findOne({
         userId: userId
     }).then((user) => user.events).then((events) => {
@@ -220,24 +219,15 @@ const addUserEvent = async function (userId, eventId) {
             {
                 userId: userId
             }, {
-                $addToSet: {
-                    events: {eventId: eventId}
+            $addToSet: {
+                events: { eventId: eventId }
             }
-        }).then((response) => {console.log(response); return response});
+        });
     });
 }
 
-//let image; //for mopngoDB
-// app.post('/upload', upload.single('image'), (req, res) => {
-//     if (!req.file) {
-//         return res.status(400).send('No file uploaded.');
-//     }
-//     image = '/uploads/' + req.file.filename;
-//     res.sendStatus(200);
-// });
-let description; //mongoDB
 app.post("/description", async (req, res) => {
-    if(req.body == ""){
+    if (req.body == "") {
         return res.send(JSON.stringify('No description uploaded.'))
     }
     description = req.body;
@@ -248,11 +238,8 @@ app.post("/description", async (req, res) => {
 // adds to array and database and sends client updated array
 app.post("/submit", upload.single('image'), async (req, res) => {
     let data = req.body;
-    console.log(data);
-    const eventExists = await eventsCollection.findOne({event: data.event});
-    console.log(eventExists);
+    const eventExists = await eventsCollection.findOne({ event: data.event });
     if (eventExists != null) {
-        console.log("Event already posted!");
         res.send(JSON.stringify("Event already posted!"));
         return;
     }
@@ -262,6 +249,7 @@ app.post("/submit", upload.single('image'), async (req, res) => {
     const endTime = data.endTime;
     const location = data.location;
     const description = data.description;
+    
     // Access uploaded file from req.file
     console.log("File", req.file);
     let image = "";
@@ -277,53 +265,14 @@ app.post("/submit", upload.single('image'), async (req, res) => {
         description: description
     }
 
-    const result = await eventsCollection.insertOne(entry)
-    console.log(result);
-    //req.json = JSON.stringify(eventPost);
+    const result = await eventsCollection.insertOne(entry);
     res.json(await eventsCollection.find({}).toArray());
     await addUserEvent(req.user.userId, result.insertedId.toString());
-  });
-
-  function convertTime(time) {
-    // Parse the time string
-    var timeSplit = time.split(':');
-    var hours = parseInt(timeSplit[0]);
-    var minutes = parseInt(timeSplit[1]);
-
-    // Convert to 12 hour
-    var ampm = (hours >= 12) ? 'PM' : 'AM';
-    hours = (hours % 12) || 12;
-
-    var newTime = hours + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + ampm;
-    return newTime;
-}
-
-function elapsedTime(startTime, endTime, date) {
-    // full dates to get time differences for multi days
-    var start = new Date(date + "T" + startTime + ':00');
-    var end = new Date(date + "T" + endTime + ':00');
-
-    // Calculate the difference in milliseconds
-    var elapsedTime = end - start;
-
-    // Convert milliseconds to hours and minutes
-    var hours = Math.floor(elapsedTime / (1000 * 60 * 60));
-    var minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
-
-    return hours + ' hours ' + minutes + ' minutes';
-}
+});
 
 app.post("/info", async (req, res) => {
-    const indexToRemove = req.body.entryIndex;
-
-    const details = eventPost[indexToRemove];
-    const eventName = details.event;  
-  
-    // Use the attribute 'name' of the object to remove data from MongoDB
-    const filter = { event: eventName }; // Filter to find the document by the original item
-    const foundItem = await eventsCollection.findOne(filter);
-    
-    res.send(foundItem);
+    const details = await eventsCollection.findOne({ _id: new ObjectId(req.body.eventId) });
+    res.send(details);
 });
 
 app.post("/refresh", express.json(), async (req, res) => {
@@ -335,7 +284,7 @@ app.post("/refresh", express.json(), async (req, res) => {
 wss.on('connection', (ws, req) => {
     ws.on('message', (message) => {
         const decodedMessage = Buffer.from(message, 'base64').toString('utf-8');
-  
+
         const post = {
             username: decodeURIComponent(req.url.split("=")[1]),
             anonymous: false,
@@ -347,7 +296,7 @@ wss.on('connection', (ws, req) => {
 
         postCollection.insertOne(post)
             .then(() => {
-                
+
                 wss.clients.forEach((client) => {
                     if (client.readyState === WebSocket.OPEN) {
                         client.send(JSON.stringify(post));
@@ -362,7 +311,7 @@ wss.on('connection', (ws, req) => {
 
 
 app.get('/messages', async (req, res) => {
-    if(postCollection !== null){
+    if (postCollection !== null) {
         const messages = await postCollection.find().toArray();
         res.json(messages);
     } else {
@@ -384,4 +333,4 @@ server.listen(3000, function listening() {
 
 //app.listen(process.env.PORT);
 //ViteExpress.listen(app, 3000);
-ViteExpress.bind( app, server )
+ViteExpress.bind(app, server)

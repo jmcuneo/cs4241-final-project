@@ -7,14 +7,8 @@ function setTheme() {
         document.body.classList.remove("dark");
     } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.body.classList.add("dark");
+        document.cookie = "theme=dark";
     }
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-        if(event.matches) {
-            document.body.classList.add("dark");
-        } else {
-            document.body.classList.remove("dark");
-        }
-    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -1,12 +1,12 @@
 :root {
-    --fixed-background: #FFFFFF;
+    --fixed-background: #efefef;
     --fixed-text: #000000;
     --fixed-header: #AC2B37;
     --fixed-sub-header: #902530;
     --fixed-header-text: #FFFFFF;
     --fixed-accent: #A9B0B7;
 
-    --background: #FFFFFF;
+    --background: #efefef;
     --text: #000000;
     --header: #AC2B37;
     --sub-header: #902530;
@@ -56,10 +56,13 @@ body {
     justify-content: center;
 }
 
-.hoverable {
-    transition: 0.3s linear filter;
+.hoverable, input, button {
     cursor: pointer;
     user-select: none;
+}
+
+.hoverable {
+    transition: 0.3s linear filter;
 }
 .hoverable:hover {
     filter: brightness(80%);
@@ -102,5 +105,18 @@ body:not(.dark) #light-switch {
     background-color: var(--sub-header);
     text-decoration: none;
     font-weight: bolder;
-    user-select: none;
+}
+
+.ql-snow .ql-stroke {
+    stroke: var(--text);
+}
+.ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
+    fill: var(--text);
+}
+.ql-snow .ql-picker:not(.ql-expanded) {
+    color: var(--text);
+}
+.ql-editor {
+    background-color: #FFFFFF;
+    color: #000000;
 }

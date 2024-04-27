@@ -30,7 +30,6 @@ main {
     align-items: center;
     justify-content: center;
     position: relative;
-    user-select: none;
 }
 .login-button p {
     color: var(--fixed-text);

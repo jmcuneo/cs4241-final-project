@@ -1,0 +1,77 @@
+body {
+    position: relative;
+}
+
+#event-data {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#event-data>div>input, #event-data>div>button {
+    width: 40ch;
+}
+#event-data h3, #event-data h5 {
+    margin: 0.5vh 0;
+}
+#event-data h3 {
+    margin-top: 1.5vh;
+}
+
+#event-data>div:not(:last-of-type) {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.ql-editor {
+    height: 20ex;
+}
+
+#submit {
+    margin-top: 2vh;
+    background-color: var(--sub-header);
+    border: none;
+    color: var(--header-text);
+    width: max-content;
+    padding: 2vh 4vw;
+    border-radius: 10000px;
+    margin-bottom: 5vh;
+}
+
+#image-preview {
+    max-width: 50%;
+    margin-top: 1vh;
+    border: 1px solid var(--accent);
+}
+
+#image-popup-wrapper:not(.hidden) {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #00000055;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#image-border-box {
+    padding: 5vh;
+    overflow: auto;
+    background-color: var(--background);
+}
+
+#close-popup {
+    font-size: larger;
+    font-weight: bolder;
+    background-color: var(--background);
+    color: var(--text);
+    border-radius: 1000000px;
+    padding: 2vh 4vw;
+}
