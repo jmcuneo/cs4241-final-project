@@ -123,4 +123,21 @@ input{
   font-size: 1.2em;
 }
 
+.leaderboard{
+  width: 50%;
+  min-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  margin-bottom: 10px;
+}
 
+ul{
+  list-style-type: none;
+  margin: 10px;
+}
+
+.scores{
+  font-weight: bold;
+  font-size: 1.1em;
+}

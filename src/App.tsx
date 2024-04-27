@@ -272,6 +272,10 @@ export default function App() {
         );
     })
 
+    const arrayData = getGameScores.data === undefined ? null : getGameScores.data.sort((a, b) => b.score - a.score)
+    //const arrayDataItems = getGameScores.data === undefined ? null : getGameScores.data.sort((a, b) => b.score - a.score).map(
+    const arrayScoresItems = arrayData === null ? null : arrayData.map((s) => <li>{s.score}</li>);
+    const arrayUsernamesItems = arrayData === null ? null : arrayData.map((s) => <li>{s.username}</li>);
 
 
     const renderGameState = () => {
@@ -286,6 +290,15 @@ export default function App() {
                         <p>Good Luck!</p>
                     </div>
                     <button onClick={fetchStartWord}>Start Game</button>
+                    <h2>Leaderboard</h2>
+                    <div className={"leaderboard container"}>
+                        <div className={"column"}>
+                            <ul className={"scores"}>{arrayScoresItems}</ul>
+                        </div>
+                        <div className={"column"}>
+                            <ul>{arrayUsernamesItems}</ul>
+                        </div>
+                    </div>
                 </body>
             );
         } else if (game === "running") {
@@ -324,37 +337,46 @@ export default function App() {
         } else if (game === "end") {
             return (
                 <body>
-                <div className={"container"}>
-                    <div className="column">
-                        <h1>Word Counter</h1>
-                        <p>{wordCount}</p>
+                    <div className={"container"}>
+                        <div className="column">
+                            <h1>Word Counter</h1>
+                            <p>{wordCount}</p>
+                        </div>
+                        <div className="column">
+                            <h1>Score</h1>
+                            <p>Score: {score}</p>
+                        </div>
                     </div>
-                    <div className="column">
-                        <h1>Score</h1>
-                        <p>Score: {score}</p>
+                    <p>
+                        {!nameSubmit &&(
+                        <button onClick={displayName}>Submit Your Name & Score</button>)}
+                    </p>
+                    <p className="InputName">
+                        {nameYes &&(
+                            <input
+                                type="text"
+                                value={nameInput}
+                                onChange={handleNameInput}
+                                onKeyUpCapture={handleNameSubmit}
+                                placeholder="Press Enter to Submit Your Name"
+                            />
+                        )}
+                    </p>
+                    <p>
+                        {nameSubmit &&(
+                            <p>Congratulations! You have submitted your name and score successfully</p>
+                        )}
+                    </p>
+                    <button onClick={fetchStartWord}>Start New Game</button>
+                    <h2>Leaderboard</h2>
+                    <div className={"leaderboard container"}>
+                        <div className={"column"}>
+                            <ul className={"scores"}>{arrayScoresItems}</ul>
+                        </div>
+                        <div className={"column"}>
+                            <ul>{arrayUsernamesItems}</ul>
+                        </div>
                     </div>
-                </div>
-                <p>
-                    {!nameSubmit &&(
-                    <button onClick={displayName}>Submit Your Name & Score</button>)}
-                </p>
-                <p className="InputName">
-                    {nameYes &&(
-                        <input
-                            type="text"
-                            value={nameInput}
-                            onChange={handleNameInput}
-                            onKeyUpCapture={handleNameSubmit}
-                            placeholder="Press Enter to Submit Your Name"
-                        />
-                    )}
-                </p>
-                <p>
-                    {nameSubmit &&(
-                        <p>Congratulations! You have submitted your name and score successfully</p>
-                    )}
-                </p>
-                <button onClick={fetchStartWord}>Start New Game</button>
                 </body>
             );
         }
