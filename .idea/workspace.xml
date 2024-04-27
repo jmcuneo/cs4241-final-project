@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46836379-5a5c-461b-8fd8-2ed99e734ee7" name="Changes" comment="User exists method">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
-    </list>
+    <list default="true" id="46836379-5a5c-461b-8fd8-2ed99e734ee7" name="Changes" comment="Remove player IDs from games and add setWinnerOrder to concludeGame" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -129,7 +126,28 @@
       <option name="project" value="LOCAL" />
       <updated>1714162273415</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Get user game history method">
+      <created>1714162826330</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1714162826330</updated>
+    </task>
+    <task id="LOCAL-00009" summary="added createGame method">
+      <created>1714164259207</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1714164259207</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Remove player IDs from games and add setWinnerOrder to concludeGame">
+      <created>1714164739118</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1714164739118</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -142,6 +160,9 @@
     <MESSAGE value="added db to novite" />
     <MESSAGE value="added db to novite with hopeful example" />
     <MESSAGE value="User exists method" />
-    <option name="LAST_COMMIT_MESSAGE" value="User exists method" />
+    <MESSAGE value="Get user game history method" />
+    <MESSAGE value="added createGame method" />
+    <MESSAGE value="Remove player IDs from games and add setWinnerOrder to concludeGame" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove player IDs from games and add setWinnerOrder to concludeGame" />
   </component>
 </project>
