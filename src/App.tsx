@@ -10,9 +10,9 @@ export default function App() {
     //start, running, or end
     const [game, setGame] = useState<string>("start");
     //word count
-     const [wordCount, setWordCount] = useState(0);
+    const [wordCount, setWordCount] = useState(0);
     //score
-     const [score, setScore] = useState(0);
+    const [score, setScore] = useState(0);
     //username
     const [username, setUsername] = useState('');
     //timer
@@ -101,6 +101,16 @@ export default function App() {
 
     //Is the length long enough?
     const checkString = async (str: string) => {
+        const lastWord = words[words.length -1];
+
+        if (lastWord[lastWord.length - 1] !== str[0]) {
+            setMsg(`${str} does not start with the last letter of ${lastWord}`);
+            return false;
+        }
+        if (words.includes(str)) {
+            setMsg(`You have already used ${str}`)
+            return false;
+        }
         if (str.length > 4){
             return await isWord(str);
         }
@@ -131,16 +141,6 @@ export default function App() {
          }
      }
 
-    const usernames = ["Nick", "Lucas", "Trevor", "Jay", "Yuran"]
-
-    //Helper function returning boolean
-    const checkUsernameExists = async (username: string) => {
-        if (username === "") {
-            return true;
-        }
-        return usernames.includes(username);
-    };
-
     const fetchStartWord = async () => {
         try {
             //Game reset
@@ -148,6 +148,7 @@ export default function App() {
             setScore(0);
             setWordCount(0);
             setSeconds(10);
+            setMsg("");
             interval();
 
             //Initial word
@@ -177,12 +178,14 @@ export default function App() {
         return (
             <div className={"usedWord"}>{word}</div>
         );
-    })
+    });
 
     const arrayData = getGameScores.data === undefined ? null : getGameScores.data.sort((a, b) => b.score - a.score)
     //const arrayDataItems = getGameScores.data === undefined ? null : getGameScores.data.sort((a, b) => b.score - a.score).map(
-    const arrayScoresItems = arrayData === null ? null : arrayData.map((s) => <li>{s.score}</li>);
-    const arrayUsernamesItems = arrayData === null ? null : arrayData.map((s) => <li>{s.username}</li>);
+    const arrayScoresItems = arrayData === null ? null : arrayData.map((s) =>
+        <li><p>{s.score}</p><p>{s.username}</p></li>
+    );
+    // const arrayUsernamesItems = arrayData === null ? null : arrayData.map((s) => <li>{s.username}</li>);
 
     const renderGameState = () => {
         if (game === "start") {
@@ -197,13 +200,8 @@ export default function App() {
                     </div>
                     <button onClick={fetchStartWord}>Start Game</button>
                     <h2>Leaderboard</h2>
-                    <div className={"leaderboard container"}>
-                        <div className={"column"}>
-                            <ul className={"scores"}>{arrayScoresItems}</ul>
-                        </div>
-                        <div className={"column"}>
-                            <ul>{arrayUsernamesItems}</ul>
-                        </div>
+                    <div className={"leaderboard"}>
+                        <ul className={"scores"}>{arrayScoresItems}</ul>
                     </div>
                 </body>
             );
@@ -253,50 +251,23 @@ export default function App() {
                             <p>Score: {score}</p>
                         </div>
                     </div>
-                    <p>
-                        {!nameSubmit &&(
-                        <button onClick={displayName}>Submit Your Name & Score</button>)}
-                    </p>
-                    <p className="InputName">
-                        {nameYes &&(
-                            <input
-                                type="text"
-                                value={nameInput}
-                                onChange={handleNameInput}
-                                onKeyUpCapture={handleNameSubmit}
-                                placeholder="Press Enter to Submit Your Name"
-                            />
-                        )}
-                    </p>
-                    <p>
-                        {nameSubmit &&(
-                            <p>Congratulations! You have submitted your name and score successfully</p>
-                        )}
-                    </p>
-                    <button onClick={fetchStartWord}>Start New Game</button>
                     <h2>Leaderboard</h2>
-                    <div className={"leaderboard container"}>
-                        <div className={"column"}>
-                            <ul className={"scores"}>{arrayScoresItems}</ul>
-                        </div>
-                        <div className={"column"}>
-                            <ul>{arrayUsernamesItems}</ul>
-                        </div>
+                    <div className={"leaderboard"}>
+                        <ul className={"scores"}>{arrayScoresItems}</ul>
                     </div>
-                </div>
-                <button onClick={handleNameSubmit} disabled={(msg === "Congratulations! You have submitted your name and score successfully!")}>
-                    Submit Your Name & Score
-                </button>
-                <br/>
-                <br/>
-                <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Type Your Name Here"
-                />
-                <p>{msg}</p>
-                <button onClick={fetchStartWord}>Start New Game</button>
+                    <button onClick={handleNameSubmit} disabled={(msg === "Congratulations! You have submitted your name and score successfully!")}>
+                        Submit Your Name & Score
+                    </button>
+                    <br/>
+                    <br/>
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Type Your Name Here"
+                    />
+                    <p>{msg}</p>
+                    <button onClick={fetchStartWord}>Start New Game</button>
                 </body>
             );
         }
