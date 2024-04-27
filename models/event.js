@@ -162,12 +162,28 @@ const eventSchema = new Schema({
             if (!event) return [];
             const guestList = await this.findById(event._id).
                 select('attendees').populate('attendees.inviter').exec();
-            return guestList?.attendees.map(attendee => {
+
+            /*guestList?.attendees?.forEach(async (attendee) => {
+                if (attendee.guest instanceof mongoose.Types.ObjectId) {
+                    attendee.guest = attendee.guest.fullName;
+                }
+            });*/
+
+            // TODO: Sending ObjectIds if it is a user. Try to fix this.
+            return Promise.all(guestList?.attendees.map(async (attendee) => {
                 // Populate inviter but hide everything other than fullName
                 const { inviter, ...rest } = attendee.toObject();
                 const { fullName } = inviter;
+                if (rest.guest instanceof mongoose.Types.ObjectId) {
+                    const user = await User.findOne({ _id: rest.guest }).select('firstName lastName fullName');
+                    const name = await user.fullName;
+
+                    /* eslint-disable-next-line no-unused-vars */
+                    const { guest, ...moreRest } = rest;
+                    return { invitedBy: fullName, guest: name, ...moreRest }
+                }
                 return { invitedBy: fullName, ...rest };
-            }) ?? [];
+            })) ?? [];
         },
 
         /**

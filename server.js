@@ -218,7 +218,8 @@ app.post('/api/getGuestList', async (req, res) => {
         // const user = await User.findOne({ username: username });
         const event = await Event.findOne({ name: eventName });
 
-        const guestList = (await event.getGuestList()).map(guest => {
+        const uncleanedGuestList = await event.getGuestList();
+        const guestList = uncleanedGuestList.map(guest => {
             return renameFieldInObject(hideFieldsFromObject(guest, 'id', '_id'), 'guest', 'guestName');
         });
 
@@ -327,6 +328,32 @@ app.post('/api/deleteEvent', async (req, res) => {
         const eventDeleted = await user.deleteEvent(eventName);
 
         return res.json({ success: eventDeleted });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+app.post('/api/modifyEvent', async (req, res) => {
+    try {
+        const { token, eventBody } = req.body;
+        if (eventBody.name === undefined) {
+            // Don't need to waste resources validating if the user is authenticated if the event
+            // provided will fail regardless
+            return res.json({ success: false, error: 'Recieved an undefined eventBody.name' });
+        }
+
+        const username = getUsernameFromToken(token);
+        const user = await User.findOne({ username: username });
+
+        const event = await Event.findOne({ name: eventBody.name });
+
+        const result = await user.modifyEvent(event, eventBody);
+        if (typeof result === 'boolean' || result === undefined) {
+            return res.json({ success: false });
+        }
+
+        return res.json(hideFieldsFromObject(event.toObject(), 'id', '_id', 'attendees'));
     } catch (err) {
         console.log(err);
         return res.json({ success: false });
