@@ -1,5 +1,6 @@
 import React from 'react';
 import Sidebar from '../../components/sidebar/Sidebar';
+import ChatContainer from '../../components/Chat/ChatContainer';
 
 const Home = () => {
   return (
@@ -9,7 +10,7 @@ const Home = () => {
 
       {/* Main content */}
       <div className="flex-1 bg-[#262626] h-[100%]">
-        <div>Home Content</div>
+        <ChatContainer/>
       </div>
 
 
