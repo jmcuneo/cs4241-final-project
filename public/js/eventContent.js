@@ -117,7 +117,6 @@ async function toggleInfo(flyer, descLabel, descDiv, description, eventId) {
         body: JSON.stringify(reqObj),
     });
     const eventInfo = await response.json();
-    console.log(eventInfo.description);
 
     if(eventInfo.image) {
         flyer.src = eventInfo.image;
@@ -127,7 +126,11 @@ async function toggleInfo(flyer, descLabel, descDiv, description, eventId) {
     }
 
     if(eventInfo.description) {
-        description.setContents(JSON.parse(eventInfo.description));
+        try {
+            description.setContents(JSON.parse(eventInfo.description));
+        } catch(_) {
+            description.setText(eventInfo.description);
+        }
         descLabel.classList.remove("hidden");
         descDiv.classList.remove("hidden");
     } else {

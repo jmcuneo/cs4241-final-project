@@ -49,7 +49,7 @@ body {
     display: none;
 }
 
-.center {
+.center:not(.hidden) {
     display: flex;
     flex-direction: column;
     align-items: center;
