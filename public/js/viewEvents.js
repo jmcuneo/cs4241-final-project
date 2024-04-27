@@ -15,21 +15,21 @@ async function refreshPage() {
   fetch("/refresh", { method: "POST" })
   .then(r => r.json())
   .then(result => {
+    const eventsList = document.querySelector("#personal-events");
     for (let ev of result) {
       const startDate = new Date(ev.startTime);
       const endDate = new Date(ev.endTime);
-      document.querySelector("#personal-events").appendChild(createPersonalEvent(ev.event, startDate, endDate, ev.location, ev._id));
+
+      
+      if(new Date() < endDate) {
+        eventsList.appendChild(createPersonalEvent(ev.event, startDate, endDate, ev.location, ev._id, true));
+      }
+    }
+
+    if(eventsList.children.length === 0) {
+      const emptyMsg = document.createElement("h4");
+      emptyMsg.innerHTML = "<span>There are no upcoming events!</span>";
+      eventsList.appendChild(emptyMsg);
     }
   });
-};
-
-// TODO: UPDATE
-
-const addToPersonal = function (eventId) {
-  console.log(JSON.stringify({ eventId: eventId }));
-  fetch("/add-user-event", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ eventId: eventId })
-  }).then((response) => response.text()).then((text) => console.log(text));
 };

@@ -44,6 +44,9 @@ button {
     grid-template-columns: 80% 20%;
     padding: 0;
 }
+.event-header.double-button {
+    grid-template-columns: 70% 15% 15%;
+}
 
 .event-header h4 {
     height: 100%;

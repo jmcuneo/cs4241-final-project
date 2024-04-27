@@ -1,4 +1,4 @@
-function createPersonalEvent(name, start, end, location, eventId) {
+function createPersonalEvent(name, start, end, location, eventId, includeAddButton = false) {
     const wrapper = document.createElement("div");
     wrapper.classList.add("event-wrapper");
 
@@ -17,6 +17,17 @@ function createPersonalEvent(name, start, end, location, eventId) {
     details.classList.add("detail-button");
     details.type = "button";
     headerWrapper.appendChild(details);
+
+    if (includeAddButton) {
+        const addButton = document.createElement("button");
+        addButton.textContent = "Add to calendar";
+        addButton.classList.add("hoverable");
+        addButton.classList.add("detail-button");
+        addButton.type = "button";
+        addButton.onclick = async () => addToPersonal(eventId);
+        headerWrapper.appendChild(addButton);
+        headerWrapper.classList.add("double-button");
+    }
     wrapper.appendChild(headerWrapper);
 
     const timeWrapper = document.createElement("div");
@@ -118,17 +129,17 @@ async function toggleInfo(flyer, descLabel, descDiv, description, eventId) {
     });
     const eventInfo = await response.json();
 
-    if(eventInfo.image) {
+    if (eventInfo.image) {
         flyer.src = eventInfo.image;
         flyer.parentElement.classList.remove("hidden");
     } else {
         flyer.parentElement.classList.add("hidden");
     }
 
-    if(eventInfo.description) {
+    if (eventInfo.description) {
         try {
             description.setContents(JSON.parse(eventInfo.description));
-        } catch(_) {
+        } catch (_) {
             description.setText(eventInfo.description);
         }
         descLabel.classList.remove("hidden");
@@ -137,4 +148,12 @@ async function toggleInfo(flyer, descLabel, descDiv, description, eventId) {
         descLabel.classList.add("hidden");
         descDiv.classList.add("hidden");
     }
+};
+
+async function addToPersonal(eventId) {
+    fetch("/add-user-event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ eventId: eventId })
+    });
 };

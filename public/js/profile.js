@@ -131,7 +131,7 @@ async function getUserEvents(filter) {
 
             if(personalEvents.length === 0) {
                 const emptyMsg = document.createElement("h4");
-                emptyMsg.textContent = "You have not created any events" + (filter === null ? "!" : " on this day!");
+                emptyMsg.textContent = "You have signed up for any events" + (filter === null ? "!" : " on this day!");
                 table.appendChild(emptyMsg);
             }
         });
