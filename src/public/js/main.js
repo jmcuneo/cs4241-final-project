@@ -233,6 +233,9 @@ function stopWatch() {
 
 		document.getElementById("min").innerHTML = minString;
 		document.getElementById("sec").innerHTML = secString;        
+	} else {
+		gameover();
+		matches = 0;
 	}
 }
 
@@ -280,3 +283,13 @@ async function showLeaderboard() {
   }
 }
 
+async function gameover(){
+	let score = document.getElementById("score").innerHTML;
+	let body = JSON.stringify({score: score})
+	const response = await fetch("/auth/add-leaderboard-entry", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body
+	});
+	const resp = await response.json();
+}
