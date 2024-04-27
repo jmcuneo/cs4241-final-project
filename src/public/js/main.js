@@ -296,7 +296,10 @@ async function gameover(){
 	let body = JSON.stringify({score: score})
 	const response = await fetch("/auth/add-leaderboard-entry", {
 		method: "POST",
-		headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${document.cookie.substring(6)}`,
+    },
 		body
 	});
 	const resp = await response.json();

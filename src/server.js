@@ -140,7 +140,9 @@ app.post("/select", async (req, res) => {
 
 
 app.post("/auth/add-leaderboard-entry", auth.authenticateToken, (req, res) => {
-  console.log(req.user)
+  console.log("User: " + req.user.username)
+  console.log("Score: " + req.body.score)
+  res.json("Hello")
 })
 app.post("/leaderboard", async (req, res) => {
  const leaderboard =  await db.getLeaderboard();
