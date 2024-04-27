@@ -346,7 +346,7 @@ app.post('/api/modifyEvent', async (req, res) => {
         const username = getUsernameFromToken(token);
         const user = await User.findOne({ username: username });
 
-        const event = await Event.findOne({ name: eventBody.name });
+        const event = await Event.findOne({ name: eventBody.id });
 
         const result = await user.modifyEvent(event, eventBody);
         if (typeof result === 'boolean' || result === undefined) {
