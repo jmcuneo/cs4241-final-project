@@ -9,7 +9,9 @@ const ChatContainer = () => {
       <OtherUserCard />
       <div className="flex-grow overflow-auto pt-4 pb-4">
 
-        <div className="flex flex-col items-start gap-4">
+       
+         
+      <div className="flex flex-col items-start gap-4">
           <div className="chat chat-start w-full">
             <Message
               text="YOU TURNED HER AGAINST ME!"
@@ -26,8 +28,6 @@ const ChatContainer = () => {
               isStart={false}
             />
           </div>
-         
-          
         </div>
 
       </div>

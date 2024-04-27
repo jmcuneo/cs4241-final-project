@@ -1,18 +1,11 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import LogoutImage from '../assets/logout.svg';
+import LogoutButton from './LogoutButton';
+
 
 const CurrentUserCard = () => {
-    const navigate = useNavigate(); // Hook to get the navigate function
 
     // Function to handle logout action
-    const handleLogout = () => {
-        console.log("Logging out..."); // Optionally log the logout process
-        
-        // Add your logout logic here (e.g., clearing user data)
-        
-        navigate('/'); // Navigate to the home route
-    };
+    
 
     return (
         <>
@@ -26,9 +19,7 @@ const CurrentUserCard = () => {
                     <span className="block font-semibold text-white mr-4">Current User</span>
                 </div>
                 <div className="text-white text-sm mr-4 flex items-center justify-center">
-                    <button onClick={handleLogout} className="flex items-center justify-center p-1 rounded hover:bg-cyan-700 focus:outline-none">
-                        <img src={LogoutImage} alt="Logout" className="w-4 h-4" draggable="false" />
-                    </button>
+                    <LogoutButton />
                 </div>
             </div>
         </>
