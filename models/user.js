@@ -292,7 +292,7 @@ const userSchema = new Schema({
                     const user = this;
                     sanitizedProperties.forEach(async (key) => {
                         switch (key) {
-                            case 'name':
+                            /*case 'name':
                                 try {
                                     event.name = eventDetails[key];
                                     await event.validate();
@@ -300,7 +300,7 @@ const userSchema = new Schema({
                                     console.error('Error renaming event');
                                     return false;
                                 }
-                                break;
+                                break;*/
                             case 'guestLimit':
                                 await event.setGuestLimit(user, eventDetails[key]);
                                 break;
