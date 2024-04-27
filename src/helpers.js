@@ -30,11 +30,14 @@ itemN {
 
 
 //returns a score to be sent back to the client
-exports.calculateScore = (item1, item2) => {
-    let val1 = item1.eventcard;
-    let val2 = item2.event;
+exports.calculateScore = (item1, item2, ref_arr) => {
 
-    if (val1 === val2) {
+    const val = ref_arr.find((element) => element.name === item1).card
+
+    console.log(item2)
+    console.log(val)
+
+    if (item2 == val) {
         return 100
     } else return 0
 
