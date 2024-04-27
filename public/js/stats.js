@@ -99,9 +99,9 @@ async function makeWinRateTime() {
         winrate.push(cur);
     }
 
-    var margin = {top: 20, right: 20, bottom: 20, left: 60},
+    var margin = {top: 20, right: 20, bottom: 60, left: 60},
             width = 600 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
+            height = 340 - margin.top - margin.bottom;
 
     var svg = d3.select("#svg-win-rate-time").append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -135,6 +135,15 @@ async function makeWinRateTime() {
             .attr("d", d3.line()
                 .x((d, i) => { return x(i + 1) })
                 .y((d) => { return y(d) }));
+
+    // add label
+    svg.append("text")
+        .attr("class", "x-label")
+        .attr("text-anchor", "start")
+        .attr("x", 0)
+        .attr("y", height + 40)
+        .text("Games")
+        .attr("font-size", "16px");
 
 }
 
@@ -171,9 +180,9 @@ async function makeGameDist() {
         domain.push(i);
     }
 
-    var margin = {top: 30, right: 30, bottom: 30, left: 30},
+    var margin = {top: 30, right: 30, bottom: 60, left: 30},
             width = 600 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
+            height = 330 - margin.top - margin.bottom;
 
     var svg = d3.select("#svg-game-dist").append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -210,6 +219,15 @@ async function makeGameDist() {
             .attr("width", x.bandwidth())
             .attr("height", function(d) { return height - y(d); })
             .style("fill", "#007559");
+
+    // add label
+    svg.append("text")
+        .attr("class", "x-label")
+        .attr("text-anchor", "start")
+        .attr("x", 0)
+        .attr("y", height + 40)
+        .text("Placements (1 = 1st place)")
+        .attr("font-size", "16px");
 
 }
 
