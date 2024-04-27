@@ -111,6 +111,7 @@ class Board {
     if(!this.hasPieceNotReachedBottom(this.activePiece)) {
       this.isGameActive = false;
       this.gameOver = true;
+      showGameOver();
       sendScore(this.score);
     }
   }
@@ -215,6 +216,15 @@ class Board {
       for(let x = 0; x < boardWidth; x++) {
         this.cells[y][x].y = y;
       }
+    }
+
+    levelRows--;
+    console.log(levelRows)
+    console.log(fps)
+    if(levelRows == 0){
+      levelRows += 10
+      fps += 0.5
+      prevSpeed += 0.5
     }
   }
   
@@ -447,11 +457,11 @@ var boardWidth = 10;
 var boardHeight = 20;
 let board = new Board(boardWidth, boardHeight, cellSize);
 let next = new Next(boardWidth, boardHeight, cellSize);
+var levelRows = 10
 
 // Game Constants
-
-const FRAMES_PER_SECOND = 7;
-let fps = 7; // controls the speed of the game in frames per second
+var prevSpeed = 2
+var fps = 2; // controls the speed of the game in frames per second
 const SOFTDROP_SPEED = fps * 4;
 
 // Main game loop
@@ -471,7 +481,6 @@ function nextFrame() {
   board.drawBoard();
   next.drawBackground();
   next.renderPieces();
-
   board.clearFilledRows();
 
   if(board.isGameActive) {
@@ -480,7 +489,6 @@ function nextFrame() {
     }, 1000 / fps);
   }
 }
-
 
 // Side Functions
 window.onload = function() {
@@ -574,7 +582,8 @@ document.addEventListener(
           break;
         case START:
           if(!board.gameOver){
-            board.isGameActive = true
+            board.isGameActive = true;
+            hideStart();
             init();
           }
           break;
@@ -588,7 +597,7 @@ document.addEventListener('keyup', (event) => {
   if(board.isGameActive){
     const keyName = event.key;
     if(keyName == SOFT_DROP){
-      fps = FRAMES_PER_SECOND;
+      fps = prevSpeed;
     }
   }
 }, false);
@@ -602,4 +611,14 @@ function flipCanvas() {
 function flipCanvasDown() {
   let element = document.getElementById('board'); // Replace 'board' with the id of your element
   element.style.transform = 'scaleY(-1)'; // Replace '1' with the scale factor you want
+}
+
+function hideStart(){
+  let element = document.getElementById('start');
+  element.style.visibility = 'hidden';
+}
+
+function showGameOver(){
+  let element = document.getElementById('game-over');
+  element.style.visibility = 'visible';
 }
