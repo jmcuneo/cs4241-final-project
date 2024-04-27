@@ -5,8 +5,8 @@ function TableComponent({ headers, rows, isEvent }) {
   // console.log(JSON.stringify(rows));
   const navigate = useNavigate();
 
-  function handleClick(eventName) {
-    navigate("/event/" + encodeURI(eventName));
+  function handleClick(eventId) {
+    navigate("/event/" + encodeURI(eventId));
   }
   return (
     <div className="overflow-x-auto">

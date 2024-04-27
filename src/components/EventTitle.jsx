@@ -2,9 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types"
 
-function EventTitle({ eventName, isAdmin }) {
+function EventTitle({ eventId, isAdmin }) {
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
+    const [eventName, setEventName] = useState("");
     const [eventDate, setEventDate] = useState("");
     const [eventLocation, setEventLocation] = useState("");
     const [eventGuests, setEventGuests] = useState(0);
@@ -49,20 +50,21 @@ function EventTitle({ eventName, isAdmin }) {
 
     const handleManageEventPage = async (event) => {
         event.preventDefault();
-        navigate("/event/manage/" + encodeURI(eventName));
+        navigate("/event/manage/" + encodeURI(eventId));
     };
 
     useEffect(() => {
       getUpcomingEvents();
-      thisEvent = events.find(event => event.name === eventName)
+      thisEvent = events.find(event => event.Id === eventId)
       if (thisEvent) {
         const formattedDateString = formatEventDate(thisEvent.date);
+        setEventName(thisEvent.name)
         setEventDate(formattedDateString);
         setEventLocation(thisEvent.location);
         setEventGuests(thisEvent.guestCount);
         setEventUserGuests(thisEvent.userInvites);
       }
-    }, [events, eventName]);
+    }, [events, eventId]);
 
   return (
     <div>
@@ -94,7 +96,7 @@ function EventTitle({ eventName, isAdmin }) {
 }
 
 EventTitle.propTypes = {
-  eventName: PropTypes.string,
+  eventId: PropTypes.string,
   isAdmin: PropTypes.bool
 }
 

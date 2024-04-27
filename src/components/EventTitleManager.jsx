@@ -2,9 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types"
 
-function EventTitleManager({ eventName }) {
+function EventTitleManager({ eventId }) {
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
+    const [eventName, setEventName] = useState("");
     const [eventDate, setEventDate] = useState("");
     const [eventLocation, setEventLocation] = useState("");
     const [eventGuests, setEventGuests] = useState(0);
@@ -62,7 +63,7 @@ function EventTitleManager({ eventName }) {
             },
             body: JSON.stringify({ 
               token: localStorage.getItem("token"),
-              eventBody: {name: newEventName, date: newEventDate, location: newEventLocation}
+              eventBody: {Id: eventId, name: newEventName, date: newEventDate, location: newEventLocation}
             }),
           });
           console.log(await response.json());
@@ -90,15 +91,16 @@ function EventTitleManager({ eventName }) {
 
     useEffect(() => {
       getUpcomingEvents();
-      thisEvent = events.find(event => event.name === eventName)
+      thisEvent = events.find(event => event.Id === eventId)
       if (thisEvent) {
         const formattedDateString = formatEventDate(thisEvent.date);
+        setEventName(eventName);
         setEventDate(formattedDateString);
         setEventLocation(thisEvent.location);
         setEventGuests(thisEvent.guestCount);
         setEventUserGuests(thisEvent.userInvites);
       }
-    }, [events, eventName]);
+    }, [events, eventId]);
 
   return (
     <div>
@@ -181,7 +183,7 @@ function EventTitleManager({ eventName }) {
 }
 
 EventTitleManager.propTypes = {
-  eventName: PropTypes.string,
+  eventId: PropTypes.string,
   isAdmin: PropTypes.bool
 }
 

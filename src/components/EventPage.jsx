@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import EventTitle from "./EventTitle.jsx";
 
 function EventPage({ onLogout }) {
-  const { eventName } = useParams();
+  const {eventId } = useParams();
   const [guestList, setGuestList] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -21,12 +21,13 @@ function EventPage({ onLogout }) {
         },
         body: JSON.stringify({
           token: localStorage.getItem("token"),
-          eventName: eventName,
+          eventId: eventId,
         }),
       });
 
       const guests = await response.json();
       setGuestList(guests);
+      //console.log(eventId);
     } catch (error) {
       console.error("Error getting guests:", error);
     }
@@ -74,8 +75,8 @@ function EventPage({ onLogout }) {
       .catch((error) => {
         console.error("Error getting profile:", error);
       });
-      if (userProfile && userProfile.accountType === "Admin") setIsAdmin(true);
-  }, [eventName, userProfile]);
+    if (userProfile && userProfile.accountType === "Admin") setIsAdmin(true);
+  }, [eventId, userProfile]);
 
   return (
     <>
@@ -86,11 +87,11 @@ function EventPage({ onLogout }) {
       ></Navbar>
       <div className="main-page-container">
         <div>
-          <EventTitle eventName={eventName} isAdmin={isAdmin} />
+          <EventTitle eventId={eventId} isAdmin={isAdmin} />
         </div>
         <div className="relative grid grid-cols-2 justify-start mt-3 w-screen">
           <div className="ml-1">
-            <GuestListComponent guestList={guestList} />
+            {/*<GuestListComponent guestList={guestList} />*/}
           </div>
           <div>
             <UserGuestListComponent onUpdate={handleUpdate} manage={false} />

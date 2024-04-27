@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 
 function GuestListComponent({ onUpdate, manage }) {
-  const { eventName } = useParams();
+  const { eventId } = useParams();
   const [guestList, setGuestList] = useState([]);
   const guestNameRef = useRef(null);
   const [message, setMessage] = useState("");
@@ -17,7 +17,7 @@ function GuestListComponent({ onUpdate, manage }) {
         },
         body: JSON.stringify({
           token: localStorage.getItem("token"),
-          eventName: eventName,
+          eventId: eventId,
         }),
       });
 
@@ -37,7 +37,7 @@ function GuestListComponent({ onUpdate, manage }) {
         },
         body: JSON.stringify({
           token: localStorage.getItem("token"),
-          eventName: eventName,
+          eventId: eventId,
           guestName: guestName,
         }),
       });
@@ -65,7 +65,7 @@ function GuestListComponent({ onUpdate, manage }) {
         },
         body: JSON.stringify({
           token: localStorage.getItem("token"),
-          eventName: eventName,
+          eventId: eventId,
           guestName: guestName,
         }),
       });
@@ -94,7 +94,7 @@ function GuestListComponent({ onUpdate, manage }) {
 
   useEffect(() => {
     getGuestList();
-  }, [eventName]);
+  }, [eventId]);
 
   const guestTable = () => {
     return (

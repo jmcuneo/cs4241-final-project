@@ -7,7 +7,7 @@ import EventTitleManager from "./EventTitleManager.jsx";
 
 function ManageEventPage({ onLogout }) {
   const navigate = useNavigate();
-  const { eventName } = useParams();
+  const { eventId } = useParams();
   const [guestList, setGuestList] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
 
@@ -20,7 +20,7 @@ function ManageEventPage({ onLogout }) {
         },
         body: JSON.stringify({
           token: localStorage.getItem("token"),
-          eventName: eventName,
+          eventId: eventId,
         }),
       });
 
@@ -74,7 +74,7 @@ function ManageEventPage({ onLogout }) {
       .catch((error) => {
         console.error("Error getting profile:", error);
       });
-  }, [eventName]);
+  }, [eventId]);
 
   return (
     <>
@@ -86,7 +86,7 @@ function ManageEventPage({ onLogout }) {
 
       <div>
         <div>
-          <EventTitleManager eventName={eventName}/>
+          <EventTitleManager eventId={eventId}/>
         </div>
         <div style={{display:"flex", flexDirection:"row"}}>
           <UserGuestListComponent onUpdate={handleUpdate} manage={true} />
@@ -99,7 +99,6 @@ function ManageEventPage({ onLogout }) {
               type="number"
               id="totalLimitInput"
               name="totalLimitInput"
-              placeholder={eventName}
               style={{marginLeft:"0.5rem"}}
             />
             <label className="text-lg text-slate-50" htmlFor="userLimitInput" style={{marginLeft:"0.7rem"}}>
@@ -110,7 +109,6 @@ function ManageEventPage({ onLogout }) {
               type="number"
               id="userLimitInput"
               name="userLimitInput"
-              placeholder={eventName}
               style={{marginLeft:"0.5rem"}}
             />
           </div>
