@@ -232,7 +232,7 @@ function stopWatch() {
 
 function handleGuess(resp) {
   let score = resp.score;
-  let match = resp.validMatch;
+  let match = !(score == 0);
 
   displayScore(score);
 

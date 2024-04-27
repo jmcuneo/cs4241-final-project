@@ -19,3 +19,7 @@
   border: none;
 }
 
+.inactive :hover {
+  background-color: green;
+}
+
