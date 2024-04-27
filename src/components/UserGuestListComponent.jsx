@@ -142,12 +142,14 @@ function UserGuestListComponent({ onUpdate, manage, passedGuestList }) {
         <h1 className="w-full">{title}</h1>
         <div className="grid columns-3 grid-cols-3 gap-1">
           {/* first col */}
+        {!manage && (
           <div className="flex justify-center align-center">
             <GuestListComponent
               guestList={passedGuestList}
               shouldDisplayTitle={false}
             ></GuestListComponent>
           </div>
+        )}
           {/* second col */}
 
           {guestList.length > 0 ? (
