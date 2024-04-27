@@ -1,0 +1,72 @@
+button {
+    padding: 1vw;
+    border: none;
+    border-radius: 1000000px;
+    margin: 2vh 0;
+    background-color: var(--sub-header);
+    color: var(--header-text);
+}
+
+.event-wrapper {
+    width: 100%;
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 2px solid var(--accent);
+    box-sizing: border-box;
+    margin-top: 2vh;
+}
+.event-wrapper:first-child {
+    margin-top: 0;
+}
+
+.time-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.event-wrapper h5:not(.hidden) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.event-wrapper h5>span:first-child {
+    font-weight: bold;
+    font-size: 125%;
+}
+
+.event-header {
+    margin: 0;
+    margin-left: -2px;
+    margin-top: -2px;
+    width: calc(100% + 4px);
+    display: grid;
+    grid-template-columns: 80% 20%;
+    padding: 0;
+}
+
+.event-header h4 {
+    height: 100%;
+    width: 100%;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    padding-left: 2vh;
+}
+
+.detail-button {
+    margin: 0;
+    border-radius: 0;
+}
+
+.event-wrapper img {
+    margin: 1vh 0;
+}
+
+.reduced-margin {
+    margin: 0.5vh 0;
+}
+
+.event-wrapper .ql-container.ql-snow {
+    border: none;
+}
