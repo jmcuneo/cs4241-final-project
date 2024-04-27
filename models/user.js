@@ -278,7 +278,7 @@ const userSchema = new Schema({
             // eventDetails is an added to check to ensure that it is not empty
             const isEventCreator = event.creator.equals(this._id);
             if (eventDetails !== undefined && (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS)) || isEventCreator) {
-                const validProperties = ['location', 'date', 'guestLimit', 'inviterLimit'];
+                const validProperties = ['name', 'location', 'date', 'guestLimit', 'inviterLimit'];
                 const sanitizedProperties = [];
 
                 // Only get the allowed properties from the input, ignore the rest
@@ -287,9 +287,30 @@ const userSchema = new Schema({
                         sanitizedProperties.push(property);
                     }
                 });
+                if (sanitizedProperties.length === 0) return false;
                 try {
-                    sanitizedProperties.forEach(key => {
-                        event[key] = eventDetails[key];
+                    const user = this;
+                    sanitizedProperties.forEach(async (key) => {
+                        switch (key) {
+                            case 'name':
+                                try {
+                                    event.name = eventDetails[key];
+                                    event.validate();
+                                } catch (err) {
+                                    console.error('Error renaming event');
+                                    return false;
+                                }
+                                break;
+                            case 'guestLimit':
+                                await event.setGuestLimit(user, eventDetails[key]);
+                                break;
+                            case 'inviterLimit':
+                                await event.setInviterLimit(user, eventDetails[key]);
+                                break;
+                            default:
+                                event[key] = eventDetails[key];
+                                break;
+                        }
                     });
 
                     await event.save();
