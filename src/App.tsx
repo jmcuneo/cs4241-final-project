@@ -166,12 +166,16 @@ export default function App() {
 
     //submit Username & score
     const handleNameSubmit = () => {
-        const body = {
-            username: username,
-            score: score
-        }
+        if (username.length > 0) {
+            const body = {
+                username: username,
+                score: score
+            }
 
-        postScore.mutate(body);
+            postScore.mutate(body);
+        } else {
+            setMsg("Please enter a username");
+        }
     }
 
     const renderWords = words.map((word) => {
@@ -180,12 +184,10 @@ export default function App() {
         );
     });
 
-    const arrayData = getGameScores.data === undefined ? null : getGameScores.data.sort((a, b) => b.score - a.score)
-    //const arrayDataItems = getGameScores.data === undefined ? null : getGameScores.data.sort((a, b) => b.score - a.score).map(
+    const arrayData = getGameScores.data === undefined ? null : getGameScores.data.sort((a, b) => b.score - a.score);
     const arrayScoresItems = arrayData === null ? null : arrayData.map((s) =>
         <li><p>{s.score}</p><p>{s.username}</p></li>
     );
-    // const arrayUsernamesItems = arrayData === null ? null : arrayData.map((s) => <li>{s.username}</li>);
 
     const renderGameState = () => {
         if (game === "start") {
