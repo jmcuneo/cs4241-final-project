@@ -1,23 +1,29 @@
-import { useState } from 'react'
-import './App.css'
-import Login from './pages/login/Login.jsx'
-import Signup from "./pages/signup/SignUp.jsx"
-import Home from './pages/home/Home.jsx'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
+import Login from './pages/login/Login.jsx';
+import Signup from './pages/signup/SignUp.jsx';
+import Home from './pages/home/Home.jsx';
+import { Toaster } from 'react-hot-toast';
+import { useAuthContext } from './context/AuthContext.jsx';
+import { Navigate } from 'react-router-dom';
 
 function App() {
-  const [showLogin, setShowLogin] = useState(true);  // State to toggle views
-
+  const {authUser} = useAuthContext();
   return (
     <div>
-      <div>
-        {/* {showLogin ? <Login onSignUpClick={() => setShowLogin(false)} /> : <Signup onLoginClick={() => setShowLogin(true)} />} */}
       
+        <Routes>
+        <Route path="/" element={authUser ? <Home/> : <Navigate to={"/login" } /> } />
+          <Route path="/login" element={authUser ?  <Navigate to="/"/>  : <Login />} />
+          <Route path="/signup" element={authUser ? <Navigate to="/"/> : <Signup/> } />
+          
+        </Routes>
       
-        <Home/> 
-        </div>
-    </div>
 
-  )
+      <Toaster />
+
+    </div>
+  );
 }
 
-export default App
+export default App;

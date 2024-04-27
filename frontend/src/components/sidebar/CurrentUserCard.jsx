@@ -1,12 +1,11 @@
-import React from 'react'
-import LogoutImage from '../assets/logout.svg'
+import React from 'react';
+import LogoutButton from './LogoutButton';
+
 
 const CurrentUserCard = () => {
+
     // Function to handle logout action
-    const handleLogout = () => {
-        console.log("Logout clicked!");
-        // Add your logout logic here
-    };
+    
 
     return (
         <>
@@ -20,9 +19,7 @@ const CurrentUserCard = () => {
                     <span className="block font-semibold text-white mr-4">Current User</span>
                 </div>
                 <div className="text-white text-sm mr-4 flex items-center justify-center">
-                    <button onClick={handleLogout} className="flex items-center justify-center p-1 rounded hover:bg-cyan-700 focus:outline-none">
-                        <img src={LogoutImage} alt="Logout" className="w-4 h-4" draggable="false" />
-                    </button>
+                    <LogoutButton />
                 </div>
             </div>
         </>
