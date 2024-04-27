@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 
-const base = "http://localhost:3000";
+const base = "https://cs4241-final-project-1.onrender.com";
 
 export const fetcher = async <T>(method: string, url: string, body: any): Promise<T> => {
     const axiosInstance = axios.create({
