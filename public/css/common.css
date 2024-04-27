@@ -118,4 +118,5 @@ body:not(.dark) #light-switch {
 }
 .ql-editor {
     background-color: #FFFFFF;
+    color: #000000;
 }

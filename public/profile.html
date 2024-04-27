@@ -42,17 +42,8 @@
             <h2>Your Posts</h2>
             <div id="post-collection"></div>
             <h2>Your Events <span id="date-specifier"></span></h2>
-            <table id="personal-events">
-                <tr>
-                    <th>Event</th>
-                    <th>Date</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                    <th>Location</th>
-                    <th>Details</th>
-                </tr>
-            </table>
-            <button type="button" class="hoverable" onclick="getPersonalCalendar()">Refresh Events</button>
+            <div id="personal-events"></div>
+            <button type="button" class="hoverable" onclick="getUserEvents(null)">Refresh Events</button>
             <label for="month">Select a month:</label>
             <input type="month" id="month">
             <table id="calendar">
@@ -71,5 +62,11 @@
             </table>
         </div>
     </main>
+    <div id="image-popup-wrapper" class="hidden">
+      <div id="image-border-box" class="center">
+        <img id="image-popup" title="Flyer (full size)">
+      </div>
+      <p id="close-popup" class="hoverable">X</p>
+    </div>
 </body>
 </html>

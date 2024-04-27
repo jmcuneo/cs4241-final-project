@@ -211,7 +211,7 @@ app.post("/add-user-event", express.json(), async (req, res) => {
     res.send(await addUserEvent(req.user.userId, req.body.eventId));
 });
 
-const addUserEvent = async function (userId, eventId) {
+async function addUserEvent(userId, eventId) {
     return userCollection.findOne({
         userId: userId
     }).then((user) => user.events).then((events) => {
@@ -226,15 +226,6 @@ const addUserEvent = async function (userId, eventId) {
     });
 }
 
-//let image; //for mopngoDB
-// app.post('/upload', upload.single('image'), (req, res) => {
-//     if (!req.file) {
-//         return res.status(400).send('No file uploaded.');
-//     }
-//     image = '/uploads/' + req.file.filename;
-//     res.sendStatus(200);
-// });
-let description; //mongoDB
 app.post("/description", async (req, res) => {
     if (req.body == "") {
         return res.send(JSON.stringify('No description uploaded.'))
@@ -275,22 +266,13 @@ app.post("/submit", upload.single('image'), async (req, res) => {
     }
 
     const result = await eventsCollection.insertOne(entry);
-    //req.json = JSON.stringify(eventPost);
     res.json(await eventsCollection.find({}).toArray());
     await addUserEvent(req.user.userId, result.insertedId.toString());
 });
 
 app.post("/info", async (req, res) => {
-    const indexToRemove = req.body.entryIndex;
-
-    const details = eventPost[indexToRemove];
-    const eventName = details.event;
-
-    // Use the attribute 'name' of the object to remove data from MongoDB
-    const filter = { event: eventName }; // Filter to find the document by the original item
-    const foundItem = await eventsCollection.findOne(filter);
-
-    res.send(foundItem);
+    const details = await eventsCollection.findOne({ _id: new ObjectId(req.body.eventId) });
+    res.send(details);
 });
 
 app.post("/refresh", express.json(), async (req, res) => {

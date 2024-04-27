@@ -39,6 +39,7 @@ td {
 
 td.hoverable {
     background-color: #FFFFFF;
+    color: #000000;
 }
 
 #post-collection {
@@ -47,14 +48,101 @@ td.hoverable {
     overflow-y: auto;
 }
 
-.calendar {
-    width: 100px;
-    height: 100px;
-    text-align: center;
+#personal-events {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
-.events {
-    width: 100px;
-    height: 50px;
-    text-align: center;
+.event-wrapper {
+    width: 100%;
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 2px solid var(--accent);
+    box-sizing: border-box;
+}
+
+.time-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.event-wrapper h5 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.event-wrapper h5>span:first-child {
+    font-weight: bold;
+    font-size: 125%;
+}
+
+.event-header {
+    margin: 0;
+    margin-left: -2px;
+    margin-top: -2px;
+    width: calc(100% + 4px);
+    display: grid;
+    grid-template-columns: 80% 20%;
+    padding: 0;
+}
+
+.event-header h4 {
+    height: 100%;
+    width: 100%;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    padding-left: 2vh;
+}
+
+.detail-button {
+    margin: 0;
+    border-radius: 0;
+}
+
+.event-wrapper .ql-container.ql-snow {
+    border: none;
+}
+
+#image-preview {
+    max-width: 50%;
+    margin-top: 1vh;
+    border: 1px solid var(--accent);
+}
+
+#image-popup-wrapper:not(.hidden) {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #00000055;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#image-border-box {
+    padding: 5vh;
+    overflow: auto;
+    background-color: var(--background);
+}
+
+#close-popup {
+    font-size: larger;
+    font-weight: bolder;
+    background-color: var(--background);
+    color: var(--text);
+    border-radius: 1000000px;
+    padding: 2vh 4vw;
+}
+
+#calendar {
+    margin-bottom: 5vh;
 }

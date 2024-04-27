@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
           ]
       }
   });
-
   
   const button = document.getElementById("submit");
   button.onclick = submit;
