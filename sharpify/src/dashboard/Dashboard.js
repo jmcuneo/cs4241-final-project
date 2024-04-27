@@ -13,6 +13,18 @@ function Dashboard(props) {
 
     function onHandleFileChange(e) {
         const file = e.target.files[0];
+
+        let formData = new FormData();
+        formData.append('image', file);
+
+        const response = fetch('/upload', {
+            method: 'POST',
+            body: formData
+
+    }).then(response => {response.blob()})
+        .then(blob => {console.log(blob)})
+        .catch(error => {console.error(error)});
+
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (event) => {
