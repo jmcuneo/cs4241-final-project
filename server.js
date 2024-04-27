@@ -23,6 +23,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+
 app.use(express.static('public'))
 app.use(express.static('views'))
 app.use(express.json())
@@ -178,7 +179,6 @@ app.get('/profilePage', authCheck, (req, res) => {
     res.sendFile(__dirname + '/public/profile.html');
 })
 
-//send to post event page
 app.get('/eventBoard', authCheck, (req, res) => {
     res.sendFile(__dirname + '/public/eventBoard.html');
 })
@@ -284,7 +284,6 @@ app.post("/refresh", express.json(), async (req, res) => {
 wss.on('connection', (ws, req) => {
     ws.on('message', (message) => {
         const decodedMessage = Buffer.from(message, 'base64').toString('utf-8');
-
         const post = {
             username: decodeURIComponent(req.url.split("=")[1]),
             anonymous: false,
@@ -296,7 +295,6 @@ wss.on('connection', (ws, req) => {
 
         postCollection.insertOne(post)
             .then(() => {
-
                 wss.clients.forEach((client) => {
                     if (client.readyState === WebSocket.OPEN) {
                         client.send(JSON.stringify(post));
@@ -308,7 +306,6 @@ wss.on('connection', (ws, req) => {
             });
     });
 });
-
 
 app.get('/messages', async (req, res) => {
     if (postCollection !== null) {

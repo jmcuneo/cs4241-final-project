@@ -49,7 +49,7 @@ body {
     display: none;
 }
 
-.center {
+.center:not(.hidden) {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -105,6 +105,40 @@ body:not(.dark) #light-switch {
     background-color: var(--sub-header);
     text-decoration: none;
     font-weight: bolder;
+}
+
+#image-preview {
+    max-width: 50%;
+    margin-top: 1vh;
+    border: 1px solid var(--accent);
+}
+
+#image-popup-wrapper:not(.hidden) {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #00000055;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#image-border-box {
+    padding: 5vh;
+    overflow: auto;
+    background-color: var(--background);
+}
+
+#close-popup {
+    font-size: larger;
+    font-weight: bolder;
+    background-color: var(--background);
+    color: var(--text);
+    border-radius: 1000000px;
+    padding: 2vh 4vw;
 }
 
 .ql-snow .ql-stroke {
