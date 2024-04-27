@@ -5,7 +5,7 @@ function GuestListComponent({ guestList, shouldDisplayTitle }) {
   return (
     <div className="overflow-x-auto prose">
       {shouldDisplayTitle && <h1>Guest List</h1>}
-      <table className="table table-zebra bg-neutral not-prose">
+      <table className="table table-zebra bg-neutral not-prose table-md">
         <thead>
           <tr>
             <th>Guest Name</th>

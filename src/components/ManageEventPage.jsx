@@ -89,29 +89,29 @@ function ManageEventPage({ onLogout }) {
           <EventTitleManager eventName={eventName}/>
         </div>
         <div style={{display:"flex", flexDirection:"row"}}>
-          <UserGuestListComponent onUpdate={handleUpdate} manage={true} />
-          <div style={{display:"flex", flexDirection:"column", marginLeft:"30rem", marginTop:"4rem"}}>
-            <label className="text-lg text-slate-50" htmlFor="totalLimitInput" style={{marginLeft:"0.7rem"}}>
+          <UserGuestListComponent onUpdate={handleUpdate} manage={true} passedGuestList={guestList} />
+          <div className="flex flex-col ml-30 mt-4" >
+            <label className="text-lg text-slate-50 ml-3" htmlFor="totalLimitInput" >
               Total Guest Limit
             </label>
             <input
-              className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent"
+              className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent ml-2"
               type="number"
               id="totalLimitInput"
               name="totalLimitInput"
               placeholder={eventName}
-              style={{marginLeft:"0.5rem"}}
+             
             />
-            <label className="text-lg text-slate-50" htmlFor="userLimitInput" style={{marginLeft:"0.7rem"}}>
+            <label className="text-lg text-slate-50 ml-3" htmlFor="userLimitInput" >
               User Guest Limit
             </label>
             <input
-              className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent"
+              className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent ml-2"
               type="number"
               id="userLimitInput"
               name="userLimitInput"
               placeholder={eventName}
-              style={{marginLeft:"0.5rem"}}
+              
             />
           </div>
         </div>

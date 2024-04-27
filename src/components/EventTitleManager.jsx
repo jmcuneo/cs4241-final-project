@@ -102,7 +102,7 @@ function EventTitleManager({ eventName }) {
 
   return (
     <div>
-      <table className="table bg-neutral rounded-none">
+      <table className="table bg-neutral rounded-none table-md">
         <thead>
           <tr style={{fontSize:  "1rem"}}>
             <th>{eventName}</th>

@@ -10,7 +10,7 @@ function TableComponent({ headers, rows, isEvent }) {
   }
   return (
     <div className="overflow-x-auto">
-      <table className="table table-zebra bg-neutral">
+      <table className="table table-zebra bg-neutral table-md">
         <thead>
           <tr>
             {headers.map((header, index) => (

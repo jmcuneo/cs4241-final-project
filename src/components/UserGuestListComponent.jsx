@@ -99,8 +99,8 @@ function UserGuestListComponent({ onUpdate, manage, passedGuestList }) {
 
   const guestTable = () => {
     return (
-      <div className="flex justify-center align-center overflow-x-auto max-w-max min-w-96 w-96">
-        <table className="table table-zebra bg-neutral not-prose">
+      <div className="flex justify-center align-center overflow-x-auto">
+        <table className="table table-zebra bg-neutral not-prose table-md">
           <thead>
             <tr>
               <th>Guest Name</th>
