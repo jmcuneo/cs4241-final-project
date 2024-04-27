@@ -4,7 +4,7 @@ async function fillStats() {
         method: "GET"
     })
     const text = await response.text()
-    console.log("Data from Server: ", text);
+   
     let mydata = JSON.parse(text)
 
     let wins = mydata.wins;
@@ -23,7 +23,7 @@ async function makeWinRate() {
         method: "GET"
     })
     const text = await response.text()
-    console.log("Data from Server: ", text);
+
     let mydata = JSON.parse(text)
 
     let data = {win: mydata.wins, loss: mydata.losses};
@@ -72,9 +72,26 @@ async function makeWinRate() {
 
 }
 
-function makeWinRateTime() {
+async function makeWinRateTime() {
 
-    let data = [0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1];
+    const response = await fetch("/userHistory", {
+        method: "GET"
+    })
+    const text = await response.text()
+    let mydata = JSON.parse(text);
+
+    const userres = await fetch("/userdata");
+    const userdata = await userres.json();
+
+    let data = []
+    mydata.forEach((g) => {
+        if(g.winner == userdata[0].username) {
+            data.push(1);
+        } else {
+            data.push(0);
+        }
+    })
+
     let winrate = [];
 
     for(let i = 0; i < data.length; i++) {
@@ -121,9 +138,28 @@ function makeWinRateTime() {
 
 }
 
-function makeGameDist() {
+async function makeGameDist() {
 
-    let data = [2, 1, 2, 1, 3, 5, 4, 0, 3, 2, 3, 2, 1, 0, 2, 4, 2, 1, 3, 1, 2, 2, 1, 5, 5, 6]
+    const response = await fetch("/userHistory", {
+        method: "GET"
+    })
+    const text = await response.text()
+    let mydata = JSON.parse(text);
+
+    const userres = await fetch("/userdata");
+    const userdata = await userres.json();
+    let username = userdata[0].username;
+
+    console.log(mydata);
+
+    let data = [];
+
+    mydata.forEach((g) => {
+        let curix = g.winnerOrder.indexOf(username);
+        data.push(curix);
+    })
+
+    // data = [2, 1, 2, 1, 3, 5, 4, 0, 3, 2, 3, 2, 1, 0, 2, 4, 2, 1, 3, 1, 2, 2, 1, 5, 5, 6]
     let sums = new Array(d3.max(data) + 1).fill(0);
 
     data.forEach((d) => {

@@ -123,7 +123,6 @@ app.get("/auth/github/login", (req, res) => {
   });
 
   app.get("/userdata", async (req, res) => {
-    console.log(userdata);
     res.json(userdata);
   })
 
@@ -131,6 +130,12 @@ app.get("/userInfo", async (req, res) => {
     let userID = userdata[0].username;
     let myUser = await getUserInfo(userID);
     res.json(myUser);
+})
+
+app.get("/userHistory", async (req, res) => {
+    let userID = userdata[0].username;
+    let history = await getUserGameHistory(userID);
+    res.json(history);
 })
 
 run().catch(console.dir);
