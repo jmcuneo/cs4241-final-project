@@ -32,7 +32,7 @@ async function signIn(event) {
     let parsedName = userEmail.value.match( /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
     
     if(parsedName != null) {
-        email = parsedName
+        email = parsedName[0]
     } else {
         username = userEmail.value
     }
