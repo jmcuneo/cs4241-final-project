@@ -1,0 +1,13 @@
+User-agent: Googlebot
+Allow: /main/
+Disallow: /event/
+Disallow: /login/
+Disallow: /register/
+Disallow: /event/manage/
+
+User-agent: *
+Allow: /main/
+Allow: /event/
+Disallow: /login/
+Disallow: /register/
+Disallow: /event/manage/

@@ -17,7 +17,7 @@ function Navbar({ onLogout, showProfileButton, showBackButton }) {
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
-        <a className="btn btn-ghost text-xl" onClick={() => navigate("/")}>
+        <a className="btn btn-ghost text-xl" href="/" onClick={() => navigate("/")}>
           EventManager
         </a>
       </div>
