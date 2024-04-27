@@ -100,7 +100,11 @@ let matches = 0;
 
 window.onload = async function () {
   const logoutBtn = document.getElementById("logoutButton");
-  logoutBtn.style.display = "none";
+	logoutBtn.onclick = () => {
+		document.cookie = "token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
+		window.location = "/"
+		return false
+	}	
   const gameboard = document.getElementById("gameboard");
   gameboard.style.display = "none";
   const startBtn = document.getElementById("startButton");
@@ -115,13 +119,11 @@ window.onload = async function () {
         Authorization: `Bearer ${document.cookie.substring(6)}`,
       },
     }).then(response => response.text).then(response => console.log(response));
-    logoutBtn.style.display = "inline-flex"
-    logoutBtn.onclick = () => {
-      document.cookie = "token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
-      window.location = "/"
-      return false
-    }
-  }
+  } else {
+		logoutBtn.innerHTML = "Log In"
+	}
+
+
 };
 
 async function start() {
@@ -211,27 +213,27 @@ function showInfo(event) {
 }
 
 function stopWatch() {
-    if(matches < 6) {
-			totalTime++;
-			second++;
-			if (second == 60) {
-				minute++;
-				second = 0;
-			}
-			let minString = minute;
-			let secString = second;
+	if(matches < 6) {
+		totalTime++;
+		second++;
+		if (second == 60) {
+			minute++;
+			second = 0;
+		}
+		let minString = minute;
+		let secString = second;
 
-			if (minute < 10) {
-				minString = "0" + minString;
-			}
+		if (minute < 10) {
+			minString = "0" + minString;
+		}
 
-			if (second < 10) {
-				secString = "0" + secString;
-			}
+		if (second < 10) {
+			secString = "0" + secString;
+		}
 
-			document.getElementById("min").innerHTML = minString;
-			document.getElementById("sec").innerHTML = secString;        
-    }
+		document.getElementById("min").innerHTML = minString;
+		document.getElementById("sec").innerHTML = secString;        
+	}
 }
 
 function handleGuess(resp) {
@@ -278,28 +280,3 @@ async function showLeaderboard() {
   }
 }
 
-//Old vanilla selection code
-// if(id != selected1 && id != selected2) {
-//     if (selected2 != null) {
-//         let oldSelected = document.getElementById(selected1).childNodes[0]
-//         // oldSelected.style.border = "none"
-//         oldSelected.style.backgroundColor = defaultColor
-//         selected1 = selected2
-//         selected2 = id
-//     } else if (selected1 != null){
-//         selected2 = id
-//     } else {
-//         selected1 = id
-//     }
-//     // elem.style.border = "3px solid " + selectedColor
-//     elem.style.backgroundColor = selectedColor
-// } else if (id == selected2) {
-//     let oldSelected = document.getElementById(selected2).childNodes[0]
-//     oldSelected.style.backgroundColor = defaultColor
-//     selected2 = null
-// } else if (id == selected1) {
-//     let oldSelected = document.getElementById(selected1).childNodes[0]
-//     oldSelected.style.backgroundColor = defaultColor
-//     selected1 = selected2
-//     selected2 = null
-// }
