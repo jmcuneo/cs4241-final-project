@@ -162,6 +162,7 @@ const eventSchema = new Schema({
             if (!event) return [];
             const guestList = await this.findById(event._id).
                 select('attendees').populate('attendees.inviter').exec();
+                // TODO: Sending ObjectIds if it is a user. Try to fix this.
             return guestList?.attendees.map(attendee => {
                 // Populate inviter but hide everything other than fullName
                 const { inviter, ...rest } = attendee.toObject();
