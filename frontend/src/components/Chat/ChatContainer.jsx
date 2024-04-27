@@ -27,22 +27,7 @@ const ChatContainer = () => {
             />
           </div>
          
-          <div className="chat chat-end w-full">
-            <Message
-              text="You underestimate my power!"
-              username="Obi-Wan"
-              time="12:35"
-              isStart={false}
-            />
-          </div>
-          <div className="chat chat-end w-full">
-            <Message
-              text="You underestimate my power!"
-              username="Obi-Wan"
-              time="12:35"
-              isStart={false}
-            />
-          </div>
+          
         </div>
 
       </div>
