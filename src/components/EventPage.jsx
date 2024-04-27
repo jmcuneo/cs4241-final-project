@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import {  useParams } from "react-router-dom";
-import GuestListComponent from "./GuestListComponent.jsx";
+import { useParams } from "react-router-dom";
 import UserGuestListComponent from "./UserGuestListComponent.jsx";
 import Navbar from "./Navbar.jsx";
 import PropTypes from "prop-types";
@@ -74,7 +73,7 @@ function EventPage({ onLogout }) {
       .catch((error) => {
         console.error("Error getting profile:", error);
       });
-      if (userProfile && userProfile.accountType === "Admin") setIsAdmin(true);
+    if (userProfile && userProfile.accountType === "Admin") setIsAdmin(true);
   }, [eventName, userProfile]);
 
   return (
@@ -84,17 +83,16 @@ function EventPage({ onLogout }) {
         showBackButton={true}
         showProfileButton={true}
       ></Navbar>
-      <div className="main-page-container">
+      <div className="min-w-screen mx-auto">
         <div>
           <EventTitle eventName={eventName} isAdmin={isAdmin} />
         </div>
-        <div className="relative grid grid-cols-2 justify-start mt-3 w-screen">
-          <div className="ml-1">
-            <GuestListComponent guestList={guestList} />
-          </div>
-          <div>
-            <UserGuestListComponent onUpdate={handleUpdate} manage={false} />
-          </div>
+        <div className="userguestlistwrapper">
+          <UserGuestListComponent
+            onUpdate={handleUpdate}
+            manage={false}
+            passedGuestList={guestList}
+          />
         </div>
       </div>
     </>

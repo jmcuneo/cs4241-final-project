@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
 
-function GuestListComponent({ guestList }) {
+function GuestListComponent({ guestList, shouldDisplayTitle }) {
 
   return (
     <div className="overflow-x-auto prose">
-      <h1>Guest List</h1>
-      <table className="table table-zebra bg-neutral">
+      {shouldDisplayTitle && <h1>Guest List</h1>}
+      <table className="table table-zebra bg-neutral not-prose">
         <thead>
           <tr>
             <th>Guest Name</th>
@@ -27,6 +27,7 @@ function GuestListComponent({ guestList }) {
 
 GuestListComponent.propTypes = {
   guestList: PropTypes.array.isRequired,
+  shouldDisplayTitle: PropTypes.bool
 };
 
 export default GuestListComponent;
