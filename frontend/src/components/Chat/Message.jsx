@@ -8,8 +8,8 @@ const Message = ({ text, username, time, isStart }) => {
         <div className={`chat-bubble ${bgColor} text-white p-3 rounded-md shadow max-w-[40%] break-words`}>
             <p>{text}</p>
             <div className="flex justify-between items-center w-full mt-3">
-                <span className="text-sm text-gray-500">{username}</span>
-                <span className="text-sm text-gray-500">{time}</span>
+                <span className="text-sm text-[#ABABAB]">{username}</span>
+                <span className="text-sm text-[#ABABAB]">{time}</span>
             </div>
         </div>
     );

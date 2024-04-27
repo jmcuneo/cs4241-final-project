@@ -1,11 +1,17 @@
-import React from 'react'
-import LogoutImage from '../assets/logout.svg'
+import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import LogoutImage from '../assets/logout.svg';
 
 const CurrentUserCard = () => {
+    const navigate = useNavigate(); // Hook to get the navigate function
+
     // Function to handle logout action
     const handleLogout = () => {
-        console.log("Logout clicked!");
-        // Add your logout logic here
+        console.log("Logging out..."); // Optionally log the logout process
+        
+        // Add your logout logic here (e.g., clearing user data)
+        
+        navigate('/'); // Navigate to the home route
     };
 
     return (

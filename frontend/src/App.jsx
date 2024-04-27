@@ -16,7 +16,7 @@ function App() {
             <Login onSignUpClick={() => setShowLogin(false)} /> : 
             <Signup onLoginClick={() => setShowLogin(true)} />
           } />
-          <Route path="/home" element={<Home />} />
+          <Route path="/chat" element={<Home />} />
         </Routes>
       </div>
     </Router>
