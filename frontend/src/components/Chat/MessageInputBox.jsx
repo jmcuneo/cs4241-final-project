@@ -7,7 +7,7 @@ const handleSend = () => {
     // Add your logout logic here
 };
 
-const MessageBox = () => {
+const MessageInputBox = () => {
 
 
 
@@ -38,4 +38,4 @@ const MessageBox = () => {
 
 };
 
-export default MessageBox;
+export default MessageInputBox;

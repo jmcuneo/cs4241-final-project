@@ -1,6 +1,6 @@
 import React from 'react';
 import OtherUserCard from './OtherUserCard';
-import MessageBox from './MessageBox';
+import MessageInputBox from './MessageInputBox';
 import Message from './Message';
 
 const ChatContainer = () => {
@@ -31,7 +31,7 @@ const ChatContainer = () => {
         </div>
 
       </div>
-      <MessageBox />
+      <MessageInputBox />
     </div>
   );
 }
