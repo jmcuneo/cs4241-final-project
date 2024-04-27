@@ -1,9 +1,21 @@
-import React from 'react'
+import React from 'react';
+import Sidebar from '../../components/sidebar/Sidebar';
+import ChatContainer from '../../components/Chat/ChatContainer';
 
 const Home = () => {
   return (
-    <div>Home</div>
-  )
-}
+    <div className="flex h-screen overflow-hidden">
 
-export default Home
+      <Sidebar />
+
+      {/* Main content */}
+      <div className="flex-1 bg-[#262626] h-[100%]">
+        <ChatContainer/>
+      </div>
+
+
+    </div>
+  );
+};
+
+export default Home;
