@@ -84,34 +84,36 @@ function ManageEventPage({ onLogout }) {
         showProfileButton={true}
       />
 
-      <div className="main-page-container">
+      <div>
         <div>
           <EventTitleManager eventName={eventName}/>
         </div>
-        <UserGuestListComponent onUpdate={handleUpdate} manage={true} />
-        <div>
-        <label className="text-lg text-slate-50" htmlFor="totalLimitInput" style={{marginLeft:"0.7rem"}}>
-          Total Guest Limit
-        </label>
-        <input
-          className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent"
-          type="number"
-          id="totalLimitInput"
-          name="totalLimitInput"
-          placeholder={eventName}
-          style={{marginLeft:"0.5rem"}}
-        />
-        <label className="text-lg text-slate-50" htmlFor="userLimitInput" style={{marginLeft:"14.7rem"}}>
-          User Guest Limit
-        </label>
-        <input
-          className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent"
-          type="number"
-          id="userLimitInput"
-          name="userLimitInput"
-          placeholder={eventName}
-          style={{marginLeft:"0.5rem"}}
-        />
+        <div style={{display:"flex", flexDirection:"row"}}>
+          <UserGuestListComponent onUpdate={handleUpdate} manage={true} />
+          <div style={{display:"flex", flexDirection:"column", marginLeft:"30rem", marginTop:"4rem"}}>
+            <label className="text-lg text-slate-50" htmlFor="totalLimitInput" style={{marginLeft:"0.7rem"}}>
+              Total Guest Limit
+            </label>
+            <input
+              className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent"
+              type="number"
+              id="totalLimitInput"
+              name="totalLimitInput"
+              placeholder={eventName}
+              style={{marginLeft:"0.5rem"}}
+            />
+            <label className="text-lg text-slate-50" htmlFor="userLimitInput" style={{marginLeft:"0.7rem"}}>
+              User Guest Limit
+            </label>
+            <input
+              className="validate input input-bordered w-full max-w-xs max-h-9 input-primary focus:outline-accent"
+              type="number"
+              id="userLimitInput"
+              name="userLimitInput"
+              placeholder={eventName}
+              style={{marginLeft:"0.5rem"}}
+            />
+          </div>
         </div>
       </div>
     </>
