@@ -295,7 +295,7 @@ const userSchema = new Schema({
                             case 'name':
                                 try {
                                     event.name = eventDetails[key];
-                                    event.validate();
+                                    await event.validate();
                                 } catch (err) {
                                     console.error('Error renaming event');
                                     return false;
