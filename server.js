@@ -447,11 +447,12 @@ async function allUsers() {
 async function setWinnerOrder(gameID, playerArray) {
     try {
         const db = client.db("webwareFinal");
-        const collection = db.collection("users");
+        const collection = db.collection("games");
         const result = await collection.updateOne(
             { gameID: gameID },
             { $set: { winnerOrder: playerArray } }
         );
+        console.error("Winner order set: ", result);
 
     } catch (err) {
         console.error("Error setting winner: ", err);
