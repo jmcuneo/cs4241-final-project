@@ -37,13 +37,13 @@
             errorMsg = msg;
         });
         socket.on("room available", (room) => {
-            errorMsg = room;
+            errorMsg = "";
             // await create_game(room);
             joinGame(room, "Player 1", true);
             // socket.emit("chat message",room,num,"Player " + num + " joined.");
         });
         socket.on("join success", (room, name) => {
-            errorMsg = room;
+            errorMsg = "";
             // socket.emit("chat message",room,name,"Player " + name + " joined.");
             joinGame(room, name, false);
         });
@@ -55,7 +55,5 @@
     <input id="hostGame" on:keydown={hostEnter} />
     <h3><label for="joinGame">Join Game:</label></h3>
     <input id="joinGame" on:keydown={joinEnter} />
-    {#if errorMsg != ""}
-        <div id="errorMsg">{errorMsg}</div>
-    {/if}
+    <div id="errorMsg">{errorMsg}</div>
 </div>

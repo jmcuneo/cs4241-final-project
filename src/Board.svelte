@@ -17,14 +17,12 @@
     const height = 4;
     const bingo = "WHOMST";
 
-    let images = promise;
-
     $: game_setup, get_board(game_setup);
 
     // prefetch all images before rendering board
     async function get_board(game_setup) {
         if (!game_setup.board) {
-            return images;
+            return promise;
         }
         const proms = game_setup.board.map(
             (e, index) =>
@@ -38,7 +36,7 @@
                 }),
         );
         await Promise.all(proms);
-        images = Promise.resolve({
+        promise = Promise.resolve({
             board: game_setup.board,
             whomst: game_setup.whomst,
         });
@@ -46,7 +44,7 @@
 
     let guess_data = null;
     async function flip(e, index: Number) {
-        const board = await images;
+        const board = await promise;
         const obj = e.detail;
         if (obj.continue) {
             guess_data = null;
@@ -96,7 +94,7 @@
 
     async function gameEnd(winner, answer) {
         console.log("GAME BEGINS TO END");
-        let board = await images;
+        let board = await promise;
         console.log("GAME END", winner, answer);
         // console.log(winner,correct_name,correct_url);
         dispatch("gameEnd", {
@@ -127,7 +125,7 @@
     {/each}
 </div>
 
-{#await images}
+{#await promise}
     <div class="board-spinner">
         <Circle {size} color="Silver" duration="1s"></Circle>
     </div>

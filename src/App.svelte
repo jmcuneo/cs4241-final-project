@@ -56,7 +56,8 @@
         game_data.correct_name = null;
         game_data.correct_url = null;
         promise = new Promise((req, res) => {});
-        console.log("Back at host",game_data);
+        game_setup.board = null;
+        console.log("Back at host", game_data);
     }
 
     let game_setup = {};
@@ -81,7 +82,8 @@
 {:else}
     {#if game_data.state == "In Game"}
         <div class="board">
-            <Board {game_data} {game_setup} {promise} on:gameEnd={gameEnd}></Board>
+            <Board {game_data} {game_setup} {promise} on:gameEnd={gameEnd}
+            ></Board>
         </div>
     {:else if game_data.state == "Game Over"}
         <div class="gameOver">
