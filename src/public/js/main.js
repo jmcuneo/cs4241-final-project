@@ -251,7 +251,7 @@ function stopWatch() {
 
 function handleGuess(resp) {
   let score = resp.score;
-  let match = !(score == 0);
+  let match = !(score < 0);
   if (match) {matches++}
 
   displayScore(score);
@@ -277,7 +277,7 @@ function handleDisplay(itemID, match) {
 
 function displayScore(score) {
   let scoreboard = document.getElementById("score");
-  let currentScore = parseInt(scoreboard.innerHTML) + score;
+  let currentScore = parseInt(scoreboard.innerHTML) + score > 0 ?parseInt(scoreboard.innerHTML) + score: 0 ;
   scoreboard.innerHTML = currentScore;
 }
 
