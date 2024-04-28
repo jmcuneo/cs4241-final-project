@@ -13,7 +13,6 @@ const eventSchema = new Schema({
     name: {
         type: String,
         minLength: [1, 'Event name must be at least 1 character long!'],
-        unique: true,
         required: true,
     },
     date: {

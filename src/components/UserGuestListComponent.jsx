@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import GuestListComponent from "./GuestListComponent";
 
-function GuestListComponent({ onUpdate, manage }) {
+function UserGuestListComponent({ onUpdate, manage }) {
   const { eventId } = useParams();
   const [guestList, setGuestList] = useState([]);
   const guestNameRef = useRef(null);
@@ -145,7 +145,7 @@ function GuestListComponent({ onUpdate, manage }) {
         {!manage && (
           <div className="flex justify-center align-center">
             <GuestListComponent
-              guestList={passedGuestList}
+              guestList={guestList}
               shouldDisplayTitle={false}
             ></GuestListComponent>
           </div>

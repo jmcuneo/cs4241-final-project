@@ -6,7 +6,6 @@ import Navbar from "./Navbar.jsx";
 import EventTitleManager from "./EventTitleManager.jsx";
 
 function ManageEventPage({ onLogout }) {
-  const navigate = useNavigate();
   const { eventId } = useParams();
   const [guestList, setGuestList] = useState([]);
   const [userProfile, setUserProfile] = useState(null);

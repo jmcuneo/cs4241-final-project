@@ -212,14 +212,15 @@ app.post('/api/getEvent', async (req, res) => {
         const { token, eventId } = req.body;
         /* eslint-disable-next-line no-unused-vars */
         const username = getUsernameFromToken(token);
-
+        const user = await User.findOne({ username: username });
         // Why does this double fire?
         const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
         if (!event || event === undefined) {
             return res.json({ success: false, error: 'Event with this id not found' });
         }
 
-        return res.json(hideFieldsFromObject(event.toObject(), 'id', 'attendees', 'allowedInviters'));
+        const userInvites = (await event.getInviteIdsByInviter(user))?.length ?? 0;
+        return res.json(hideFieldsFromObject({userInvites: userInvites, ...event.toObject()}, 'id', 'attendees', 'allowedInviters'));
     } catch (err) {
         console.log(err);
         return res.json({ error: "Failed to authenticate token" });
