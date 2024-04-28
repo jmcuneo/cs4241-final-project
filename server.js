@@ -83,7 +83,7 @@ passport.deserializeUser((id, done) => {
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: "http://127.0.0.1:3000/auth/github/callback"
+    callbackURL: "https://campus-connect-9c83.onrender.com/auth/github/callback"
 },
     (accessToken, refreshToken, profile, done) => {
         userCollection.findOne({ "userId": profile.id }).then((currentUser) => {
@@ -108,7 +108,7 @@ passport.use(
     new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: '/auth/google/redirect'
+        callbackURL: 'https://campus-connect-9c83.onrender.com/auth/google/redirect'
     },
         (accessToken, refreshToken, profile, done) => {
             userCollection.findOne({ "userId": profile.id }).then((currentUser) => {
