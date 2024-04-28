@@ -35,14 +35,14 @@ export function extractTime(dateString) {
         return `${hours}:${minutes}`;
     } else if (diffDays <= 7) {
         // Return time and day of the week if within 7 days
-        return `${dayOfWeek} ${hours}:${minutes}`;
+        return `${dayOfWeek} `;
     } else {
         // Return the full date and time otherwise
         const formattedYear = padZero(year % 100); // Formatting year as two digits
         const formattedMonth = padZero(month + 1); // Formatting month correctly
         const formattedDay = padZero(day); // Formatting day
 
-        return `${formattedMonth}/${formattedDay}/${formattedYear} ${hours}:${minutes}`;
+        return `${formattedMonth}/${formattedDay}/${formattedYear}`;
     }
 }
 
