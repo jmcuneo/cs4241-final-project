@@ -147,7 +147,6 @@ function ManageEventPage({ onLogout }) {
           <div>
             <UserListComponent onUpdate={handleUpdate} manage={true} passedGuestList={guestList}/>
           </div>
-          
         </div>
       </div>
     </>
