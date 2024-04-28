@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import GuestListComponent from "./GuestListComponent.jsx";
-import UserGuestListComponent from "./UserGuestListComponent.jsx";
-import Navbar from "./Navbar.jsx";
 import PropTypes from "prop-types";
+import { useParams } from "react-router-dom";
 import EventTitle from "./EventTitle.jsx";
+import Navbar from "./Navbar.jsx";
+import UserGuestListComponent from "./UserGuestListComponent.jsx";
 
 function EventPage({ isAdmin, onLogout }) {
   const { eventId } = useParams();

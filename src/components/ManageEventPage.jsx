@@ -1,4 +1,4 @@
-import  { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import UserGuestListComponent from "./UserGuestListComponent.jsx";
 import PropTypes from "prop-types";
@@ -13,7 +13,7 @@ function ManageEventPage({ onLogout }) {
   const totalLimitUpdate = useRef(null);
   const userLimitUpdate = useRef(null);
 
-  const getGuestList = async () => {
+  const getGuestList = useCallback(async () => {
     try {
       const response = await fetch("//localhost:3000/api/getGuestList", {
         method: "POST",
@@ -29,9 +29,9 @@ function ManageEventPage({ onLogout }) {
       const guests = await response.json();
       setGuestList(guests);
     } catch (error) {
-      console.error("Error getting guests:", error);
+      console.error("Error getting guests: " + error);
     }
-  };
+  }, [eventId]);
 
   const getProfile = async () => {
     try {
@@ -44,16 +44,15 @@ function ManageEventPage({ onLogout }) {
       });
 
       let profile = await response.json();
-      console.log(profile);
       return profile;
     } catch (error) {
-      console.error("Error getting profile:", error);
+      console.error("Error getting profile: " + error);
       return null;
     }
   };
 
   const handleUpdate = (guestName, action) => {
-    if (action == "add")
+    if (action === "add")
       setGuestList((currentGuests) => [
         ...currentGuests,
         {
@@ -69,13 +68,92 @@ function ManageEventPage({ onLogout }) {
 
   const handleUpdateTotalLimit = async (event) => {
     event.preventDefault();
-    totalLimitUpdate.current.value = null;
+    try {
+      const response = await fetch("//localhost:3000/api/setGuestLimit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: localStorage.getItem("token"),
+          eventId: eventId,
+          guestLimit: totalLimitUpdate.current.value
+        }),
+      });
+      const success = await response.json();
+      if (success.success) {
+        // Yippee
+      } else if (!success.success) {
+        // Womp womp
+        console.error(success.error);
+      } else {
+        console.error("Error changing guest limit");
+      }
+    } catch (error) {
+      console.error("Error changing guest limit: " + error);
+    }
   };
 
   const handleUpdateUserLimit = async (event) => {
     event.preventDefault();
-    userLimitUpdate.current.value = null;
+    try {
+      const response = await fetch("//localhost:3000/api/setInviteLimit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: localStorage.getItem("token"),
+          eventId: eventId,
+          inviteLimit: userLimitUpdate.current.value
+        }),
+      });
+      const success = await response.json();
+      if (success.success) {
+        // Yippee
+        console.log('Success')
+      } else if (!success.success) {
+        // Womp womp
+        console.error(success.error);
+      } else {
+        console.error("Error changing invite limit");
+      }
+    } catch (error) {
+      console.error("Error changing invite limit: " + error);
+    }
   };
+
+  // Note: Mutilator
+  const getLimits = useCallback(async () => {
+    try {
+      const response = await fetch("//localhost:3000/api/getGuestAndInviteLimits", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: localStorage.getItem("token"),
+          eventId: eventId
+        }),
+      });
+
+      let limits = await response.json();
+      if (limits.guestLimit !== undefined) {
+        totalLimitUpdate.current.value = limits.guestLimit;
+      } else {
+        totalLimitUpdate.current.value = '';
+      }
+
+      if (limits.inviteLimit !== undefined) {
+        userLimitUpdate.current.value = limits.inviteLimit;
+      } else {
+        userLimitUpdate.current.value = '';
+      }
+
+    } catch (error) {
+      console.error("Error getting limits: " + error);
+    }
+  }, [eventId]);
 
   useEffect(() => {
     getGuestList();
@@ -86,7 +164,12 @@ function ManageEventPage({ onLogout }) {
       .catch((error) => {
         console.error("Error getting profile:", error);
       });
-  }, [eventId]);
+  }, [getGuestList]);
+
+  useEffect(() => {
+    // Load when eventId changes
+    getLimits();
+  }, [getLimits]);
 
   return (
     <>
@@ -98,9 +181,9 @@ function ManageEventPage({ onLogout }) {
 
       <div>
         <div>
-          <EventTitleManager eventId={eventId}/>
+          <EventTitleManager eventId={eventId} />
         </div>
-        <div className style={{display:"flex", flexDirection:"row"}}>
+        <div className style={{ display: "flex", flexDirection: "row" }}>
           <UserGuestListComponent onUpdate={handleUpdate} manage={true} passedGuestList={guestList} />
           <div className="flex flex-col ml-30 mt-10">
             <div className="flex flex-row ml-30 mt-4" >
@@ -116,10 +199,10 @@ function ManageEventPage({ onLogout }) {
                   ref={totalLimitUpdate}
                 />
               </div>
-              <button 
+              <button
                 type="button"
                 className="btn btn-square bg-green-400 text-black px-10 hover:bg-green-500"
-                style={{marginLeft:"1rem", marginTop:"2.4rem"}}
+                style={{ marginLeft: "1rem", marginTop: "2.4rem" }}
                 onClick={handleUpdateTotalLimit}
               >Update</button>
             </div>
@@ -136,18 +219,18 @@ function ManageEventPage({ onLogout }) {
                   ref={userLimitUpdate}
                 />
               </div>
-              <button 
+              <button
                 type="submit"
                 className="btn btn-square bg-green-400 text-black px-10 hover:bg-green-500"
-                style={{marginLeft:"1rem", marginTop:"2.4rem"}}
+                style={{ marginLeft: "1rem", marginTop: "2.4rem" }}
                 onClick={handleUpdateUserLimit}
               >Update</button>
             </div>
             <div>
-            <UserListComponent onUpdate={handleUpdate}/>
+              <UserListComponent onUpdate={handleUpdate} />
             </div>
           </div>
-          
+
         </div>
       </div>
     </>
