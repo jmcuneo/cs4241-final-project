@@ -243,6 +243,7 @@ function stopWatch() {
 		document.getElementById("min").innerHTML = minString;
 		document.getElementById("sec").innerHTML = secString;        
 	} else {
+    console.log("game ended")
 		gameover();
 		matches = 0;
 	}
@@ -282,10 +283,11 @@ function displayScore(score) {
 
 async function showLeaderboard() {
   let board = document.getElementById("leaderboard");
+  board.innerHTML='';
   const response = await fetch("/leaderboard", {
     method: "POST",
     headers: { "Content-Type": "application/json",
-                'Authorization': `Bearer ${document.cookie.substring(6)}`
+                
               },
   });
   const resp = await response.json();
@@ -297,12 +299,14 @@ async function showLeaderboard() {
 }
 
 async function gameover(){
+  console.log("game over")
 	let score = document.getElementById("score").innerHTML;
 	let body = JSON.stringify({score: score})
 	const response = await fetch("/auth/add-leaderboard-entry", {
 		method: "POST",
-		headers: { "Content-Type": "application/json" },
+		headers: { "Content-Type": "application/json",
+                Authorization: `Bearer ${document.cookie.substring(6)}`,},
 		body
-	});
+	}).then();
 	const resp = await response.json();
 }

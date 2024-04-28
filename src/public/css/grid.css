@@ -1,6 +1,11 @@
 .card {
   background-color: azure;
 }
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: scale-down;
+}
 
 .cell :hover {
   border: 4px solid rgb(218, 151, 244);

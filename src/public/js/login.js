@@ -8,10 +8,12 @@ window.onload = function() {
     const guestLogin = document.getElementById("guestLogin")
     guestLogin.onclick = guest
     if(document.cookie){
+      console.log(document.cookie);
       document.cookie = "token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
       window.location = "/"
       return false
     }
+    if(localStorage.getItem("token")) localStorage.clear()
 }
 
 async function signUp() {
