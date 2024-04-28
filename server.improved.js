@@ -7,7 +7,7 @@ const express = require( 'express' ),
 // FOR GLITCH OR OTHER SERVER: 
  //const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@${process.env.HOST}`
 // FOR DEVELPOMENT:
-const uri = `mongodb+srv://austinwebwareuser:austinwebwareuser@webwareclustera3.utwkatb.mongodb.net/`
+const uri = `mongodb+srv://tetrisadmin:4gyhgUaQ4WKASjO1@tetriscluster.ttdovph.mongodb.net/`
 
 const client = new MongoClient( uri )
 
@@ -18,8 +18,8 @@ let currentUserLoggedIn = null
 // Function to connect to both databases in mongo
 async function run() {
   await client.connect()
-  collectionScores = await client.db("webware").collection("scores")
-  collectionLogin = await client.db("webware").collection("users")
+  collectionScores = await client.db("TetrisDB").collection("Scores")
+  collectionLogin = await client.db("TetrisDB").collection("Login")
 }
 
 run()

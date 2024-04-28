@@ -112,6 +112,7 @@ class Board {
       this.isGameActive = false;
       this.gameOver = true;
       showGameOver();
+      console.log("game over")
       sendScore(this.score);
     }
   }
@@ -377,7 +378,6 @@ let pieceZ = new PieceZ();
 
 
 // View
-
 class Next {
   constructor(bW, bH, cS) {
     this.cellSize = cS;
@@ -444,7 +444,6 @@ class Next {
 }
 
 // Controller
-
 // Settings
 var cellSize = 25;
 var boardWidth = 10;
