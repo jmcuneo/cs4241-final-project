@@ -152,6 +152,10 @@ router.post('/setGuestLimit', async (req, res) => {
             return res.json({ success: false, error: 'Guest limit is less than the number of guests' });
         }
 
+        if ((await event.inviterLimit) > guestLimit) {
+            return res.json({ success: false, error: 'Cannot make guest limit smaller than the inviter limit' });
+        }
+
         const changeSuccess = await event.setGuestLimit(user, guestLimit);
 
         return res.json({ success: changeSuccess });
@@ -208,6 +212,10 @@ router.post('/setInviteLimit', async (req, res) => {
             return res.json({ success: false, error: 'An inviter is above the invite limit' });
         }
 
+        if ((await event.guestLimit) < inviteLimit) {
+            return res.json({ success: false, error: 'Cannot make inviter limit greater than guest limit' });
+        }
+
         const changeSuccess = await event.setInviterLimit(user, inviteLimit);
 
         return res.json({ success: changeSuccess });
@@ -259,9 +267,9 @@ router.post('/getGuestAndInviteLimits', async (req, res) => {
         }
 
         const guestLimit = event.guestLimit;
-        const inviteLimit = event.inviteLimit;
+        const inviterLimit = event.inviterLimit;
 
-        return res.json({ guestLimit: guestLimit, inviteLimit: inviteLimit });
+        return res.json({ guestLimit: guestLimit, inviteLimit: inviterLimit });
     } catch (err) {
         console.log(err);
         return res.json({ success: false });
