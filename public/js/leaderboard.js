@@ -40,4 +40,5 @@ const loadTable = async function (){
 
 window.onload = function() {
     loadTable();
+    console.log("COOKIE USER: " + document.cookie);
 }
