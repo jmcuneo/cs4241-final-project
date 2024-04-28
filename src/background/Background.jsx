@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './Background.css'; 
 import { motion } from 'framer-motion';
 
-const numCopies = 3
-
+const numCopies = 30
 const fetchSVGs = async () => {
   try {
-    const svgContext = await import.meta.glob('../assets/background/*.svg');
+    const svgContext = await import.meta.glob('../assets/background/*.png');
     const keys = Object.keys(svgContext);
     const svgImports = keys.map(async (key) => {
       const module = await svgContext[key]();
