@@ -40,36 +40,36 @@ function UserListComponent({ onUpdate }) {
 
     const guestTable = () => {
         return (
-            <div className="flex justify-center align-center overflow-y-auto">
-                <table className="table table-zebra bg-neutral not-prose table-md">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Username</th>
-                        <th>Guest Count</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {userList.map((user, index) => (
-                        <tr key={index}>
-                            <td>{user.firstName + " " + user.lastName}</td>
-                            <td>{user.username}</td>
-                            <td>{user.guestCount}</td>
-                            <td>
-                                <button
-                                    className="btn bg-red-500 hover:bg-red-600 text-black font-bold "
-                                    type="button"
-                                    id={"removeButton" + index}
-                                    onClick={() => handleRemove(user.userName)}
-                                >
-                                    Remove
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
+          <div className="flex justify-center align-center overflow-y-auto">
+            <table className="table table-zebra bg-neutral not-prose table-md  w-full">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Username</th>
+                  <th>Guest Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                {userList.map((user, index) => (
+                  <tr key={index}>
+                    <td>{user.firstName + " " + user.lastName}</td>
+                    <td>{user.username}</td>
+                    <td>{user.guestCount}</td>
+                    <td>
+                      <button
+                        className="btn bg-red-500 hover:bg-red-600 text-black font-bold "
+                        type="button"
+                        id={"removeButton" + index}
+                        onClick={() => handleRemove(user.userName)}
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         );
     };
 

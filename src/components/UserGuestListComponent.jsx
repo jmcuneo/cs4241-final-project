@@ -115,17 +115,20 @@ const filteredList = (() => {
 })();
 
 
-  const guestTable = () => {
-    return (
-      <div className="overflow-x-auto prose">
+const guestTable = () => {
+  return (
+    <div className="overflow-x-auto prose flex flex-col">
+      <div className="flex justify-between items-center mb-2">
         <input 
           style={{marginBottom: "0.2rem"}}
           type="text"
           placeholder="Search by guest name"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="input input-bordered w-full max-w-xs"
-      />
+          className="input input-bordered flex-grow"
+        />
+      </div>
+      <div className="flex-grow">
         <table className="table table-zebra bg-neutral not-prose table-md max-h-[75vh] overflow-y-auto">
           <thead>
             <tr>
@@ -153,8 +156,10 @@ const filteredList = (() => {
           </tbody>
         </table>
       </div>
-    );
-  };
+    </div>
+  );
+};
+
 
   let title = "Guest List";
   return (
@@ -164,7 +169,7 @@ const filteredList = (() => {
         <div className="grid columns-3 grid-cols-3 gap-1">
           {/* first col */}
         {!manage && (
-          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto">
+          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto mb-10">
             <GuestListComponent
               guestList={guestList}
               shouldDisplayTitle={false}
@@ -172,7 +177,7 @@ const filteredList = (() => {
           </div>
         )}
           {/* second col */}
-          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto">
+          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto mb-10">
             {userGuestList.length > 0 ? (
                 guestTable()
               ) : (
