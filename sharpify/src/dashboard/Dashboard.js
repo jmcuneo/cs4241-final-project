@@ -13,6 +13,18 @@ function Dashboard(props) {
 
     function onHandleFileChange(e) {
         const file = e.target.files[0];
+
+        let formData = new FormData();
+        formData.append('image', file);
+
+        const response = fetch('/upload', {
+            method: 'POST',
+            body: formData
+
+    }).then(response => {response.blob()})
+        .then(blob => {console.log(blob)})
+        .catch(error => {console.error(error)});
+
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (event) => {
@@ -44,9 +56,29 @@ function Dashboard(props) {
         const img = new Image();
         img.onload = () => {
             let imageAspectRatio = img.width / img.height;
-            canvas.width = 800;
-            canvas.height = 800 / imageAspectRatio;
+            canvas.width = Math.min(800, img.width);
+            canvas.height = canvas.width / imageAspectRatio;
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+              // Convert the canvas to a Blob object
+        canvas.toBlob(async (blob) => {
+            // Create a new FormData instance
+            const formData = new FormData();
+            // Append the Blob object to the form data
+            formData.append('image', blob, 'enhanced-image.png');
+
+            // Send the Blob object using the fetch API
+       
+                const response = await fetch('/sharpify', {
+                    method: 'POST',
+                    body: formData,
+                }).then(response => {response.blob()})
+        .then(blob => {console.log(blob)})
+        .catch(error => {console.error(error)});;
+
+
+        });
+
             onHandleMakeDownloadLink();
         };
         img.src = imageSrc;
@@ -69,18 +101,18 @@ function Dashboard(props) {
             <a id="downloadLink" style={{ display: "none" }}>Download Link</a>
             <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
             <Modal show={showModal} onHide={onHandleCloseModal} size="xl" aria-labelledby="contained-modal-title-vcenter" centered>
-                <Modal.Header closeButton>
+                <Modal.Header className="modal-header" closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
                         Sharpify your Image!
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ display: 'flex', height: 'calc(80vh - 56px)' }}>
-                    <div style={{ flex: 1, overflow: 'auto' }}>
-                        <img src={imageSrc} style={{ width: '100%', height: 'auto', objectFit: 'contain' }} alt="Uploaded" />
+                    <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <img src={imageSrc} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} alt="Uploaded" />
                     </div>
                     <div className="modal-divider"></div>
                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <div className="file-input-label" onClick={sharpify}>Sharpify</div>
+                        <div className="sharpify" onClick={sharpify}>Sharpify</div>
                     </div>
                 </Modal.Body>
             </Modal>

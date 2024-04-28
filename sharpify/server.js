@@ -7,7 +7,7 @@ const express = require("express"),
     cookieParser = require('cookie-parser'),
     dir = "public/",
     potrace = require('potrace'),
-    multer = require('multer'), 
+    multer = require('multer'),
     GridFsStorage = require('multer-gridfs-storage'),
     Grid = require('gridfs-stream'),
     Jimp = require('jimp'),
@@ -16,20 +16,46 @@ const express = require("express"),
     fetch = require('node-fetch'),
     port = 3000;
 
+// Include Firebase Admin SDK and MongoDB
+const admin = require('firebase-admin');
+const serviceAccount = require('./sharpify-2c8fc-firebase-adminsdk-jkwtn-0a02d3268b.json');
+const MongoClient = require('mongodb').MongoClient;
+
+//will this commit now?
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: "sharpify-2c8fc.appspot.com"
+});
+
+const bucket = admin.storage().bucket();
+let client;
+
+const uri = `mongodb+srv://dovushman:${process.env.PASSWORD}@cluster0.vpfjttx.mongodb.net/a3-dovUshman?retryWrites=true&w=majority&appName=Cluster0`;
+
+// MongoClient.connect(uri, function(err, client) {
+//   if (err) throw err;
+//   console.log("Connected successfully to MongoDB server");
+//   client = client;
+// });
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 
 const upload = multer({ dest: 'uploads/' });
 
 
 app.use(express.static(path.join(__dirname, 'build')));
 
-const { MongoClient, ObjectId } = require('mongodb');
-const uri = `mongodb+srv://dovushman:${process.env.PASSWORD}@cluster0.vpfjttx.mongodb.net/a3-dovUshman?retryWrites=true&w=majority&appName=Cluster0`;
+// const { MongoClient, ObjectId } = require('mongodb');
+
 
 let db;
 let users;
-let usersData;
+let images;
+
 
 async function run() {
     try {
@@ -43,10 +69,12 @@ async function run() {
         users = db.collection("users");
         console.log(`Connected to the collection:${users.collectionName}`);
 
-        images = db.collection("images");
+        // images = db.collection("images");
 
-        usersData = db.collection("usersData");
-        console.log(`Connected to the collection:${usersData.collectionName}`);
+        // images = db.collection("images");
+
+        images = db.collection("images");
+        console.log(`Connected to the collection:${images.collectionName}`);
 
     } catch (error) {
         console.dir(error);
@@ -63,118 +91,128 @@ app.get("/", (request, response) => {
 app.use(express.static("public"));
 
 app.post('/submit', upload.single('image'), async (request, response) => {
-        // Check if file was uploaded
-        if (!request.file) {
-            return response.status(400).json({ message: 'No file uploaded' });
-        }
-    
-        // Create a new document with the image's filename and path
-        const imageDocument = {
-            filename: request.file.filename,
-            path: request.file.path,
-            uploadDate: new Date()
-        };
-
-        try {
-            // Insert the document into the 'images' collection
-            const result = await db.collection('images').insertOne(imageDocument);
-    
-            // Send a response with the inserted document's ID
-            response.json({ message: 'File uploaded successfully', id: result.insertedId });
-        } catch (error) {
-            console.error(error);
-            response.status(500).json({ message: 'Error uploading file' });
-        }
-});
-
-app.get("/data", async (request, response) => {
-    const userId = request.query.userId;
-    console.log("userId: ", userId);
-
-
-    // Find the user in the users collection
-    const user = await db.collection('users').findOne({ _id: new ObjectId(userId) });
-
-    console.log("user: ", user)
-
-    let data = [];
-
-    if (user) {
-        
-        data = await db.collection('usersData').find({ userId: user._id.toString() }).toArray();
-        console.log("data: ", data)
-        console.log("Made it into the if user")
-        
-        data.forEach(item => console.log("usersData.userId: ", item.userId));
+    // Check if file was uploaded
+    if (!request.file) {
+        return response.status(400).json({ message: 'No file uploaded' });
     }
 
-    response.writeHead(200, "OK", { "Content-Type": "application/json" });
-    response.end(JSON.stringify(data));
+    // Create a new document with the image's filename and path
+    const imageDocument = {
+        filename: request.file.filename,
+        path: request.file.path,
+        uploadDate: new Date()
+    };
+
+    try {
+        // Insert the document into the 'images' collection
+        const result = await db.collection('images').insertOne(imageDocument);
+
+        // Send a response with the inserted document's ID
+        response.json({ message: 'File uploaded successfully', id: result.insertedId });
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ message: 'Error uploading file' });
+    }
+    try {
+        // Insert the document into the 'images' collection
+        const result = await db.collection('images').insertOne(imageDocument);
+
+        // Send a response with the inserted document's ID
+        response.json({ message: 'File uploaded successfully', id: result.insertedId });
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ message: 'Error uploading file' });
+    }
 });
-
-let userId = "";
-
 
 app.post("/signin", async (request, response) => {
     console.log("sign in post request received")
-    const {email, password} = request.body;
-    const user = await users.findOne({email: email});
+    const { email, password } = request.body;
+    const user = await users.findOne({ email: email });
     if (user && user.password === password) {
         userId = user._id.toString();
         response.cookie('userId', userId);
-        response.json({status: 'success', user: user});
+        response.json({ status: 'success', user: user });
     }
     else {
-        response.json({status: 'error', message: 'Invalid username or password' });
+        response.json({ status: 'error', message: 'Invalid username or password' });
     }
 });
 
 app.post("/register", async (request, response) => {
     console.log("register post request received")
-    const {username, password, email} = request.body;
-    const newUser = {username: username, password: password, email: email};
+    const { username, password, email } = request.body;
+    const newUser = { username: username, password: password, email: email };
     await users.insertOne(newUser);
-    const userData = await db.collection('userData').findOne({userId: newUser._id});
+    const userData = await db.collection('userData').findOne({ userId: newUser._id });
     userId = newUser._id.toString();
     response.cookie('userId', userId);
     if (!userData) {
-        response.json({status: 'success', user: newUser, userData: userData});
+        response.json({ status: 'success', user: newUser, userData: userData });
     } else {
-        response.json({status: 'error', message: 'Account already exists'});
+        response.json({ status: 'error', message: 'Account already exists' });
     }
 });
 
-//send the image
-
-
+const uuid = require('uuid');
 let uploadedImage;
 app.post("/upload", upload.single('image'), async (request, response) => {
     console.log(request.file.path);
     const tempPath = request.file.path;
-    const targetPath = path.join(__dirname, "./uploads/uploadedImage.jpg");
-    fs.rename(tempPath, targetPath, async err => 
- {
+    const uniqueId = uuid.v4();
+    const targetPath = path.join(__dirname, `./uploads/${uniqueId}_uploadedImage.jpg`);
+    fs.rename(tempPath, targetPath, async err => {
         if (err) {
             console.log("error")
         }
         else {
             console.log("uploaded")
-            //console.log(targetPath);
-        uploadedImage = targetPath;
+            const file = await bucket.upload(targetPath, {
+                gzip: true,
+                public: true,
+                metadata: {
+                    cacheControl: 'public, max-age=31536000',
+                },
+            });
 
-        //TENSORFLOW and POTRACE
-      
-    }})
+            console.log(`${targetPath} uploaded to Firebase Storage.`);
+
+            const options = {
+                version: 'v4',
+                action: 'read',
+                expires: Date.now() + 15 * 60 * 1000, 
+            };
+            const url = `https://storage.googleapis.com/${bucket.name}/${file[0].name}`;
+
+            const imageDocument = {
+                filename: request.file.filename,
+                path: request.file.path,
+                url: url, 
+                uploadDate: new Date(),
+                userId: request.cookies.userId 
+            };
+
+            try {
+                const result = await images.insertOne(imageDocument);
+
+                response.json({ message: 'File uploaded successfully', id: result.insertedId });
+            } catch (error) {
+                console.error(error);
+                response.status(500).json({ message: 'Error uploading file' });
+            }
+        }
+    })
 })
 
-app.post("/enhance", async (request, response) => {
+
+
+app.post("/sharpify", async (request, response) => {
 //FOR A NEW ENHANCE BUTTON
-    if(uploadedImage === undefined) {
-} else{
-    //
-         const form = new FormData();
+    console.log("sharpify post request received")
+    console.log(uploadedImage);
+    const form = new FormData();
     form.append("upscale_factor", "x2");
-    form.append("image_url","https://picsart.io/wp-content/uploads/2024/02/97ff2ec7-2f17-44a9-86a6-20d19db6ecd8.jpg");
+    form.append("image_url",uploadedImage);
 
     const options = {
       method: 'POST',
@@ -193,21 +231,27 @@ app.post("/enhance", async (request, response) => {
         data += chunk;
       });
       res.on('end', () => {
+        const responseData = JSON.parse(data);
+        //const upscaledImageUrl = responseData.result.url;
         console.log(data);
+        //console.log("url: " + upscaledImageUrl);
         response.send(data);
       });
     });   
+req.end();
 }
-})
+)
 //get reqeust to retrieeve the image
 
 // Delete Image
 
 // app.delete("/delete", async (request, response) => {
 //     const {username, password} = request.body;
-    
+
+
 //     console.log("line 166 " + request.body.id)
-    
+
+
 //     const userData = await usersData.findOne({$and: [
 //         { id: parseInt(request.body.id) },
 //         { userId: request.cookies['userId'] }
