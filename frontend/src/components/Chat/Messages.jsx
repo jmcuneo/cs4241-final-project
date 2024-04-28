@@ -2,6 +2,7 @@ import Message from './Message'
 import useGetMessages from '../../hooks/useGetMessages'
 import MessageSkeleton from "../skeletons/MessageSkeleton";
 import { useEffect, useRef } from 'react';
+import { extractTime } from '../../utils/extractTime.js';
 
 const Messages = () => {
 
@@ -10,6 +11,14 @@ const Messages = () => {
   useEffect(() => {
     setTimeout(() => {lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });}, 100)
   }, [messages])
+
+
+  if (messages.length > 0) {
+    const lastMessage = messages[messages.length - 1];
+    console.log("Last message:", lastMessage.message);
+    console.log("Last Message Time" , extractTime(lastMessage.updatedAt));
+
+  }
   
   return (
     <div>
