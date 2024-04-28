@@ -6,7 +6,7 @@
           <v-alert v-model="alertVisible" :text="errorMessage" :type="alertType"></v-alert>
             <v-card width="100%">
               <v-toolbar dark color="primary">
-                <v-toolbar-title>{{isRegister ? stateObj.register.name : stateObj.login.name}} form</v-toolbar-title>
+                <v-toolbar-title>{{isRegister ? stateObj.register.name : stateObj.login.name}} Form</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
                 <form ref="form" @submit.prevent="isRegister ? register() : login()">
@@ -37,7 +37,7 @@
                                 required
                   ></v-text-field>
                   <v-btn type="submit" class="mt-4" color="primary" value="log in" onclick="">{{isRegister ? stateObj.register.name : stateObj.login.name}}</v-btn>
-                  <div class="grey--text mt-4" v-on:click="isRegister = !isRegister;">
+                  <div style="cursor: pointer" class="grey--text mt-4" v-on:click="isRegister = !isRegister;">
                     {{toggleMessage}}
                   </div>
                 </form>
@@ -63,7 +63,7 @@ export default {
       errorMessage: "",
       stateObj: {
         register :{
-          name: 'Register',
+          name: 'Registration',
           message: 'Already have an account? login.'
         },
         login : {

@@ -22,7 +22,7 @@
           <v-col>
             <v-card>
               <v-card-title>
-                <h1>Dashboard</h1>
+                <h1>Dashboard (version 0.1)</h1>
                 <h2>{{ timestamp }}</h2>
               </v-card-title>
               <v-card-text>
@@ -38,18 +38,25 @@
               <v-btn @click="openProfileDialog()">
                 Edit Profile
               </v-btn>
+              <v-btn @click="() => {
+                this.$router.push({ name: 'Login' });
+              }">
+                Log Out
+              </v-btn>
             </v-card>
           </v-col>
         </v-row>
       </v-container>
 
-      <v-dialog v-model="dialogVisible" max-width="1000px">
+      <v-dialog v-model="dialogVisible" max-width="1000px" max-height="100%">
+
         <v-card elevation="7" style="height: 500px">
           <v-card-title>Task Edit</v-card-title>
           <v-card-text>Task ID: {{currentTask.id}}</v-card-text>
           <v-text-field v-model="newTitle" label="Task Title" ></v-text-field>
           <v-text-field v-model="newLocation" label="Location"></v-text-field>
-          <v-text-field v-model="newTime" label="Time"> </v-text-field>
+          <v-date-picker v-model="newTime" title="Time"></v-date-picker>
+<!--          <v-text-field v-model="newTime" label="Time"> </v-text-field>-->
           <v-row>
             <v-btn @click="updateInfo()">Confirm</v-btn>
             <v-btn @click="closeDialog()">Cancel</v-btn>
@@ -61,7 +68,7 @@
           <v-card-title>Add Task</v-card-title>
           <v-text-field v-model="addTitle" label="Task Title"></v-text-field>
           <v-text-field v-model="addLocation" label="Location"></v-text-field>
-          <v-text-field v-model="addTime" label="Time"></v-text-field>
+          <v-date-picker v-model="addTime" title="Time"></v-date-picker>
           <v-row>
             <v-btn @click="addTask()">Confirm</v-btn>
             <v-btn @click="closeAddDialog()">Cancel</v-btn>
@@ -108,10 +115,11 @@ export default {
       profileDialogVisible:false,
       newTitle: '',
       newLocation: '',
-      newTime: '',
+      // newTime: '',
+      newTime: new Date(),
       addTitle: '',
       addLocation: '',
-      addTime: '',
+      addTime: new Date(),
       password:'',
       confirmPassword:'',
       tasks: []
@@ -151,7 +159,17 @@ export default {
         .then(response => response.json())
         .then(data => {
           this.tasks = data;
-          console.log(data)
+          this.totalUpcoming = this.tasks.length;
+          let total = 0;
+          for (let i = 0; i < this.tasks.length; i++) {
+            console.log(new Date(this.tasks[i].time).toDateString())
+            console.log(new Date().toDateString())
+            if (new Date(this.tasks[i].time).toDateString() === new Date().toDateString()){
+              total += 1
+              console.log(total)
+            }
+          }
+          this.todayUpcoming = total;
         })
         .catch(error => console.error('Error:', error));
     },
@@ -159,7 +177,7 @@ export default {
       this.currentTask = item; // Ensure currentContact is declared in data
       this.newTitle = item.title;
       this.newLocation = item.location;
-      this.newTime = item.time;
+      this.newTime = new Date(item.time);
       this.dialogVisible = true;
     },
     async deleteTask(item) {
@@ -184,7 +202,7 @@ export default {
       }
     },
     async updateInfo() {
-      const json = {_id: this.currentTask._id, title: this.newTitle, location: this.newLocation, time: this.newTime, owner: this.currentUser},
+      const json = {_id: this.currentTask._id, title: this.newTitle, location: this.newLocation, time: this.newTime.toDateString(), owner: this.currentUser},
         body = JSON.stringify(json);
       console.log(json._id)
       try {
@@ -212,7 +230,7 @@ export default {
     openAddDialog(){
       this.addTitle = '';
       this.addLocation = '';
-      this.addTime = '';
+      this.addTime = new Date();
       this.addDialogVisible = true;
     },
     closeAddDialog(){
@@ -227,7 +245,7 @@ export default {
       this.profileDialogVisible = false;
     },
     async addTask() {
-      const json = {title: this.addTitle, location: this.addLocation, time: this.addTime, owner: this.currentUser},
+      const json = {title: this.addTitle, location: this.addLocation, time: this.addTime.toDateString(), owner: this.currentUser},
         body = JSON.stringify(json);
       try {
         const response = await fetch("/add", {

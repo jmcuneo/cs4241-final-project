@@ -145,7 +145,7 @@ app.put('/modify', async (req, res) => {
   //TODO modify an existing task
   try {
     const {_id, title, location, time, owner} = req.body;
-    const json = {title: title, location: location, time: time, owner: owner},
+    const json = {title: title, location: location, time: new Date(time), owner: owner},
       body = JSON.stringify(json);
 
     const collection = await client.db("finalDB").collection('task');
