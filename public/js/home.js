@@ -1,15 +1,3 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  const response = await fetch("/userdata");
-  const data = await response.json();
-  
-  const user = data[0].name;
-  const pfp = data[0].pfp;
-
-  const welcomeMessage = document.getElementById("welcomeMessage");
-  welcomeMessage.innerText = `Welcome Back, ${user}!`;
-
-});
-
 window.onload = async function(){
   if (document.cookie == ""){
     const response = await fetch("/userdata");
@@ -19,5 +7,17 @@ window.onload = async function(){
     document.cookie = `user=${userInfo.username}`;
     
   }
-  console.log(document.cookie);
+
+  let cookie = document.cookie.split(';').reduce((cookieObject, cookieString) => {
+    let splitCookie = cookieString.split('=')
+    try {
+      cookieObject[splitCookie[0].trim()] = decodeURIComponent(splitCookie[1])
+    } catch (error) {
+      cookieObject[splitCookie[0].trim()] = splitCookie[1]
+    }
+    return cookieObject
+  }, [])
+  const user = cookie.user;
+  const welcomeMessage = document.getElementById("welcomeMessage");
+  welcomeMessage.innerText = `Welcome Back, ${user}!`;
 }
