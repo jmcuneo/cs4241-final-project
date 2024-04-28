@@ -100,7 +100,7 @@ function ManageEventPage({ onLogout }) {
         <div>
           <EventTitleManager eventId={eventId}/>
         </div>
-        <div className style={{display:"flex", flexDirection:"row"}}>
+        <div style={{display:"flex", flexDirection:"row"}}>
           <UserGuestListComponent onUpdate={handleUpdate} manage={true} passedGuestList={guestList} />
           <div className="flex flex-col ml-30 mt-10">
             <div className="flex flex-row ml-30 mt-4" >

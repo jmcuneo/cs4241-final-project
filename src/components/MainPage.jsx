@@ -35,25 +35,40 @@ function MainPage({ onLogout }) {
     });
   });
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredEvents = events.filter((event) =>
+    event.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
       <Navbar onLogout={onLogout} showProfileButton={true}></Navbar>
-      <div className="main-page-container relative flex min-h-max flex-col mt-10 mx-auto items-center prose max-h-[75vh] overflow-y-auto">
+      <div className="main-page-container relative flex min-h-max flex-col mt-10 mx-auto items-center prose">
         <div>
           <h1 className="header-section">Upcoming Events</h1>
         </div>
-        <div>
-          <TableComponent
-            headers={[
-              "Name",
-              "Date",
-              "Location",
-              "Guest Count",
-              "User Invites",
-            ]}
-            rows={events}
-            isEvent={true}
-          ></TableComponent>
+        <div className="max-h-[75vh] overflow-y-auto flex flex-col">
+        <input
+            style={{marginBottom: "-20px", width: '100%'}}
+            type="text"
+            placeholder="Search by Event name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="input input-bordered w-full mb-4"
+          />
+          <div className="flex-grow">
+            <TableComponent
+              headers={[
+                "Name",
+                "Date",
+                "Location",
+                "Guest Count",
+                "User Invites",
+              ]}
+              rows={filteredEvents}
+              isEvent={true}
+            ></TableComponent>
+          </div>
         </div>
       </div>
     </>
