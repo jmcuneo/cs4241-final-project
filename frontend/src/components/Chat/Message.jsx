@@ -31,7 +31,7 @@ const Message = ({ message }) => {
 
             </div>
         </div>
-    );
+    ); //done
 };
 
 export default Message;
