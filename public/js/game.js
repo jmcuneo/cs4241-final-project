@@ -43,6 +43,15 @@ function join() {
         user: document.getElementById("username").value,
         createdAt: Date.now()
     };
+    document.getElementById('sendMessageBtn').display = 'none';
+    const playerContainer = document.querySelector(".player-container");
+    playerContainer.innerHTML = "";
+    const playerDiv = document.createElement("div");
+    playerDiv.classList.add("player");
+    playerDiv.innerHTML = `
+            Waiting for other players to join
+        `;
+    playerContainer.appendChild(playerDiv);
     // Emit 'createMessage' event to the server with the new message
     socket.emit('join', newMessage);
 }
