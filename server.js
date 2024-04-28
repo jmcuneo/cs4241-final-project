@@ -138,6 +138,11 @@ app.get("/userInfo", async (req, res) => {
     res.json(myUser);
 })
 
+app.get("/allUsers", async (req, res) => {
+    let userData = await allUsers();
+    res.json(userData);
+})
+
 run().catch(console.dir);
 
 server.listen( 3000 )
@@ -305,6 +310,17 @@ async function concludeGame(gameID, winnerID, loserIDs){
     await setWinnerOrder(gameID, playerArray)
 
     console.log(`The game is over! ${winnerID} wins!`)
+}
+
+async function allUsers(){
+    try {
+        const db = client.db("webwareFinal");
+        const collection = db.collection("users");
+        return await collection.find({}).toArray();
+    } catch (error) {
+        console.error('Error retrieving documents:', error);
+        return null;
+    }
 }
 
 // Set the winner order of a game.
