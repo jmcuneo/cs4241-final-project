@@ -129,7 +129,6 @@ class Board {
             }
         }
     }
-    // console.log(this.cells);
 
     this.spawnPiece();
   }
@@ -182,8 +181,8 @@ class Board {
     var hsElement = document.getElementById("highScore");
     if(hsElement.innerHTML < this.score){
       hsElement.innerHTML = this.score;
+      getLeaderboard(this.score);
     }
-
   }
 
   // helper function to check if an individual row at cells[index] has been filled
@@ -219,8 +218,6 @@ class Board {
     }
 
     levelRows--;
-    console.log(levelRows)
-    console.log(fps)
     if(levelRows == 0){
       levelRows += 10
       fps += 0.5
@@ -391,14 +388,11 @@ class Next {
     this.canvas.width = this.width * cS;
     this.canvas.height = this.height * cS;
     this.pieceQueue = [];
-    //this.initQueue();
     this.drawBackground();
-    //this.renderPieces();
   }
 
   drawBackground() {
     this.ctx.fillStyle = 'black';
-    //this.ctx.strokeStyle = 'grey';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
@@ -457,12 +451,12 @@ var boardWidth = 10;
 var boardHeight = 20;
 let board = new Board(boardWidth, boardHeight, cellSize);
 let next = new Next(boardWidth, boardHeight, cellSize);
-var levelRows = 10
 
-// Game Constants
-var prevSpeed = 2
+// Game Control Settings
 var fps = 2; // controls the speed of the game in frames per second
-const SOFTDROP_SPEED = fps * 4;
+var prevSpeed = 2;
+const SOFTDROP_MULTIPLIER = 4;
+var levelRows = 10;
 
 // Main game loop
 // Initializes game
@@ -495,6 +489,22 @@ window.onload = function() {
   displayHighScore();
   board.updateScore(0)
 };
+
+async function getLeaderboard(score){
+  var response = await fetch("/getScores", {
+    method:"GET"
+  })
+  var text = await response.text();
+  let leaderboardScores = JSON.parse(text);
+  let leaderScore = leaderboardScores[0].score;
+
+  if(score > leaderScore){
+    alertNewHighScore("global")
+  }else{
+    alertNewHighScore("personal");
+  }
+
+}
 
 async function displayHighScore(){
   var hsElement = document.getElementById("highScore");
@@ -532,7 +542,6 @@ document.addEventListener(
 
     if(board.isGameActive){
       const keyName = event.key;
-      console.log(keyName);
 
       let dummyPiece = Object.assign(Object.create(Object.getPrototypeOf(board.activePiece)), board.activePiece);
       switch (keyName) {
@@ -568,7 +577,7 @@ document.addEventListener(
           board.hardDrop();
           break;
         case SOFT_DROP:
-          fps = SOFTDROP_SPEED;
+          fps *= SOFTDROP_MULTIPLIER;
           break;
         case RESTART:
           window.location.reload();
@@ -614,8 +623,14 @@ function flipCanvasDown() {
 }
 
 function hideStart(){
-  let element = document.getElementById('start');
+  let element = document.getElementById('game-message');
   element.style.visibility = 'hidden';
+}
+
+function alertNewHighScore(type){
+  let element = document.getElementById('game-message')
+  element.innerHTML = "New " + type + " high score!"
+  element.style.visibility = 'visible'
 }
 
 function showGameOver(){

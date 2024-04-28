@@ -1,8 +1,8 @@
 // FRONT-END (CLIENT) JAVASCRIPT HERE
 
 /**
- * Function to get books for the user
- * @returns a JSON string that contains all the books a certain user has read
+ * Function to get scores for the user
+ * @returns a JSON string that contains all the scores a certain user has achieved
  */
 var getScores = async function () {
 
@@ -33,7 +33,7 @@ var getPersonal = async function () {
 }
 
 /**
- * Adds a book to the database from a post request.
+ * Adds a score to the database from a post request.
  * @param {*} event 
  *
 const submitAdd = async function( event ) {
