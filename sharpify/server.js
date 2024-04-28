@@ -43,6 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
 const upload = multer({ dest: 'uploads/' });
 
 
@@ -50,9 +51,11 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 // const { MongoClient, ObjectId } = require('mongodb');
 
+
 let db;
 let users;
 let images;
+
 
 async function run() {
     try {
@@ -65,6 +68,8 @@ async function run() {
 
         users = db.collection("users");
         console.log(`Connected to the collection:${users.collectionName}`);
+
+        // images = db.collection("images");
 
         // images = db.collection("images");
 
@@ -98,6 +103,16 @@ app.post('/submit', upload.single('image'), async (request, response) => {
         uploadDate: new Date()
     };
 
+    try {
+        // Insert the document into the 'images' collection
+        const result = await db.collection('images').insertOne(imageDocument);
+
+        // Send a response with the inserted document's ID
+        response.json({ message: 'File uploaded successfully', id: result.insertedId });
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ message: 'Error uploading file' });
+    }
     try {
         // Insert the document into the 'images' collection
         const result = await db.collection('images').insertOne(imageDocument);
@@ -190,73 +205,42 @@ app.post("/upload", upload.single('image'), async (request, response) => {
 })
 
 
-app.post("/enhance", async (request, response) => {
-    //FOR A NEW ENHANCE BUTTON
-        if(uploadedImage === undefined) {
-    } else{
-        //
-             const form = new FormData();
-        form.append("upscale_factor", "x2");
-        form.append("image_url","https://picsart.io/wp-content/uploads/2024/02/97ff2ec7-2f17-44a9-86a6-20d19db6ecd8.jpg");
-    
-        const options = {
-          method: 'POST',
-          host: 'api.picsart.io',
-          path: '/tools/1.0/upscale',
-          headers: {
-            'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
-            'accept': 'application/json',
-            'x-picsart-api-key': process.env.API_KEY
-          }
-        };
-    
-        const req = http.request(options, (res) => {
-          let data = '';
-          res.on('data', (chunk) => {
-            data += chunk;
-          });
-          res.on('end', () => {
-            console.log(data);
-            response.send(data);
-          });
-        });   
-    }});
 
+app.post("/sharpify", async (request, response) => {
+//FOR A NEW ENHANCE BUTTON
+    console.log("sharpify post request received")
+    console.log(uploadedImage);
+    const form = new FormData();
+    form.append("upscale_factor", "x2");
+    form.append("image_url",uploadedImage);
 
-app.get('/retrieveImages', async (request, response) => {
-    const userId = request.cookies.userId;
+    const options = {
+      method: 'POST',
+      host: 'api.picsart.io',
+      path: '/tools/1.0/upscale',
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
+        'accept': 'application/json',
+        'x-picsart-api-key': process.env.API_KEY
+      }
+    };
 
-    const userImages = await images.find({ userId: userId }).toArray();
-    response.set('Access-Control-Allow-Origin', '*');
-
-
-    response.json(userImages);
-});
-
-
-const {Storage} = require('@google-cloud/storage');
-const storage = new Storage();
-
-
-app.get('/getImage/:imageId', async (request, response) => {
-    const imageId = request.params.imageId;
-
-    const bucket = storage.bucket('sharpify-2c8fc.appspot.com');
-    const file = bucket.file(imageId);
-
-    const readStream = file.createReadStream();
-
-    readStream.on('error', (err) => {
-        response.status(500).send(err);
-    });
-
-    response.set('Content-Type', 'image/jpeg');
-
-    readStream.pipe(response);
-});
-
-
-
+    const req = http.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        const responseData = JSON.parse(data);
+        //const upscaledImageUrl = responseData.result.url;
+        console.log(data);
+        //console.log("url: " + upscaledImageUrl);
+        response.send(data);
+      });
+    });   
+req.end();
+}
+)
 //get reqeust to retrieeve the image
 
 // Delete Image
@@ -264,7 +248,9 @@ app.get('/getImage/:imageId', async (request, response) => {
 // app.delete("/delete", async (request, response) => {
 //     const {username, password} = request.body;
 
+
 //     console.log("line 166 " + request.body.id)
+
 
 //     const userData = await usersData.findOne({$and: [
 //         { id: parseInt(request.body.id) },
@@ -288,9 +274,9 @@ app.get('/getImage/:imageId', async (request, response) => {
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+  });
 
 // app.listen(process.env.PORT || port)
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT || 3000}`);
-});
+  });

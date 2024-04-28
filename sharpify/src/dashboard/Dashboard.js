@@ -59,6 +59,26 @@ function Dashboard(props) {
             canvas.width = 800;
             canvas.height = 800 / imageAspectRatio;
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+              // Convert the canvas to a Blob object
+        canvas.toBlob(async (blob) => {
+            // Create a new FormData instance
+            const formData = new FormData();
+            // Append the Blob object to the form data
+            formData.append('image', blob, 'enhanced-image.png');
+
+            // Send the Blob object using the fetch API
+       
+                const response = await fetch('/sharpify', {
+                    method: 'POST',
+                    body: formData,
+                }).then(response => {response.blob()})
+        .then(blob => {console.log(blob)})
+        .catch(error => {console.error(error)});;
+
+
+        });
+
             onHandleMakeDownloadLink();
         };
         img.src = imageSrc;
