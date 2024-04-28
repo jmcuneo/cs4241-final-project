@@ -43,6 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
 const upload = multer({ dest: 'uploads/' });
 
 
@@ -50,9 +51,11 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 // const { MongoClient, ObjectId } = require('mongodb');
 
+
 let db;
 let users;
 let images;
+
 
 async function run() {
     try {
@@ -65,6 +68,8 @@ async function run() {
 
         users = db.collection("users");
         console.log(`Connected to the collection:${users.collectionName}`);
+
+        // images = db.collection("images");
 
         // images = db.collection("images");
 
@@ -98,6 +103,16 @@ app.post('/submit', upload.single('image'), async (request, response) => {
         uploadDate: new Date()
     };
 
+    try {
+        // Insert the document into the 'images' collection
+        const result = await db.collection('images').insertOne(imageDocument);
+
+        // Send a response with the inserted document's ID
+        response.json({ message: 'File uploaded successfully', id: result.insertedId });
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ message: 'Error uploading file' });
+    }
     try {
         // Insert the document into the 'images' collection
         const result = await db.collection('images').insertOne(imageDocument);
@@ -190,6 +205,7 @@ app.post("/upload", upload.single('image'), async (request, response) => {
 })
 
 
+
 app.post("/sharpify", async (request, response) => {
 //FOR A NEW ENHANCE BUTTON
     console.log("sharpify post request received")
@@ -232,7 +248,9 @@ req.end();
 // app.delete("/delete", async (request, response) => {
 //     const {username, password} = request.body;
 
+
 //     console.log("line 166 " + request.body.id)
+
 
 //     const userData = await usersData.findOne({$and: [
 //         { id: parseInt(request.body.id) },
@@ -256,9 +274,9 @@ req.end();
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+  });
 
 // app.listen(process.env.PORT || port)
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT || 3000}`);
-});
+  });
