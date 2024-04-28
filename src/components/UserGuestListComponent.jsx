@@ -118,7 +118,7 @@ const filteredList = (() => {
 const guestTable = () => {
   return (
     <div className="overflow-x-auto prose flex flex-col">
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center">
         <input 
           style={{marginBottom: "0.2rem"}}
           type="text"
