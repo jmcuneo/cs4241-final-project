@@ -17,7 +17,8 @@ function Navbar({ onLogout, showProfileButton, showBackButton }) {
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
-        <a className="btn btn-ghost text-xl" href="/" onClick={() => navigate("/")}>
+        <a className="btn btn-ghost text-xl" href="#" onClick={() => navigate("/")}>
+          <img src="/party-popper_1f389.png" style={{ opacity: 100, width: "1em", height: "1em", marginRight: "0.1em", verticalAlign: "middle"}} alt="Party Popper emoji" />
           EventManager
         </a>
       </div>
@@ -40,7 +41,7 @@ function Navbar({ onLogout, showProfileButton, showBackButton }) {
             id="profilePageButton"
             onClick={handleProfile}
           >
-            <FontAwesomeIcon icon={faUser} className="mr-1"  />
+            <FontAwesomeIcon icon={faUser} className="mr-1" />
             Profile
           </button>
         )}
