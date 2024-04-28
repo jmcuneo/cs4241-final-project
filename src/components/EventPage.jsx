@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import GuestListComponent from "./GuestListComponent.jsx";
 import UserGuestListComponent from "./UserGuestListComponent.jsx";
 import Navbar from "./Navbar.jsx";
 import PropTypes from "prop-types";
 import EventTitle from "./EventTitle.jsx";
 
-function EventPage({ onLogout }) {
-  const { eventName } = useParams();
+function EventPage({ isAdmin, onLogout }) {
+  const { eventId } = useParams();
   const [guestList, setGuestList] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  // const [isAdmin, setIsAdmin] = useState(false);
 
   const getGuestList = async () => {
     try {
@@ -20,14 +21,14 @@ function EventPage({ onLogout }) {
         },
         body: JSON.stringify({
           token: localStorage.getItem("token"),
-          eventName: eventName,
+          eventId: eventId,
         }),
       });
 
       const guests = await response.json();
       setGuestList(guests);
     } catch (error) {
-      console.error("Error getting guests:", error);
+      console.error("Error getting guests: " + error);
     }
   };
 
@@ -44,13 +45,13 @@ function EventPage({ onLogout }) {
       let profile = await response.json();
       return profile;
     } catch (error) {
-      console.error("Error getting profile:", error);
+      console.error("Error getting profile: " + error);
       return null;
     }
   };
 
   const handleUpdate = (guestName, action) => {
-    if (action == "add")
+    if (action === "add")
       setGuestList((currentGuests) => [
         ...currentGuests,
         {
@@ -73,8 +74,8 @@ function EventPage({ onLogout }) {
       .catch((error) => {
         console.error("Error getting profile:", error);
       });
-    if (userProfile && userProfile.accountType === "Admin") setIsAdmin(true);
-  }, [eventName, userProfile]);
+    // if (userProfile && userProfile.accountType === "Admin") setIsAdmin(true);
+  }, [eventId]);
 
   return (
     <>
@@ -85,7 +86,7 @@ function EventPage({ onLogout }) {
       ></Navbar>
       <div className="min-w-screen mx-auto">
         <div>
-          <EventTitle eventName={eventName} isAdmin={isAdmin} />
+          <EventTitle eventId={eventId} isAdmin={isAdmin} />
         </div>
         <div className="userguestlistwrapper">
           <UserGuestListComponent
@@ -100,6 +101,7 @@ function EventPage({ onLogout }) {
 }
 
 EventPage.propTypes = {
+  isAdmin: PropTypes.bool.isRequired,
   onLogout: PropTypes.func.isRequired,
 };
 

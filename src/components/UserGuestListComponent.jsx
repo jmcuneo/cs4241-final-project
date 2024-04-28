@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import GuestListComponent from "./GuestListComponent";
 
-function UserGuestListComponent({ onUpdate, manage, passedGuestList }) {
-  const { eventName } = useParams();
+function GuestListComponent({ onUpdate, manage }) {
+  const { eventId } = useParams();
   const [guestList, setGuestList] = useState([]);
   const guestNameRef = useRef(null);
   const [message, setMessage] = useState("");
@@ -18,7 +18,7 @@ function UserGuestListComponent({ onUpdate, manage, passedGuestList }) {
         },
         body: JSON.stringify({
           token: localStorage.getItem("token"),
-          eventName: eventName,
+          eventId: eventId,
         }),
       });
 
@@ -38,7 +38,7 @@ function UserGuestListComponent({ onUpdate, manage, passedGuestList }) {
         },
         body: JSON.stringify({
           token: localStorage.getItem("token"),
-          eventName: eventName,
+          eventId: eventId,
           guestName: guestName,
         }),
       });
@@ -66,7 +66,7 @@ function UserGuestListComponent({ onUpdate, manage, passedGuestList }) {
         },
         body: JSON.stringify({
           token: localStorage.getItem("token"),
-          eventName: eventName,
+          eventId: eventId,
           guestName: guestName,
         }),
       });
@@ -95,7 +95,7 @@ function UserGuestListComponent({ onUpdate, manage, passedGuestList }) {
 
   useEffect(() => {
     getGuestList();
-  }, [eventName]);
+  }, [eventId]);
 
   const guestTable = () => {
     return (

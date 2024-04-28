@@ -80,11 +80,11 @@ function App() {
           <>
             <Route exact path="/main" element={<MainPage onLogout={handleLogout} />} />
             <Route exact path="/profile" element={<ProfilePage onLogout={handleLogout} />} />
-            <Route exact path="/event/:eventName" element={<EventPage onLogout={handleLogout} />} />
+            <Route exact path="/event/:eventId" element={<EventPage isAdmin={admin} onLogout={handleLogout} />} />
           </>
         )}
 
-        {authenticated && admin && <Route exact path="/event/manage/:eventName" element={<ManageEventPage onLogout={handleLogout} />} />}
+        {authenticated && admin && <Route exact path="/event/manage/:eventId" element={<ManageEventPage onLogout={handleLogout} />} />}
 
         {/* Redirect to main page if authenticated */}
         {authenticated && <Route path="*" element={<Navigate to="/main" />} />}

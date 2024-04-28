@@ -6,7 +6,8 @@ import Navbar from "./Navbar.jsx";
 import EventTitleManager from "./EventTitleManager.jsx";
 
 function ManageEventPage({ onLogout }) {
-  const { eventName } = useParams();
+  const navigate = useNavigate();
+  const { eventId } = useParams();
   const [guestList, setGuestList] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
   const totalLimitUpdate = useRef(null);
@@ -21,7 +22,7 @@ function ManageEventPage({ onLogout }) {
         },
         body: JSON.stringify({
           token: localStorage.getItem("token"),
-          eventName: eventName,
+          eventId: eventId,
         }),
       });
 
@@ -85,7 +86,7 @@ function ManageEventPage({ onLogout }) {
       .catch((error) => {
         console.error("Error getting profile:", error);
       });
-  }, [eventName]);
+  }, [eventId]);
 
   return (
     <>
@@ -97,7 +98,7 @@ function ManageEventPage({ onLogout }) {
 
       <div>
         <div>
-          <EventTitleManager eventName={eventName}/>
+          <EventTitleManager eventId={eventId}/>
         </div>
         <div style={{display:"flex", flexDirection:"row"}}>
           <UserGuestListComponent onUpdate={handleUpdate} manage={true} passedGuestList={guestList} />

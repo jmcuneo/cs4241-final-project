@@ -239,23 +239,23 @@ const userSchema = new Schema({
         /**
          * @requires {@link PERMISSIONS.DELETE_EVENT}
          * @author Alexander Beck
-         * @param {*} eventName The event name
+         * @param {*} eventId The event Id
          * @returns {Promise<Boolean>} A boolean representing the success of deleting the event
          * @example await user.deleteEvent('Christmas Party');
          */
-        async deleteEvent(eventName) {
-            if (eventName === undefined) return false;
-            const event = await Event.findOne({ name: eventName });
+        async deleteEvent(eventId) {
+            if (eventId === undefined) return false;
+            const event = await Event.findOne({ _id: eventId });
             // If user is admin, has PERMISSIONS.DELETE_EVENT, or is the event's creator
             // eventDetails is an added to check to ensure that it is not empty
-            if (eventName && (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.DELETE_EVENT) || event.creator.equals(this._id))) {
+            if (eventId && (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.DELETE_EVENT) || event.creator.equals(this._id))) {
                 const unsavedLog = new Logger({
                     action: EVENTS.DELETE_EVENT,
                     event: event,
                     subject: this
                 });
 
-                await Event.deleteOne({ name: eventName });
+                await Event.deleteOne({ _id: eventId });
 
                 await unsavedLog.save();
                 return true;
@@ -266,7 +266,7 @@ const userSchema = new Schema({
         },
 
         /**
- * @requires name, {@link PERMISSIONS.MODIFY_EVENTS}
+ * @requires id, {@link PERMISSIONS.MODIFY_EVENTS}
  * @author Alexander Beck
  * @param {mongoose.Model} event The event to modify
  * @param {*} eventDetails The schema details of an event.
@@ -506,7 +506,7 @@ const userSchema = new Schema({
                 const userInvites = (await event.getInviteIdsByInviter(user))?.length ?? 0;
                 return {
                     ...hideFieldsFromObject(
-                        event.toObject(), 'attendees', 'id', '_id'),
+                        event.toObject(), 'attendees', 'id'),
                     userInvites
                 };
             }));
