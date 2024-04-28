@@ -143,10 +143,11 @@ function ManageEventPage({ onLogout }) {
                 onClick={handleUpdateUserLimit}
               >Update</button>
             </div>
+            <div>
+            <UserListComponent onUpdate={handleUpdate}/>
+            </div>
           </div>
-          <div>
-            <UserListComponent onUpdate={handleUpdate} manage={true} passedGuestList={guestList}/>
-          </div>
+          
         </div>
       </div>
     </>
