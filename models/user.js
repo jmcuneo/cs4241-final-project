@@ -139,9 +139,9 @@ const userSchema = new Schema({
             if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || event.creator === this._id) {
                 let successfullyAdded = [];
                 users.forEach(user => {
-                    if (!event.allowedInviters.some(existingUser => existingUser === user)) {
+                    if (!event.allowedInviters.some(existingUser => existingUser.equals(user._id))) {
                         successfullyAdded.push(user);
-                        event.allowedInviters.addToSet(user);
+                        event.allowedInviters.addToSet(user._id);
                     }
                 });
 
@@ -178,10 +178,11 @@ const userSchema = new Schema({
             if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || event.creator === this._id) {
                 let successfullyRemoved = [];
                 users.forEach(user => {
-                    if (event.allowedInviters.some(existingUser => existingUser === user)) {
+                    if (event.allowedInviters.some(existingUser => existingUser.equals(user._id))) {
                         successfullyRemoved.push(user);
-
-                        event.allowedInviters = event.allowedInviters.filter(allowedInviter => allowedInviter !== user);
+                        // Remove all attendees that are invited by user
+                        event.attendees = event.attendees.filter(attendee => !attendee.inviter.equals(user._id))
+                        event.allowedInviters = event.allowedInviters.filter(allowedInviter => !allowedInviter.equals(user._id));
                     }
                 });
 
@@ -506,7 +507,7 @@ const userSchema = new Schema({
                 const userInvites = (await event.getInviteIdsByInviter(user))?.length ?? 0;
                 return {
                     ...hideFieldsFromObject(
-                        event.toObject(), 'attendees', 'id'),
+                        event.toObject(), 'attendees', 'id', 'allowedInviters'),
                     userInvites
                 };
             }));

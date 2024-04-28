@@ -186,18 +186,21 @@ const eventSchema = new Schema({
         },
 
         /**
-         * Does nothing with the current user parameter. It is in place for the event that the application is expanded to allow different organizations with different event scopes
+         * 
          * @param {mongoose.Model} user The user to get upcoming events of (note: does nothing with it currently)
          * @returns {Promise<Array<mongoose.Model>} A list of events, or an empty array
          * @author Alexander Beck
          */
-        /* eslint-disable-next-line no-unused-vars */
         async getUpcomingEvents(user) {
-            // if (!user) return [];
+            if (!user) return [];
             const currentDate = new Date().toISOString();
-            return (await this.
-                where('date').gte(currentDate).select('name date location attendees guestCount').populate('attendees').exec()
-            );
+            const isAdmin = (await User.findOne({ _id: user._id })).accountType === ACCOUNT_TYPE.ADMIN;
+            if (isAdmin) {
+                return (await this.where('date').gte(currentDate).select('name date location attendees guestCount').populate('attendees').exec());
+            }
+            const upcoming = await this.where('date').gte(currentDate).where('allowedInviters').in([user._id]).select('name date location attendees guestCount allowedInviters').populate('attendees').exec();
+            console.log(upcoming)
+            return upcoming;
         },
     },
     methods: {
