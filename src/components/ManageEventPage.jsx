@@ -4,6 +4,7 @@ import UserGuestListComponent from "./UserGuestListComponent.jsx";
 import PropTypes from "prop-types";
 import Navbar from "./Navbar.jsx";
 import EventTitleManager from "./EventTitleManager.jsx";
+import UserListComponent from "./UserListComponent.jsx";
 
 function ManageEventPage({ onLogout }) {
   const { eventId } = useParams();
@@ -141,6 +142,9 @@ function ManageEventPage({ onLogout }) {
                 style={{marginLeft:"1rem", marginTop:"2.4rem"}}
                 onClick={handleUpdateUserLimit}
               >Update</button>
+            </div>
+            <div>
+            <UserListComponent onUpdate={handleUpdate}/>
             </div>
           </div>
           
