@@ -1,19 +1,20 @@
 /* eslint-disable no-undef */
-
 import dotenv from 'dotenv';
 import express, { json } from 'express';
 import mongoose from 'mongoose';
 import ViteExpress from 'vite-express';
 import { createDummyUsers } from './dbTester.js';
+import cors from 'cors';
 import jwt from 'jsonwebtoken';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import Account from './models/account.js';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import passport from './passport.js';
-import cors from 'cors';
-import User, { ACCOUNT_TYPE } from './models/user.js';
-import Event from './models/event.js';
+import User  from './models/user.js';
 
 const app = express();
 const port = 3000;
@@ -29,6 +30,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 ViteExpress.config({ mode: 'development' });
 
+export const JWT_KEY = "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!";
+
 app.use(session({
     secret: '5O$5HP^xg2zV0duE',     //MAKE A NEW KEY EVENTUALLY AND MOVE TO .ENV
     resave: false,
@@ -43,7 +46,6 @@ app.use(passport.session());
 
 // Connect to the database
 connectToDB().catch(err => console.log(err));
-
 
 // Register Route
 app.post('/register', async (req, res) => {
@@ -86,13 +88,13 @@ function generateToken(user) {
         username: user.username,
     };
 
-    return jwt.sign(payload, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!", { expiresIn: '1h' });     //MAKE A NEW KEY EVENTUALLY AND MOVE TO .ENV
+    return jwt.sign(payload, JWT_KEY, { expiresIn: '1h' });     //MAKE A NEW KEY EVENTUALLY AND MOVE TO .ENV
 }
 
 //Token stored in localStorage
-function getUsernameFromToken(token) {
+export function getUsernameFromToken(token) {
     try {
-        const decoded = jwt.decode(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
+        const decoded = jwt.decode(token, JWT_KEY);
         const username = decoded.username;
 
         return username;
@@ -106,399 +108,32 @@ function getUsernameFromToken(token) {
 API ENDPOITNS
 #################################################
 */
-app.post('/api/verifyToken', (req, res) => {
-    try {
-        const { token } = req.body;
-        if (!token) {
-            // If token is null
-            // Prevent jwt.verify throwing an error and cluttering the console
-            // This can be removed if the console.log is removed from the catch
-            return res.json({ valid: false });
+async function importAllApis() {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url))
+    const apis = fs.readdirSync(path.join(__dirname, 'api'));
+    apis.forEach(async (api) => {
+        if (api.endsWith('.js')) {
+            const filePath = path.join(__dirname, 'api', api);
+            const { default: routers } = await import(`file://${filePath}`);
+            Object.values(routers).forEach((router) => {
+                app.use('/api', router);
+            });
         }
-        const decoded = jwt.verify(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
-        console.log(decoded)
+    });
+}
 
-        if (decoded.exp < Date.now() / 1000)
-            return res.json({ valid: false });
-
-        return res.json({ valid: true });
-    } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-            console.log('Token expired.');
-        } else {
-            console.error(error)
-        }
-        return res.json({ valid: false });
-    }
-});
-
-app.post('/api/verifyAdmin', async (req, res) => {
-    try {
-        const { token } = req.body;
-        if (!token) {
-            // If token is null
-            // Prevent jwt.verify throwing an error and cluttering the console
-            // This can be removed if the console.log is removed from the catch
-            return res.json({ valid: false });
-        }
-        const decoded = jwt.verify(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
-
-        if (decoded.exp < Date.now() / 1000)
-            return res.json({ valid: false });
-
-        const user = await User.findOne({ username: decoded.username });
-        const isAdmin = user.accountType === ACCOUNT_TYPE.ADMIN;
-        return res.json({ valid: isAdmin });
-    } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-            console.log('Token expired.');
-        } else {
-            console.error(error)
-        }
-        return res.json({ valid: false });
-    }
-});
-
+await importAllApis();
 
 app.post('/api/getUsernameFromToken', (req, res) => {
     try {
         const { token } = req.body;
-        const decoded = jwt.decode(token, "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!");
+        const decoded = jwt.decode(token, JWT_KEY);
         const username = decoded.username;
 
         console.log(username)
         return res.json({ username });
     } catch (error) {
         return res.json({ error: "Failed to get username from token" });
-    }
-});
-
-
-app.post('/api/getUpcomingEvents', async (req, res) => {
-    try {
-        const { token } = req.body;
-        const username = getUsernameFromToken(token);
-        const user = await User.findOne({ username: username });
-
-        const events = await user.getUpcomingEvents();
-
-        // Why does this double fire?
-        return res.json(events);
-    } catch (err) {
-        console.log(err);
-        return res.json({ error: "Failed to authenticate token" });
-    }
-});
-
-app.post('/api/getProfile', async (req, res) => {
-    try {
-        const { token } = req.body;
-        const username = getUsernameFromToken(token);
-        const profile = await User.findOne({ username: username }).select('fullName username accountType prettyAccountType').populate('firstName lastName').exec();
-
-        // Why does this double fire?
-        return res.json(hideFieldsFromObject(
-            renameFieldInObject(hideFieldsFromObject(profile.toObject(), 'accountType'),
-                'prettyAccountType', 'accountType'),
-            'id', '_id'));
-    } catch (err) {
-        console.log(err);
-        return res.json({ error: "Failed to authenticate token" });
-    }
-});
-
-app.post('/api/getEvent', async (req, res) => {
-    try {
-        const { token, eventId } = req.body;
-        /* eslint-disable-next-line no-unused-vars */
-        const username = getUsernameFromToken(token);
-        const user = await User.findOne({ username: username });
-        // Why does this double fire?
-        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
-        if (!event || event === undefined) {
-            return res.json({ success: false, error: 'Event with this id not found' });
-        }
-
-        const userInvites = (await event.getInviteIdsByInviter(user))?.length ?? 0;
-        return res.json(hideFieldsFromObject({userInvites: userInvites, ...event.toObject()}, 'id', 'attendees', 'allowedInviters'));
-    } catch (err) {
-        console.log(err);
-        return res.json({ error: "Failed to authenticate token" });
-    }
-});
-
-app.post('/api/getGuestList', async (req, res) => {
-    try {
-        const { token, eventId } = req.body;
-        // Is not used, but will ensure that someone is logged in
-        /* eslint-disable-next-line no-unused-vars */
-        const username = getUsernameFromToken(token);
-
-        // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
-        // const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
-
-        const uncleanedGuestList = await event.getGuestList();
-        const guestList = uncleanedGuestList.map(guest => {
-            return renameFieldInObject(hideFieldsFromObject(guest, 'id', '_id'), 'guest', 'guestName');
-        });
-
-        return res.json(guestList);
-    } catch (err) {
-        console.log(err);
-        return res.json({ error: "Failed to authenticate token" });
-    }
-});
-
-app.post('/api/getUserGuestList', async (req, res) => {
-    try {
-        const { token, eventId } = req.body;
-        // Is not used, but will ensure that someone is logged in
-        /* eslint-disable-next-line no-unused-vars */
-        const username = getUsernameFromToken(token);
-
-        // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
-        // const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
-        const user = await User.findOne({ username: username });
-
-        const guestList = (await user.getInvitedGuests(event)).map(guest => {
-            return renameFieldInObject(hideFieldsFromObject(guest, 'id', '_id'), 'guest', 'guestName');
-        });
-
-        return res.json(guestList);
-    } catch (err) {
-        console.log(err);
-        return res.json({ error: "Failed to authenticate token" });
-    }
-});
-
-app.post('/api/createEvent', async (req, res) => {
-    try {
-        const { token, eventBody } = req.body;
-        if (eventBody.name === undefined || eventBody.date === undefined || eventBody.location === undefined) {
-            // Don't need to waste resources validating if the user is authenticated if the event
-            // provided will fail regardless
-            return res.json({ success: false, error: 'Recieved undefined value in eventBody' });
-        }
-
-        const username = getUsernameFromToken(token);
-        const user = await User.findOne({ username: username });
-
-        // const eventExists = await Event.findOne({ name: eventBody.name });
-        // if (eventExists) {
-        //     return res.json({ success: false, error: 'Event with this name already exists' });
-        // }
-        const event = await user.createEvent(eventBody);
-
-        return res.json(hideFieldsFromObject(event.toObject(), 'id', 'attendees'));
-    } catch (err) {
-        console.log(err);
-        return res.json({ success: false });
-    }
-});
-
-app.post('/api/deleteEvent', async (req, res) => {
-    try {
-        const { token, eventId } = req.body;
-        if (eventId === undefined) {
-            return res.json({ success: false, error: 'eventId is undefined' });
-        }
-
-        const username = getUsernameFromToken(token);
-        const user = await User.findOne({ username: username });
-
-        const eventExists = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
-        if (!eventExists || eventExists === undefined) {
-            return res.json({ success: false, error: 'Event with this id not found' });
-        }
-
-        const eventDeleted = await user.deleteEvent(mongoose.Types.ObjectId.createFromHexString(eventId));
-
-        return res.json({ success: eventDeleted });
-    } catch (err) {
-        console.log(err);
-        return res.json({ success: false });
-    }
-});
-
-app.post('/api/modifyEvent', async (req, res) => {
-    try {
-        const { token, eventBody } = req.body;
-        if (eventBody._id === undefined) {
-            // Don't need to waste resources validating if the user is authenticated if the event
-            // provided will fail regardless
-            return res.json({ success: false, error: 'Recieved an undefined eventBody._id' });
-        }
-
-        const username = getUsernameFromToken(token);
-        const user = await User.findOne({ username: username });
-
-        if (eventBody.date && new Date(eventBody.date) <= new Date()) {
-            return res.json({ success: false, error: 'Date must not be in the past!' });
-        }
-
-        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventBody._id) });
-
-        const result = await user.modifyEvent(event, eventBody);
-        if (typeof result === 'boolean' || result === undefined) {
-            return res.json({ success: false });
-        }
-
-        return res.json(hideFieldsFromObject(event.toObject(), 'id', 'creator', 'allowedInviters', 'attendees'));
-    } catch (err) {
-        console.log(err);
-        return res.json({ success: false });
-    }
-});
-
-app.post('/api/setGuestLimit', async (req, res) => {
-    try {
-        const { token, eventId, guestLimit } = req.body;
-        if (eventId === undefined || guestLimit === undefined) {
-            return res.json({ success: false, error: 'eventId or guestList is undefined' });
-        }
-
-        const username = getUsernameFromToken(token);
-        const user = await User.findOne({ username: username });
-
-        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
-        if (!event || event === undefined) {
-            return res.json({ success: false, error: 'Event with that name not found' });
-        }
-
-        const changeSuccess = await event.setGuestLimit(user, guestLimit);
-
-        return res.json({ success: changeSuccess });
-    } catch (err) {
-        console.log(err);
-        return res.json({ success: false });
-    }
-});
-
-app.post('/api/setInviteLimit', async (req, res) => {
-    try {
-        const { token, eventId, inviteLimit } = req.body;
-        if (eventId === undefined || inviteLimit === undefined) {
-            return res.json({ success: false, error: 'eventId or inviteLimit are undefined' });
-        }
-
-        const username = getUsernameFromToken(token);
-        const user = await User.findOne({ username: username });
-
-        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
-        if (!event || event === undefined) {
-            return res.json({ success: false, error: 'Event with that name not found' });
-        }
-
-        const changeSuccess = await event.setInviteLimit(user, inviteLimit);
-
-        return res.json({ success: changeSuccess });
-    } catch (err) {
-        console.log(err);
-        return res.json({ success: false });
-    }
-});
-
-app.post('/api/addAllowedInviter', async (req, res) => {
-    try {
-        const { token, eventId, inviterName } = req.body;
-        if (eventId === undefined || inviterName === undefined) {
-            return res.json({ success: false, error: 'eventId or inviterName is undefined' });
-        }
-
-        const username = getUsernameFromToken(token);
-
-        const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
-
-        const inviter = await User.findOne({ username: inviterName });
-        if (!inviter) {
-            return res.json({ success: false, error: 'Inviter not found' });
-        }
-
-        const addedSuccessfully = await user.makeAllowedToInvite(event, inviter);
-        return res.json({ success: addedSuccessfully });
-    } catch (err) {
-        console.log(err);
-        return res.json({ success: false });
-    }
-});
-
-app.post('/api/removeAllowedInviter', async (req, res) => {
-    try {
-        const { token, eventId, inviterName } = req.body;
-        if (eventId === undefined || inviterName === undefined) {
-            return res.json({ success: false, error: 'eventId or inviterName is undefined' });
-        }
-
-        const username = getUsernameFromToken(token);
-
-        const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
-
-        const inviter = await User.findOne({ username: inviterName });
-        if (!inviter) {
-            return res.json({ success: false, error: 'Inviter not found' });
-        }
-
-        const removedSuccessfully = await user.makeUnableToInvite(event, inviter);
-        return res.json({ success: removedSuccessfully });
-    } catch (err) {
-        console.log(err);
-        return res.json({ success: false });
-    }
-});
-
-app.post('/api/inviteGuest', async (req, res) => {
-    try {
-        const { token, eventId, guestName } = req.body;
-        if (eventId === undefined || guestName === undefined) {
-            return res.json({ success: false, error: 'eventId or guestName is undefined' });
-        }
-
-        const username = getUsernameFromToken(token);
-
-        const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
-
-        const guestList = await event.getGuestList();
-        const guestExists = guestList.filter(guest => guest.guest === guestName).length > 0;
-        if (guestExists) {
-            return res.json({ success: false, error: 'Guest with that name already exists' });
-        }
-
-        const userInvited = typeof (await user.inviteGuests(event, guestName)) !== 'boolean';
-        return res.json({ success: userInvited });
-    } catch (err) {
-        console.log(err);
-        return res.json({ success: false });
-    }
-});
-
-app.post('/api/uninviteGuest', async (req, res) => {
-    try {
-        const { token, eventId, guestName } = req.body;
-        if (eventId === undefined || guestName === undefined) {
-            return res.json({ success: false, error: 'eventId or guestname is undefined' });
-        }
-
-        const username = getUsernameFromToken(token);
-
-        const user = await User.findOne({ username: username });
-        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
-
-        const guestList = await event.getGuestList();
-        const guestDoesNotExist = guestList.filter(guest => guest.guest === guestName).length === 0;
-        if (guestDoesNotExist) {
-            return res.json({ success: false, error: 'Guest does not already exist' });
-        }
-
-        const userUninvited = typeof (await user.uninviteGuests(event, guestName)) !== 'boolean';
-        return res.json({ success: userUninvited });
-    } catch (err) {
-        console.log(err);
-        return res.json({ success: false, message: err });
     }
 });
 
