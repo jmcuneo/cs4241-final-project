@@ -506,7 +506,7 @@ const userSchema = new Schema({
                 const userInvites = (await event.getInviteIdsByInviter(user))?.length ?? 0;
                 return {
                     ...hideFieldsFromObject(
-                        event.toObject(), 'attendees', 'id'),
+                        event.toObject(), 'attendees', 'id', 'allowedInviters'),
                     userInvites
                 };
             }));
