@@ -38,9 +38,12 @@ function Dashboard(props) {
         setShowModal(false);
     }
 
-    function onHandleMakeDownloadLink(imageUrl, filename = 'sharpified-image.png') {
+    async function onHandleMakeDownloadLink(imageUrl, filename = 'sharpified-image.png') {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
             const downloadLink = document.createElement('a');
-            downloadLink.href = imageUrl;
+            downloadLink.href = blobUrl;
             downloadLink.download = filename;
             downloadLink.click();
     }
