@@ -169,8 +169,6 @@ app.post("/upload", upload.single('image'), async (request, response) => {
             console.log("uploaded")
             //console.log(targetPath);
         uploadedImage = targetPath;
-
-        //TENSORFLOW and POTRACE
       
     }})
 })
