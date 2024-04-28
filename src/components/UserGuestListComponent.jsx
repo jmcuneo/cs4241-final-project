@@ -7,6 +7,7 @@ function UserGuestListComponent({ onUpdate, manage }) {
   const { eventId } = useParams();
   const [guestList, setGuestList] = useState([]);
   const [userGuestList, setUserGuestList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const guestNameRef = useRef(null);
   const [message, setMessage] = useState("");
 
@@ -47,6 +48,7 @@ function UserGuestListComponent({ onUpdate, manage }) {
       const result = await response.json();
       if (result.success == true) {
         setGuestList((currentGuests) => [...currentGuests, { guestName }]);
+        setUserGuestList((currentGuests) => [...currentGuests, { guestName }]);
         onUpdate(guestName, "add");
         setMessage("");
       } else {
@@ -77,6 +79,9 @@ function UserGuestListComponent({ onUpdate, manage }) {
         setGuestList((currentGuests) =>
           currentGuests.filter((guest) => guest.guestName !== guestName)
         );
+        setUserGuestList((currentGuests) =>
+          currentGuests.filter((guest) => guest.guestName !== guestName)
+        );
         onUpdate(guestName, "remove");
       }
       console.log(result);
@@ -100,12 +105,28 @@ function UserGuestListComponent({ onUpdate, manage }) {
     getGuestList("//localhost:3000/api/getUserGuestList", "user");
   }, [eventId]);
 
+const filteredList = (() => {
   let list = guestList;
-  if (!manage) list = userGuestList;
+  if (!manage) 
+    list = userGuestList;
+  return list.filter((guest) =>
+    guest.guestName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+})();
+
+
   const guestTable = () => {
     return (
-      <div className="flex justify-center align-center overflow-y-auto">
-        <table className="table table-zebra bg-neutral not-prose table-md">
+      <div className="overflow-x-auto prose">
+        <input 
+          style={{marginBottom: "0.2rem"}}
+          type="text"
+          placeholder="Search by guest name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="input input-bordered w-full max-w-xs"
+      />
+        <table className="table table-zebra bg-neutral not-prose table-md max-h-[75vh] overflow-y-auto">
           <thead>
             <tr>
               <th>Guest Name</th>
@@ -113,7 +134,7 @@ function UserGuestListComponent({ onUpdate, manage }) {
             </tr>
           </thead>
           <tbody>
-            {list.map((guest, index) => (
+            {filteredList.map((guest, index) => (
               <tr key={index}>
                 <td>{guest.guestName}</td>
                 {manage && <td>{guest.invitedBy}</td>}
@@ -151,11 +172,13 @@ function UserGuestListComponent({ onUpdate, manage }) {
           </div>
         )}
           {/* second col */}
-          {userGuestList.length > 0 ? (
-            guestTable()
-          ) : (
-            <p className="text-slate text-center w-full">You invited no guests</p>
-          )}
+          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto">
+            {userGuestList.length > 0 ? (
+                guestTable()
+              ) : (
+                <p className="text-slate text-center w-full max-h-[75vh] overflow-y-auto">You invited no guests</p>
+              )}
+          </div>
           {/* last col */}
           {!manage && (
             <div className="add-guest flex justify-center align-center max-h-[75vh] overflow-y-auto">

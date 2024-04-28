@@ -38,7 +38,7 @@ function MainPage({ onLogout }) {
   return (
     <>
       <Navbar onLogout={onLogout} showProfileButton={true}></Navbar>
-      <div className="main-page-container relative flex min-h-max flex-col mt-10 mx-auto items-center prose">
+      <div className="main-page-container relative flex min-h-max flex-col mt-10 mx-auto items-center prose max-h-[75vh] overflow-y-auto">
         <div>
           <h1 className="header-section">Upcoming Events</h1>
         </div>
