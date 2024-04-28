@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46836379-5a5c-461b-8fd8-2ed99e734ee7" name="Changes" comment="Navigation and styling changes (sakura and html changes)">
+    <list default="true" id="46836379-5a5c-461b-8fd8-2ed99e734ee7" name="Changes" comment="Style login (minimal)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/leaderboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/leaderboard.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -167,7 +169,28 @@
       <option name="project" value="LOCAL" />
       <updated>1714325220649</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Conclude game post req">
+      <created>1714326594683</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1714326594683</updated>
+    </task>
+    <task id="LOCAL-00014" summary="CSS style changes: Nav bar">
+      <created>1714328819905</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1714328819905</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Style login (minimal)">
+      <created>1714329773473</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1714329773473</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -185,6 +208,9 @@
     <MESSAGE value="Remove player IDs from games and add setWinnerOrder to concludeGame" />
     <MESSAGE value="Added leaderboard page" />
     <MESSAGE value="Navigation and styling changes (sakura and html changes)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Navigation and styling changes (sakura and html changes)" />
+    <MESSAGE value="Conclude game post req" />
+    <MESSAGE value="CSS style changes: Nav bar" />
+    <MESSAGE value="Style login (minimal)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Style login (minimal)" />
   </component>
 </project>
