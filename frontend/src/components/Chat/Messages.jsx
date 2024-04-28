@@ -5,7 +5,6 @@ import MessageSkeleton from "../skeletons/MessageSkeleton";
 const Messages = () => {
 
   const { messages, loading } = useGetMessages();
-  console.log("messages", messages);
   
   return (
     <div>
