@@ -1,9 +1,10 @@
 async function fillStats() {
+
     const response = await fetch("/userInfo", {
         method: "GET"
     })
     const text = await response.text()
-    console.log("Data from Server: ", text);
+   
     let mydata = JSON.parse(text)
 
     let wins = mydata.wins;
@@ -16,9 +17,17 @@ async function fillStats() {
     win_stat.innerHTML = win_stat.innerHTML + wins;
 }
 
-function makeWinRate() {
+async function makeWinRate() {
 
-    let data = {win: 3, loss: 2};
+    const response = await fetch("/userInfo", {
+        method: "GET"
+    })
+    const text = await response.text()
+
+    let mydata = JSON.parse(text)
+
+    let data = {win: mydata.wins, loss: mydata.losses};
+
     let percent = data.win / (data.win + data.loss);
 
     var margin = {top: 20, right: 100, bottom: 20, left: 40},
@@ -49,7 +58,7 @@ function makeWinRate() {
                 if(d.data.key == 'win') {
                     return '#007559';
                 } else {
-                    return '#DC0D4B';
+                    return '#9A9A9A';
                 }
             })
             .attr("stroke", "none")
@@ -63,9 +72,26 @@ function makeWinRate() {
 
 }
 
-function makeWinRateTime() {
+async function makeWinRateTime() {
 
-    let data = [0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1];
+    const response = await fetch("/userHistory", {
+        method: "GET"
+    })
+    const text = await response.text()
+    let mydata = JSON.parse(text);
+
+    const userres = await fetch("/userdata");
+    const userdata = await userres.json();
+
+    let data = []
+    mydata.forEach((g) => {
+        if(g.winner == userdata[0].username) {
+            data.push(1);
+        } else {
+            data.push(0);
+        }
+    })
+
     let winrate = [];
 
     for(let i = 0; i < data.length; i++) {
@@ -73,9 +99,9 @@ function makeWinRateTime() {
         winrate.push(cur);
     }
 
-    var margin = {top: 20, right: 20, bottom: 20, left: 60},
+    var margin = {top: 20, right: 20, bottom: 60, left: 60},
             width = 600 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
+            height = 340 - margin.top - margin.bottom;
 
     var svg = d3.select("#svg-win-rate-time").append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -110,11 +136,39 @@ function makeWinRateTime() {
                 .x((d, i) => { return x(i + 1) })
                 .y((d) => { return y(d) }));
 
+    // add label
+    svg.append("text")
+        .attr("class", "x-label")
+        .attr("text-anchor", "start")
+        .attr("x", 0)
+        .attr("y", height + 40)
+        .text("Games")
+        .attr("font-size", "16px");
+
 }
 
-function makeGameDist() {
+async function makeGameDist() {
 
-    let data = [2, 1, 2, 1, 3, 5, 4, 0, 3, 2, 3, 2, 1, 0, 2, 4, 2, 1, 3, 1, 2, 2, 1, 5, 5, 6]
+    const response = await fetch("/userHistory", {
+        method: "GET"
+    })
+    const text = await response.text()
+    let mydata = JSON.parse(text);
+
+    const userres = await fetch("/userdata");
+    const userdata = await userres.json();
+    let username = userdata[0].username;
+
+    console.log(mydata);
+
+    let data = [];
+
+    mydata.forEach((g) => {
+        let curix = g.winnerOrder.indexOf(username);
+        data.push(curix);
+    })
+
+    // data = [2, 1, 2, 1, 3, 5, 4, 0, 3, 2, 3, 2, 1, 0, 2, 4, 2, 1, 3, 1, 2, 2, 1, 5, 5, 6]
     let sums = new Array(d3.max(data) + 1).fill(0);
 
     data.forEach((d) => {
@@ -126,9 +180,9 @@ function makeGameDist() {
         domain.push(i);
     }
 
-    var margin = {top: 30, right: 30, bottom: 30, left: 30},
+    var margin = {top: 30, right: 30, bottom: 60, left: 30},
             width = 600 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
+            height = 330 - margin.top - margin.bottom;
 
     var svg = d3.select("#svg-game-dist").append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -165,6 +219,15 @@ function makeGameDist() {
             .attr("width", x.bandwidth())
             .attr("height", function(d) { return height - y(d); })
             .style("fill", "#007559");
+
+    // add label
+    svg.append("text")
+        .attr("class", "x-label")
+        .attr("text-anchor", "start")
+        .attr("x", 0)
+        .attr("y", height + 40)
+        .text("Placements (1 = 1st place)")
+        .attr("font-size", "16px");
 
 }
 
