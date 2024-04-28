@@ -1,23 +1,23 @@
 const express = require("express"),
-      axios = require("axios"),
-      path = require("path"),
-      session = require("express-session"),
-      { MongoClient, ServerApiVersion } = require("mongodb"),
-      socketIO = require('socket.io'),
-      dotenv = require('dotenv').config({ path: "./.env" }),
-      http = require('http'),
-      app = express(),
-      clientID = process.env.GITHUB_ID,
-      clientSecret = process.env.GITHUB_SECRET,
-      { Server } = require("socket.io");
+    axios = require("axios"),
+    path = require("path"),
+    session = require("express-session"),
+    { MongoClient, ServerApiVersion } = require("mongodb"),
+    socketIO = require('socket.io'),
+    dotenv = require('dotenv').config({ path: "./.env" }),
+    http = require('http'),
+    app = express(),
+    clientID = process.env.GITHUB_ID,
+    clientSecret = process.env.GITHUB_SECRET,
+    { Server } = require("socket.io");
 
-app.use( express.static('public') )
-app.use( express.json() )
+app.use(express.static('public'))
+app.use(express.json())
 app.use(session({
     secret: "secret_key",
     resave: false,
     saveUninitialized: false,
-    })
+})
 );
 
 const dbPwd = "admin"
@@ -33,7 +33,7 @@ const client = new MongoClient(uri, {
 });
 
 let numberOfPlayer;
-let startingHealth;
+let startingHealth = 0;
 let players = [];
 let clients = [];
 
@@ -53,7 +53,7 @@ async function run() {
     }
 }
 
-const server = http.createServer( app )
+const server = http.createServer(app)
 const io = new Server(server);
 
 // make connection with user from server side
@@ -76,9 +76,9 @@ io.on('connection', (socket) => {
                 isAlive: true
             })
             console.log(newMessage)
-            if(players.length == numberOfPlayer){
+            if (players.length == numberOfPlayer) {
                 console.log("Number of players reached")
-                clients.forEach( c => {c.emit('maxPlayersReached', players ) })
+                clients.forEach(c => { c.emit('maxPlayersReached', players) })
             }
         }
     )
@@ -92,17 +92,37 @@ io.on('connection', (socket) => {
     socket.on('disconnect',
         () => {
             console.log('disconnected from user');
-            clients.splice(socket)
             console.log(clients.length)
         });
 
-    
+    socket.on('healthchange', (message) => {
+        console.log(message)
+        players.forEach(player => {
+            if ((player.username == message.user) && (player.isAlive)) {
+                player.health += message.healthChange
+            }
+        })
+        console.log(players)
+        clients.forEach( c => {c.emit('update', players ) })
+    })
+
+    socket.on('playerdeath', (message) => {
+        console.log(message)
+        players.forEach(player => {
+            if (player.username == message.user) {
+                player.isAlive = !player.isAlive
+            }
+        })
+        clients.forEach( c => {c.emit('update', players ) })
+    })
+
 });
 
 
-app.post("/createGame", (req,res) =>{
+app.post("/createGame", (req, res) => {
     numberOfPlayer = req.body.players
-    startingHealth = req.body.health
+    startingHealth = parseInt(req.body.health)
+    console.log(`Created Game: \n Number of Players: ${numberOfPlayer} \n Starting Heath: ${startingHealth}`)
     res.sendStatus(200)
 })
 
@@ -112,20 +132,20 @@ app.get("/", (req, res) => {
 
 app.get("/auth/github/login", (req, res) => {
     res.redirect(
-      `https://github.com/login/oauth/authorize?client_id=${clientID}`
+        `https://github.com/login/oauth/authorize?client_id=${clientID}`
     );
-  });
+});
 
-  app.get("/auth/github/callback", async (req, res) => {
+app.get("/auth/github/callback", async (req, res) => {
     const requestToken = req.query.code;
     const response = await axios.post(
-      `https://github.com/login/oauth/access_token?client_id=${clientID}&client_secret=${clientSecret}&code=${requestToken}`,
-      {},
-      {
-        headers: {
-          accept: "application/json",
-        },
-      }
+        `https://github.com/login/oauth/access_token?client_id=${clientID}&client_secret=${clientSecret}&code=${requestToken}`,
+        {},
+        {
+            headers: {
+                accept: "application/json",
+            },
+        }
     );
 
     access_token = response.data.access_token;
@@ -133,34 +153,34 @@ app.get("/auth/github/login", (req, res) => {
     req.session.accessToken = access_token;
 
     res.redirect("/success");
-  });
+});
 
-  app.get("/success", async (req, res) => {
+app.get("/success", async (req, res) => {
     if (!req.session.accessToken) {
-      res.redirect("/auth/github/login");
-      return;
+        res.redirect("/auth/github/login");
+        return;
     }
 
     const response = await axios.get("https://api.github.com/user", {
-      headers: {
-        Authorization: `token ${req.session.accessToken}`,
-      },
+        headers: {
+            Authorization: `token ${req.session.accessToken}`,
+        },
     });
     const data = response.data;
-    userdata.push({username: data.login, name: data.name, id: data.id, pfp: data.avatar_url});
+    userdata.push({ username: data.login, name: data.name, id: data.id, pfp: data.avatar_url });
     const exists = await userExists(data.login);
-    if (exists == null || exists == false){
+    if (exists == null || exists == false) {
         console.log("User does not exist in database, adding now")
         await addUser(data.login);
-    } else{
+    } else {
         console.log("User exists in database")
     }
     res.sendFile(path.join(__dirname, "public", "home.html"));
-  });
+});
 
-  app.get("/userdata", async (req, res) => {
+app.get("/userdata", async (req, res) => {
     res.json(userdata);
-  })
+})
 
 app.get("/userInfo", async (req, res) => {
     let userID = userdata[0].username;
@@ -180,18 +200,18 @@ app.get("/userHistory", async (req, res) => {
 })
 
 // Send gameId, winnerId and loserIds in order of [2nd, 3rd, 4th, etc...]
-app.post("/concludeGame", async(req, res) =>{
-    const {gameID, winnerID, loserIDs} = req.body;
+app.post("/concludeGame", async (req, res) => {
+    const { gameID, winnerID, loserIDs } = req.body;
     await concludeGame(gameID, winnerID, loserIDs)
     res.send("Game Concluded")
 })
 
 run().catch(console.dir);
 
-server.listen( 3000 )
+server.listen(3000)
 
 // Add a user into the database, use GitHub username as userID (?)
-async function addUser(userID){
+async function addUser(userID) {
     try {
         const db = client.db("webwareFinal");
         const collection = db.collection("users");
@@ -211,7 +231,7 @@ async function addUser(userID){
 }
 
 // Creates a game entry and returns the game ID as a string. All other fields are empty as default
-async function createGame(){
+async function createGame() {
     try {
         const db = client.db("webwareFinal");
         const collection = db.collection("games");
@@ -228,7 +248,7 @@ async function createGame(){
         const stringID = result.insertedId.toString()
 
         const result2 = await collection.updateOne({ _id: result.insertedId },
-            { $set: { gameID: stringID} });
+            { $set: { gameID: stringID } });
 
         return stringID;
 
@@ -237,7 +257,7 @@ async function createGame(){
     }
 }
 
-async function userExists(userID){
+async function userExists(userID) {
     try {
         const db = client.db("webwareFinal");
         const collection = db.collection("users");
@@ -251,7 +271,7 @@ async function userExists(userID){
 }
 
 // Add a win to a user's account
-async function addWin(userID){
+async function addWin(userID) {
     try {
         const db = client.db("webwareFinal");
         const collection = db.collection("users");
@@ -266,7 +286,7 @@ async function addWin(userID){
     }
 }
 //Add a loss to a user's account
-async function addLoss(userID){
+async function addLoss(userID) {
     try {
         const db = client.db("webwareFinal");
         const collection = db.collection("users");
@@ -336,7 +356,7 @@ async function updateWinner(gameID, userID) {
 
 // Call to end a game. Adds win/loss data to players and sets history. Takes in a gameID, the winnerID, and array of loserIDs
 // LoserID needs to be in order [2nd, 3rd, 4th, etc.]
-async function concludeGame(gameID, winnerID, loserIDs){
+async function concludeGame(gameID, winnerID, loserIDs) {
     // Add a win to winner, add game to user history, set winner of game
     await addWin(winnerID);
     await addGameHistory(winnerID, gameID)
@@ -344,7 +364,7 @@ async function concludeGame(gameID, winnerID, loserIDs){
 
     let playerArray = [winnerID]
 
-    for(let loserID of loserIDs){
+    for (let loserID of loserIDs) {
         await addLoss(loserID)
         await addGameHistory(loserID, gameID)
         playerArray.push(loserID)
@@ -355,7 +375,7 @@ async function concludeGame(gameID, winnerID, loserIDs){
     console.log(`The game is over! ${winnerID} wins!`)
 }
 
-async function allUsers(){
+async function allUsers() {
     try {
         const db = client.db("webwareFinal");
         const collection = db.collection("users");
@@ -367,13 +387,13 @@ async function allUsers(){
 }
 
 // Set the winner order of a game.
-async function setWinnerOrder(gameID, playerArray){
+async function setWinnerOrder(gameID, playerArray) {
     try {
         const db = client.db("webwareFinal");
         const collection = db.collection("users");
         const result = await collection.updateOne(
-            {gameID: gameID},
-           { $set: { winnerOrder: playerArray } }
+            { gameID: gameID },
+            { $set: { winnerOrder: playerArray } }
         );
 
     } catch (err) {
@@ -383,11 +403,11 @@ async function setWinnerOrder(gameID, playerArray){
 }
 
 // Get database entry for userID
-async function getUserInfo(userID){
+async function getUserInfo(userID) {
     try {
         const db = client.db("webwareFinal");
         const collection = db.collection("users");
-        const myUser = collection.findOne({userID: userID});
+        const myUser = collection.findOne({ userID: userID });
         console.log(myUser);
         return myUser;
     } catch (err) {
@@ -395,15 +415,15 @@ async function getUserInfo(userID){
     }
 }
 // Get array of game data from user info
-async function getUserGameHistory(userID){
+async function getUserGameHistory(userID) {
     try {
         const db = client.db("webwareFinal");
         const collection = db.collection("users");
-        const myUser = await collection.findOne({userID: userID});
+        const myUser = await collection.findOne({ userID: userID });
         const history = myUser.history
         let gameData = []
-        for(let gameID of history){
-            let game = await db.collection("games").findOne({gameID: gameID})
+        for (let gameID of history) {
+            let game = await db.collection("games").findOne({ gameID: gameID })
             gameData.push(game)
         }
         return gameData;

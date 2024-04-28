@@ -7,7 +7,7 @@ const submit = async function( event ) {
     
     var health = document.querySelector( "#total-health" ),
           players = document.querySelector( "#numb-players" ),
-          json = { players: players.value, health: health.value},
+          json = { players: players.value, health: parseInt(health.value)},
           body = JSON.stringify( json )
 
     console.log(body)

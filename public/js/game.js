@@ -1,8 +1,8 @@
-let user = "Kombucha";
-
 const socket = io('http://localhost:3000');
 
 let numPlayers;
+
+let players;
 
 // Listen for 'newMessage' event from the server
 socket.on('newMessage', (message) => {
@@ -15,96 +15,98 @@ socket.on('disconnect', () => {
     console.log('Disconnected from server');
 });
 
-socket.on('maxPlayersReached', ()=>{
+socket.on('maxPlayersReached', (message) => {
     console.log("maxPlayersReached")
-    generateButtons(numPlayers)
+    console.log(message)
+    players = message
+    generateButtons()
+})
+
+socket.on('update', (message) => {
+    players = message
+    updatePlayerStatus()
+})
+
+socket.on('gamestarted', (message) => {
+    players = message
+    generateButtons()
 })
 
 
 // Function to send a message to the server
 function join() {
     const newMessage = {
-        user: user,
+        user: document.getElementById("username").value,
         createdAt: Date.now()
     };
     // Emit 'createMessage' event to the server with the new message
     socket.emit('join', newMessage);
 }
 
-const getUser = async function(  ) {
+const getUser = async function () {
     // stop form submission from trying to load
     // a new .html page for displaying results...
     // this was the original browser behavior and still
     // remains to this day
-    
+
     const response = await fetch("/userdata");
     const data = await response.json();
     console.log(data[0].name);
     const user = data[0].name;
-  }
+}
 
-function generatePlayers() {
-    const numPlayers = document.getElementById("numPlayers").value;
+function generateButtons() {
     const playerContainer = document.querySelector(".player-container");
     playerContainer.innerHTML = ""; // Clear previous players
-
-    for (let i = 1; i <= numPlayers; i++) {
+    console.log(players)
+    players.forEach(player => {
         const playerDiv = document.createElement("div");
         playerDiv.classList.add("player");
         playerDiv.innerHTML = `
-            <button id="player${i}"></button>
-            <button onclick="increaseHealth(${i})">+</button>
-            <button onclick="decreaseHealth(${i})">-</button>
+            <button id="${player.username}">${player.username}: ${player.health}</button>
+            <button onclick="changeHealth('${player.username}', 1)">+</button>
+            <button onclick="changeHealth('${player.username}', -1)">-</button>
+            <button onclick="death('${player.username}')">Die</button>
         `;
         playerContainer.appendChild(playerDiv);
-    }
+    })
 
     updatePlayerStatus(); // Initial update
 }
 
-function generateButtons(numPlayers){
-    const playerContainer = document.querySelector(".player-container");
-    playerContainer.innerHTML = ""; // Clear previous players
-
-    for (let i = 1; i <= numPlayers; i++) {
-        const playerDiv = document.createElement("div");
-        playerDiv.classList.add("player");
-        playerDiv.innerHTML = `
-            <button id="player${i}"></button>
-            <button onclick="increaseHealth(${i})">+</button>
-            <button onclick="decreaseHealth(${i})">-</button>
-        `;
-        playerContainer.appendChild(playerDiv);
-    }
-
-    updatePlayerStatus(); // Initial update
+function changeHealth(playerId, value) {
+    const newMessage = {
+        user: playerId,
+        healthChange: value,
+        createdAt: Date.now()
+    };
+    // Emit 'createMessage' event to the server with the new message
+    socket.emit('healthchange', newMessage);
 }
 
-function increaseHealth(playerId) {
-    const playerButton = document.getElementById(`player${playerId}`);
-    const currentHealth = parseInt(playerButton.dataset.health || 0);
-    const newHealth = currentHealth + 1;
-    playerButton.dataset.health = newHealth;
-    updatePlayerStatus();
+function death(playerId) {
+    const newMessage = {
+        user: playerId,
+        createdAt: Date.now()
+    };
+    // Emit 'createMessage' event to the server with the new message
+    socket.emit('playerdeath', newMessage);
 }
 
-function decreaseHealth(playerId) {
-    const playerButton = document.getElementById(`player${playerId}`);
-    const currentHealth = parseInt(playerButton.dataset.health || 0);
-    const newHealth = currentHealth - 1 >= 0 ? currentHealth - 1 : 0;
-    playerButton.dataset.health = newHealth;
-    updatePlayerStatus();
-}
 
 function updatePlayerStatus() {
-    // This function should be replaced with server communication logic
-    const players = document.querySelectorAll(".player button[id^='player']");
-    players.forEach(playerButton => {
-        const playerId = playerButton.id.replace("player", "");
-        const playerName = `Player ${playerId}`;
-        const health = parseInt(playerButton.dataset.health || 0);
-        playerButton.textContent = `${playerName}: ${health} HP`;
+    const playerButtons = document.querySelectorAll(".player button");
+    console.log(playerButtons)
+    playerButtons.forEach(button => {
+        const playerId = button.id;
+        const player = players.find(player => player.username === playerId);
+
+        if (player) {
+            const playerButton = button.parentNode.querySelector("button");
+            playerButton.textContent = `${player.username}: ${player.health}`; // Assuming health is a property of the player object
+        }
     });
+
 }
 
 window.onload = function () {
