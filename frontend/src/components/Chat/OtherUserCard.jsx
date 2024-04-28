@@ -17,13 +17,13 @@ const OtherUserCard = () => {
             }
             style={{ backgroundColor: selectedConversation.profilePic }}
             >
-              <span className="text-xl text-black">
+              <span className="text-xl text-black select-none">
                 {selectedConversation ? getInitials(selectedConversation.fullName) : 'OU'}
               </span>
             </div>
           </div>
           <div className="ml-3">
-            <span className="font-semibold text-white">
+            <span className="font-semibold text-white ">
               {selectedConversation ? selectedConversation.fullName : 'Other User'}
             </span>
           </div>

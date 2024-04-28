@@ -13,7 +13,7 @@ const CurrentUserCard = () => {
                     <div className="rounded-full w-14 flex items-center justify-center"
                         style={{ backgroundColor: authUser ? authUser.profilePic : '#gray' }}>
                         {/* Display initials */}
-                        <span className="text-xl text-black">{authUser ? getInitials(authUser.fullName) : 'CU'}</span>
+                        <span className="text-xl text-black select-none">{authUser ? getInitials(authUser.fullName) : 'CU'}</span>
                     </div>
                 </div>
 

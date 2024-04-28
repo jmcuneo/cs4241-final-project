@@ -11,12 +11,6 @@ const Conversation = ({ conversation, lastIdx }) => {
     // Assuming you have the last message data here, you might need to fetch it differently
     const lastMessageTime = extractTimeSimple(conversation.updatedAt);  // using updatedAt for simplicity
 
-
-
-
-
-
-
     return (
 
         <div className={`bg-dark w-[99.5%] h-[72px] mb-0.5 mr-0.5 ml-0 flex items-center justify-between hover:bg-[#502ee8] cursor-pointer ${isSelected ? "bg-[#502ee8]" : ""}`}
@@ -24,7 +18,7 @@ const Conversation = ({ conversation, lastIdx }) => {
             <div className="avatar placeholder ml-4">
             
                 <div style={{ backgroundColor: conversation.profilePic }} className={`rounded-full ${isSelected ? "ring ring-[#000000]":  ""} w-14 flex items-center justify-center`}>
-                    <span className="text-xl text-black">{getInitials(conversation.fullName)}</span>
+                    <span className="text-xl select-none text-black">{getInitials(conversation.fullName)}</span>
                 </div>
             </div>
             <div className="ml-3 mb-3 mt-3 flex-grow">
