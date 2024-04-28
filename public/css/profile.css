@@ -3,6 +3,11 @@ h2 {
     text-align: center;
 }
 
+.centered-description .ql-editor {
+    text-align: center;
+}
+
+
 #personal-events {
     margin: 0 auto;
     width: max-content;

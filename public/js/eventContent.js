@@ -103,6 +103,7 @@ function createPersonalEvent(name, start, end, location, eventId, includeAddButt
             syntax: true
         }
     });
+    descriptionDiv.classList.add("centered-description");
     extraInfo.appendChild(descriptionDiv);
 
     details.onclick = async () => {
