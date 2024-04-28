@@ -157,88 +157,99 @@ app.post("/register", async (request, response) => {
 const uuid = require('uuid');
 let uploadedImage;
 app.post("/upload", upload.single('image'), async (request, response) => {
-    console.log(request.file.path);
+       console.log(request.file.path);
     const tempPath = request.file.path;
-    const uniqueId = uuid.v4();
-    const targetPath = path.join(__dirname, `./uploads/${uniqueId}_uploadedImage.jpg`);
-    fs.rename(tempPath, targetPath, async err => {
+    const targetPath = path.join(__dirname, "./uploads/uploadedImage.jpg");
+    fs.rename(tempPath, targetPath, async err => 
+ {
         if (err) {
             console.log("error")
         }
         else {
             console.log("uploaded")
-            const file = await bucket.upload(targetPath, {
-                gzip: true,
-                public: true,
-                metadata: {
-                    cacheControl: 'public, max-age=31536000',
-                },
-            });
+            //console.log(targetPath);
+        uploadedImage = targetPath;
 
-            console.log(`${targetPath} uploaded to Firebase Storage.`);
-
-            const options = {
-                version: 'v4',
-                action: 'read',
-                expires: Date.now() + 15 * 60 * 1000, 
-            };
-            const url = `https://storage.googleapis.com/${bucket.name}/${file[0].name}`;
-
-            const imageDocument = {
-                filename: request.file.filename,
-                path: request.file.path,
-                url: url, 
-                uploadDate: new Date(),
-                userId: request.cookies.userId 
-            };
-
-            try {
-                const result = await images.insertOne(imageDocument);
-
-                response.json({ message: 'File uploaded successfully', id: result.insertedId });
-            } catch (error) {
-                console.error(error);
-                response.status(500).json({ message: 'Error uploading file' });
-            }
-        }
-    })
+        //TENSORFLOW and POTRACE
+      
+    }})
 })
 
 
+app.get('/retrieveImages', async (request, response) => {
+    const userId = request.cookies.userId;
 
-app.post("/sharpify", async (request, response) => {
+    const userImages = await images.find({ userId: userId }).toArray();
+    response.set('Access-Control-Allow-Origin', '*');
+
+
+    response.json(userImages);
+});
+
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
+
+
+app.get('/getImage/:imageId', async (request, response) => {
+    const imageId = request.params.imageId;
+
+    const bucket = storage.bucket('sharpify-2c8fc.appspot.com');
+    const file = bucket.file(imageId);
+
+    const readStream = file.createReadStream();
+
+    readStream.on('error', (err) => {
+        response.status(500).send(err);
+    });
+
+    response.set('Content-Type', 'image/jpeg');
+
+    readStream.pipe(response);
+});
+
+
+
+app.post("/sharpify", upload.single('image'), async (request, response) => {
 //FOR A NEW ENHANCE BUTTON
     console.log("sharpify post request received")
-    console.log(uploadedImage);
+    // const uploadedImage = request.body.imagePath;
+    console.log("image: " + uploadedImage)
+console.log("image: " + uploadedImage.path)
     const form = new FormData();
-    form.append("upscale_factor", "x2");
-    form.append("image_url",uploadedImage);
 
-    const options = {
-      method: 'POST',
-      host: 'api.picsart.io',
-      path: '/tools/1.0/upscale',
-      headers: {
-        'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
-        'accept': 'application/json',
-        'x-picsart-api-key': process.env.API_KEY
-      }
-    };
+    let file = fs.createReadStream(uploadedImage);
 
-    const req = http.request(options, (res) => {
-      let data = '';
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-      res.on('end', () => {
-        const responseData = JSON.parse(data);
-        //const upscaledImageUrl = responseData.result.url;
-        console.log(data);
-        //console.log("url: " + upscaledImageUrl);
-        response.send(data);
-      });
-    });   
-req.end();
+    form.append('image', file);
+    
+    //from api documentation
+    form.append('enhancements', JSON.stringify(['denoise', 'deblur', 'light', 'clean']));
+    form.append('width', 2000);
+// Get the headers from the form
+const formHeaders = form.getHeaders();
+
+    //console.log("line 250 " + file)
+    const apiUrl = 'https://deep-image.ai/rest_api/process_result';
+    const headers = {
+    'Content-Type': formHeaders['content-type'],
+    'X-API-Key': process.env.API_KEY,  // Replace 'API_KEY' with your actual API key
+  };
+
+
+  fetch(apiUrl, {
+    method: 'POST',
+    body: form,
+    headers: headers,
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log('Response:', data);
+      console.log(data.result_url); // Log the URL of the enhanced image  
+      response.json(data);  // Send the data as a response
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+      response.status(500).send('An error occurred');
+    });
 }
 )
 //get reqeust to retrieeve the image
