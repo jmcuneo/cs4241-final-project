@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import useConversation from '../zustand/useConversation';
 import toast from 'react-hot-toast';
+import { socket } from "../socket-client.js";
 
 const useSendMessage = () => {
     const [loading, setLoading] = useState(false);
@@ -8,6 +9,8 @@ const useSendMessage = () => {
 
     const sendMessage = async (message) => {
         setLoading(true);
+				messageJson = { msg: message, to: selectedConversation._id };
+				socket.emit("sendMessage", messageJson);
         try {
             const res = await fetch(`/api/messages/send/${selectedConversation._id}`, {
                 method: 'POST',

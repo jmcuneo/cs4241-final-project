@@ -1,6 +1,7 @@
 import  { useState, useEffect } from 'react'
 import useConversation from '../zustand/useConversation';
 import toast from 'react-hot-toast';
+import { socket } from "../socket-client.js"
 
 const useGetMessages = () => {
     const [loading, setLoading] = useState(false);
@@ -11,6 +12,8 @@ const useGetMessages = () => {
 
         const getMessages = async () =>{
             setLoading(true);
+						let startId = 0; // temporary var will be passsed as arg once this is all working
+						socket.emit("getMessages", startId);
             try {
                 const res = await fetch(`/api/messages/${selectedConversation._id}`);
                 const data = await res.json();
