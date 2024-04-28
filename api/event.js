@@ -34,7 +34,7 @@ router.post('/getEvent', async (req, res) => {
             return res.json({ success: false, error: 'Event with this id not found' });
         }
         const userInvites = (await event.getInviteIdsByInviter(user))?.length ?? 0;
-        return res.json(hideFieldsFromObject({userInvites: userInvites, ...event.toObject()}, 'id', 'attendees', 'allowedInviters'));
+        return res.json(hideFieldsFromObject({ userInvites: userInvites, ...event.toObject() }, 'id', 'attendees', 'allowedInviters'));
     } catch (err) {
         console.log(err);
         return res.json({ error: "Failed to authenticate token" });
@@ -194,12 +194,8 @@ router.post('/getGuestList', async (req, res) => {
 router.post('/getUserGuestList', async (req, res) => {
     try {
         const { token, eventId } = req.body;
-        // Is not used, but will ensure that someone is logged in
-        /* eslint-disable-next-line no-unused-vars */
         const username = getUsernameFromToken(token);
 
-        // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
-        // const user = await User.findOne({ username: username });
         const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
         const user = await User.findOne({ username: username });
 

@@ -68,6 +68,9 @@ router.post('/addAllowedInviter', async (req, res) => {
 
         const user = await User.findOne({ username: username });
         const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
+        if (event === null) {
+            return res.json({ success: false, error: "Event not found" });
+        }
 
         const inviter = await User.findOne({ username: inviterName });
         if (!inviter) {
@@ -93,6 +96,9 @@ router.post('/removeAllowedInviter', async (req, res) => {
 
         const user = await User.findOne({ username: username });
         const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
+        if (event === null) {
+            return res.json({ success: false, error: "Event not found" });
+        }
 
         const inviter = await User.findOne({ username: inviterName });
         if (!inviter) {
@@ -106,5 +112,29 @@ router.post('/removeAllowedInviter', async (req, res) => {
         return res.json({ success: false });
     }
 });
+
+router.post('/getAllowedInviters', async (req, res) => {
+    try {
+        const { token, eventId } = req.body;
+        if (eventId === undefined) {
+            return res.json({ success: false, error: 'eventId is undefined' });
+        }
+
+        const username = getUsernameFromToken(token);
+
+        const user = await User.findOne({ username: username });
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
+        if (event === null) {
+            return res.json({ success: false, error: "Event not found" });
+        }
+
+        const allowedInviters = await event.getAllowedInviters();
+        return res.json(allowedInviters);
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
 
 export default { router };

@@ -127,7 +127,7 @@ const userSchema = new Schema({
         /**
          * @requires {@link PERMISSIONS.MODIFY_EVENTS}
          * @param {mongoose.Model} event The event to add allowed inviters to
-         * @param  {...mongoose.Model | mongoose.Types.ObjectId} users The user(s) to add to the allowed inviters list
+         * @param  {...mongoose.Model} users The user(s) to add to the allowed inviters list
          * @returns {Promise<Boolean>} A boolean representing if the users were successfully given the permissions (NOT referring to {@link PERMISSIONS})
          * @author Alexander Beck
          */

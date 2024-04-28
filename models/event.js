@@ -380,6 +380,20 @@ const eventSchema = new Schema({
             }
             return false;
         },
+        /**
+         * @returns An object containing fullName, username, and guestCount
+         * @author Alexander Beck
+         */
+        async getAllowedInviters() {
+            return Promise.all(this.allowedInviters.map(async (allowedInviter) => {
+                const inviter = await User.findOne({ _id: allowedInviter });
+                return {
+                    fullName: await inviter.fullName,
+                    username: inviter.username, 
+                    guestCount: (await this.getInviteIdsByInviter(inviter)).length
+                }
+            }));
+        }
     },
 });
 
