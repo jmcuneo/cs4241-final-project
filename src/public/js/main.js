@@ -172,6 +172,9 @@ function makeElem(type, classType, inner, parent) {
 
 async function select(event) {
   let elem = this.childNodes[0];
+  elem.addEventListener("animationend", (e) => {
+    elem.classList.remove("apply-shake");
+  });
   let id = this.id;
   if (!elem.className.includes("inactive")) {
     if (id != selected1 && selected2 == null) {
@@ -257,6 +260,8 @@ function handleDisplay(itemID, match) {
     item.style.border = "2px solid green";
     item.style.backgroundColor = "green";
     item.className = item.className + " inactive";
+  } else {
+    item.classList.add("apply-shake")
   }
 }
 
