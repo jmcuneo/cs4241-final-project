@@ -169,7 +169,7 @@ const guestTable = () => {
         <div className="grid columns-3 grid-cols-3 gap-1">
           {/* first col */}
         {!manage && (
-          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto">
+          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto mb-10">
             <GuestListComponent
               guestList={guestList}
               shouldDisplayTitle={false}
@@ -177,7 +177,7 @@ const guestTable = () => {
           </div>
         )}
           {/* second col */}
-          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto">
+          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto mb-10">
             {userGuestList.length > 0 ? (
                 guestTable()
               ) : (
