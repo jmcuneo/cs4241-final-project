@@ -19,7 +19,7 @@ const Message = ({ message }) => {
     // authUser.fullName
     // selectedConversation.fullName
 
-    const bgColor = fromMe ? 'bg-[#0091ae]' : 'bg-[#171717]';
+    const bgColor = fromMe ? 'bg-[#502ee8]' : 'bg-[#171717]';
 
     return (
         <div>

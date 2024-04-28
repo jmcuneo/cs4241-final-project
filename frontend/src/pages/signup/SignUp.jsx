@@ -76,7 +76,7 @@ const SignUp = () => {
               > {loading ? <span className="loading loading-spinner"></span>: "Sign Up"}
               </button>
  
-              <button className='text-cyan-500 hover:text-cyan-700 font-inter' onClick={handleLoginClick}>Already Have An Account?</button>
+              <button className='text-[#502ee8] hover:text-[#8771eb] font-inter' onClick={handleLoginClick}>Already Have An Account?</button>
               </form>
           </div>
         </div>
