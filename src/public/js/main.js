@@ -95,10 +95,16 @@ let selectedColor = "rgb(116, 138, 227)";
 let totalTime = 0;
 let minute = 0;
 let second = 0;
+const giimmeComkie = () => {
+  var cookie = localStorage.getItem('token');
+  console.log(cookie)
+  if(cookie) document.cookie = `token=${cookie}`;
+}
 
 let matches = 0;
 
 window.onload = async function () {
+  giimmeComkie();
   const logoutBtn = document.getElementById("logoutButton");
 	logoutBtn.onclick = () => {
 		document.cookie = "token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
@@ -236,6 +242,9 @@ function stopWatch() {
 
 		document.getElementById("min").innerHTML = minString;
 		document.getElementById("sec").innerHTML = secString;        
+	} else {
+		gameover();
+		matches = 0;
 	}
 }
 
@@ -275,13 +284,25 @@ async function showLeaderboard() {
   let board = document.getElementById("leaderboard");
   const response = await fetch("/leaderboard", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json",
+                'Authorization': `Bearer ${document.cookie.substring(6)}`
+              },
   });
   const resp = await response.json();
   for (let i = 0; i < resp.length; i++) {
     let row = makeElem("tr", "", "", board);
-    makeElem("td", "", resp[i].user, row);
+    makeElem("td", "", resp[i].username, row);
     makeElem("td", "", resp[i].score, row);
   }
 }
 
+async function gameover(){
+	let score = document.getElementById("score").innerHTML;
+	let body = JSON.stringify({score: score})
+	const response = await fetch("/auth/add-leaderboard-entry", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body
+	});
+	const resp = await response.json();
+}
