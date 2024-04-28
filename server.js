@@ -32,10 +32,6 @@ const client = new MongoClient(uri, {
     }
 });
 
-let numberOfPlayer;
-let startingHealth = 0;
-let players = [];
-let clients = [];
 
 let userdata = []
 
@@ -56,11 +52,26 @@ async function run() {
 const server = http.createServer(app)
 const io = new Server(server);
 
+let numberOfPlayer;
+let startingHealth = 0;
+let players = [];
+let clients = [];
+let gamestarted = false;
+let loserQueue = [];
+let gameCreated = false;
+let postGameResults = "GG"
+let gameID;
+
 // make connection with user from server side
 io.on('connection', (socket) => {
     console.log('New user connected');
     clients.push(socket)
     console.log(clients.length)
+
+    if(gamestarted){
+        socket.emit('gamestarted', players)
+    }
+
     //emit message from server to user
     socket.emit('newMessage',
         {
@@ -75,18 +86,13 @@ io.on('connection', (socket) => {
                 health: startingHealth,
                 isAlive: true
             })
-            console.log(newMessage)
             if (players.length == numberOfPlayer) {
                 console.log("Number of players reached")
+                gamestarted = true
                 clients.forEach(c => { c.emit('maxPlayersReached', players) })
             }
         }
     )
-    // listen for message from user
-    socket.on('createMessage',
-        (newMessage) => {
-            console.log('newMessage', newMessage);
-        });
 
     // when server disconnects from user
     socket.on('disconnect',
@@ -96,7 +102,6 @@ io.on('connection', (socket) => {
         });
 
     socket.on('healthchange', (message) => {
-        console.log(message)
         players.forEach(player => {
             if ((player.username == message.user) && (player.isAlive)) {
                 player.health += message.healthChange
@@ -111,19 +116,71 @@ io.on('connection', (socket) => {
         players.forEach(player => {
             if (player.username == message.user) {
                 player.isAlive = !player.isAlive
+                if(!player.isAlive){
+                    loserQueue.push(player)
+                } else{
+                    loserQueue.splice(loserQueue.indexOf(player), 1)
+                }
+                if(loserQueue.length == numberOfPlayer-1){
+                    console.log(numberOfPlayer)
+                    console.log(loserQueue)
+                    console.log(loserQueue.length)
+                    gameOver()
+                }
             }
         })
         clients.forEach( c => {c.emit('update', players ) })
     })
 
+    socket.on('gameOver', (message) => {
+        gameOver()
+    })
+
 });
 
+async function gameOver(){
+    console.log("Game Over")
+    let temp = []
+    players.forEach(player =>{
+        if(player.isAlive){
+            temp.push(player)
+        }
+    })
+    temp.sort((a, b) => a.health - b.health)
+    temp.forEach(player =>{
+        loserQueue.push(player)
+    })
+    const winners = []
+    loserQueue.forEach(player =>{
+        winners.push(player.username)
+    })
+    winners.reverse()
+    console.log(winners)
+    console.log(gameID)
+    clients.forEach( c => {c.emit('gameOver', winners ) })
+    await concludeGame(gameID, winners)
+    clients = []
+    players = []
+    gameCreated = false
+    numberOfPlayer = null
+    startingHealth = 0
+    gamestarted = false
+    loserQueue = []
+    gameID = null
+}
 
 app.post("/createGame", (req, res) => {
+    createGame()
     numberOfPlayer = req.body.players
     startingHealth = parseInt(req.body.health)
+    gameCreated = true;
     console.log(`Created Game: \n Number of Players: ${numberOfPlayer} \n Starting Heath: ${startingHealth}`)
     res.sendStatus(200)
+})
+
+app.get("/isGameCreated", async (req, res) => {
+    console.log(gameCreated)
+    res.json({ gameStatus: gameCreated });
 })
 
 app.get("/", (req, res) => {
@@ -206,8 +263,9 @@ app.post("/userHistory", async (req, res) => {
 
 // Send gameId, winnerId and loserIds in order of [2nd, 3rd, 4th, etc...]
 app.post("/concludeGame", async (req, res) => {
-    const { gameID, winnerID, loserIDs } = req.body;
-    await concludeGame(gameID, winnerID, loserIDs)
+    const { gameID, playerIDs } = req.body;
+    //First to last place
+    await concludeGame(gameID, playerIDs)
     res.send("Game Concluded")
 })
 
@@ -254,7 +312,8 @@ async function createGame() {
 
         const result2 = await collection.updateOne({ _id: result.insertedId },
             { $set: { gameID: stringID } });
-
+        
+        gameID = stringID;
         return stringID;
 
     } catch (err) {
@@ -332,8 +391,6 @@ async function addGameHistory(userID, gameID) {
     } catch (err) {
         console.error("Error adding game history:", err);
         throw err; // Re-throw the error to handle it where the function is called
-    } finally {
-        await client.close();
     }
 }
 
@@ -359,23 +416,23 @@ async function updateWinner(gameID, userID) {
     }
 }
 
-// Call to end a game. Adds win/loss data to players and sets history. Takes in a gameID, the winnerID, and array of loserIDs
-// LoserID needs to be in order [2nd, 3rd, 4th, etc.]
-async function concludeGame(gameID, winnerID, loserIDs) {
+// Call to end a game. Adds win/loss data to players and sets history. Takes in a gameID and array of playerIDs
+// playerIDs needs to be in order [1st, 2nd, 3rd, 4th, etc.]
+async function concludeGame(gameID, playerIDs) {
     // Add a win to winner, add game to user history, set winner of game
+    await setWinnerOrder(gameID, playerIDs)
+    console.log(playerIDs)
+    let winnerID = playerIDs.shift()
+    console.log(winnerID)
     await addWin(winnerID);
     await addGameHistory(winnerID, gameID)
     await updateWinner(gameID, winnerID)
 
-    let playerArray = [winnerID]
-
-    for (let loserID of loserIDs) {
+    for (let loserID of playerIDs) {
+        console.log(loserID)
         await addLoss(loserID)
         await addGameHistory(loserID, gameID)
-        playerArray.push(loserID)
     }
-
-    await setWinnerOrder(gameID, playerArray)
 
     console.log(`The game is over! ${winnerID} wins!`)
 }
@@ -395,11 +452,12 @@ async function allUsers() {
 async function setWinnerOrder(gameID, playerArray) {
     try {
         const db = client.db("webwareFinal");
-        const collection = db.collection("users");
+        const collection = db.collection("games");
         const result = await collection.updateOne(
             { gameID: gameID },
             { $set: { winnerOrder: playerArray } }
         );
+        console.error("Winner order set: ", result);
 
     } catch (err) {
         console.error("Error setting winner: ", err);

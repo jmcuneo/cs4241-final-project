@@ -32,6 +32,10 @@ socket.on('gamestarted', (message) => {
     generateButtons()
 })
 
+socket.on('gameOver', (message) => {
+    console.log(message)
+    endGameResults(message)
+})
 
 // Function to send a message to the server
 function join() {
@@ -71,6 +75,13 @@ function generateButtons() {
         playerContainer.appendChild(playerDiv);
     })
 
+    const playerDiv = document.createElement("div");
+    playerDiv.classList.add("player");
+    playerDiv.innerHTML = `
+            <button onclick="gameOver()">GG</button>
+        `;
+    playerContainer.appendChild(playerDiv);
+
     updatePlayerStatus(); // Initial update
 }
 
@@ -93,6 +104,9 @@ function death(playerId) {
     socket.emit('playerdeath', newMessage);
 }
 
+function gameOver(){
+    socket.emit('gameOver', "GG");
+}
 
 function updatePlayerStatus() {
     const playerButtons = document.querySelectorAll(".player button");
@@ -108,6 +122,29 @@ function updatePlayerStatus() {
     });
 
 }
+
+function endGameResults(playerList) {
+    const playerListContainer = document.querySelector(".player-container");
+    playerListContainer.innerHTML = ""; // Clear previous player list
+
+    playerList.forEach((player, index) => {
+        const playerDiv = document.createElement("div");
+        playerDiv.classList.add("player");
+        playerDiv.textContent = `${index + 1}. ${player} `; // Assuming health is a property of the player object
+        playerListContainer.appendChild(playerDiv);
+    });
+
+    // Add button for creating a new game
+    const newGameButton = document.createElement("button");
+    newGameButton.textContent = "New Game";
+    newGameButton.addEventListener("click", createNewGame);
+    playerListContainer.appendChild(newGameButton);
+}
+
+function createNewGame() {
+    window.location.href = '/createGame.html';
+}
+
 
 window.onload = function () {
     // Attach click event listener to the button
