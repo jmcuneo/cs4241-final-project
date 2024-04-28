@@ -9,7 +9,7 @@ const useSendMessage = () => {
 
     const sendMessage = async (message) => {
         setLoading(true);
-				messageJson = { msg: message, to: selectedConversation._id };
+				let messageJson = { msg: message, to: selectedConversation._id };
 				socket.emit("sendMessage", messageJson);
         try {
             const res = await fetch(`/api/messages/send/${selectedConversation._id}`, {

@@ -11,7 +11,7 @@ import connectToMongoDB from "./db/connectToMongoDB.js";
 
 const PORT = process.env.PORT || 8000;
 const app =  express();
-const io = new Server(app.listen(3636), {
+const io = new Server(3636, {
 	cors: {
 		origin: ["http://localhost:3000"],
 	},
@@ -22,6 +22,15 @@ dotenv.config();
 
 app.use(express.json()); //parse json data in the request body (from req.body)
 app.use(cookieParser()); //parse cookies from the request headers
+
+// temporary!
+
+io.on("connection", (socket) => {
+	console.log("connection!");
+	socket.on("sendMessage", (message) => {
+		console.log(message);
+	});
+})
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
