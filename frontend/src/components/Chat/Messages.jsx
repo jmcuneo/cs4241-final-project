@@ -6,21 +6,16 @@ const Messages = () => {
 
   const { messages, loading } = useGetMessages();
   console.log("messages", messages);
+  
   return (
     <div>
 
 
       {!loading && messages.length > 0 && messages.map((message) => (
-
-        <Message 
-        key={message._id}  
-        message={message.message}
-        text={message.message}
-        time="13"
-        />
-
-        
-      ))}
+					<div key={message._id}>
+						<Message message={message} />
+					</div>
+				))}
       
       {loading && [...Array(4)].map((_, idx) => <MessageSkeleton key={idx} />)}
 
