@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import GuestListComponent from "./GuestListComponent";
 
-function UserGuestListComponent({ onUpdate, manage }) {
+function UserGuestListComponent({ manage }) {
   const { eventId } = useParams();
   const [guestList, setGuestList] = useState([]);
   const [userGuestList, setUserGuestList] = useState([]);
@@ -49,16 +49,16 @@ function UserGuestListComponent({ onUpdate, manage }) {
       if (result.success == true) {
         setGuestList((currentGuests) => [...currentGuests, { guestName }]);
         setUserGuestList((currentGuests) => [...currentGuests, { guestName }]);
-        onUpdate(guestName, "add");
         setMessage("");
       } else {
         console.log(result);
         setMessage("Error: " + result.error);
       }
-      guestNameRef.current.value = "";
+      
     } catch (error) {
       console.error("Error adding guest:", error);
     }
+    guestNameRef.current.value = "";
   };
 
   const removeGuest = async (guestName) => {
@@ -82,7 +82,6 @@ function UserGuestListComponent({ onUpdate, manage }) {
         setUserGuestList((currentGuests) =>
           currentGuests.filter((guest) => guest.guestName !== guestName)
         );
-        onUpdate(guestName, "remove");
       }
       console.log(result);
     } catch (error) {

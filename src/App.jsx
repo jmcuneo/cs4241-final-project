@@ -78,7 +78,7 @@ function App() {
         {/*PROTECTED ROUTES*/}
         {authenticated && (
           <>
-            <Route exact path="/main" element={<MainPage onLogout={handleLogout} />} />
+            <Route exact path="/main" element={<MainPage onLogout={handleLogout} isAdmin={admin} />} />
             <Route exact path="/profile" element={<ProfilePage onLogout={handleLogout} />} />
             <Route exact path="/event/:eventId" element={<EventPage isAdmin={admin} onLogout={handleLogout} />} />
           </>
