@@ -26,6 +26,25 @@
     color: white;
 }
 
-.topnav a.user{
+.topnav a.user {
     float: right;
+}
+
+.demo-wrap {
+    overflow: hidden;
+    position: relative;
+}
+
+.demo-bg {
+    opacity: 0.6;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.demo-content {
+    position: relative;
 }
