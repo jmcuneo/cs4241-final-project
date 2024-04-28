@@ -14,16 +14,16 @@ function Dashboard(props) {
     function onHandleFileChange(e) {
         const file = e.target.files[0];
 
-        let formData = new FormData();
-        formData.append('image', file);
+         let formData = new FormData();
+         formData.append('image', file);
 
-        const response = fetch('/upload', {
-            method: 'POST',
-            body: formData
+         const response = fetch('/upload', {
+             method: 'POST',
+             body: formData
 
-    }).then(response => {response.blob()})
-        .then(blob => {console.log(blob)})
-        .catch(error => {console.error(error)});
+     }).then(response => {response.blob()})
+         .then(blob => {console.log(blob)})
+         .catch(error => {console.error(error)});
 
         if (!file) return;
         const reader = new FileReader();
@@ -38,16 +38,24 @@ function Dashboard(props) {
         setShowModal(false);
     }
 
-    function onHandleMakeDownloadLink() {
-        const canvas = canvasRef.current;
-        canvas.toBlob(function (blob) {
-            const url = URL.createObjectURL(blob);
+    function onHandleMakeDownloadLink(imageUrl, filename = 'sharpified-image.png') {
             const downloadLink = document.createElement('a');
-            downloadLink.href = url;
-            downloadLink.download = 'enhanced-image.png';
+            downloadLink.href = imageUrl;
+            downloadLink.download = filename;
             downloadLink.click();
-        });
     }
+
+function changeCanvasImage(canvasRef, imageUrl) {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+
+    const img = new Image();
+    img.onload = function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear the canvas
+        ctx.drawImage(img, 0, 0);  // Draw the new image on the canvas
+    };
+    img.src = imageUrl;  // Set the source of the image object to the new image URL
+}
 
     function sharpify() {
         if (!imageSrc) return;
@@ -67,19 +75,23 @@ function Dashboard(props) {
             // Append the Blob object to the form data
             formData.append('image', blob, 'enhanced-image.png');
 
+            // const blobUrl = URL.createObjectURL(blob);
+            // formData.append('imagePath', blobUrl);
+
             // Send the Blob object using the fetch API
        
                 const response = await fetch('/sharpify', {
                     method: 'POST',
                     body: formData,
-                }).then(response => {response.blob()})
-        .then(blob => {console.log(blob)})
+                }).then(response => response.json())
+        .then(data => {
+            onHandleMakeDownloadLink(data.result_url, 'sharpified-image.png');
+            changeCanvasImage(canvas, data.result_url);})
         .catch(error => {console.error(error)});;
 
 
         });
 
-            onHandleMakeDownloadLink();
         };
         img.src = imageSrc;
     }

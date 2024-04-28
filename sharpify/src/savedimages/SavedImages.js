@@ -1,31 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Container, Image } from 'react-bootstrap';
+import { Row, Col, Container, Image, Modal } from 'react-bootstrap';
 // import { Row, Col, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCloudDownloadAlt } from '@fortawesome/fontawesome-free-solid'
 import './SavedImages.css';
 
-// function SavedImages(props) {
-//     const [images, setImages] = useState([]);
-
-//     useEffect(() => {
-//         const fetchedImages = [
-//             { id: 1, src: 'image0.jpeg', filename: 'image1.jpeg' },
-//             { id: 2, src: 'logo192.png', filename: 'image2.png' },
-//             { id: 3, src: 'logo512.png', filename: 'image3.jpeg' },
-//             { id: 4, src: 'logo512.png', filename: 'image3.jpeg' },
-//             { id: 5, src: 'image0.jpeg', filename: 'image1.jpeg' },
-//             { id: 6, src: 'logo192.png', filename: 'image2.png' },
-//         ];
-//         setImages(fetchedImages);
-//     }, []);
-
-
-
-
 
 function SavedImages(props) {
     const [images, setImages] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
 
     useEffect(() => {
         // Fetch the images from your server
@@ -62,22 +46,61 @@ function SavedImages(props) {
             .catch(() => alert('Something went wrong! We couldn\'t download the file.'));
     };
 
-    return (
-        <Container style={{ marginTop: '4rem' }}>
-            <Row>
-                {images.map((image, index) => (
-                    <Col key={index} xs={6} md={4}>
-                        <Image src={image.url} thumbnail />
-                        <div className="image-overlay">
-                            <button onClick={() => handleDownload(image.url, image.filename)}>
-                                <FontAwesomeIcon icon={faCloudDownloadAlt} />
-                            </button>
-                        </div>
-                    </Col>
-                ))}
-            </Row>
-        </Container>
-    );
+    const handleImageClick = (image) => {
+        setSelectedImage(image);
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
+//     return (
+//         <Container style={{ marginTop: '4rem' }}>
+//             <Row>
+//                 {images.map((image, index) => (
+//                     <Col key={index} xs={6} md={4}>
+//                         <Image src={image.url} thumbnail />
+//                         <div className="image-overlay">
+//                             <button onClick={() => handleDownload(image.url, image.filename)}>
+//                                 <FontAwesomeIcon icon={faCloudDownloadAlt} />
+//                             </button>
+//                         </div>
+//                     </Col>
+//                 ))}
+//             </Row>
+//         </Container>
+//     );
+// }
+return (
+    <Container style={{ marginTop: '4rem' }}>
+    <div className="image-row">
+        <Row>
+            {images.map((image, index) => (
+                <Col key={index} xs={6} md={4} className="image-container">
+                    <Image src={image.url} className="saved-image" onClick={() => handleImageClick(image)} />
+                </Col>
+            ))}
+        </Row>
+        </div>
+
+        <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal.Header closeButton>
+                <Modal.Title>Image Preview</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {selectedImage && <Image src={selectedImage.url} fluid />}
+            </Modal.Body>
+            <Modal.Footer>
+                {selectedImage && 
+                    <button onClick={() => handleDownload(selectedImage.url, selectedImage.filename)}>
+                        <FontAwesomeIcon icon={faCloudDownloadAlt} /> Download
+                    </button>
+                }
+            </Modal.Footer>
+        </Modal>
+    </Container>
+);
 }
 
 export default SavedImages;
