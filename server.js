@@ -201,8 +201,8 @@ app.get("/userHistory", async (req, res) => {
 
 // Send gameId, winnerId and loserIds in order of [2nd, 3rd, 4th, etc...]
 app.post("/concludeGame", async (req, res) => {
-    const { gameID, winnerID, loserIDs } = req.body;
-    await concludeGame(gameID, winnerID, loserIDs)
+    const { gameID, playerIDs } = req.body;
+    await concludeGame(gameID, playerIDs)
     res.send("Game Concluded")
 })
 
@@ -354,23 +354,21 @@ async function updateWinner(gameID, userID) {
     }
 }
 
-// Call to end a game. Adds win/loss data to players and sets history. Takes in a gameID, the winnerID, and array of loserIDs
-// LoserID needs to be in order [2nd, 3rd, 4th, etc.]
-async function concludeGame(gameID, winnerID, loserIDs) {
+// Call to end a game. Adds win/loss data to players and sets history. Takes in a gameID and array of playerIDs
+// playerIDs needs to be in order [1st, 2nd, 3rd, 4th, etc.]
+async function concludeGame(gameID, playerIDs) {
     // Add a win to winner, add game to user history, set winner of game
+    await setWinnerOrder(gameID, playerIDs)
+
+    let winnerID = playerIDs.shift()
     await addWin(winnerID);
     await addGameHistory(winnerID, gameID)
     await updateWinner(gameID, winnerID)
 
-    let playerArray = [winnerID]
-
-    for (let loserID of loserIDs) {
+    for (let loserID of playerIDs) {
         await addLoss(loserID)
         await addGameHistory(loserID, gameID)
-        playerArray.push(loserID)
     }
-
-    await setWinnerOrder(gameID, playerArray)
 
     console.log(`The game is over! ${winnerID} wins!`)
 }
