@@ -61,7 +61,7 @@
         let new_game_setup = { whomst, flipped, guessed, chat };
         new_game_setup.board = gameBoard.map((e) => ({
             name: e.label,
-            link: `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${(e.unique_id + "").padStart(3, "0")}.png`,
+            link: e.image_url,
         }));
         game_setup = new_game_setup;
     });
