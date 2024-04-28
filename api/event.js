@@ -30,7 +30,7 @@ router.post('/getEvent', async (req, res) => {
 
         // Why does this double fire?
         const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
-        if (!event || event === undefined) {
+        if (!event || event === undefined || event === null) {
             return res.json({ success: false, error: 'Event with this id not found' });
         }
         const userInvites = (await event.getInviteIdsByInviter(user))?.length ?? 0;
@@ -107,6 +107,9 @@ router.post('/modifyEvent', async (req, res) => {
         }
 
         const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventBody._id) });
+        if (!event || event === undefined || event === null) {
+            return res.json({ success: false, error: 'Event with that name not found' });
+        }
 
         const result = await user.modifyEvent(event, eventBody);
         if (typeof result === 'boolean' || result === undefined) {
@@ -123,8 +126,11 @@ router.post('/modifyEvent', async (req, res) => {
 router.post('/setGuestLimit', async (req, res) => {
     try {
         const { token, eventId, guestLimit } = req.body;
-        if (eventId === undefined || guestLimit === undefined) {
-            return res.json({ success: false, error: 'eventId or guestList is undefined' });
+        if (eventId === undefined) {
+            return res.json({ success: false, error: 'eventId is undefined' });
+        }
+        if (guestLimit === undefined) {
+            return res.json({ success: false, error: 'guestLimit is undefined' });
         }
 
         const username = getUsernameFromToken(token);
@@ -144,14 +150,15 @@ router.post('/setGuestLimit', async (req, res) => {
     }
 });
 
-router.post('/setInviteLimit', async (req, res) => {
+router.post('/getGuestLimit', async (req, res) => {
     try {
-        const { token, eventId, inviteLimit } = req.body;
-        if (eventId === undefined || inviteLimit === undefined) {
-            return res.json({ success: false, error: 'eventId or inviteLimit are undefined' });
+        const { token, eventId } = req.body;
+        if (eventId === undefined) {
+            return res.json({ success: false, error: 'eventId is undefined' });
         }
 
         const username = getUsernameFromToken(token);
+        /* eslint-disable-next-line no-unused-vars */
         const user = await User.findOne({ username: username });
 
         const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
@@ -159,9 +166,87 @@ router.post('/setInviteLimit', async (req, res) => {
             return res.json({ success: false, error: 'Event with that name not found' });
         }
 
-        const changeSuccess = await event.setInviteLimit(user, inviteLimit);
+        const guestLimit = event.guestLimit;
+
+        return res.json({ guestLimit: guestLimit });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+router.post('/setInviteLimit', async (req, res) => {
+    try {
+        const { token, eventId, inviteLimit } = req.body;
+        if (eventId === undefined) {
+            return res.json({ success: false, error: 'eventId is undefined' });
+        }
+        if (inviteLimit === undefined) {
+            return res.json({ success: false, error: 'inviteLimit are undefined' });
+        }
+
+        const username = getUsernameFromToken(token);
+        const user = await User.findOne({ username: username });
+
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
+        if (!event || event === undefined || event === null) {
+            return res.json({ success: false, error: 'Event with that name not found' });
+        }
+
+        const changeSuccess = await event.setInviterLimit(user, inviteLimit);
 
         return res.json({ success: changeSuccess });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+router.post('/getInviteLimit', async (req, res) => {
+    try {
+        const { token, eventId } = req.body;
+        if (eventId === undefined) {
+            return res.json({ success: false, error: 'eventId is undefined' });
+        }
+
+        const username = getUsernameFromToken(token);
+        /* eslint-disable-next-line no-unused-vars */
+        const user = await User.findOne({ username: username });
+
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
+        if (!event || event === undefined || event === null) {
+            return res.json({ success: false, error: 'Event with that name not found' });
+        }
+
+        const inviteLimit = event.inviteLimit;
+
+        return res.json({ inviteLimit: inviteLimit });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false });
+    }
+});
+
+router.post('/getGuestAndInviteLimits', async (req, res) => {
+    try {
+        const { token, eventId } = req.body;
+        if (eventId === undefined) {
+            return res.json({ success: false, error: 'eventId is undefined' });
+        }
+
+        const username = getUsernameFromToken(token);
+        /* eslint-disable-next-line no-unused-vars */
+        const user = await User.findOne({ username: username });
+
+        const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
+        if (!event || event === undefined || event === null) {
+            return res.json({ success: false, error: 'Event with that name not found' });
+        }
+
+        const guestLimit = event.guestLimit;
+        const inviteLimit = event.inviteLimit;
+
+        return res.json({ guestLimit: guestLimit, inviteLimit: inviteLimit });
     } catch (err) {
         console.log(err);
         return res.json({ success: false });
@@ -178,6 +263,9 @@ router.post('/getGuestList', async (req, res) => {
         // Doesn't really have a purpose, but will fail if the user isn't logged in I guess
         // const user = await User.findOne({ username: username });
         const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
+        if (!event || event === undefined || event === null) {
+            return res.json({ success: false, error: 'Event with that name not found' });
+        }
 
         const uncleanedGuestList = await event.getGuestList();
         const guestList = uncleanedGuestList.map(guest => {
@@ -197,6 +285,10 @@ router.post('/getUserGuestList', async (req, res) => {
         const username = getUsernameFromToken(token);
 
         const event = await Event.findOne({ _id: mongoose.Types.ObjectId.createFromHexString(eventId) });
+        if (!event || event === undefined || event === null) {
+            return res.json({ success: false, error: 'Event with that name not found' });
+        }
+
         const user = await User.findOne({ username: username });
 
         const guestList = (await user.getInvitedGuests(event)).map(guest => {
