@@ -51,6 +51,18 @@
 </script>
 
 <div class="board-spinner">
+    <p class="instructions">
+        Welcome to Approximate Whomst! Enter a room code and press enter on the "Host Game" field 
+        to host a game. Select what game type you would like to play, then give your friend the room
+        code!
+    </p>
+    <p class="instructions">
+        To join a game, enter the room code your friend gave you in the "Join Game"
+        field and press enter. In the game, take turns asking yes or no questions.
+        Your card is the one highlighted in yellow. Use left click to flip over a card you <i>don't</i> 
+        think is your opponent's, and use right click to guesss a card you <i>do</i> think is your 
+        opponent's. Whoever guesses their opponent's card first wins.
+    </p>
     <h3><label for="hostGame">Host Game:</label></h3>
     <input id="hostGame" on:keydown={hostEnter} />
     <h3><label for="joinGame">Join Game:</label></h3>
