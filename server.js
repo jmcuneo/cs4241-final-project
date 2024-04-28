@@ -148,6 +148,13 @@ app.get("/userHistory", async (req, res) => {
     res.json(history);
 })
 
+// Send gameId, winnerId and loserIds in order of [2nd, 3rd, 4th, etc...]
+app.post("/concludeGame", async(req, res) =>{
+    const {gameID, winnerID, loserIDs} = req.body;
+    await concludeGame(gameID, winnerID, loserIDs)
+    res.send("Game Concluded")
+})
+
 run().catch(console.dir);
 
 server.listen( 3000 )

@@ -2,7 +2,7 @@ const loadTable = async function (){
     await fetch("/allUsers").then(response => response.json())
         .then(data => {
             const existingTableBody = document.getElementById("leaderboardBody");
-            data.sort((a, b) => b.wins - a.wins)
+            data.sort((a, b) => (b.wins / (b.wins + b.losses)) - (a.wins / (a.wins + a.losses)))
             for (let i = 0; i < data.length; i++) {
                 console.log("loadTable: ", data[i])
                 const row = document.createElement("tr");
@@ -21,6 +21,7 @@ const loadTable = async function (){
                             break;
                         case 3:
                             content = data[i].wins / (data[i].wins + data[i].losses)
+                            content = (content * 100).toFixed(2) + '%';
                             break;
                     }
                     const cellText = document.createTextNode(content);
