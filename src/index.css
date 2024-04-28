@@ -16,3 +16,9 @@
 [data-theme="dark"] {
   --bc:#fff !important;
 }
+
+@media screen and (orientation: landscape) {
+  :root {
+    overflow-x: hidden;
+  }
+}
