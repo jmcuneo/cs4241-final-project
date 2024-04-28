@@ -71,6 +71,13 @@ function generateButtons() {
         playerContainer.appendChild(playerDiv);
     })
 
+    const playerDiv = document.createElement("div");
+    playerDiv.classList.add("player");
+    playerDiv.innerHTML = `
+            <button onclick="gameOver()">GG</button>
+        `;
+    playerContainer.appendChild(playerDiv);
+
     updatePlayerStatus(); // Initial update
 }
 
@@ -93,6 +100,9 @@ function death(playerId) {
     socket.emit('playerdeath', newMessage);
 }
 
+function gameOver(){
+    socket.emit('gameOver', "GG");
+}
 
 function updatePlayerStatus() {
     const playerButtons = document.querySelectorAll(".player button");
