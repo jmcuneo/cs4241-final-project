@@ -3,8 +3,9 @@ import useGetConversations  from '../../hooks/useGetConversations'
 
 const Conversations = () => {
   const {loading, conversations}= useGetConversations();
+
+  console.log(conversations);
   return (
-    console.log(conversations.filteredUsers),
 
     <div className=' flex flex-col overflow-y-auto overflow-x-hidden '>
  
