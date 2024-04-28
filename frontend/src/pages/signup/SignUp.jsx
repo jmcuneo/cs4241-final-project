@@ -54,19 +54,19 @@ const SignUp = () => {
               <div className="space-y-6 mt-4">
 
                 <label className="input input-bordered border-[#A8A8A8] w-80 bg-[#262626] flex items-center gap-2">
-                  <input type="text" name="fullName" className="grow" placeholder="Display Name" value={inputs.fullName} onChange={handleChange} />
+                  <input type="text" name="fullName" className="grow text-white" placeholder="Display Name" value={inputs.fullName} onChange={handleChange} />
                 </label>
 
                 <label className="input input-bordered border-[#A8A8A8] w-80 bg-[#262626] flex items-center gap-2">
-                  <input type="text" name="username" className="grow" placeholder="Username" value={inputs.username} onChange={handleChange} />
+                  <input type="text" name="username" className="grow text-white" placeholder="Username" value={inputs.username} onChange={handleChange} />
                 </label>
 
                 <label className="input input-bordered border-[#A8A8A8] bg-[#262626] w-80 flex items-center gap-2">
-                  <input type="password" name="password" className="grow" placeholder="Password" value={inputs.password} onChange={handleChange} />
+                  <input type="password" name="password" className="grow text-white" placeholder="Password" value={inputs.password} onChange={handleChange} />
                 </label>
 
                 <label className="input input-bordered border-[#A8A8A8] bg-[#262626] w-80 flex items-center gap-2">
-                  <input type="password" name="confirmPassword" className="grow" placeholder="Confirm Password" value={inputs.confirmPassword} onChange={handleChange} />
+                  <input type="password" name="confirmPassword" className="grow text-white" placeholder="Confirm Password" value={inputs.confirmPassword} onChange={handleChange} />
                 </label>
 
               </div>
