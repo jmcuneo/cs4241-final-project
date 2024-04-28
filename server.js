@@ -160,12 +160,16 @@ app.get("/success", async (req, res) => {
         res.redirect("/auth/github/login");
         return;
     }
-
+  
+  
     const response = await axios.get("https://api.github.com/user", {
         headers: {
             Authorization: `token ${req.session.accessToken}`,
         },
     });
+  
+    req.session.accessToken = null;
+  
     const data = response.data;
     userdata.push({ username: data.login, name: data.name, id: data.id, pfp: data.avatar_url });
     const exists = await userExists(data.login);
@@ -175,6 +179,7 @@ app.get("/success", async (req, res) => {
     } else {
         console.log("User exists in database")
     }
+  
     res.sendFile(path.join(__dirname, "public", "home.html"));
 });
 
