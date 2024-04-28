@@ -21,6 +21,9 @@ const loadTable = async function (){
                             break;
                         case 3:
                             content = data[i].wins / (data[i].wins + data[i].losses)
+                            if(isNaN(content)){
+                                content = 0
+                            }
                             content = (content * 100).toFixed(2) + '%';
                             break;
                     }
