@@ -55,34 +55,13 @@ function SavedImages(props) {
         setShowModal(false);
     };
 
-//     return (
-//         <Container style={{ marginTop: '4rem' }}>
-//             <Row>
-//                 {images.map((image, index) => (
-//                     <Col key={index} xs={6} md={4}>
-//                         <Image src={image.url} thumbnail />
-//                         <div className="image-overlay">
-//                             <button onClick={() => handleDownload(image.url, image.filename)}>
-//                                 <FontAwesomeIcon icon={faCloudDownloadAlt} />
-//                             </button>
-//                         </div>
-//                     </Col>
-//                 ))}
-//             </Row>
-//         </Container>
-//     );
-// }
 return (
-    <Container style={{ marginTop: '4rem' }}>
-    <div className="image-row">
-        <Row>
-            {images.map((image, index) => (
-                <Col key={index} xs={6} md={4} className="image-container">
-                    <Image src={image.url} className="saved-image" onClick={() => handleImageClick(image)} />
-                </Col>
-            ))}
-        </Row>
-        </div>
+    <Container className="image-row" style={{ marginTop: '4rem' }}>
+        {images.map((image, index) => (
+            <div key={index} className="image-container">
+                <Image src={image.url} className="saved-image" onClick={() => handleImageClick(image)} />
+            </div>
+        ))}
 
         <Modal show={showModal} onHide={handleCloseModal}>
             <Modal.Header closeButton>
@@ -100,7 +79,6 @@ return (
             </Modal.Footer>
         </Modal>
     </Container>
-);
-}
+);}
 
 export default SavedImages;
