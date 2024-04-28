@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react';
 import './Background.css'; 
 import { motion } from 'framer-motion';
 
-const numCopies = 30
-const fetchSVGs = async () => {
+const numCopies = 4
+const fetchPNGs = async () => {
   try {
-    const svgContext = await import.meta.glob('../assets/background/*.png');
-    const keys = Object.keys(svgContext);
-    const svgImports = keys.map(async (key) => {
-      const module = await svgContext[key]();
+    const PNGContext = await import.meta.glob('../assets/background/*.png');
+    const keys = Object.keys(PNGContext);
+    const PNGImports = keys.map(async (key) => {
+      const module = await PNGContext[key]();
       return { filename: key, url: module.default };
     });
-    const svgComponents = await Promise.all(svgImports);
-    return svgComponents;
+    const PNGComponents = await Promise.all(PNGImports);
+    return PNGComponents;
   } catch (error) {
-    console.error('Error loading SVGs:', error);
+    console.error('Error loading PNGs:', error);
     return [];
   }
 };
@@ -25,14 +25,14 @@ const getRandomCoordinate = () => ({
 });
 
 const Background = () => {
-  const [SVGList, setSVGList] = useState([]);
+  const [PNGList, setPNGList] = useState([]);
 
   useEffect(() => {
-    const fetchAndSetSVGs = async () => {
-      const svgComponents = await fetchSVGs();
-      setSVGList(svgComponents);
+    const fetchAndSetPNGs = async () => {
+      const PNGComponents = await fetchPNGs();
+      setPNGList(PNGComponents);
     };
-    fetchAndSetSVGs();
+    fetchAndSetPNGs();
   }, []);
 
   
@@ -40,13 +40,13 @@ const Background = () => {
     <div className="Background">
       {Array.from({ length: numCopies }).map((_, index) => (
         <React.Fragment key={index}>
-          {SVGList.map(({ filename, url }, svgIndex) => {
+          {PNGList.map(({ filename, url }, PNGIndex) => {
             const coordinates = getRandomCoordinate();
             const initialLeft = coordinates.left;
             return (
               <motion.div 
-                key={`${index}-${svgIndex}`} 
-                className="svg-container" 
+                key={`${index}-${PNGIndex}`} 
+                className="PNG-container" 
                 style={{ position: 'absolute', left: coordinates.left, top: coordinates.top }}
                 animate={{ top: -100, left: [initialLeft, initialLeft + Math.random() * 50, initialLeft], x: [0,50,0] }} // Move beyond top of screen
                 exit={{ opacity: 0 }} // Fade out and remove from DOM after animation completes
