@@ -21,8 +21,8 @@ const SearchAndMenu = () => {
                     </svg>
                 </label>
             </form>
-            <button onClick={handleMenu} className="ml-4 p-1 rounded hover:bg-cyan-700 focus:outline-none">
-                <img src={kebabMenu} alt="Menu" className="w-4 h-4" draggable="false" />
+            <button onClick={handleMenu} className="ml-4 rounded focus:outline-none">
+                <img src={kebabMenu} alt="Menu" className="w-6 h-6" draggable="false" />
             </button>
         </div>
     );

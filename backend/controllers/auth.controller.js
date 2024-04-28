@@ -21,14 +21,20 @@ export const signup = async (req, res) => {
         //Hash Password Here
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        //https://ui-avatars.com/avatar-placeholder/
+
+        const generateRandomColor = () => {
+            return '#' + Math.floor(Math.random()*16777215).toString(16);
+        }
+
+        // Generate a random color for profile picture
+        const profileColor = generateRandomColor();
 
 
         const newUser = new User({
             fullName,
             username,
             password: hashedPassword,
-            profilePic: `https://ui-avatars.com/api/?name=${fullName.split(' ')[0]}+${fullName.split(' ')[1]}&background=0D8ABC`
+            profilePic: profileColor  
         });
 
         if (newUser) {
