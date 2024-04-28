@@ -126,6 +126,13 @@ window.onload = async function () {
 
 };
 
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
 async function start() {
   const logoutBtn = document.getElementById("logoutButton")
   logoutBtn.parentElement.style.paddingTop = "0px"
@@ -138,6 +145,7 @@ async function start() {
     headers: { "Content-Type": "application/json" },
   });
   const resp = await response.json();
+  shuffle(resp);
   for (let i = 0; i < resp.length; i++) {
     addCell(resp[i]);
   }
