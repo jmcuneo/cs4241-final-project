@@ -3,31 +3,12 @@ import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import GuestListComponent from "./GuestListComponent";
 
-function UserGuestListComponent({ manage }) {
+function UserGuestListComponent({ onUpdate, manage }) {
   const { eventId } = useParams();
   const [guestList, setGuestList] = useState([]);
   const [userGuestList, setUserGuestList] = useState([]);
   const guestNameRef = useRef(null);
   const [message, setMessage] = useState("");
-  const [userProfile, setUserProfile] = useState(null);
-
-  const getProfile = async () => {
-    try {
-      const response = await fetch("//localhost:3000/api/getProfile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: localStorage.getItem("token") }),
-      });
-
-      let profile = await response.json();
-      return profile;
-    } catch (error) {
-      console.error("Error getting profile: " + error);
-      return null;
-    }
-  };
 
   const getGuestList = async (apiPoint, listType) => {
     try {
@@ -65,6 +46,7 @@ function UserGuestListComponent({ manage }) {
       });
       const result = await response.json();
       if (result.success == true) {
+        setGuestList((currentGuests) => [...currentGuests, { guestName }]);
         onUpdate(guestName, "add");
         setMessage("");
       } else {
@@ -103,33 +85,6 @@ function UserGuestListComponent({ manage }) {
     }
   };
 
-  const onUpdate = (guestName, action) => {
-    if (action === "add"){
-      setGuestList((currentGuests) => [
-        ...currentGuests,
-        {
-          guestName: guestName,
-          invitedBy: userProfile.firstName + " " + userProfile.lastName,
-        },
-      ]);
-
-      setUserGuestList((currentGuests) => [
-        ...currentGuests,
-        {
-          guestName: guestName,
-        },
-      ]);
-    }
-    else {
-      setGuestList((currentGuests) =>
-        currentGuests.filter((guest) => guest.guestName !== guestName)
-      );
-      setUserGuestList((currentGuests) =>
-        currentGuests.filter((guest) => guest.guestName !== guestName)
-      );
-    }
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const guestName = guestNameRef.current.value;
@@ -141,13 +96,6 @@ function UserGuestListComponent({ manage }) {
   };
 
   useEffect(() => {
-    getProfile()
-      .then((profile) => {
-        setUserProfile(profile);
-      })
-      .catch((error) => {
-        console.error("Error getting profile:", error);
-      });
     getGuestList("//localhost:3000/api/getGuestList", "guest");
     getGuestList("//localhost:3000/api/getUserGuestList", "user");
   }, [eventId]);
@@ -156,7 +104,7 @@ function UserGuestListComponent({ manage }) {
   if (!manage) list = userGuestList;
   const guestTable = () => {
     return (
-      <div className="flex justify-center align-center overflow-x-auto">
+      <div className="flex justify-center align-center overflow-y-auto">
         <table className="table table-zebra bg-neutral not-prose table-md">
           <thead>
             <tr>
@@ -191,11 +139,11 @@ function UserGuestListComponent({ manage }) {
   return (
     <div className="prose min-w-screen">
       <div className="flex flex-col px-2  w-screen">
-        <h1 className="w-full" style={{marginLeft: "5rem", marginBottom: "1rem", marginTop: "1rem"}}>{title}</h1>
+        <h1 className="w" style={{marginLeft: "5rem", marginBottom: "1rem", marginTop: "1rem"}}>{title}</h1>
         <div className="grid columns-3 grid-cols-3 gap-1">
           {/* first col */}
         {!manage && (
-          <div className="flex justify-center align-center">
+          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto">
             <GuestListComponent
               guestList={guestList}
               shouldDisplayTitle={false}
@@ -206,11 +154,11 @@ function UserGuestListComponent({ manage }) {
           {userGuestList.length > 0 ? (
             guestTable()
           ) : (
-            <p className="text-slate text-center w-full">You have no guests</p>
+            <p className="text-slate text-center w-full">You invited no guests</p>
           )}
           {/* last col */}
           {!manage && (
-            <div className="add-guest flex justify-center align-center">
+            <div className="add-guest flex justify-center align-center max-h-[75vh] overflow-y-auto">
               <form className="w-full" onSubmit={(e) => handleSubmit(e)}>
                 <div className="flex flex-col justify-start items-center">
                   <input
@@ -227,9 +175,9 @@ function UserGuestListComponent({ manage }) {
                   >
                     Add Guest
                   </button>
-                  <div className="text-xl text-white">{message}</div>
                 </div>
               </form>
+              <div className="text-xl text-white">{message}</div>
             </div>
           )}
         </div>
