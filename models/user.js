@@ -139,9 +139,9 @@ const userSchema = new Schema({
             if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || event.creator === this._id) {
                 let successfullyAdded = [];
                 users.forEach(user => {
-                    if (!event.allowedInviters.some(existingUser => existingUser === user)) {
+                    if (!event.allowedInviters.some(existingUser => existingUser._id === user._id)) {
                         successfullyAdded.push(user);
-                        event.allowedInviters.addToSet(user);
+                        event.allowedInviters.addToSet(user._id);
                     }
                 });
 
@@ -178,10 +178,10 @@ const userSchema = new Schema({
             if (this.accountType === ACCOUNT_TYPE.ADMIN || this.permissions.includes(PERMISSIONS.MODIFY_EVENTS) || event.creator === this._id) {
                 let successfullyRemoved = [];
                 users.forEach(user => {
-                    if (event.allowedInviters.some(existingUser => existingUser === user)) {
+                    if (event.allowedInviters.some(existingUser => existingUser._id === user._id)) {
                         successfullyRemoved.push(user);
 
-                        event.allowedInviters = event.allowedInviters.filter(allowedInviter => allowedInviter !== user);
+                        event.allowedInviters = event.allowedInviters.filter(allowedInviter => allowedInviter._id !== user._id);
                     }
                 });
 

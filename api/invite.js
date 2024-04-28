@@ -101,7 +101,7 @@ router.post('/removeAllowedInviter', async (req, res) => {
         }
 
         const inviter = await User.findOne({ username: inviterName });
-        if (!inviter) {
+        if (!inviter || inviter === null || inviter === undefined) {
             return res.json({ success: false, error: 'Inviter not found' });
         }
 
