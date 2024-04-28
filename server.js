@@ -86,7 +86,6 @@ io.on('connection', (socket) => {
                 health: startingHealth,
                 isAlive: true
             })
-            console.log(newMessage)
             if (players.length == numberOfPlayer) {
                 console.log("Number of players reached")
                 gamestarted = true
@@ -103,7 +102,6 @@ io.on('connection', (socket) => {
         });
 
     socket.on('healthchange', (message) => {
-        console.log(message)
         players.forEach(player => {
             if ((player.username == message.user) && (player.isAlive)) {
                 player.health += message.healthChange
@@ -123,11 +121,10 @@ io.on('connection', (socket) => {
                 } else{
                     loserQueue.splice(loserQueue.indexOf(player), 1)
                 }
-                console.log(players)
-                console.log("Losers:")
-                console.log(loserQueue)
-                if(loserQueue.length = numberOfPlayer-1){
-                    console.log("Game Over")
+                if(loserQueue.length == numberOfPlayer-1){
+                    console.log(numberOfPlayer)
+                    console.log(loserQueue)
+                    console.log(loserQueue.length)
                     gameOver()
                 }
             }
@@ -143,7 +140,6 @@ io.on('connection', (socket) => {
 
 async function gameOver(){
     console.log("Game Over")
-    clients.forEach( c => {c.emit('gameOver', postGameResults ) })
     let temp = []
     players.forEach(player =>{
         if(player.isAlive){
@@ -151,12 +147,9 @@ async function gameOver(){
         }
     })
     temp.sort((a, b) => a.health - b.health)
-    console.log(temp)
     temp.forEach(player =>{
         loserQueue.push(player)
     })
-    console.log("Current Losers Queue:")
-    console.log(loserQueue)
     const winners = []
     loserQueue.forEach(player =>{
         winners.push(player.username)
@@ -164,8 +157,16 @@ async function gameOver(){
     winners.reverse()
     console.log(winners)
     console.log(gameID)
+    clients.forEach( c => {c.emit('gameOver', winners ) })
     await concludeGame(gameID, winners)
-    
+    clients = []
+    players = []
+    gameCreated = false
+    numberOfPlayer = null
+    startingHealth = 0
+    gamestarted = false
+    loserQueue = []
+    gameID = null
 }
 
 app.post("/createGame", (req, res) => {
