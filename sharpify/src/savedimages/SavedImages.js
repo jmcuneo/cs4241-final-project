@@ -1,26 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Container } from 'react-bootstrap';
+import { Row, Col, Container, Image } from 'react-bootstrap';
+// import { Row, Col, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCloudDownloadAlt } from '@fortawesome/fontawesome-free-solid'
 import './SavedImages.css';
+
+// function SavedImages(props) {
+//     const [images, setImages] = useState([]);
+
+//     useEffect(() => {
+//         const fetchedImages = [
+//             { id: 1, src: 'image0.jpeg', filename: 'image1.jpeg' },
+//             { id: 2, src: 'logo192.png', filename: 'image2.png' },
+//             { id: 3, src: 'logo512.png', filename: 'image3.jpeg' },
+//             { id: 4, src: 'logo512.png', filename: 'image3.jpeg' },
+//             { id: 5, src: 'image0.jpeg', filename: 'image1.jpeg' },
+//             { id: 6, src: 'logo192.png', filename: 'image2.png' },
+//         ];
+//         setImages(fetchedImages);
+//     }, []);
+
+
+
+
 
 function SavedImages(props) {
     const [images, setImages] = useState([]);
 
     useEffect(() => {
-        const fetchedImages = [
-            { id: 1, src: 'image0.jpeg', filename: 'image1.jpeg' },
-            { id: 2, src: 'logo192.png', filename: 'image2.png' },
-            { id: 3, src: 'logo512.png', filename: 'image3.jpeg' },
-            { id: 4, src: 'logo512.png', filename: 'image3.jpeg' },
-            { id: 5, src: 'image0.jpeg', filename: 'image1.jpeg' },
-            { id: 6, src: 'logo192.png', filename: 'image2.png' },
-        ];
-        setImages(fetchedImages);
-    }, []);
+        // Fetch the images from your server
+        fetch('retrieveImages', {
+            credentials: 'include' // Include cookies in the request
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Log the fetched images
+                console.log(data);
 
+                // Update the state with the fetched images
+                setImages(data);
+            })
+            .catch(error => console.error('Error:', error));
+    }, []);
+    
     const handleDownload = (imageSrc, filename) => {
-        fetch(imageSrc)
+        // Extract the image ID from the imageSrc URL
+        const imageId = imageSrc.split('/').pop();
+    
+        fetch(`http://localhost:3000/getImage/${imageId}`)
             .then(response => response.blob())
             .then(blob => {
                 const url = window.URL.createObjectURL(blob);
@@ -39,13 +66,10 @@ function SavedImages(props) {
         <Container style={{ marginTop: '4rem' }}>
             <Row>
                 {images.map((image, index) => (
-                    <Col key={image.id} className="saved-image-column" xs={12} md={4}>
-                        <div className="image-container">
-                            <img className="saved-image" src={image.src} alt={`image-${index}`} />
-                            <button
-                                className="download-button"
-                                onClick={() => handleDownload(image.src, image.filename)}
-                            >
+                    <Col key={index} xs={6} md={4}>
+                        <Image src={image.url} thumbnail />
+                        <div className="image-overlay">
+                            <button onClick={() => handleDownload(image.url, image.filename)}>
                                 <FontAwesomeIcon icon={faCloudDownloadAlt} />
                             </button>
                         </div>
@@ -54,6 +78,6 @@ function SavedImages(props) {
             </Row>
         </Container>
     );
-};
+}
 
 export default SavedImages;
