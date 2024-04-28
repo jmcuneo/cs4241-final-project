@@ -167,14 +167,13 @@ app.post("/upload", upload.single('image'), async (request, response) => {
     }})
 })
 
-app.post("/enhance", async (request, response) => {
+app.post("/sharpify", async (request, response) => {
 //FOR A NEW ENHANCE BUTTON
-    if(uploadedImage === undefined) {
-} else{
-    //
-         const form = new FormData();
+    console.log("sharpify post request received")
+    console.log(uploadedImage);
+    const form = new FormData();
     form.append("upscale_factor", "x2");
-    form.append("image_url","https://picsart.io/wp-content/uploads/2024/02/97ff2ec7-2f17-44a9-86a6-20d19db6ecd8.jpg");
+    form.append("image_url",uploadedImage);
 
     const options = {
       method: 'POST',
@@ -193,12 +192,16 @@ app.post("/enhance", async (request, response) => {
         data += chunk;
       });
       res.on('end', () => {
+        const responseData = JSON.parse(data);
+        //const upscaledImageUrl = responseData.result.url;
         console.log(data);
+        //console.log("url: " + upscaledImageUrl);
         response.send(data);
       });
     });   
+req.end();
 }
-})
+)
 //get reqeust to retrieeve the image
 
 // Delete Image
