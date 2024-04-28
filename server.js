@@ -32,10 +32,6 @@ const client = new MongoClient(uri, {
     }
 });
 
-let numberOfPlayer;
-let startingHealth = 0;
-let players = [];
-let clients = [];
 
 let userdata = []
 
@@ -56,11 +52,24 @@ async function run() {
 const server = http.createServer(app)
 const io = new Server(server);
 
+let numberOfPlayer;
+let startingHealth = 0;
+let players = [];
+let clients = [];
+let gamestarted = false;
+let loserQueue = [];
+let gameCreated = false;
+
 // make connection with user from server side
 io.on('connection', (socket) => {
     console.log('New user connected');
     clients.push(socket)
     console.log(clients.length)
+
+    if(gamestarted){
+        socket.emit('gamestarted', players)
+    }
+
     //emit message from server to user
     socket.emit('newMessage',
         {
@@ -78,6 +87,7 @@ io.on('connection', (socket) => {
             console.log(newMessage)
             if (players.length == numberOfPlayer) {
                 console.log("Number of players reached")
+                gamestarted = true
                 clients.forEach(c => { c.emit('maxPlayersReached', players) })
             }
         }
@@ -111,6 +121,14 @@ io.on('connection', (socket) => {
         players.forEach(player => {
             if (player.username == message.user) {
                 player.isAlive = !player.isAlive
+                if(!player.isAlive){
+                    loserQueue.push(player)
+                } else{
+                    loserQueue.splice(loserQueue.indexOf(player), 1)
+                }
+                console.log(players)
+                console.log("Losers:")
+                console.log(loserQueue)
             }
         })
         clients.forEach( c => {c.emit('update', players ) })
@@ -122,8 +140,14 @@ io.on('connection', (socket) => {
 app.post("/createGame", (req, res) => {
     numberOfPlayer = req.body.players
     startingHealth = parseInt(req.body.health)
+    gameCreated = true;
     console.log(`Created Game: \n Number of Players: ${numberOfPlayer} \n Starting Heath: ${startingHealth}`)
     res.sendStatus(200)
+})
+
+app.get("/isGameCreated", async (req, res) => {
+    console.log(gameCreated)
+    res.json({ gameStatus: gameCreated });
 })
 
 app.get("/", (req, res) => {

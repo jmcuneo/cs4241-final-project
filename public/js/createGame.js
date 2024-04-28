@@ -29,7 +29,23 @@ const submit = async function( event ) {
     }
   }
 
+  const checkIfGameMade = async function() {
+    const response = await fetch( "/isGameCreated", {
+      method:"GET",
+      headers: {
+        "Content-Type": 'application/json'
+      },
+    })
+    const data = await response.json()
+    if(data.gameStatus){
+      window.location.href = '/game.html';
+    }
+  }
+
 window.onload = function () {
     const submitBtn = document.querySelector("#submit");
+    
     submitBtn.onclick = submit;
+
+    checkIfGameMade()
 }
