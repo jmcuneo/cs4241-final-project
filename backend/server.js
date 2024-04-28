@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import { Server } from "socket.io";
 
 import authRoutes from "./routes/auth.routes.js"; 
 import messageRoutes from "./routes/message.routes.js"; 
@@ -10,6 +11,12 @@ import connectToMongoDB from "./db/connectToMongoDB.js";
 
 const PORT = process.env.PORT || 8000;
 const app =  express();
+const io = new Server(app.listen(3636), {
+	cors: {
+		origin: ["http://localhost:3000"],
+	},
+});
+app.set("socketio", io);
 
 dotenv.config();
 
