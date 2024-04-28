@@ -36,7 +36,7 @@
         socket.on("join failed", (msg) => {
             errorMsg = msg;
         });
-        socket.on("room available", () => {
+        socket.on("room available", (room) => {
             errorMsg = room;
             // await create_game(room);
             joinGame(room, "Player 1", true);

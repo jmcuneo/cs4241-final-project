@@ -54,6 +54,7 @@
         game_data.winner = null;
         game_data.correct_name = null;
         game_data.correct_url = null;
+        console.log("Back at host",game_data);
     }
 
     let game_setup = {};

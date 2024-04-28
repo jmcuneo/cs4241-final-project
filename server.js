@@ -23,9 +23,9 @@ const io = new Server(server);
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-  function sendServerChatMessage(room, message) {
+  async function sendServerChatMessage(room, message) {
     //TODO: Append to chat history.
-    database.pushGame(room, 'chat', { "author": "Server", "msg": message });
+    await database.pushGame(room, 'chat', { "author": "Server", "msg": message });
     io.to(room).emit('message receive', "Server", message);
   }
   socket.on('try host game', async (room) => {
@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
     const existingGame = await database.getGameByRoomCode(room);
     // console.log("")
     if (existingGame == null) {
-      socket.emit('room available');
+      socket.emit('room available',room);
     } else {
       socket.emit('room unavailable');
     }
@@ -130,7 +130,7 @@ io.on('connection', (socket) => {
     sendServerChatMessage(room, name + " flipped " + cardName);
   });
   socket.on('complete game left', async function (room, name) {
-    sendServerChatMessage(room, name + " left.");
+    await sendServerChatMessage(room, name + " left.");
     socket.leave(room);
     const game = await database.getGameByRoomCode(room);
     if (game.p1 != null && name == game.p1.name) {
