@@ -1,20 +1,19 @@
 /* eslint-disable no-undef */
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { json } from 'express';
-import mongoose from 'mongoose';
-import ViteExpress from 'vite-express';
-import { createDummyUsers } from './dbTester.js';
-import cors from 'cors';
-import jwt from 'jsonwebtoken';
 import fs from 'fs';
+import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import ViteExpress from 'vite-express';
 
-import Account from './models/account.js';
-import session from 'express-session';
 import bodyParser from 'body-parser';
+import session from 'express-session';
+import Account from './models/account.js';
+import User from './models/user.js';
 import passport from './passport.js';
-import User  from './models/user.js';
 
 const app = express();
 const port = 3000;

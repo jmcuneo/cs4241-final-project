@@ -111,7 +111,7 @@ function ManageEventPage({ onLogout }) {
       const success = await response.json();
       if (success.success) {
         // Yippee
-        console.log('Success')
+        
       } else if (!success.success) {
         // Womp womp
         console.error(success.error);

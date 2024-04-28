@@ -95,9 +95,9 @@ const eventSchema = new Schema({
                     }
                     const hasAllPerms = user.permissions && user.permissions.includes(PERMISSIONS.INVITE_TO_ALL_EVENTS);
                     const canInviteToEvent = event.allowedInviters && event.isUserAllowedToInvite(user);
-                    const isBelowGuestLimit = event && event.guestLimit ? event.attendees.length < event.guestLimit : true; // TODO test this
+                    const isBelowGuestLimit = event && event.guestLimit ? event.attendees.length < event.guestLimit : true;
                     const previousInvites = (await event.getInvitesByInviter(user)).length
-                    const isBelowInviterLimit = event && event.inviterLimit ? previousInvites < event.inviterLimit : true; // TODO test this
+                    const isBelowInviterLimit = event && event.inviterLimit ? previousInvites < event.inviterLimit : true;
                     return (hasAllPerms || canInviteToEvent) && isBelowGuestLimit && isBelowInviterLimit;
                 },
                 // TODO: Make this message valid
@@ -271,6 +271,8 @@ const eventSchema = new Schema({
                 } else if (guestLimit < 0) {
                     // guestLimit should not be negative
                     return false;
+                } else if (this.hasMoreGuestsThanLimit(guestLimit)) {
+                    return false;
                 }
                 this.guestLimit = guestLimit;
                 try {
@@ -338,7 +340,10 @@ const eventSchema = new Schema({
                 } else if (inviterLimit < 0) {
                     // inviterLimit should not be negative
                     return false;
+                } else if (await this.hasInviterOverInviterLimit(inviterLimit)) {
+                    return false;
                 }
+
                 this.inviterLimit = inviterLimit;
                 try {
                     await this.save();
@@ -389,11 +394,33 @@ const eventSchema = new Schema({
                 const inviter = await User.findOne({ _id: allowedInviter });
                 return {
                     fullName: await inviter.fullName,
-                    username: inviter.username, 
+                    username: inviter.username,
                     guestCount: (await this.getInviteIdsByInviter(inviter)).length
                 }
             }));
-        }
+        },
+
+        /**
+         * @param {Number} newLimit The new limit to compare to
+         * @returns {Promise<Boolean>} A boolean representing success
+         */
+        hasMoreGuestsThanLimit(newLimit) {
+            if (newLimit === undefined || newLimit === 0 || newLimit === '') return false;
+            return this.attendees.length > newLimit;
+        },
+
+        /**
+         * @param {Number} newLimit The new limit to compare to
+         * @returns {Promise<Boolean>} A boolean representing if there exists someone with more invites than newLimit
+         */
+        async hasInviterOverInviterLimit(newLimit) {
+            if (this.attendees === undefined) return false;
+            if (newLimit === undefined || newLimit === 0 || newLimit === '') return false;
+            const inviteCountMap = Promise.all(this.attendees.map(async (attendee) => {
+                return (await this.getInviteIdsByInviter(attendee.inviter)).length
+            }));
+            return (await inviteCountMap).some(inviterCount => inviterCount > newLimit);
+        },
     },
 });
 

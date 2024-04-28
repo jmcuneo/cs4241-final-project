@@ -1,9 +1,7 @@
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types"
 
 function EventTitleManager({ eventId }) {
-  const navigate = useNavigate();
   const [thisEvent, setThisEvent] = useState([]);
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");

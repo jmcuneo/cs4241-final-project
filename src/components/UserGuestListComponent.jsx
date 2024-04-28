@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import GuestListComponent from "./GuestListComponent";
@@ -11,7 +11,7 @@ function UserGuestListComponent({ onUpdate, manage }) {
   const guestNameRef = useRef(null);
   const [message, setMessage] = useState("");
 
-  const getGuestList = async (apiPoint, listType) => {
+  const getGuestList = useCallback(async (apiPoint, listType) => {
     try {
       const response = await fetch(apiPoint, {
         method: "POST",
@@ -30,7 +30,7 @@ function UserGuestListComponent({ onUpdate, manage }) {
     } catch (error) {
       console.error("Error getting invited guests:", error);
     }
-  };
+  }, [eventId]);
 
   const addGuest = async (guestName) => {
     try {
@@ -103,86 +103,86 @@ function UserGuestListComponent({ onUpdate, manage }) {
   useEffect(() => {
     getGuestList("//localhost:3000/api/getGuestList", "guest");
     getGuestList("//localhost:3000/api/getUserGuestList", "user");
-  }, [eventId]);
+  }, [getGuestList]);
 
-const filteredList = (() => {
-  let list = guestList;
-  if (!manage) 
-    list = userGuestList;
-  return list.filter((guest) =>
-    guest.guestName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-})();
+  const filteredList = (() => {
+    let list = guestList;
+    if (!manage)
+      list = userGuestList;
+    return list.filter((guest) =>
+      guest.guestName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  })();
 
 
-const guestTable = () => {
-  return (
-    <div className="overflow-x-auto prose flex flex-col">
-      <div className="flex justify-between items-center mb-2">
-        <input 
-          style={{marginBottom: "0.2rem"}}
-          type="text"
-          placeholder="Search by guest name"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="input input-bordered flex-grow"
-        />
-      </div>
-      <div className="flex-grow">
-        <table className="table table-zebra bg-neutral not-prose table-md max-h-[75vh] overflow-y-auto">
-          <thead>
-            <tr>
-              <th>Guest Name</th>
-              {manage && <th>Invited By</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredList.map((guest, index) => (
-              <tr key={index}>
-                <td>{guest.guestName}</td>
-                {manage && <td>{guest.invitedBy}</td>}
-                <td>
-                  <button
-                    className="btn bg-red-500 hover:bg-red-600 text-black font-bold "
-                    type="button"
-                    id={"removeButton" + index}
-                    onClick={() => handleRemove(guest.guestName)}
-                  >
-                    Remove
-                  </button>
-                </td>
+  const guestTable = () => {
+    return (
+      <div className="overflow-x-auto prose flex flex-col">
+        <div className="flex justify-between items-center mb-2">
+          <input
+            style={{ marginBottom: "0.2rem" }}
+            type="text"
+            placeholder="Search by guest name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="input input-bordered flex-grow"
+          />
+        </div>
+        <div className="flex-grow">
+          <table className="table table-zebra bg-neutral not-prose table-md max-h-[75vh] overflow-y-auto">
+            <thead>
+              <tr>
+                <th>Guest Name</th>
+                {manage && <th>Invited By</th>}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredList.map((guest, index) => (
+                <tr key={index}>
+                  <td>{guest.guestName}</td>
+                  {manage && <td>{guest.invitedBy}</td>}
+                  <td>
+                    <button
+                      className="btn bg-red-500 hover:bg-red-600 text-black font-bold "
+                      type="button"
+                      id={"removeButton" + index}
+                      onClick={() => handleRemove(guest.guestName)}
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 
   let title = "Guest List";
   return (
     <div className="prose min-w-screen">
       <div className="flex flex-col px-2  w-screen">
-        <h1 className="w" style={{marginLeft: "10rem", marginBottom: "1rem", marginTop: "1rem"}}>{title}</h1>
+        <h1 className="w" style={{ marginLeft: "10rem", marginBottom: "1rem", marginTop: "1rem" }}>{title}</h1>
         <div className="grid columns-3 grid-cols-3 gap-1">
           {/* first col */}
-        {!manage && (
-          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto mb-10">
-            <GuestListComponent
-              guestList={guestList}
-              shouldDisplayTitle={false}
-            ></GuestListComponent>
-          </div>
-        )}
+          {!manage && (
+            <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto mb-10">
+              <GuestListComponent
+                guestList={guestList}
+                shouldDisplayTitle={false}
+              ></GuestListComponent>
+            </div>
+          )}
           {/* second col */}
           <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto mb-10">
             {userGuestList.length > 0 ? (
-                guestTable()
-              ) : (
-                <p className="text-slate text-center w-full max-h-[75vh] overflow-y-auto">You invited no guests</p>
-              )}
+              guestTable()
+            ) : (
+              <p className="text-slate text-center w-full max-h-[75vh] overflow-y-auto">You invited no guests</p>
+            )}
           </div>
           {/* last col */}
           {!manage && (
