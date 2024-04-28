@@ -160,7 +160,7 @@ const filteredList = (() => {
   return (
     <div className="prose min-w-screen">
       <div className="flex flex-col px-2  w-screen">
-        <h1 className="w" style={{marginLeft: "5rem", marginBottom: "1rem", marginTop: "1rem"}}>{title}</h1>
+        <h1 className="w" style={{marginLeft: "10rem", marginBottom: "1rem", marginTop: "1rem"}}>{title}</h1>
         <div className="grid columns-3 grid-cols-3 gap-1">
           {/* first col */}
         {!manage && (

@@ -4,6 +4,7 @@ import UserGuestListComponent from "./UserGuestListComponent.jsx";
 import PropTypes from "prop-types";
 import Navbar from "./Navbar.jsx";
 import EventTitleManager from "./EventTitleManager.jsx";
+import UserListComponent from "./UserListComponent.jsx";
 
 function ManageEventPage({ onLogout }) {
   const { eventId } = useParams();
@@ -101,7 +102,7 @@ function ManageEventPage({ onLogout }) {
         </div>
         <div className style={{display:"flex", flexDirection:"row"}}>
           <UserGuestListComponent onUpdate={handleUpdate} manage={true} passedGuestList={guestList} />
-          <div className="flex flex-col ml-30 mt-10" style={{marginLeft: "40rem"}}>
+          <div className="flex flex-col ml-30 mt-10">
             <div className="flex flex-row ml-30 mt-4" >
               <div className="flex flex-col ml-30 mt-4" >
                 <label className="text-lg text-slate-50 ml-3" htmlFor="totalLimitInput" >
@@ -141,6 +142,9 @@ function ManageEventPage({ onLogout }) {
                 style={{marginLeft:"1rem", marginTop:"2.4rem"}}
                 onClick={handleUpdateUserLimit}
               >Update</button>
+            </div>
+            <div>
+            <UserListComponent onUpdate={handleUpdate}/>
             </div>
           </div>
           
