@@ -8,8 +8,6 @@ import EventTitle from "./EventTitle.jsx";
 
 function EventPage({ isAdmin, onLogout }) {
   const { eventId } = useParams();
-  const [guestList, setGuestList] = useState([]);
-  const [userProfile, setUserProfile] = useState(null);
   // const [isAdmin, setIsAdmin] = useState(false);
 
   const getGuestList = async () => {
@@ -32,49 +30,8 @@ function EventPage({ isAdmin, onLogout }) {
     }
   };
 
-  const getProfile = async () => {
-    try {
-      const response = await fetch("//localhost:3000/api/getProfile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: localStorage.getItem("token") }),
-      });
-
-      let profile = await response.json();
-      return profile;
-    } catch (error) {
-      console.error("Error getting profile: " + error);
-      return null;
-    }
-  };
-
-  const handleUpdate = (guestName, action) => {
-    if (action === "add")
-      setGuestList((currentGuests) => [
-        ...currentGuests,
-        {
-          guestName: guestName,
-          invitedBy: userProfile.firstName + " " + userProfile.lastName,
-        },
-      ]);
-    else
-      setGuestList((currentGuests) =>
-        currentGuests.filter((guest) => guest.guestName !== guestName)
-      );
-  };
-
   useEffect(() => {
     getGuestList();
-    getProfile()
-      .then((profile) => {
-        setUserProfile(profile);
-      })
-      .catch((error) => {
-        console.error("Error getting profile:", error);
-      });
-    // if (userProfile && userProfile.accountType === "Admin") setIsAdmin(true);
   }, [eventId]);
 
   return (
@@ -90,9 +47,7 @@ function EventPage({ isAdmin, onLogout }) {
         </div>
         <div className="userguestlistwrapper">
           <UserGuestListComponent
-            onUpdate={handleUpdate}
             manage={false}
-            passedGuestList={guestList}
           />
         </div>
       </div>
