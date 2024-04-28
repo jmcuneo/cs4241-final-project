@@ -39,8 +39,9 @@ socket.on('gameOver', (message) => {
 
 // Function to send a message to the server
 function join() {
+    let username = document.getElementById("username").value;
     const newMessage = {
-        user: document.getElementById("username").value,
+        user: username,
         createdAt: Date.now()
     };
     document.getElementById('sendMessageBtn').display = 'none';
@@ -76,10 +77,10 @@ function generateButtons() {
         const playerDiv = document.createElement("div");
         playerDiv.classList.add("player");
         playerDiv.innerHTML = `
-            <button id="${player.username}">${player.username}: ${player.health}</button>
-            <button onclick="changeHealth('${player.username}', 1)">+</button>
-            <button onclick="changeHealth('${player.username}', -1)">-</button>
-            <button onclick="death('${player.username}')">Die</button>
+            <button class="playerButton" id="${player.username}">${player.username}: ${player.health}</button>
+            <button class="playerButton" onclick="changeHealth('${player.username}', 1)">+</button>
+            <button class="playerButton" onclick="changeHealth('${player.username}', -1)">-</button>
+            <button class="playerButton" onclick="death('${player.username}')">Die</button>
         `;
         playerContainer.appendChild(playerDiv);
     })
@@ -109,6 +110,7 @@ function death(playerId) {
         user: playerId,
         createdAt: Date.now()
     };
+    document.getElementById(playerId).style.backgroundColor = 'grey'
     // Emit 'createMessage' event to the server with the new message
     socket.emit('playerdeath', newMessage);
 }
@@ -157,5 +159,6 @@ function createNewGame() {
 
 window.onload = function () {
     // Attach click event listener to the button
+    document.getElementById("username").value = document.cookie
     document.getElementById('sendMessageBtn').addEventListener('click', join);
 }
