@@ -19,7 +19,7 @@ function GuestListComponent({ guestList, shouldDisplayTitle }) {
         onChange={(e) => setSearchTerm(e.target.value)}
         className="input input-bordered w-full max-w-xs"
       />
-      <table className="table table-zebra bg-neutral not-prose table-md max-h-[75vh] overflow-y-auto">
+      <table className="table table-zebra bg-neutral not-prose table-md max-h-[75vh] w-full overflow-y-auto">
         <thead>
           <tr>
             <th>Guest Name</th>

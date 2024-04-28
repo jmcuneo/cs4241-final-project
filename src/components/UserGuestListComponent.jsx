@@ -126,7 +126,7 @@ const filteredList = (() => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="input input-bordered w-full max-w-xs"
       />
-        <table className="table table-zebra bg-neutral not-prose table-md max-h-[75vh] overflow-y-auto">
+        <table className="table table-zebra bg-neutral not-prose table-md max-h-[75vh] w-full overflow-y-auto">
           <thead>
             <tr>
               <th>Guest Name</th>
@@ -164,7 +164,7 @@ const filteredList = (() => {
         <div className="grid columns-3 grid-cols-3 gap-1">
           {/* first col */}
         {!manage && (
-          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto">
+          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto mb-10">
             <GuestListComponent
               guestList={guestList}
               shouldDisplayTitle={false}
@@ -172,7 +172,7 @@ const filteredList = (() => {
           </div>
         )}
           {/* second col */}
-          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto">
+          <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto mb-10">
             {userGuestList.length > 0 ? (
                 guestTable()
               ) : (
