@@ -130,7 +130,7 @@ app.post("/select", async (req, res) => {
   let item1 = req.body.item1,
       item2 = req.body.item2,
       curr_time = req.body.timeElapsed, //not sure what to do with time...
-
+      
       curr_score = helpers.calculateScore(item1, item2, inMemCache);
       console.log(curr_score)
   
@@ -138,9 +138,20 @@ app.post("/select", async (req, res) => {
   
 })
 
-app.post("/leaderboard", async (req, res) => {
-  //TBA
+
+app.post("/auth/add-leaderboard-entry",  auth.authenticateToken, async (req, res) => {
+  console.log(req.user)
+  const entry = await db.addLeaderboardEntry({
+    username: req.user.username,
+    score: Number(req.body.score)
+
+  })
 })
+app.post("/leaderboard", async (req, res) => {
+ const leaderboard =  await db.getLeaderboard();
+ res.json(leaderboard)
+})
+
 
 app.get(
   "/auth/github",
@@ -153,7 +164,7 @@ app.get("/auth/github/callback", async function (req, res) {
   const user = await ghlogin.getUserWithGhEmail(emails);
   if(user){
     let responseUrl = url.format({
-      pathname:"/play-game",
+      pathname:"/auth/github/callback/cookie",
       query: {
          "token": auth.generateAccessToken({ username: user.username }),
        }})
@@ -170,6 +181,9 @@ app.get("/auth/github/callback", async function (req, res) {
   // Successful authentication, redirect home.
   /* res.redirect("/"); */
 });
+app.get('/auth/github/callback/cookie', async (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "redirect.html"))
+})
 //DATABASE CONNECTION END
 app.post('/auth/test', auth.authenticateToken, (req, res) => {
 

@@ -95,10 +95,16 @@ let selectedColor = "rgb(116, 138, 227)";
 let totalTime = 0;
 let minute = 0;
 let second = 0;
+const giimmeComkie = () => {
+  var cookie = localStorage.getItem('token');
+  console.log(cookie)
+  if(cookie) document.cookie = `token=${cookie}`;
+}
 
 let matches = 0;
 
 window.onload = async function () {
+  giimmeComkie();
   const logoutBtn = document.getElementById("logoutButton");
 	logoutBtn.onclick = () => {
 		document.cookie = "token= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
@@ -180,6 +186,9 @@ function makeElem(type, classType, inner, parent) {
 
 async function select(event) {
   let elem = this.childNodes[0];
+  elem.addEventListener("animationend", (e) => {
+    elem.classList.remove("apply-shake");
+  });
   let id = this.id;
   if (!elem.className.includes("inactive")) {
     if (id != selected1 && selected2 == null) {
@@ -241,12 +250,16 @@ function stopWatch() {
 
 		document.getElementById("min").innerHTML = minString;
 		document.getElementById("sec").innerHTML = secString;        
+	} else {
+    console.log("game ended")
+		gameover();
+		matches = 0;
 	}
 }
 
 function handleGuess(resp) {
   let score = resp.score;
-  let match = !(score == 0);
+  let match = !(score < 0);
   if (match) {matches++}
 
   displayScore(score);
@@ -265,26 +278,43 @@ function handleDisplay(itemID, match) {
     item.style.border = "2px solid green";
     item.style.backgroundColor = "green";
     item.className = item.className + " inactive";
+  } else {
+    item.classList.add("apply-shake")
   }
 }
 
 function displayScore(score) {
   let scoreboard = document.getElementById("score");
-  let currentScore = parseInt(scoreboard.innerHTML) + score;
+  let currentScore = parseInt(scoreboard.innerHTML) + score > 0 ?parseInt(scoreboard.innerHTML) + score: 0 ;
   scoreboard.innerHTML = currentScore;
 }
 
 async function showLeaderboard() {
   let board = document.getElementById("leaderboard");
+  board.innerHTML='';
   const response = await fetch("/leaderboard", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json",
+                
+              },
   });
   const resp = await response.json();
   for (let i = 0; i < resp.length; i++) {
     let row = makeElem("tr", "", "", board);
-    makeElem("td", "", resp[i].user, row);
+    makeElem("td", "", resp[i].username, row);
     makeElem("td", "", resp[i].score, row);
   }
 }
 
+async function gameover(){
+  console.log("game over")
+	let score = document.getElementById("score").innerHTML;
+	let body = JSON.stringify({score: score})
+	const response = await fetch("/auth/add-leaderboard-entry", {
+		method: "POST",
+		headers: { "Content-Type": "application/json",
+                Authorization: `Bearer ${document.cookie.substring(6)}`,},
+		body
+	}).then();
+	const resp = await response.json();
+}

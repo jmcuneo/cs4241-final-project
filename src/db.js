@@ -61,6 +61,7 @@ exports.createUser = async function (data) {
     console.log("creating user");
     console.log(data);
     collection = await switcher("users")
+
     await collection.insertOne(data);
     return true;
   } catch (err) {
@@ -103,7 +104,33 @@ while (i < rand_arr.length) {
   return card_array
 }
 
-const switcher = (desired) => {
+exports.getLeaderboard = async () => {
+  collection = await switcher("leaderboard");
+  let ret = [];
+ /*  let result = await collection.find();
+  console.log(await result) */
+  const query = {};
+  // sort in descending (-1) order by length
+  const sort = { score: -1 };
+  const cursor = collection.find(query).sort(sort);
+  for await (const doc of cursor) {
+    ret.push(doc)
+    console.dir(doc);
+  }
+  console.log(ret);
+  return ret;
+}
+
+exports.addLeaderboardEntry = async (entry) => {
+  collection =  await switcher("leaderboard")
+  const date =  new Date(Date.now());
+  const datetime = date.toUTCString(); 
+  entry.date = datetime;
+  console.log(entry);
+  await collection.insertOne(entry);  
+}
+
+const switcher = async (desired) => {
   try{
     if(collectionName === desired){
       return collection;
