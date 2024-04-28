@@ -6,10 +6,11 @@ import GuestListComponent from "./GuestListComponent";
 function UserGuestListComponent({ onUpdate, manage }) {
   const { eventId } = useParams();
   const [guestList, setGuestList] = useState([]);
+  const [userGuestList, setUserGuestList] = useState([]);
   const guestNameRef = useRef(null);
   const [message, setMessage] = useState("");
 
-  const getGuestList = async () => {
+  const getGuestList = async (apiPoint, listType) => {
     try {
       const response = await fetch(apiPoint, {
         method: "POST",
@@ -23,7 +24,8 @@ function UserGuestListComponent({ onUpdate, manage }) {
       });
 
       const guests = await response.json();
-      setGuestList(guests);
+      if (listType === "user") setUserGuestList(guests);
+      else setGuestList(guests);
     } catch (error) {
       console.error("Error getting invited guests:", error);
     }
@@ -94,9 +96,12 @@ function UserGuestListComponent({ onUpdate, manage }) {
   };
 
   useEffect(() => {
-    getGuestList();
+    getGuestList("//localhost:3000/api/getGuestList", "guest");
+    getGuestList("//localhost:3000/api/getUserGuestList", "user");
   }, [eventId]);
 
+  let list = guestList;
+  if (!manage) list = userGuestList;
   const guestTable = () => {
     return (
       <div className="flex justify-center align-center overflow-x-auto">
@@ -108,7 +113,7 @@ function UserGuestListComponent({ onUpdate, manage }) {
             </tr>
           </thead>
           <tbody>
-            {guestList.map((guest, index) => (
+            {list.map((guest, index) => (
               <tr key={index}>
                 <td>{guest.guestName}</td>
                 {manage && <td>{guest.invitedBy}</td>}
@@ -130,16 +135,11 @@ function UserGuestListComponent({ onUpdate, manage }) {
     );
   };
 
-  let title = "Your Guests";
-  let apiPoint = "//localhost:3000/api/getUserGuestList";
-  if (manage) {
-    title = "Guest List";
-    apiPoint = "//localhost:3000/api/getGuestList";
-  }
+  let title = "Guest List";
   return (
     <div className="prose min-w-screen">
       <div className="flex flex-col px-2  w-screen">
-        <h1 className="w-full">{title}</h1>
+        <h1 className="w-full" style={{marginLeft: "5rem", marginBottom: "1rem", marginTop: "1rem"}}>{title}</h1>
         <div className="grid columns-3 grid-cols-3 gap-1">
           {/* first col */}
         {!manage && (
@@ -151,8 +151,7 @@ function UserGuestListComponent({ onUpdate, manage }) {
           </div>
         )}
           {/* second col */}
-
-          {guestList.length > 0 ? (
+          {userGuestList.length > 0 ? (
             guestTable()
           ) : (
             <p className="text-slate text-center w-full">You have no guests</p>
