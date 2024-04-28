@@ -89,7 +89,7 @@ function EventTitle({ eventId, isAdmin }) {
             {isAdmin && (
               <th>
                 <button
-                  className="btn btn-primary ml-2 mt-3 text-black font-bold"
+                  className="btn btn-primary ml-2 text-black font-bold"
                   type="button"
                   id="manageEventPageButton"
                   onClick={handleManageEventPage}
