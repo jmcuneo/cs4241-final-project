@@ -47,7 +47,7 @@
             <div id="personal-events"></div>
             <button type="button" class="hoverable" onclick="getUserEvents(null)">Refresh Events</button>
             <label for="month">Select a month:</label>
-            <input type="month" id="month">
+            <input type="month" id="month" onchange="calendarView()">
             <table id="calendar">
                 <tr>
                     <th id="cal-yr-m" colspan="7" class="header"></th>
