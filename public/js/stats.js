@@ -1,11 +1,19 @@
 async function fillStats() {
 
+    let username = document.cookie;
+
+    let json = {'userID': username};
+    let body = JSON.stringify(json);
+
     const response = await fetch("/userInfo", {
-        method: "GET"
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body
     })
     const text = await response.text()
-   
-    let mydata = JSON.parse(text)
+    let mydata = JSON.parse(text);
 
     let wins = mydata.wins;
     let games = mydata.wins + mydata.losses;
@@ -19,12 +27,20 @@ async function fillStats() {
 
 async function makeWinRate() {
 
+    let username = document.cookie;
+
+    let json = {'userID': username};
+    let body = JSON.stringify(json);
+
     const response = await fetch("/userInfo", {
-        method: "GET"
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body
     })
     const text = await response.text()
-
-    let mydata = JSON.parse(text)
+    let mydata = JSON.parse(text);
 
     let data = {win: mydata.wins, loss: mydata.losses};
 
@@ -74,18 +90,24 @@ async function makeWinRate() {
 
 async function makeWinRateTime() {
 
+    let username = document.cookie;
+
+    let json = {'userID': username};
+    let body = JSON.stringify(json);
+
     const response = await fetch("/userHistory", {
-        method: "GET"
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body
     })
     const text = await response.text()
     let mydata = JSON.parse(text);
 
-    const userres = await fetch("/userdata");
-    const userdata = await userres.json();
-
     let data = []
     mydata.forEach((g) => {
-        if(g.winner == userdata[0].username) {
+        if(g.winner == username) {
             data.push(1);
         } else {
             data.push(0);
@@ -149,17 +171,20 @@ async function makeWinRateTime() {
 
 async function makeGameDist() {
 
+    let username = document.cookie;
+
+    let json = {'userID': username};
+    let body = JSON.stringify(json);
+
     const response = await fetch("/userHistory", {
-        method: "GET"
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body
     })
     const text = await response.text()
     let mydata = JSON.parse(text);
-
-    const userres = await fetch("/userdata");
-    const userdata = await userres.json();
-    let username = userdata[0].username;
-
-    console.log(mydata);
 
     let data = [];
 

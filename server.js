@@ -187,8 +187,8 @@ app.get("/userdata", async (req, res) => {
     res.json(userdata);
 })
 
-app.get("/userInfo", async (req, res) => {
-    let userID = userdata[0].username;
+app.post("/userInfo", async (req, res) => {
+    const {userID} = req.body;
     let myUser = await getUserInfo(userID);
     res.json(myUser);
 })
@@ -198,8 +198,8 @@ app.get("/allUsers", async (req, res) => {
     res.json(userData);
 })
 
-app.get("/userHistory", async (req, res) => {
-    let userID = userdata[0].username;
+app.post("/userHistory", async (req, res) => {
+    const {userID} = req.body;
     let history = await getUserGameHistory(userID);
     res.json(history);
 })
