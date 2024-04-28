@@ -8,6 +8,7 @@
 
     export let game_data;
     export let game_setup;
+    export let promise;
 
     import { createEventDispatcher } from "svelte";
     const dispatch = createEventDispatcher();
@@ -16,7 +17,7 @@
     const height = 4;
     const bingo = "WHOMST";
 
-    let images = new Promise((req, res) => {});
+    let images = promise;
 
     $: game_setup, get_board(game_setup);
 
@@ -105,28 +106,7 @@
         });
     }
 
-    async function getNumPokemon() {
-        const numPokemon = await fetch("/get_num_pokemon", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        let res = await numPokemon.json();
-        return res.count;
-    }
 
-    async function getPokemonFromGame(room) {
-        const get_pokemon_at_index = await fetch("/get_pokemon_from_game", {
-            method: "POST",
-            body: JSON.stringify({ roomCode: room }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        let pokemon = await get_pokemon_at_index.json();
-        return pokemon;
-    }
     function guessFailed() {
         guess_data.callback(true);
         guess_data.failed = true;

@@ -54,7 +54,7 @@
     });
 
     function scroll() {
-        chatWindow.scroll(0, chatWindow.scrollHeight);
+        chatWindow?.scroll(0, chatWindow.scrollHeight);
     }
     //let oldHeight;
     //let actualHeight;

@@ -21,6 +21,7 @@
         correct_name: null,
         correct_url: null,
     };
+    let promise = new Promise((req, res) => {});
 
     function gameStart(e) {
         const obj = e.detail;
@@ -54,6 +55,7 @@
         game_data.winner = null;
         game_data.correct_name = null;
         game_data.correct_url = null;
+        promise = new Promise((req, res) => {});
     }
 
     let game_setup = {};
@@ -78,7 +80,7 @@
 {:else}
     {#if game_data.state == "In Game"}
         <div class="board">
-            <Board {game_data} {game_setup} on:gameEnd={gameEnd}></Board>
+            <Board {game_data} {game_setup} {promise} on:gameEnd={gameEnd}></Board>
         </div>
     {:else if game_data.state == "Game Over"}
         <div class="gameOver">
