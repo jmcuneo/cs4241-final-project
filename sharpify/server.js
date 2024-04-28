@@ -183,6 +183,7 @@ app.post("/upload", upload.single('image'), async (request, response) => {
                 expires: Date.now() + 15 * 60 * 1000, 
             };
             const url = `https://storage.googleapis.com/${bucket.name}/${file[0].name}`;
+            uploadedImage = url;
 
             const imageDocument = {
                 filename: request.file.filename,
