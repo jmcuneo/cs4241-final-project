@@ -39,10 +39,15 @@ socket.on('gameOver', (message) => {
 
 // Function to send a message to the server
 function join() {
+    let username = document.getElementById("username").value;
     const newMessage = {
-        user: document.getElementById("username").value,
+        user: username,
         createdAt: Date.now()
     };
+
+    let messageDiv = document.getElementById("message");
+    messageDiv.textContent = `Joining game with username: ${username}`;
+
     // Emit 'createMessage' event to the server with the new message
     socket.emit('join', newMessage);
 }
@@ -148,5 +153,6 @@ function createNewGame() {
 
 window.onload = function () {
     // Attach click event listener to the button
+    document.getElementById("username").value = document.cookie
     document.getElementById('sendMessageBtn').addEventListener('click', join);
 }

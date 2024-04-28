@@ -7,6 +7,7 @@
     <title>Player Health Tracker</title>
     <script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
     <script src="js/game.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura-earthly.css" type="text/css">
     <link rel="stylesheet" href="css/game.css">
     <style>
 
@@ -16,10 +17,10 @@
 <body>
     
     <div class="player-container">
-        <label for="Name">Enter Your Github Username</label>
+        <label for="username">Enter Your Github Username</label>
         <input type="string" id="username" min="1">
-        <button onclick="generatePlayers()">Generate Players</button>
-        <button id="sendMessageBtn">Send Message to Server</button>
+        <button id="sendMessageBtn">Join game</button>
+        <div id="message"></div>
     </div>
 </body>
 
