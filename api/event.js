@@ -259,9 +259,9 @@ router.post('/getGuestAndInviteLimits', async (req, res) => {
         }
 
         const guestLimit = event.guestLimit;
-        const inviteLimit = event.inviteLimit;
+        const inviterLimit = event.inviterLimit;
 
-        return res.json({ guestLimit: guestLimit, inviteLimit: inviteLimit });
+        return res.json({ guestLimit: guestLimit, inviteLimit: inviterLimit });
     } catch (err) {
         console.log(err);
         return res.json({ success: false });
