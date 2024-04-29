@@ -354,7 +354,7 @@ class PieceT extends Piece {
   constructor(canvasName = 'board') {
       super([[0, 1, 0], [1, 1, 1]], 'purple',
       {0: [[0, 1, 0], [1, 1, 1]], 90: [[0, 1, 0], [0, 1, 1], [0, 1, 0]], 
-        180: [[0, 0, 0], [1, 1, 1], [0, 1, 0]], 270: [[1, 1, 0], [0, 1, 0], [0, 1, 0]]}, canvasName);
+        180: [[0, 0, 0], [1, 1, 1], [0, 1, 0]], 270: [[0, 1, 0], [1, 1, 0], [0, 1, 0]]}, canvasName);
   }
 }
 
@@ -412,7 +412,7 @@ class Next {
   }
 
   getRandomPiece() {
-    let pieceNumber = Math.floor(Math.random() * 6);
+    let pieceNumber = Math.floor(Math.random() * 7);
     switch (pieceNumber) {
       case 0:
         return new PieceI('next');
@@ -426,6 +426,8 @@ class Next {
         return new PieceS('next');
       case 5:
         return new PieceZ('next');
+      case 6:
+        return new PieceT('next');
     }
   }
 
@@ -454,7 +456,7 @@ let next = new Next(boardWidth, boardHeight, cellSize);
 // Game Control Settings
 var fps = 2; // controls the speed of the game in frames per second
 var prevSpeed = 2;
-const SOFTDROP_MULTIPLIER = 4;
+const SOFTDROP_MULTIPLIER = 2;
 var levelRows = 10;
 
 // Main game loop
