@@ -13,7 +13,7 @@ const Conversation = ({ conversation, lastIdx }) => {
 
     return (
 
-        <div className={`bg-dark w-[99.5%] h-[72px] mb-0.5 mr-0.5 ml-0 flex items-center justify-between hover:bg-purp cursor-pointer ${isSelected ? "bg-[rgb(80,46,232)]" : ""}`}
+        <div className={`bg-dark dark:bg-lightdark w-[99.5%] h-[72px] mb-0.5 mr-0.5 ml-0 flex items-center justify-between  dark:hover:bg-purp hover:bg-purp cursor-pointer ${isSelected ? "bg-purp dark:bg-purp" : ""}`}
             onClick={() => setSelectedConversation(conversation)}>
             <div className="avatar placeholder ml-4">
             

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import useConversation from '../../zustand/useConversation';
 import useGetConversations from '../../hooks/useGetConversations';
 import { toast } from 'react-hot-toast';
+import ThemeToggle from '../../utils/ThemeToggle';
 
 const SearchInput = () => {
     const [search, setSearch] = useState("");
@@ -38,9 +39,9 @@ const SearchInput = () => {
     };
 
     return (
-        <div className="flex justify-between items-center w-full bg-dark p-3">
+        <div className="flex justify-between items-center w-full bg-dark dark:bg-lightdark p-3">
             <form onSubmit={handleSubmit} className="flex-grow">
-                <label className="input flex h-[63%] w-full bg-primary items-center gap-2 justify-center">
+                <label className="input flex h-[63%] w-full bg-primary dark:bg-lightprimary items-center gap-2 justify-center">
                     <input
                         type="text"
                         className=" text-[13px] text-[#A1A4A6] grow placeholder-[#A1A4A6]"
@@ -55,9 +56,7 @@ const SearchInput = () => {
                     </button>
                 </label>
             </form>
-            <button onClick={handleMenu} className="ml-4 rounded focus:outline-none">
-                <img src={kebabMenu} alt="Menu" className="w-6 h-6" draggable="false" />
-            </button>
+            <ThemeToggle/>
         </div>
     );
 }

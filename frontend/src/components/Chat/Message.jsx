@@ -27,7 +27,7 @@ const Message = ({ message }) => {
                 <div className={`chat-bubble ${bgColor}  text-white p-3 rounded-md shadow max-w-[40%] break-words text-center`}>
                     <p>{message.message}</p>
                 </div>
-                <div className={`chat-footer text-footer opacity-50  text-center`}>
+                <div className={`chat-footer dark:chat-lightfooter text-footer dark:text-lightfooter opacity-50  text-center`}>
                     {formattedTime}
                 </div>
             </div>

@@ -1,65 +1,47 @@
-/** @type {import('tailwindcss').Config} */
-export default {
+// tailwind.config.js
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class', // Use 'class' strategy for dark mode
   theme: {
     extend: {
       fontFamily: {
         inter: ['Inter', 'sans-serif'],
       },
       colors: {
-  primary: '#262626', // Dark shade
-  secondary: '#404040', // Medium dark shade
-  tertiary: '#A8A8A8', // Light shade
-  dark: '#171717', //dark color
-  other: '#414141',
-  purp: '#502ee8',
-  light: '#ffffff',
-  back: '#202020',
-  loginbutton: '#515151',
-  loginbuttonhover: '#404040',
- welcome: "#e5e7eb",
- footer: "#e5e7eb",
+        // General colors for light theme
+        // Dark mode specific colors
+        primary: '#262626', 
+        secondary: '#404040', 
+        tertiary: '#A8A8A8', 
+        dark: '#171717',
+        other: '#414141',
+        light: '#ffffff',
+        back: '#202020',
+        loginbutton: '#515151',
+        loginbuttonhover: '#404040',
+        welcome: "#e5e7eb",
+        footer: "#e5e7eb",
+        purp: '#502ee8',
 
-       
+
+
+         // General colors
+         lightprimary: '#e6e6e6', // Light mode primary
+         lightsecondary: '#404040', 
+         lighttertiary: '#000000', 
+         lightdark: '#a2a2a3', 
+         lightother: '#cacbcc',
+         lightlight: '#000000',
+         lightback: '#ffffff', // Background color in light mode
+         lightloginbutton: '#c9c7c7',
+         lightloginbuttonhover: '#adacac',
+         lightwelcome: "#000000",
+         lightfooter: "#000000",
       }
     },
   },
   plugins: [require("daisyui")],
-}
-
-
-//dark mode
-// colors: {
-  // primary: '#262626', // Dark shade
-  // secondary: '#404040', // Medium dark shade
-  // tertiary: '#A8A8A8', // Light shade
-  // dark: '#171717', //dark color
-  // other: '#414141',
-  // purp: '#502ee8',
-  // light: '#ffffff',
-  // back: '#202020',
-  // loginbutton: '#515151',
-  //loginbuttonhover: '#404040',
- // welcome: "#e5e7eb",
-//  footer: "#e5e7eb",
-// }
-
-
-
-//light mode
-
-// primary: '#e6e6e6', // login box
-// secondary: '#404040', // Medium dark shade
-// tertiary: '#000000', // Light shade
-// dark: '#a2a2a3', //dark color
-// other: '#cacbcc',
-// purp: '#502ee8',
-// light: '#000000',
-// back: '#ffffff',
-// loginbutton: '#c9c7c7',
-// loginbuttonhover: '#adacac',
-// welcome: "#000000",
-// footer: "#000000",
+};

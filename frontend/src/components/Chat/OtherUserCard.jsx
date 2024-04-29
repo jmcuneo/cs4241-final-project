@@ -2,13 +2,14 @@ import React from 'react';
 import { getInitials } from '../../utils/utils.js';
 import useConversation from '../../zustand/useConversation';  // Import the useConversation hook
 
+
 const OtherUserCard = () => {
   const { selectedConversation } = useConversation();  // Use the hook to access the selected conversation
 
   return (
     <>
-      <div className="bg-other w-full h-[74px]">
-        <div className="bg-dark w-full h-[72px] mb-0.5 mr-0 ml-0 flex items-center justify-start">
+      <div className="bg-other dark:bg-lightother w-full h-[74px]">
+        <div className="bg-dark dark:bg-lightdark w-full h-[72px] mb-0.5 mr-0 ml-0 flex items-center justify-start">
           <div className="avatar placeholder ml-4">
             {/* Use data from selectedConversation to set initials and background color */}
             <div className={`rounded-full w-14 flex items-center justify-center "bg-green-500"

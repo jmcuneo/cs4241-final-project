@@ -7,10 +7,11 @@ import { Toaster } from 'react-hot-toast';
 import { useAuthContext } from './context/AuthContext.jsx';
 import { Navigate } from 'react-router-dom';
 
+
 function App() {
   const {authUser} = useAuthContext();
   return (
-    <div className='bg-back'>
+    <div className='bg-back dark:bg-lightback'>
       
         <Routes>
         <Route path="/" element={authUser ? <Home/> : <Navigate to={"/login" } /> } />
