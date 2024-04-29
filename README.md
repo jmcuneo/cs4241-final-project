@@ -1,6 +1,6 @@
-##Group Members: Andrew Salls, Nora Cleary, Ellys Gorodisch, Era Kalaja##
+##Group Members: Andrew Salls, Nora Cleary, Ellys Gorodisch, Era Kalaja
 ##Application: CampusConnect##
-Hosting link: 
+Hosting link: https://campus-connect-9c83.onrender.com/
 
 #A brief description of what we created:
     Our application is called CampusConnect, it is an application designed specifically for WPI students to get more involved on campus via club engagement or to help students meet others informally through a posting board. CampusConnect covers 3 key functionalities for WPI students: allowing students to post messages about classes, meetings, social events, or just needing some one to get dinner with; allowing clubs and students to create public events on a calendar, streamlining club evebt attendance; and allowing students to create their own personal calendars from the list events on the public calendar. This site acts as an accessible social media page for WPI students and helps connect our campus members with one another. 
