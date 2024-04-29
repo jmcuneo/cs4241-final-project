@@ -12,7 +12,7 @@ export default defineConfig({
         target: `http://localhost:${process.env.PORT || 8000}`,
       },
 			"/socket.io":{
-				target: `http://localhost:3636`,
+				target: `ws://localhost:3636`,
 			}
     }
   },
