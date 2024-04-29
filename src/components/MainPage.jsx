@@ -53,7 +53,7 @@ function MainPage({ onLogout, isAdmin }) {
 
       const res = await response.json();
       if (res.ok) setMessage("Event Created Successfully");
-      else setMessage(res);
+      else setMessage(res.error);
     } catch (error) {
       console.error("Error creating event:", error);
     }
@@ -77,7 +77,7 @@ function MainPage({ onLogout, isAdmin }) {
       }
     };
     getUpcomingEvents();
-  }, []);
+  }, [events]);
   events.map((row) => {
     new Date(row.date).toLocaleDateString(navigator.languages, {
       day: "numeric",

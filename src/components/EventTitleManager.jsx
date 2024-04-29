@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types"
+import { useNavigate } from "react-router-dom";
 
 function EventTitleManager({ eventId }) {
+  //const { eventId } = useParams();
   const [thisEvent, setThisEvent] = useState([]);
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
@@ -12,6 +14,7 @@ function EventTitleManager({ eventId }) {
   const eventNameUpdate = useRef(null);
   const eventDateUpdate = useRef(null);
   const eventLocationUpdate = useRef(null);
+  const navigate = useNavigate();
 
   function formatEventDate(dateString) {
     const eventDate = new Date(dateString);
@@ -109,6 +112,31 @@ function EventTitleManager({ eventId }) {
     updateEvent(newEventName, newEventDate, newEventLocation);
   };
 
+  const handleDeleteEvent = async () => {
+    const shouldDelete = window.confirm('Are you sure you want to delete this event? This action CANNOT be undone');
+
+    if (shouldDelete) {
+      try {
+        const response = await fetch("//localhost:3000/api/deleteEvent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ 
+            token: localStorage.getItem("token"),
+            eventId: eventId
+         }),
+        });
+  
+        const res = await response.json();
+        if (res.success === true) navigate("/main");
+        else window.confirm(res.error);
+      } catch (error) {
+        console.error("Error deleting event:", error);
+      }
+    }
+}
+
   const updateEventData = useCallback(() => {
     if (thisEvent !== null) {
       const formattedDateString = formatEventDate(thisEvent.date);
@@ -146,6 +174,16 @@ function EventTitleManager({ eventId }) {
                 id="editDetailsButton"
               >
                 Edit Event Details
+              </button>
+            </th>
+            <th>
+              <button
+                onClick={() => handleDeleteEvent()}
+                className="btn btn-accent bg-red-500 text-black px-10 hover:bg-red-600"
+                type="button"
+                id="deleteEventButton"
+              >
+                Delete Event
               </button>
             </th>
           </tr>

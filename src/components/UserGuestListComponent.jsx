@@ -218,7 +218,6 @@ const guestTable = () => {
 }
 
 UserGuestListComponent.propTypes = {
-  onUpdate: PropTypes.func,
   manage: PropTypes.bool,
   passedGuestList: PropTypes.arrayOf(PropTypes.any),
 };
