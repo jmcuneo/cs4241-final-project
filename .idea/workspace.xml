@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="46836379-5a5c-461b-8fd8-2ed99e734ee7" name="Changes" comment="Titles and also no console.logs">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/game.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/game.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/game.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/game.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Login" />
+        <option value="CreateGame" />
+        <option value="Game.svelte" />
+        <option value="Game" />
+        <option value="JavaScript File" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="gameCSS" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2fFDt9gYWKmw3T3fG97as2hHFH4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Git.Branch.Popup.ShowAllRemotes&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Aidan/Desktop/Webware/a3-aidanmacnevin&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Aidan\Desktop\Webware\cs4241-final-project\vite-project" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Aidan\Desktop\Webware\cs4241-final-project\public" />
+      <recent name="C:\Users\Aidan\Desktop\Webware\cs4241-final-project" />
+      <recent name="C:\Users\Aidan\Desktop\Webware\cs4241-final-project\public\js" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="46836379-5a5c-461b-8fd8-2ed99e734ee7" name="Changes" comment="" />
+      <created>1713388143716</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1713388143716</updated>
+      <workItem from="1713388145550" duration="1924000" />
+      <workItem from="1713802121481" duration="1356000" />
+      <workItem from="1713803508812" duration="2174000" />
+    </task>
+    <task id="LOCAL-00001" summary="Vite project setup">
+      <created>1713803135897</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1713803135897</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Add server and app.svelte from ice">
+      <created>1713803292664</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1713803292664</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added multi page navigation">
+      <created>1713805307540</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1713805307540</updated>
+    </task>
+    <task id="LOCAL-00004" summary="added db to novite">
+      <created>1714064061183</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1714064061183</updated>
+    </task>
+    <task id="LOCAL-00005" summary="added db to novite with hopeful example">
+      <created>1714065129406</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1714065129406</updated>
+    </task>
+    <task id="LOCAL-00006" summary="added db to novite with hopeful example">
+      <created>1714065144686</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1714065144686</updated>
+    </task>
+    <task id="LOCAL-00007" summary="User exists method">
+      <created>1714162273415</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1714162273415</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Get user game history method">
+      <created>1714162826330</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1714162826330</updated>
+    </task>
+    <task id="LOCAL-00009" summary="added createGame method">
+      <created>1714164259207</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1714164259207</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Remove player IDs from games and add setWinnerOrder to concludeGame">
+      <created>1714164739118</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1714164739118</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Added leaderboard page">
+      <created>1714324720524</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1714324720524</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Navigation and styling changes (sakura and html changes)">
+      <created>1714325220649</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1714325220649</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Conclude game post req">
+      <created>1714326594683</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1714326594683</updated>
+    </task>
+    <task id="LOCAL-00014" summary="CSS style changes: Nav bar">
+      <created>1714328819905</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1714328819905</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Style login (minimal)">
+      <created>1714329773473</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1714329773473</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Start script for glitch">
+      <created>1714331729270</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1714331729270</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Button div changes">
+      <created>1714353110054</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1714353110054</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Remove test and add CSS changes">
+      <created>1714353268588</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1714353268588</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Titles and also no console.logs">
+      <created>1714403993837</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1714403993837</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Vite project setup" />
+    <MESSAGE value="Add server and app.svelte from ice" />
+    <MESSAGE value="Added multi page navigation" />
+    <MESSAGE value="added db to novite" />
+    <MESSAGE value="added db to novite with hopeful example" />
+    <MESSAGE value="User exists method" />
+    <MESSAGE value="Get user game history method" />
+    <MESSAGE value="added createGame method" />
+    <MESSAGE value="Remove player IDs from games and add setWinnerOrder to concludeGame" />
+    <MESSAGE value="Added leaderboard page" />
+    <MESSAGE value="Navigation and styling changes (sakura and html changes)" />
+    <MESSAGE value="Conclude game post req" />
+    <MESSAGE value="CSS style changes: Nav bar" />
+    <MESSAGE value="Style login (minimal)" />
+    <MESSAGE value="Start script for glitch" />
+    <MESSAGE value="Button div changes" />
+    <MESSAGE value="Remove test and add CSS changes" />
+    <MESSAGE value="Titles and also no console.logs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Titles and also no console.logs" />
+  </component>
+</project>

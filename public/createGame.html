@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang='en'>
+    <head>
+        <title>MTG Tracker - Create Game</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <script src="js/createGame.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura-earthly.css" type="text/css">
+        <link rel="stylesheet" href="css/index.css">
+
+
+        <!-- get rid of favicon error -->
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    </head>
+    <body>
+
+    <div class="topnav">
+        <a href="/home.html">Home</a>
+        <a class="active" href="/createGame.html">Game</a>
+        <a href="/leaderboard.html">Leaderboard</a>
+        <a class="user" href="/stats.html">Profile</a>
+    </div>
+
+    <div class="content">
+        <h1>Create a Game</h1>
+        <form>
+            <label for="numb-players">Number of Players:</label>
+            <input type='number' name='numb-players' id='numb-players' required>
+            <label for="total-health">Total Health:</label>
+            <input type='number' name='total-health' id='total-health' required>
+            <input type='submit' id="submit">
+        </form>
+    </div>
+    </body>
+
+</html>

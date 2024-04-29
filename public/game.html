@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTG Tracker - Game</title>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
+    <script src="js/game.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura-earthly.css" type="text/css">
+<!--    <link rel="stylesheet" href="css/index.css">-->
+    <link rel="stylesheet" href="css/game.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+<div class="topnav">
+    <a href="/home.html">Home</a>
+    <a class="active" href="/createGame.html">Game</a>
+    <a href="/leaderboard.html">Leaderboard</a>
+    <a class="user" href="/stats.html">Profile</a>
+</div>
+
+    <div class="content">
+        <div class="player-container">
+            <label for="username">Enter Your Github Username</label>
+            <input type="string" id="username" min="1">
+            <button id="sendMessageBtn">Join Game</button>
+            <div id="message"></div>
+        </div>
+        <div class="active-game"></div>
+    </div>
+
+
+</body>
+
+</html>
