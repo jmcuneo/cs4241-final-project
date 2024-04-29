@@ -4,7 +4,7 @@ const loadTable = async function (){
             const existingTableBody = document.getElementById("leaderboardBody");
             data.sort((a, b) => (b.wins / (b.wins + b.losses)) - (a.wins / (a.wins + a.losses)))
             for (let i = 0; i < data.length; i++) {
-                console.log("loadTable: ", data[i])
+                // console.log("loadTable: ", data[i])
                 const row = document.createElement("tr");
                 for (let j = 0; j < 4; j++) {
                     const cell = document.createElement("td");
@@ -40,5 +40,5 @@ const loadTable = async function (){
 
 window.onload = function() {
     loadTable();
-    console.log("COOKIE USER: " + document.cookie);
+    // console.log("COOKIE USER: " + document.cookie);
 }

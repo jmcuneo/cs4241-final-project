@@ -6,7 +6,7 @@ let players;
 
 // Listen for 'newMessage' event from the server
 socket.on('newMessage', (message) => {
-    console.log('Received message from server:', message);
+    // console.log('Received message from server:', message);
     numPlayers = message.numberOfPlayer
 });
 
@@ -16,8 +16,8 @@ socket.on('disconnect', () => {
 });
 
 socket.on('maxPlayersReached', (message) => {
-    console.log("maxPlayersReached")
-    console.log(message)
+    // console.log("maxPlayersReached")
+    // console.log(message)
     players = message
     generateButtons()
 })
@@ -33,7 +33,7 @@ socket.on('gamestarted', (message) => {
 })
 
 socket.on('gameOver', (message) => {
-    console.log(message)
+    // console.log(message)
     endGameResults(message)
 })
 
@@ -65,7 +65,7 @@ const getUser = async function () {
 
     const response = await fetch("/userdata");
     const data = await response.json();
-    console.log(data[0].name);
+    // console.log(data[0].name);
     const user = data[0].name;
 }
 
@@ -73,7 +73,7 @@ function generateButtons() {
     let playerContainer = document.querySelector(".player-container");
     playerContainer.innerHTML = ""; // Clear previous players
     playerContainer =  document.querySelector(".active-game");
-    console.log(players)
+    // console.log(players)
 
     players.forEach(player => {
         const playerDiv = document.createElement("div");

@@ -3,7 +3,7 @@ window.onload = async function(){
     const response = await fetch("/userdata");
     const data = await response.json();
     const userInfo = data[data.length - 1];
-    console.log("Current user: " + userInfo.username);
+    // console.log("Current user: " + userInfo.username);
     document.cookie = `${userInfo.username}`;
     
   }

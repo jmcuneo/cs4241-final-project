@@ -10,7 +10,7 @@ const submit = async function( event ) {
           json = { players: players.value, health: parseInt(health.value)},
           body = JSON.stringify( json )
 
-    console.log(body)
+    // console.log(body)
   
     const response = await fetch( "/createGame", {
       method:"POST",

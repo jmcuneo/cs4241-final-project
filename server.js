@@ -64,9 +64,9 @@ let gameID;
 
 // make connection with user from server side
 io.on('connection', (socket) => {
-    console.log('New user connected');
+    // console.log('New user connected');
     clients.push(socket)
-    console.log(clients.length)
+    // console.log(clients.length)
 
     if(gamestarted){
         socket.emit('gamestarted', players)
@@ -87,7 +87,7 @@ io.on('connection', (socket) => {
                 isAlive: true
             })
             if (players.length == numberOfPlayer) {
-                console.log("Number of players reached")
+                // console.log("Number of players reached")
                 gamestarted = true
                 clients.forEach(c => { c.emit('maxPlayersReached', players) })
             }
@@ -98,7 +98,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect',
         () => {
             console.log('disconnected from user');
-            console.log(clients.length)
+            // console.log(clients.length)
         });
 
     socket.on('healthchange', (message) => {
@@ -107,12 +107,12 @@ io.on('connection', (socket) => {
                 player.health += message.healthChange
             }
         })
-        console.log(players)
+        // console.log(players)
         clients.forEach( c => {c.emit('update', players ) })
     })
 
     socket.on('playerdeath', (message) => {
-        console.log(message)
+        // console.log(message)
         players.forEach(player => {
             if (player.username == message.user) {
                 player.isAlive = !player.isAlive
@@ -122,9 +122,9 @@ io.on('connection', (socket) => {
                     loserQueue.splice(loserQueue.indexOf(player), 1)
                 }
                 if(loserQueue.length == numberOfPlayer-1){
-                    console.log(numberOfPlayer)
-                    console.log(loserQueue)
-                    console.log(loserQueue.length)
+                    // console.log(numberOfPlayer)
+                    // console.log(loserQueue)
+                    // console.log(loserQueue.length)
                     gameOver()
                 }
             }
@@ -139,7 +139,7 @@ io.on('connection', (socket) => {
 });
 
 async function gameOver(){
-    console.log("Game Over")
+    // console.log("Game Over")
     let temp = []
     players.forEach(player =>{
         if(player.isAlive){
@@ -155,8 +155,8 @@ async function gameOver(){
         winners.push(player.username)
     })
     winners.reverse()
-    console.log(winners)
-    console.log(gameID)
+    // console.log(winners)
+    // console.log(gameID)
     clients.forEach( c => {c.emit('gameOver', winners ) })
     await concludeGame(gameID, winners)
     clients = []
@@ -174,12 +174,12 @@ app.post("/createGame", (req, res) => {
     numberOfPlayer = req.body.players
     startingHealth = parseInt(req.body.health)
     gameCreated = true;
-    console.log(`Created Game: \n Number of Players: ${numberOfPlayer} \n Starting Heath: ${startingHealth}`)
+    // console.log(`Created Game: \n Number of Players: ${numberOfPlayer} \n Starting Heath: ${startingHealth}`)
     res.sendStatus(200)
 })
 
 app.get("/isGameCreated", async (req, res) => {
-    console.log(gameCreated)
+    // console.log(gameCreated)
     res.json({ gameStatus: gameCreated });
 })
 
@@ -287,7 +287,7 @@ async function addUser(userID) {
             history: [],
         };
         const result = await collection.insertOne(document);
-        console.log(`Inserted document with _id: ${result.insertedId}`);
+        // console.log(`Inserted document with _id: ${result.insertedId}`);
     } catch (err) {
         console.error("Error inserting document:", err);
     }
@@ -306,7 +306,7 @@ async function createGame() {
             winnerOrder: [],
         };
         const result = await collection.insertOne(document);
-        console.log(`Inserted document with _id: ${result.insertedId}`);
+        // console.log(`Inserted document with _id: ${result.insertedId}`);
 
         const stringID = result.insertedId.toString()
 
@@ -344,7 +344,7 @@ async function addWin(userID) {
             { $inc: { wins: 1 } });
 
         // Log the result
-        console.log(`Added win to ${userID}`);
+        // console.log(`Added win to ${userID}`);
     } catch (err) {
         console.error("Error adding win:", err);
     }
@@ -359,7 +359,7 @@ async function addLoss(userID) {
             { $inc: { losses: 1 } });
 
         // Log the result
-        console.log(`Added loss to ${userID}`);
+        // console.log(`Added loss to ${userID}`);
     } catch (err) {
         console.error("Error adding loss:", err);
     }
@@ -386,7 +386,7 @@ async function addGameHistory(userID, gameID) {
             { $push: { history: gameID } }
         );
 
-        console.log(`Added game ${gameID} to history of user ${userID}`);
+        // console.log(`Added game ${gameID} to history of user ${userID}`);
         return result;
     } catch (err) {
         console.error("Error adding game history:", err);
@@ -407,9 +407,9 @@ async function updateWinner(gameID, userID) {
         );
 
         if (result.modifiedCount === 1) {
-            console.log('Winner updated successfully.');
+            // console.log('Winner updated successfully.');
         } else {
-            console.log('No document updated.');
+            // console.log('No document updated.');
         }
     } catch (err) {
         console.log('Error occurred while updating winner:', err);
@@ -421,15 +421,15 @@ async function updateWinner(gameID, userID) {
 async function concludeGame(gameID, playerIDs) {
     // Add a win to winner, add game to user history, set winner of game
     await setWinnerOrder(gameID, playerIDs)
-    console.log(playerIDs)
+    // console.log(playerIDs)
     let winnerID = playerIDs.shift()
-    console.log(winnerID)
+    // console.log(winnerID)
     await addWin(winnerID);
     await addGameHistory(winnerID, gameID)
     await updateWinner(gameID, winnerID)
 
     for (let loserID of playerIDs) {
-        console.log(loserID)
+        // console.log(loserID)
         await addLoss(loserID)
         await addGameHistory(loserID, gameID)
     }
@@ -471,7 +471,7 @@ async function getUserInfo(userID) {
         const db = client.db("webwareFinal");
         const collection = db.collection("users");
         const myUser = collection.findOne({ userID: userID });
-        console.log(myUser);
+        // console.log(myUser);
         return myUser;
     } catch (err) {
         console.error("Error adding loss:", err);
