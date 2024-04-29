@@ -1,61 +1,59 @@
-# Final Project
+# Approximate Whomst
+[Approximate Whomst](https://approximatewhomst.onrender.com/) is a two-player webgame based on *Guess Who*. Instead of guessing between original characters, players instead need to guess either Pokémon or *Minecraft* items. Stretch goals included support for custom types of game for various other video games and fandoms, but for our project we stuck with just these two. Players are given 24 random images and names, two of which are assigned to be each player’s “secret”. The goal of the game is for players to take turns asking each other yes or no questions via chat to narrow down their options and eventually guess the opponent’s secret. When players are ready to make an official guess, they can right click what they think their opponent’s secret is. If they’re right, they win the game!
 
-[Example Projects from A23](https://echo360.org/collection/50a4d343-caea-4deb-93ee-61bdd7da543f/public)
+The main features included in the game are be hosting and joining two-player games in private lobbies, giving players in those lobbies a randomly selected assortment of 24 images from a database, a random assignment of an item to guess, a chat feature that players can use to ask each other questions, a “flipping” system for users to eliminate options, and an “official guess” feature, which sends a message in chat when it is used, ends the game if the player is right, and permanently flips the option if the player is wrong. It also includes a game over screen which tells both players the correct answer and features a “Play Again” button so that players can easily start a new game.
 
-**More Example Projects:**
-- [https://pushbox.glitch.me/app](https://pushbox.glitch.me/app)
-- [https://github.com/Cather-Zhang/final_project](https://github.com/Cather-Zhang/final_project)
-- [https://clip.kmoene.com/](https://clip.kmoene.com/)
-- [https://github.com/GP2P/G3P-Expense-Tracker](https://github.com/GP2P/G3P-Expense-Tracker)
+# How to Play/Use: 
 
-For your final project, you'll implement a web application that exhibits understanding of the course materials. 
-This project should provide an opportunity to both be creative and to pursue individual research and learning goals.
+*Approximate Whomst* is a 2-player Guess Who-like game, where players take turns asking and answering yes/no questions to nail down what character or item they other player is trying to have them guess. 
 
-## General description
-Your project should consist of a complete Web application, exhibiting facets of the three main sections of the course material:
+1. Enter a room code in “Host Game” and press enter
+2. Give the code to a friend for them to enter in “Join Game” and press enter
+3. Use the provided chat (or talking in person or on a call), taking turns answering yes/no questions
+4. Click on Pokemon/Items to mark them to keep track of what you are NOT trying to guess
+5. When you are ready to submit a guess, right click a Pokemon/Item and select “yes”
+6. The player who guesses correctly wins! 
 
-- Static web page content and design. You should have a project that is accessible, easily navigable, and features significant content.
-- Dynamic behavior implemented with JavaScript (TypeScript is also allowed if your group wants to explore it).
-- Server-side programming *using Node.js*. Typically this will take the form of some sort of persistent data (database), authentication, and possibly server-side computation. 
-- A video (less than five minutes) where each group member explains some aspect of the project. An easy way to produce this video is for you all the groups members to join a Zoom call that is recorded; each member can share their screen when they discuss the project or one member can "drive" the interface while other members narrate (this second option will probably work better.) Upload the video to Canvas. (Further instructions are available in the Canvas assignment.) Make sure your video is less than five minutes but long enough to successfully explain your project and show it in action. There is no minimum video length.
+*Approximate Whomst* uses a database to keep track of games, each with a registered room code users can share with others. There is no formal login system required to play the game.
 
-## Project ideation
-Excellent projects typically serve someone/some group; for this assignment you need to define your users and stakeholders. I encourage you to identify projects that will have impact, either artistically, politically, or in terms of productivity. 
+# Technologies Used:
 
-## Deliverables
+We used Svelte for program design on the client. Each page of the app had a component that handled the logic of that page. We used sass for css styling. This was done to make the complicated card css easier to read and was overall helpful in readability. We are using MongoDB for the database. We stored the Pokemon and Minecraft items there as well as data for currently running games needed such as the chat, board, players, and flipped and guessed cards. Our server was built in Node.js as required. Socket.io was helpful to send messages between the client and the server. We ended up hosting the project on Render.
 
-### Form Team (Due Thursday, April 11, 11:59 pm)
-Students are will work in teams of 3-5 students for the project. Working in teams should help enable you to build a good project in a limited amount of time.  Use the `#finalproject` channel in Slack to pitch ideas for final projects and/or find fellow team members as needed.
+# Challenges Faced:
 
-Teams must be in place by end of day on Monday, April 8. If you have not identified a team at this point, you will be assigned a team. **Put all team members together in one of the empty "Final Project" groups on Canvas. You MUST do this step to receive full credit on the assignment.**
+## Leaving and Rejoining
 
-### Proposal (Due Tuesday, April 16, 11:59 pm) 
-Provide an outline of your project direction and the names of associated team members. The outline should have enough detail so that staff can determine if it meets the minimum expectations or if it goes too far to be reasonable by the deadline. Please include a general description of the project and a list of key technologies/libraries you plan on using (e.g. React, Three.js, Svelte, TypeScript, etc.). Two to four paragraps should provide enough level of detail. Name the file proposal.md and submit a pull request by Tuesday, September 27th at 11:59 PM (end of day). Your pull request does not need to have a specific name. Only one pull request is required per team.
+One challenge with implementing any multiplayer game is handling disconnections. Theoretically, either player can disconnect at any time, and the server needs to be at least somewhat prepared for that scenario. We made a system that should make the game fairly robust in handling disconnects. The server keeps track of a socket id for a “Player 1” and a “Player 2”. If a player leaves, the corresponding element in the database is set to null. If a new player joins, they will attempt to join as Player 2 by default, but if a player 2 is already in the game, they will join as Player 1. While only one player is in the game, any official guesses made will not count, but the remaining player can still flip cards and send messages in chat. When a player rejoins, the client syncs with the server, restoring whatever cards they had flipped and any messages previously sent in chat.
 
-There are no other scheduled checkpoints for your project. 
+## Populating Databases
 
-### Turning in Your Project (Due Monday, April 29, 11:59 pm)
-**Although the assignment is due at 11:59 pm, you must be prepared to demo your website in class that day.**
+With over 1,000 Pokémon and hundreds of Minecraft items we wanted to include in the database, adding them all manually would be way too much of an undertaking. We instead decided to write a Python script for Pokemon and a JavaScript script for Minecraft which could add these values in bulk. We downloaded lists of every Pokémon and Minecraft item, and used this script to populate the database with not just the names, but a unique ID and link to a corresponding image to display as well.
 
-Submit a second PR on the final project repo to turn in your app and code. Again, only one pull request per team.
+## Database Organization
 
-Deploy your app, in the form of a webpage, to Glitch/Heroku/Digital Ocean or some other service; it is critical that the application functions correctly wherever you post it.
+The only problems on the DB mostly came from the occasional hardcoded fetch case, all left over from early testing, but easily abstracted and removed once more feature visions became final. I’m particularly proud of the organization on the DB, there was an abundance of information related to gamestate, and the Minecraft and Pokemon collections being so similar allowed for easy abstraction between them to support them both as their own game modes (and lay the groundwork for future expansion). Game objects storing references of Pokemon/Minecraft objects was also a highlight technical feature.
 
-The README for your second pull request doesn’t need to be a formal report, but it should contain the following:
+## Card CSS
 
-1. A brief description of what you created, and a link to the project itself (two paragraphs of text)
-2. Any additional instructions that might be needed to fully use your project (login information, etc.)
-3. An outline of the technologies you used and how you used them.
-4. What challenges you faced in completing the project.
-5. What each group member was responsible for designing / developing.
-6. What accessibility features you included in your project.
+Getting the Css on cards to work was very hard. Each card had three states: regular, flipped, and permanently flipped. A card was made up of three elements, each of which needed their own css for each state. Plus, one card, the card the other player needed to guess,  got a gold border which also needed to change. Each state also needed to change on hover. Once clicked the hover events needed to stop until the mouse left the card. I added sass to be able to use the ampersand syntax to make the css clearer and more readable.
 
-Think of 1, 3, and 4 in particular in a similar vein to the design / technical achievements for A1—A4. Make a case for why what you did was challenging and why your implementation deserves a grade of 100%.
+# Group Responsibilities
 
-The video described above is also due on Canvas at this time.
+**Milo** was in charge of the server.js file, which handled the socket.io requests. This served as a communication link between the client, the server, and the database.
 
-## FAQs
+**Nate** majorly worked on the Client with Svelte doing the HTML, CSS, and JavaScript. He also did miscellaneous work on the server.
 
-**Can I use XYZ framework?** 
+**Bashar** handled Database communication between the Server and the DB, which primarily consisted of the database.js file. He also set up the structure for Card objects (of type Pokemon and Minecraft) to store information for a particular card (like Pikachu), and a structure to hold all game objects so the current game state can be stored on the DB to be fetched from both players. 
 
-You can use any web-based frameworks or tools available, but for your server programming you need to use Node.js. Your client-side scripting language should be either JavaScript or TypeScript. Note that the staff may not be able to assist with TypeScript questions.
+**Connor** populated the initial database, worked on initial client game setup, and made some of the communication between the server and database.
+
+# Accessibility
+
+All pages of Approximate Whomst score 100% in the accessibility section of Google Lighthouse tests. We achieved this by labeling all form elements, providing sufficient contrast for all text elements (including changing the color on already-guessed cards so that the name is still readable), and providing titles for the pages. 
+
+# Conclusion
+
+We believe we deserve a 99.99% exactly in the project due to the copyright infringement of using intellectual property from the *Pokémon™* and *Minecraft™* games. Such a terrible crime cannot go unpunished, so we must lose 0.01 points for it.
+
+Joking aside, we enjoyed making this, we think it was sufficiently challenging and sufficiently creative, and we look forward to playing it with our friends once finals are over!
