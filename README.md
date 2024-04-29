@@ -1,55 +1,26 @@
-# Final Project
+# Word Chain
+Team members: Lucas Sicard, Yuran Xue, Trevor Ng , Jay Hokkanen, Nicholas Whalen
 
-[Example Projects from A23](https://echo360.org/collection/50a4d343-caea-4deb-93ee-61bdd7da543f/public)
+Here is our project deployed to Render: [WordChain](https://cs4241-final-project-6qnt.onrender.com/)
 
-For your final project, you'll implement a web application that exhibits understanding of the course materials. 
-This project should provide an opportunity to both be creative and to pursue individual research and learning goals.
 
-## General description
-Your project should consist of a complete Web application, exhibiting facets of the three main sections of the course material:
+## Porject Description
+For our final project, our group developed a web game called Word Chain. The game works by providing the player with a starting word, which they then have 10 seconds to come up with another word beginning with the last letter of the previous word. The words must be a minimum of 4 letters in length, and words cannot be repeated. Upon submitting a valid word, the player gains points equal to the number of letters in the submitted word. If the player runs out of time before their next word is submitted, the game ends and they can then submit their score to the leaderboard by attaching a username. 
 
-- Static web page content and design. You should have a project that is accessible, easily navigable, and features significant content.
-- Dynamic behavior implemented with JavaScript (TypeScript is also allowed if your group wants to explore it).
-- Server-side programming *using Node.js*. Typically this will take the form of some sort of persistent data (database), authentication, and possibly server-side computation. 
-- A video (less than five minutes) where each group member explains some aspect of the project. An easy way to produce this video is for you all the groups members to join a Zoom call that is recorded; each member can share their screen when they discuss the project or one member can "drive" the interface while other members narrate (this second option will probably work better.) Upload the video to Canvas. (Further instructions are available in the Canvas assignment.) Make sure your video is less than five minutes but long enough to successfully explain your project and show it in action. There is no minimum video length.
+The leaderboard functions similarly to a traditional arcade machine, showing the top scores and names out of all games played. All scores are stored in a MongoDB collection. 
 
-## Project ideation
-Excellent projects typically serve someone/some group; for this assignment you need to define your users and stakeholders. I encourage you to identify projects that will have impact, either artistically, politically, or in terms of productivity. 
 
-## Deliverables
+## Project Instructions
+Our project is hosted on Render.com at [WordChain](https://cs4241-final-project-6qnt.onrender.com/) and does not require any additional instructions to use. 
 
-### Form Team (Due Thursday, April 11, 11:59 pm)
-Students are will work in teams of 3-5 students for the project. Working in teams should help enable you to build a good project in a limited amount of time.  Use the `#finalproject` channel in Slack to pitch ideas for final projects and/or find fellow team members as needed.
+## Technologies
+Word Chain’s frontend was developed using Vite as our compiler, React.js for our UI, TypeScript as our primary language, and Axios for our node server queries. We chose to use React as our UI for its simplicity and quick performance. React’s libraries helped our group quickly implement features for our project, such as useStates and useQueries. Our group chose to use TypeScript over regular JS at the start of our project, although we didn’t end up needing many of its features. The backend of Word Chain was built on Express, Node JS, and MongoDB. This stack was very familiar to all group members, and each component had plenty of resources available. Everything worked well with what our needs were for this project. 
 
-Teams must be in place by end of day on Monday, April 8. If you have not identified a team at this point, you will be assigned a team. **Put all team members together in one of the empty "Final Project" groups on Canvas. You MUST do this step to receive full credit on the assignment.**
+## Challenges
+Our project faces several critical challenges. Firstly, merge conflicts occurs when we made conflicting changes to the same line of code, resulting in significant time spent manually resolving them. Secondly, we encountered persistent errors stemming for the node_modules during our operations. We conducted troubleshooting and maintenance to address these issues. Lastly, achieving parity across diverse browser and devices presents ongoing challenges in ensuring consistent user experiences.
 
-### Proposal (Due Tuesday, April 16, 11:59 pm) 
-Provide an outline of your project direction and the names of associated team members. The outline should have enough detail so that staff can determine if it meets the minimum expectations or if it goes too far to be reasonable by the deadline. Please include a general description of the project and a list of key technologies/libraries you plan on using (e.g. React, Three.js, Svelte, TypeScript, etc.). Two to four paragraps should provide enough level of detail. Name the file proposal.md and submit a pull request by Tuesday, September 27th at 11:59 PM (end of day). Your pull request does not need to have a specific name. Only one pull request is required per team.
+## Responsibilities
+Our project benefits from a well-coordinated team effort, with each member taking on specific responsibilities. Lucas is tasked with setting up MongoDB, managing pull requests, and resolving bugs. Yuran is responsible for start word function, designing the layout, debugging, and contributes to the README documentation. Trevor focuses on implementing the Word Checking function. Jay is in charge of developing the Scoreboard feature and deploying the site to Render. Nick handles username validation, debugging tasks, and contributes to the README documentation. 
 
-There are no other scheduled checkpoints for your project. 
-
-### Turning in Your Project (Due Monday, April 29, 11:59 pm)
-**Although the assignment is due at 11:59 pm, you must be prepared to demo your website in class that day.**
-
-Submit a second PR on the final project repo to turn in your app and code. Again, only one pull request per team.
-
-Deploy your app, in the form of a webpage, to Glitch/Heroku/Digital Ocean or some other service; it is critical that the application functions correctly wherever you post it.
-
-The README for your second pull request doesn’t need to be a formal report, but it should contain the following:
-
-1. A brief description of what you created, and a link to the project itself (two paragraphs of text)
-2. Any additional instructions that might be needed to fully use your project (login information, etc.)
-3. An outline of the technologies you used and how you used them.
-4. What challenges you faced in completing the project.
-5. What each group member was responsible for designing / developing.
-6. What accessibility features you included in your project.
-
-Think of 1, 3, and 4 in particular in a similar vein to the design / technical achievements for A1—A4. Make a case for why what you did was challenging and why your implementation deserves a grade of 100%.
-
-The video described above is also due on Canvas at this time.
-
-## FAQs
-
-**Can I use XYZ framework?** 
-
-You can use any web-based frameworks or tools available, but for your server programming you need to use Node.js. Your client-side scripting language should be either JavaScript or TypeScript. Note that the staff may not be able to assist with TypeScript questions.
+## Accessibility Features
+Our project incorporates various accessibility features to ensure an inclusive user experience. Including clear game instructions, an alert system designed to remind players to input words and name correctly, implementation of ARIA for enhanced dynamic content accessibility, and high contract colors for improved visibility. These features collectively aim to make out application accessible and usable for all players.
