@@ -38,7 +38,10 @@ Most of the major challenges our group faced came up when we were initially impl
 
 **Austin Rebello**: Set up the base shell of the project, including the 3 base HTML Handlebars pages and their connectivity to one another. Worked on the navigation bar and its functionality and styling. Developed the JavaScript for the login.html and scores.html page, as well as the design of both pages. Assisted in the development of the game functionality and debugging of the piece movement and placement. Set up the databases and their connections, as well as the current score / high score functionalities on the main game page.<br><br>
 **Brianna Sahagian**: Set up Tetris database and collections on MongoDB. Implemented piece configurations and worked on rotations, motion, and piece spawning via the queue. Added instructions, 'game start' logic, local and global high score alerts, and game over alert. Implemented difficulty scaling based on 'levels' and rows cleared for faster piece drop rates. Worked on Guest profile display and introduced some interactive elements to main.handlebars.<br><br>
-**Darren Ni**: Contributions here.<br><br>
+**Darren Ni**: Created the two html canvas elements, along with the `Board` and `Next` classes to control the logic within the canvases. Used x and y offsets with `cellSize` to draw the grid background in the Board in the `drawBackground()` function. Created the `Piece` class along with its subclasses, and worked on the `draw()` function to allow each pieces to render themselves. Created the `hardDrop()` and `softDrop()` functions within the `Board` class, and implemented them in the game, and also made the two buttons to change mode (Normal Mode and Silly Mode).
+
+
+
 **Parker Frizzle**: Added majority of logic related to the game board and its cells and assisted with piece logic. Implemented logic to handle interactions between the active piece and the game board, such as piece collision, boundary detection, loss detection, and line clear logic. Implemented main game loop and animation logic. Found and added colorblind-friendly palette for game pieces. Tested and debugged site, especially game functionality.
 
 ## Accessibility Features:
