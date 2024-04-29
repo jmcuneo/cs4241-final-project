@@ -2,71 +2,73 @@
 
 /* Body */
 body {
-    background-color: #f7d4e7; /* Light pastel pink */
-    color: #333; /* Dark text */
-  }
-  
-  /* Headers */
-  h1,h2, h3, h4, h5, h6 {
-    color: #de7db4; /* Dark pastel pink */
-  }
+  background-color: #f7d4e7; /* Light pastel pink */
+  color: #333; /* Dark text */
+}
 
-  
-  
-  p{
-    color: #333;
-  }
-  li {
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+  color: #de7db4; /* Dark pastel pink */
+}
+
+p {
+  color: #333;
+}
+
+li {
   color: #333; /* Set text color of list items */
 }
+
 ol ol {
-    margin-left: 10px; 
-    font-size: 15px;
-  }
-  
+  margin-left: 10px;
+  font-size: 15px;
+}
 
-  .button {
-    background-color: #f7bacd; /* Light pastel pink */
-    color: #333; /* Dark text */
-    border: 2px solid #a56b8b; /* Medium pastel pink */
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-  }
-  
-  .button:hover {
-    background-color: #f2a8ba; 
-    border-color: #8c4765; 
-    color: #222; 
-  }
+.button {
+  background-color: #f7bacd; /* Light pastel pink */
+  color: #333; /* Dark text */
+  border: 2px solid #a56b8b; /* Medium pastel pink */
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+}
 
+.button:hover {
+  background-color: #f2a8ba;
+  border-color: #8c4765;
+  color: #222;
+}
 
-  .center {
-    margin: auto; 
-    text-align: center;
-    display: block; 
-  }
-  .formControl{
-    font-size: 15px;
-    color: #333;
-    margin: "0";
-  }
-  .formLabel{
-    padding: 10;
-    font-size: 15px;
-    color: #333;
-  }
-  .buttonSmall {
-    background-color: #f7bacd; 
-    color: #333; 
-    border: 2px solid #a56b8b; 
-    border-radius: 5px;
-    padding: 7px 15px;
-    font-size: 15px;
-  }
-  
-  .buttonSmall:hover {
-    background-color: #f2a8ba; 
-    border-color: #8c4765; 
-    color: #222; 
-  }
+.center {
+  margin: auto;
+  text-align: center;
+  display: block;
+}
+
+.formControl {
+  font-size: 15px;
+  color: #333;
+  margin: 0 auto; /* Changed to "0 auto" to center horizontally */
+  width: 200px; /* Adjust the width as needed */
+}
+
+.formLabel {
+  padding: 10px;
+  font-size: 15px;
+  color: #333;
+}
+
+.buttonSmall {
+  background-color: #f7bacd;
+  color: #333;
+  border: 2px solid #a56b8b;
+  border-radius: 5px;
+  padding: 7px 15px;
+  font-size: 15px;
+}
+
+.buttonSmall:hover {
+  background-color: #f2a8ba;
+  border-color: #8c4765;
+  color: #222;
+}
