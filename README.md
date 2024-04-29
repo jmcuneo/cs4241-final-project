@@ -10,8 +10,13 @@ To enhance an image, we made a call to the Deep Image AI API (https://deep-image
 
 Our application uses MongoDB and Firebase to store our data. When a user registers to Sharpify, their data is stored in the user collection. Whenever a user uploads an image, the image is sent to Firebase, where the image will be stored, while the image URL created by Firebase is sent to MongoDB. In MongoDB, the image URLs are stored in their own collection with the uploaded users _ID as one of its fields. When accessing the saved images, the server retrieves the signed-in users _ID, and retrieves the image URLs stored in MongoDB that contain the user _ID.
 
-
 **NOTE**: Our current API only has 30 calls left!
+
+## Example
+
+![Before](https://github.com/dovushman/cs4241-final-project/blob/main/before.png)
+
+![after](https://github.com/dovushman/cs4241-final-project/blob/main/sharpified-image%20.png)
 
 ## Technologies and Frameworks
 - **Front-end**:
