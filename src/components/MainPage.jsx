@@ -4,11 +4,10 @@ import Navbar from "./Navbar";
 import TableComponent from "./TableComponent";
 import { motion } from "framer-motion";
 
-
 //I think we can keep one main page and add in the 2 buttons if the user is an admin
 
 function MainPage({ onLogout, isAdmin }) {
-  const [events, setEvents] = useState([]);
+  let [events, setEvents] = useState([]);
   const eventNameInput = useRef(null);
   const eventDateInput = useRef(null);
   const eventLocationInput = useRef(null);
@@ -19,16 +18,16 @@ function MainPage({ onLogout, isAdmin }) {
 
     // Options for date and time formatting
     const options = {
-      month: 'numeric', // Display month as a number (e.g., "12" for December)
-      day: '2-digit',   // Display day as two digits (e.g., "25")
-      year: 'numeric',  // Display year as a number (e.g., "2024")
-      hour: 'numeric',  // Display hour as a number (e.g., "10" for 10PM)
-      minute: '2-digit', // Display minute as two digits (e.g., "00")
-      hour12: true      // Use 12-hour format (true for AM/PM)
+      month: "numeric", // Display month as a number (e.g., "12" for December)
+      day: "2-digit", // Display day as two digits (e.g., "25")
+      year: "numeric", // Display year as a number (e.g., "2024")
+      hour: "numeric", // Display hour as a number (e.g., "10" for 10PM)
+      minute: "2-digit", // Display minute as two digits (e.g., "00")
+      hour12: true, // Use 12-hour format (true for AM/PM)
     };
 
     // Format the date string using options
-    const formattedDate = eventDate.toLocaleString('en-US', options);
+    const formattedDate = eventDate.toLocaleString("en-US", options);
 
     return formattedDate;
   }
@@ -46,8 +45,8 @@ function MainPage({ onLogout, isAdmin }) {
           eventBody: {
             name: eventName,
             date: eventDate,
-            location: eventLocation
-          }
+            location: eventLocation,
+          },
         }),
       });
 
@@ -77,16 +76,24 @@ function MainPage({ onLogout, isAdmin }) {
   useEffect(() => {
     getUpcomingEvents();
   }, [getUpcomingEvents]);
-  events.map((row) => {
-    new Date(row.date).toLocaleDateString(navigator.languages, {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
+
+  const formattedEvents = events.map((row) => {
+    return {
+      _id:row._id,
+      name: row.name,
+      date: new Date(row.date).toLocaleDateString(navigator.languages, {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }),
+      location: row.location,
+      guestCount: row.guestCount,
+      userInvites: row.userInvites,
+    };
   });
 
   const [searchTerm, setSearchTerm] = useState("");
-  const filteredEvents = events.filter((event) =>
+  const filteredEvents = formattedEvents.filter((event) =>
     event.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -103,19 +110,18 @@ function MainPage({ onLogout, isAdmin }) {
         }}
       >
         <div className="main-page-container relative flex min-h-max flex-col mt-10 mx-auto items-center prose">
-          <div className="max-h-[75vh] overflow-y-auto flex flex-row">
+          <div className="flex flex-row mb-4">
             <h1>Upcoming Events</h1>
           </div>
-          <div className="max-h-[75vh] overflow-y-auto flex flex-col">
+          <div className="max-h-[75vh] flex flex-col">
             <input
-              style={{ marginBottom: "-20px", width: '100%' }}
               type="text"
               placeholder="Search by Event name"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="input input-bordered w-full mb-4"
+              className="input input-bordered w-full"
             />
-            <div className="flex-grow">
+            <div className="flex-grow max-h-[50vh] overflow-y-auto">
               <TableComponent
                 headers={[
                   "Name",
@@ -125,15 +131,24 @@ function MainPage({ onLogout, isAdmin }) {
                   "User Invites",
                 ]}
                 rows={filteredEvents}
-                isEvent={true}>
-              </TableComponent>
+                isEvent={true}
+              ></TableComponent>
             </div>
           </div>
         </div>
         {isAdmin && (
           <div className="add-guest flex justify-center align-center max-h-[75vh] overflow-y-auto">
-            <form className="w-full" onSubmit={(e) => handleCreateEvent(e, eventNameInput.current.value, formatEventDate(eventDateInput.current.value), eventLocationInput.current.value)}>
-
+            <form
+              className="w-full"
+              onSubmit={(e) =>
+                handleCreateEvent(
+                  e,
+                  eventNameInput.current.value,
+                  formatEventDate(eventDateInput.current.value),
+                  eventLocationInput.current.value
+                )
+              }
+            >
               <div className="flex flex-col justify-start items-center">
                 <h1>Create a New Event</h1>
                 <input
