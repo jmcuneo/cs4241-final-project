@@ -36,41 +36,42 @@ function LoginPage() {
         <PetForm />
       ) : (
         <div>
-          <h1 class="center">Race-a-Pet</h1>
+          <h1 className="center">Race-a-Pet</h1>
         
           <Container>
-      <Row>
-        <Col><h2 class="center">About</h2></Col>
-        <Col><h2 class="center">Instructions</h2></Col>
-      </Row>
-      <Row>
-        <Col>
-        <p class = "center">Welcome to Race-a-Pet! Where you create a pet and see how far it can run!</p>
-        <p class = "center">Created by: Esha Bajwa, Joselin Barbosa, and Jolene Pern</p>
-        </Col>
-          <Col><ol>
-            <li>Log In with your Race-a-Pet account</li>
-            <li>Create your Pet</li>
-            <ol>
-              <li>Give your pet a name.</li>
-              <li>Pick what pet you want.</li>
-              <li>Give it a diet.</li>
-              <li>Deside how much it exercises.</li>
-            </ol>
-            <li>Race your Pet!</li>
-          </ol></Col>
-        
-      </Row>
-    </Container>
-          <h2 class = 'center'>Login</h2>
-          <Form class="center">
+            <Row>
+              <Col><h2 className="center">About</h2></Col>
+              <Col><h2 className="center">Instructions</h2></Col>
+            </Row>
+            <Row>
+              <Col>
+                <p className="center">Welcome to Race-a-Pet! Where you create a pet and see how far it can run!</p>
+                <p className="center">Created by: Esha Bajwa, Joselin Barbosa, and Jolene Pern</p>
+              </Col>
+              <Col>
+                <ol>
+                  <li>Log In with your Race-a-Pet account</li>
+                  <li>Create your Pet</li>
+                  <ol>
+                    <li>Give your pet a name.</li>
+                    <li>Pick what pet you want.</li>
+                    <li>Give it a diet.</li>
+                    <li>Decide how much it exercises.</li>
+                  </ol>
+                  <li>Race your Pet!</li>
+                </ol>
+              </Col>
+            </Row>
+          </Container>
+          <h2 className="center">Login</h2>
+          <Form className="center">
             <Form.Group controlId="formBasicUsername">
               <Form.Control
                 type="text"
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                class = "center"
+                className="formControl" /* Apply the .formControl class */
               />
             </Form.Group>
 
@@ -80,12 +81,12 @@ function LoginPage() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                class = "center"
+                className="formControl" /* Apply the .formControl class */
               />
             </Form.Group>
           
 
-            <button class="button center" onClick={handleLogin}>
+            <button className="button center" onClick={handleLogin}>
               Login
             </button>
           </Form>
@@ -98,4 +99,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-
