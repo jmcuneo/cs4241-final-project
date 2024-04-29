@@ -163,6 +163,7 @@ async function start() {
     headers: { "Content-Type": "application/json" },
   })
   const resp = await response.json();
+  console.log(resp)
   shuffle(resp);
   for (let i = 0; i < resp.length; i++) {
     addCell(resp[i]);
