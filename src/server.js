@@ -95,7 +95,7 @@ app.post("/login/auth", async (req, res) => {
   if (validLogin)
     res
       .status(200)
-      .json(auth.generateAccessToken({ username: req.body.username }));
+      .json(auth.generateAccessToken({ username: user.username }));
   else res.status(400).send("bad login");
 });
 app.post("/remove", async (req, res) => {
@@ -143,9 +143,10 @@ app.post("/auth/add-leaderboard-entry",  auth.authenticateToken, async (req, res
   console.log(req.user)
   const entry = await db.addLeaderboardEntry({
     username: req.user.username,
-    score: Number(req.body.score)
-
+    score: Number(req.body.score),
+    time: Number(req.body.timeElapsed)
   })
+  res.status(200).end()
 })
 app.post("/leaderboard", async (req, res) => {
  const leaderboard =  await db.getLeaderboard();

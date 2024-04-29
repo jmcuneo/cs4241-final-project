@@ -112,7 +112,8 @@ exports.getLeaderboard = async () => {
   const query = {};
   // sort in descending (-1) order by length
   const sort = { score: -1 };
-  const cursor = collection.find(query).sort(sort);
+  const limit = {limit: 2}
+  const cursor = collection.find(query).sort(sort).limit(10);
   for await (const doc of cursor) {
     ret.push(doc)
     console.dir(doc);
@@ -126,6 +127,7 @@ exports.addLeaderboardEntry = async (entry) => {
   const date =  new Date(Date.now());
   const datetime = date.toUTCString(); 
   entry.date = datetime;
+  
   console.log(entry);
   await collection.insertOne(entry);  
 }

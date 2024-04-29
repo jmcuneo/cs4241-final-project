@@ -1,3 +1,5 @@
+
+
 const test = [
   {
     img:
@@ -95,6 +97,7 @@ let selectedColor = "rgb(116, 138, 227)";
 let totalTime = 0;
 let minute = 0;
 let second = 0;
+let interval;
 const giimmeComkie = () => {
   var cookie = localStorage.getItem('token');
   console.log(cookie)
@@ -155,7 +158,7 @@ async function start() {
   for (let i = 0; i < resp.length; i++) {
     addCell(resp[i]);
   }
-  setInterval(stopWatch, 1000);
+  interval = setInterval(stopWatch, 1000);
   startBtn.style.display = "none";
 }
 
@@ -254,6 +257,7 @@ function stopWatch() {
     console.log("game ended")
 		gameover();
 		matches = 0;
+    clearInterval(interval)
 	}
 }
 
@@ -309,12 +313,15 @@ async function showLeaderboard() {
 async function gameover(){
   console.log("game over")
 	let score = document.getElementById("score").innerHTML;
-	let body = JSON.stringify({score: score})
+	let body = JSON.stringify({score: score, time: totalTime})
 	const response = await fetch("/auth/add-leaderboard-entry", {
 		method: "POST",
 		headers: { "Content-Type": "application/json",
                 Authorization: `Bearer ${document.cookie.substring(6)}`,},
 		body
-	}).then();
-	const resp = await response.json();
+	}).finally(async()=>{
+    console.log('fetching lb after game over event')
+    await showLeaderboard()
+  });
+	//const resp = await response.json();
 }
