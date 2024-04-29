@@ -1,0 +1,220 @@
+.login-dropdown {
+    display: inline-block;
+    position: fixed;
+    top: 0;
+}
+
+.dropdown {
+    position: absolute !important;
+}
+
+.dropdown-text {
+    display: none;
+    position: absolute;
+    top: 8.5rem;
+    z-index: 1;
+    color: white;
+    text-decoration: none;
+    padding-top: 1rem;
+    font-size: 1.25rem;
+    width: 40vw;
+    margin-left: .5rem;
+}
+
+.dropdown a:hover {
+    background-color: transparent;
+}
+
+.dropdown:hover .dropdown-text {
+    display: block;
+    margin-left: 4rem;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: transparent;
+}
+
+#username-input,
+#email-input,
+#pswd {
+    width: 25rem;
+    height: 36px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 18px;
+    font-size: .8rem;
+}
+
+#email-input:hover,
+#email-input:hover,
+#pswd:hover {
+    background-color: rgb(240, 240, 240)l
+}
+
+.logo-title,
+.welcome-back,
+.custom-message {
+    position: absolute;
+    font-size: 48px;
+    font-weight: 700;
+    color: white;
+    z-index: 3;
+}
+
+.logo-title {
+    position: absolute;
+    margin-top: 4rem;
+    margin-left: 4rem;
+    font-size: 4rem;
+    font-style: italic;
+}
+
+.welcome-back {
+    position: absolute;
+    bottom: 15rem;
+    left: 4rem;
+    margin-right: 15%;
+}
+
+.message-container {
+    display: inline-block;
+}
+
+.custom-message {
+    position: relative;
+    left: 4rem;
+    font-size: 24px;
+    font-weight: 400;
+    margin-right: 25%;
+    bottom: 14rem;
+}
+
+.flex {
+    display: flex;
+}
+
+/* Set a style for buttons */
+.login {
+    background-image: linear-gradient(to right, #697d8e, #516678);
+    border: none;
+    color: white;
+    padding: 1rem;
+    margin: .5rem 0 .5rem 0;
+    cursor: pointer;
+    width: 25rem;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 2px 0px, rgba(0, 0, 0, 0.24) 0px 0px 1px 0px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.email-label {
+    position: relative;
+    right: 10.9rem;
+    font-weight: 500;
+}
+
+.pswd-label {
+    position: relative;
+    right: 10rem;
+    font-weight: 500;
+}
+
+.login-label {
+    position: relative;
+    margin-bottom: 10%;
+    right: 10rem;
+    font-size: 56px;
+    font-weight: 700;
+    color: #394e61;
+}
+
+.input-password-eye {
+    position: relative;
+    right: 1.6rem;
+    top: .1rem;
+    cursor: pointer;
+}
+
+/* Add a hover effect for buttons */
+.login:hover {
+    background-image: linear-gradient(to right, #586d80, #31485c);
+}
+
+/* Add padding to containers */
+.login-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    text-align: center;
+    line-height: 1.5rem;
+}
+
+.copy-right {
+    margin-top: 5px;
+    color: #777777;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.orange-link {
+    color: #697d8e !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+}
+
+#pswd {
+    position: relative;
+    left: 8px;
+}
+
+/* Split the screen in half */
+.split {
+    height: 100%;
+    width: 50%;
+    position: fixed;
+    z-index: -1;
+    top: 0;
+    overflow-x: hidden;
+    padding-top: 0px;
+}
+
+/* Control the left side */
+.left {
+    left: 0;
+    background-image: url("");
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+/* Control the right side */
+.right {
+    right: 0;
+    background-color: white;
+}
+
+.color-orange-red {
+    background: linear-gradient(to right, #697d8e, #394e61);
+    overflow: hidden;
+    height: 100%;
+    z-index: 0;
+    position: relative;
+}
+
+/* If you want the content centered horizontally and vertically */
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}

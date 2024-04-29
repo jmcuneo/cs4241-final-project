@@ -1,0 +1,88 @@
+/* .saved-image-column {
+    text-align: center;
+    padding: 1rem;
+} */
+
+/* .image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.saved-image {
+    border: 1px solid black;
+    max-width: 100%;
+    max-height: 20rem;
+    display: block;
+} */
+
+/* .image-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 1rem; 
+    text-align: center; 
+}
+
+.image-container {
+    position: relative;
+    flex: 1 0 calc(25% - 20px);
+    width: calc(25% - 20px); 
+    height: 250px; 
+    margin: 10px;
+    overflow: hidden;
+    background-color: rgba(128, 128, 128, 0.5);
+} */
+.image-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.image-container {
+    position: relative;
+    overflow: hidden;
+    height: 250px; 
+}
+
+.image-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(128, 128, 128, 0.5);
+}
+
+.saved-image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-container:hover .saved-image {
+    filter: brightness(90%);
+}
+
+.download-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: none;
+    background: none;
+    color: #394e61;
+    transform: scale(1.5);
+    visibility: hidden;
+    margin: .2rem;
+}
+
+.image-container:hover .download-button {
+    visibility: visible;
+}
+
+.download-button:hover {
+    color: #697d8e;
+}

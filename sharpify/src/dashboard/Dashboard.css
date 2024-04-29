@@ -1,0 +1,124 @@
+.display-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4rem;
+}
+
+.top-message {
+    margin-top: 1rem;
+}
+
+.dashboard-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.file-input-label {
+    display: inline-block;
+    padding: .5rem 1rem;
+    color: white;
+    background-color: rgb(81, 102, 120);
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.file-input-label:hover {
+    filter: brightness(90%);
+}
+
+.modal.show {
+    padding-top: 5rem;
+}
+
+.modal-header {
+    background-image: linear-gradient(to right, #697d8e, #394e61);
+    color: white;
+}
+
+.modal-title {
+    font-weight: 600 !important;
+    font-style: italic;
+}
+
+.modal-divider {
+    width: 1px;
+    background-color: rgb(230, 230, 230);
+    margin: 0 20px;
+}
+
+.modal-dialog {
+    width: 90%;
+    height: 85%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.modal-header .btn-close,
+.modal-header .btn-close:hover,
+.modal-header .btn-close:focus,
+.modal-header .btn-close svg,
+.modal-header .btn-close:hover svg,
+.modal-header .btn-close:focus svg {
+    color: white !important;
+    fill: white !important;
+    filter: none !important;
+}
+
+.sharpify-title {
+    font-size: calc(1.375rem + 1.2vw);
+    font-style: italic;
+    color: rgb(81, 102, 120);
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.sharpify {
+    display: inline-block;
+    padding: .5rem 1rem;
+    color: white;
+    background-color: rgb(81, 102, 120);
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    font-weight: 600;
+    font-style: italic;
+    font-size: 1.2rem;
+}
+
+.sharpify:hover {
+    filter: brightness(90%);
+}
+
+h1 {
+    color: #2A5783;
+    margin: 20px 0;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.menu-button {
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border-radius: 8px;
+    width: 80%;
+    cursor: pointer;
+    font-size: 18px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
