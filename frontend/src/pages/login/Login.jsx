@@ -25,19 +25,19 @@ const Login = () => {
 
   return (
     <div>
-  
+
     <div className='p-4 h-screen flex items-center justify-center'>
-      
+
       <div className="flex items-center justify-center h-screen">
-        
+
         <div>
-          
+
           <div className="bg-primary dark:bg-lightprimary w-96 h-36 rounded-xl m-[36px] relative flex items-center justify-center">
             <div className="text-center text-5xl font-inter font-normal dark:text-lightlight text-light">
               Chat App
-              
+
             </div>
-            
+
           </div>
 
 
@@ -76,9 +76,9 @@ const Login = () => {
           </form>
 
         </div>
-      </div>  
+      </div>
     </div>
-    
+
     </div>
   );
 }

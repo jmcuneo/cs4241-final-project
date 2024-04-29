@@ -7,12 +7,12 @@ const Home = () => {
     <div className="flex h-screen overflow-hidden">
 
       <Sidebar />
-      
+
 
       {/* Main content */}
       <div className="flex-1 bg-primary dark:bg-lightprimary h-[100%]">
         <ChatContainer/>
-        
+
       </div>
 
 

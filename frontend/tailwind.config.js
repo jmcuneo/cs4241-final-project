@@ -13,9 +13,9 @@ module.exports = {
       colors: {
         // General colors for light theme
         // Dark mode specific colors
-        primary: '#262626', 
-        secondary: '#404040', 
-        tertiary: '#A8A8A8', 
+        primary: '#262626',
+        secondary: '#404040',
+        tertiary: '#A8A8A8',
         dark: '#171717',
         other: '#414141',
         light: '#ffffff',
@@ -30,8 +30,8 @@ module.exports = {
 
          // General colors
          lightprimary: '#e6e6e6', // Light mode primary
-         lightsecondary: '#404040', 
-         lighttertiary: '#000000', 
+         lightsecondary: '#404040',
+         lighttertiary: '#000000',
          lightdark: '#cacbcc', // #00ff80
          lightother: '#a2a2a3',
          lightlight: '#000000',
@@ -44,4 +44,4 @@ module.exports = {
     },
   },
   plugins: [require("daisyui")],
-};
+}

@@ -27,7 +27,7 @@ const MessageInputBox = () => {
                         placeholder=" Type a message..."
                         onChange={(e) => setMessage(e.target.value)}
                     />
-                    <button type='submit'  tabindex="0" className="flex items-center justify-center p-1 rounded hover:bg-cyan-700 focus:outline-none">
+                    <button type='submit'  tabIndex="0" className="flex items-center justify-center p-1 rounded hover:bg-cyan-700 focus:outline-none">
                         {loading ? <div className='loading loading-spinner'></div> : <img src={SendImage} alt="Send" className="w-8 h-8" draggable="false" />}
                     </button>
                 </div>

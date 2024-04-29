@@ -16,7 +16,7 @@ const Conversation = ({ conversation, lastIdx }) => {
         <div className={`bg-dark dark:bg-lightdark w-[99.5%] h-[72px] mb-0.5 mr-0.5 ml-0 flex items-center justify-between  dark:hover:bg-purp hover:bg-purp cursor-pointer ${isSelected ? "bg-purp dark:bg-purp" : ""}`}
             onClick={() => setSelectedConversation(conversation)}>
             <div className="avatar placeholder ml-4">
-            
+
                 <div style={{ backgroundColor: conversation.profilePic }} className={`rounded-full ${isSelected ? "ring ring-[#000000]":  ""} w-14 flex items-center justify-center`}>
                     <span className="text-xl select-none text-black">{getInitials(conversation.fullName)}</span>
                 </div>

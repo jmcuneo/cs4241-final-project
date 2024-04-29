@@ -3,42 +3,68 @@ import useGetMessages from '../../hooks/useGetMessages'
 import MessageSkeleton from "../skeletons/MessageSkeleton";
 import { useEffect, useRef } from 'react';
 import { extractTime } from '../../utils/extractTime.js';
+import { socket } from "../../socket-client.js";
+import toast from "react-hot-toast";
+import useConversation from "../../zustand/useConversation";
 
 const Messages = () => {
-
-  const { messages, loading } = useGetMessages();
+  const { messagesexp, loading } = useGetMessages();
+  console.log(messagesexp.length, "Messages length");
   const lastMessageRef = useRef(null);
+	const { messages, setMessages, selectedConversation } = useConversation();
   useEffect(() => {
-    setTimeout(() => { lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' }); }, 100)
-  }, [messages])
+		socket.on("message", (message, displayName) => {
+			if (message.senderId == selectedConversation._id || message.recieverId == selectedConversation._id) {
+				if (Array.isArray(messages)) {
+					setMessages([...messages, message]);
+				}
+				else setMessages([message])
+			}
+			else {
+				toast((t) => (
+					<p>
+						<b>{displayName}</b> says: {message.message}
+					</p>
+				));
+			}
+		});
+
+    setTimeout(() => {lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });}, 100)
+
+		return () => {
+			socket.off("message")
+		};
+
+  }, [messagesexp, socket])
 
 
-  if (messages.length > 0) {
-    const lastMessage = messages[messages.length - 1];
+  if (messagesexp.length > 0) {
+    const lastMessage = messagesexp[messagesexp.length - 1];
     console.log("Last message:", lastMessage.message);
-    console.log("Last Message Time", extractTime(lastMessage.updatedAt));
+    console.log("Last Message Time" , extractTime(lastMessage.updatedAt));
 
   }
 
+  
   return (
     <div>
 
 
-      {!loading && messages.length > 0 && messages.map((message) => (
-        <div key={message._id}
+      {!loading && messagesexp.length > 0 && messagesexp.map((message) => (
+					<div key={message._id}
           ref={lastMessageRef}
-        >
-          <Message message={message} />
-        </div>
-      ))}
-
+          >
+						<Message message={message} />
+					</div>
+				))}
+      
       {loading && [...Array(4)].map((_, idx) => <MessageSkeleton key={idx} />)}
 
-      {!loading && messages.length === 0 && (
-        <p className='text-center text-welcome dark:text-lightwelcome'>Send a message to start the conversation</p>
-      )}
+      {!loading && messagesexp.length === 0 || messagesexp.length === undefined && (
+		  <p className='text-center text-welcome dark:text-lightwelcome'>Send a message to start the conversation</p>
+	  )}
 
-    </div>
+	</div>
   )
 }
 
