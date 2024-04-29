@@ -19,15 +19,15 @@ const Message = ({ message }) => {
     // authUser.fullName
     // selectedConversation.fullName
 
-    const bgColor = fromMe ? 'bg-[#502ee8]' : 'bg-[#171717]';
+    const bgColor = fromMe ? 'bg-purp' : 'bg-[#171717]';
 
     return (
         <div>
             <div className={`chat ${chatClassName}`}>
-                <div className={`chat-bubble ${bgColor} text-white p-3 rounded-md shadow max-w-[40%] break-words text-center`}>
+                <div className={`chat-bubble ${bgColor}  text-white p-3 rounded-md shadow max-w-[40%] break-words text-center`}>
                     <p>{message.message}</p>
                 </div>
-                <div className={`chat-footer opacity-50 text-center`}>
+                <div className={`chat-footer text-footer opacity-50  text-center`}>
                     {formattedTime}
                 </div>
             </div>

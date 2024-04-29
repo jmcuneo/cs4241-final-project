@@ -3,12 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-
 body{
     
-    background-color: #202020;
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

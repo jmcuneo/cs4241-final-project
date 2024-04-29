@@ -13,14 +13,16 @@ const MessageInputBox = () => {
         setMessage("");
     };
 
+
+
     return (
-        <div className="bg-[#414141] w-full h-[58px]">
+        <div className="bg-other w-full h-[58px]">
             <form onSubmit={handleSubmit} className="bg-dark w-full h-[56px] mb-0 mt-[2px] mr-0 ml-0 flex items-center justify-start">
                 <div className="ml-3 flex items-center w-full">
                     <input
                         type="text"
                         value={message}
-                        className="flex-grow mr-2 bg-[#262626] text-white p-2 rounded-lg"
+                        className="flex-grow mr-2 bg-primary text-white p-2 rounded-lg"
                         style={{ maxWidth: '95%' }}
                         placeholder=" Type a message..."
                         onChange={(e) => setMessage(e.target.value)}

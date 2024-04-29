@@ -44,39 +44,39 @@ const SignUp = () => {
       <div>
         <div className="flex items-center justify-center h-screen">
           <div>
-            <div className="bg-[#262626] w-96 h-36 rounded-xl m-[36px] relative flex items-center justify-center">
-              <div className="text-center text-5xl font-inter font-normal text-[#ffffff]">
+            <div className="bg-primary w-96 h-36 rounded-xl m-[36px] relative flex items-center justify-center">
+              <div className="text-center text-5xl font-inter font-normal text-light">
                 Chat App
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className='bg-[#262626] w-96 rounded-xl m-[36px] flex flex-col items-center justify-center space-y-8' style={{ height: '460px' }}>
+            <form onSubmit={handleSubmit} className='bg-primary w-96 rounded-xl m-[36px] flex flex-col items-center justify-center space-y-8' style={{ height: '460px' }}>
               <div className="space-y-6 mt-4">
 
-                <label className="input input-bordered border-[#A8A8A8] w-80 bg-[#262626] flex items-center gap-2">
+                <label className="input input-bordered border-tertiary w-80 bg-primary flex items-center gap-2">
                   <input type="text" name="fullName" className="grow" placeholder="Display Name" value={inputs.fullName} onChange={handleChange} />
                 </label>
 
-                <label className="input input-bordered border-[#A8A8A8] w-80 bg-[#262626] flex items-center gap-2">
+                <label className="input input-bordered border-tertiary w-80 bg-primary flex items-center gap-2">
                   <input type="text" name="username" className="grow" placeholder="Username" value={inputs.username} onChange={handleChange} />
                 </label>
 
-                <label className="input input-bordered border-[#A8A8A8] bg-[#262626] w-80 flex items-center gap-2">
+                <label className="input input-bordered border-tertiary bg-primary w-80 flex items-center gap-2">
                   <input type="password" name="password" className="grow" placeholder="Password" value={inputs.password} onChange={handleChange} />
                 </label>
 
-                <label className="input input-bordered border-[#A8A8A8] bg-[#262626] w-80 flex items-center gap-2">
+                <label className="input input-bordered border-tertiary bg-primary w-80 flex items-center gap-2">
                   <input type="password" name="confirmPassword" className="grow" placeholder="Confirm Password" value={inputs.confirmPassword} onChange={handleChange} />
                 </label>
 
               </div>
               
-              <button type="submit" className="btn btn-wide bg-secondary text-[#ffffff] hover:bg-[#515151] border-none text-base font-inter"
+              <button type="submit" className="btn btn-wide bg-loginbutton text-light hover:bg-loginbuttonhover border-none text-base font-inter"
               disabled-= {loading}
               > {loading ? <span className="loading loading-spinner"></span>: "Sign Up"}
               </button>
  
-              <button className='text-[#502ee8] hover:text-[#8771eb] font-inter' onClick={handleLoginClick}>Already Have An Account?</button>
+              <button className='text-purp hover:text-[#8771eb] font-inter' onClick={handleLoginClick}>Already Have An Account?</button>
               </form>
           </div>
         </div>

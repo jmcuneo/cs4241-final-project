@@ -7,7 +7,7 @@ const OtherUserCard = () => {
 
   return (
     <>
-      <div className="bg-[#414141] w-full h-[74px]">
+      <div className="bg-other w-full h-[74px]">
         <div className="bg-dark w-full h-[72px] mb-0.5 mr-0 ml-0 flex items-center justify-start">
           <div className="avatar placeholder ml-4">
             {/* Use data from selectedConversation to set initials and background color */}

@@ -10,7 +10,7 @@ import { Navigate } from 'react-router-dom';
 function App() {
   const {authUser} = useAuthContext();
   return (
-    <div>
+    <div className='bg-back'>
       
         <Routes>
         <Route path="/" element={authUser ? <Home/> : <Navigate to={"/login" } /> } />

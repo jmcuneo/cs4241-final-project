@@ -40,7 +40,7 @@ const SearchInput = () => {
     return (
         <div className="flex justify-between items-center w-full bg-dark p-3">
             <form onSubmit={handleSubmit} className="flex-grow">
-                <label className="input flex h-[63%] w-full bg-[#404040] items-center gap-2 justify-center">
+                <label className="input flex h-[63%] w-full bg-primary items-center gap-2 justify-center">
                     <input
                         type="text"
                         className=" text-[13px] text-[#A1A4A6] grow placeholder-[#A1A4A6]"
