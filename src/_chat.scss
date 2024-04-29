@@ -1,0 +1,24 @@
+.player1 {
+    color: rgb(79, 0, 0);
+
+    & .message {
+        color: rgb(71, 5, 5);
+    }
+}
+
+.player2 {
+    color: blue;
+
+    & .message {
+        color: darkblue;
+    }
+}
+
+.server {
+    color: rgb(105, 0, 67);
+    font-weight: bold;
+
+    & .message {
+        color: rgb(127, 21, 97);
+    }
+}
