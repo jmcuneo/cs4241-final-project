@@ -96,15 +96,15 @@ function PetForm() {
     // base race times for each animal type (in seconds)
     const baseRaceTimes = {
         dog: 10,
-        cat: 12,
-        bunny: 15,
-        turtle: 20
+        cat: 11,
+        bunny: 13,
+        turtle: 15
     };
 
     // define energy boost multiplier based on diet
     const dietMultiplier = {
-        steak: { dog: 0.9, cat: 0.8, bunny: 0.7, turtle: 0.6 },
-        tuna: { dog: 0.8, cat: 0.9, bunny: 0.7, turtle: 0.6 },
+        steak: { dog: 0.9, cat: 0.85, bunny: 0.75, turtle: 0.7 },
+        tuna: { dog: 0.85, cat: 0.9, bunny: 0.75, turtle: 0.7 },
         carrots: { dog: 0.6, cat: 0.7, bunny: 0.9, turtle: 0.8 },
         lettuce: { dog: 0.6, cat: 0.7, bunny: 0.8, turtle: 0.9 }
     };
