@@ -1,69 +1,82 @@
 import Conversation from "../models/conversation.model.js";
-import Message from "../models/message.model.js";
+import Message from  "../models/message.model.js";
+import User from "../models/user.model.js";
+import { Server } from "socket.io";
 
+const socketioHandleMessages = async (socket, io) => {
+	socket.on("sendMessage", async (messagesio) => {
+		const senderId = socket.decodedUID;
 
-export const sendMessage = async (req, res) => {
-    try {
-        const {message} = req.body;
-        const {id: recieverId} = req.params;
-        const senderId = req.user._id;
+		if (!messagesio.hasOwnProperty("msg") || !messagesio.hasOwnProperty("to")) {
+			console.log("invalid message!");
+			return;
+		}
+		const recieverId = messagesio.to;
+		const message = messagesio.msg
 
-        let conversation = await Conversation.findOne({
-            participants: {
-                $all: [senderId, recieverId]
-            }
-        })
+		const user = await User.findById(senderId).select("-password");
+		const toUser = await User.findById(recieverId).select("-password");
 
-        if (!conversation) {
-            conversation = await Conversation.create({
-                participants: [senderId, recieverId],
+		if(!user || !toUser) {
+			console.log("invalid sender or recipient");
+		}
+	
+		console.log(user + " " + toUser);
+		
+		let conversation = await Conversation.findOne({
+			participants: {
+				$all: [senderId, recieverId] 
+			}
+		})
 
-            })
-        }
+		if (!conversation) {
+			conversation = await Conversation.create({
+				participants: [senderId, recieverId]
+			})
+		}
+		const newMessage = new Message({
+			senderId,
+			recieverId,
+			message
+		})
+		
+		newMessage.save();
+		conversation.save();
 
-        const newMessage = new Message({
-            senderId,
-            recieverId,
-            message,
-        })
+		if (newMessage) {
+			conversation.messages.push(newMessage._id);
+		}
+		console.log(user.fullName);
+		io.to(senderId).to(recieverId).emit("message", newMessage, user.fullName);
+	
+	})
 
-        if(newMessage){
-            conversation.messages.push(newMessage._id);
-        }
+	socket.on("getMessages", async (message) => {
+		let retJson = {};
+		const senderId = socket.decodedUID
+		let index;
+		if (!message.hasOwnProperty("index")) {
+			index = 0;
+		}
+		else index = message.index;
+		if (!message.hasOwnProperty("to")) {
+			return;
+		}
+		const recieverId = message.to;
 
-        // add socket.io functionality here
+		const conversation = await Conversation.findOne({
+			participants: {
+				$all: [recieverId, senderId]
+			}
+		}).populate("messages");
 
-        //will run in parallel
-        await Promise.all([newMessage.save(), conversation.save()]);
+		if (!conversation) {
+			io.to(senderId).emit("conversation", retJson);
+			return;
+		}
+		io.to(senderId).emit("conversation", conversation.messages || []);
+	})
+}
 
-        res.status(201).json(newMessage);
+export default socketioHandleMessages;
 
-    } catch (error) {
-        console.log("Error in sendMessage controller: ", error)
-        res.status(500).json({error: "Internal server error"});
-    }
-};
-
-export const getMessages = async (req, res) => {
-    try {
-        const { id: userToChatId } = req.params;
-        const senderId = req.user._id;
-
-        const conversation = await Conversation.findOne({
-            participants: {
-                $all: [senderId, userToChatId]
-            },
-        }).populate("messages");
-
-        if (!conversation) {
-            // If no conversation exists, return an empty array
-            return res.status(200).json([]);
-        }
-
-        // If a conversation exists, return the messages
-        res.status(200).json(conversation.messages || []);
-    } catch (error) {
-        console.log("Error in getMessage controller: ", error);
-        res.status(500).json({error: "Internal server error"});
-    }
-};
