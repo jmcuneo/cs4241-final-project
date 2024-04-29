@@ -1,6 +1,6 @@
+import PropTypes from "prop-types";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
-import PropTypes from "prop-types"
 
 function EventTitle({ eventId, isAdmin }) {
   const navigate = useNavigate();
@@ -57,7 +57,6 @@ function EventTitle({ eventId, isAdmin }) {
   };
 
   const updateEventData = useCallback(() => {
-    getEvent();
     if (thisEvent !== null) {
       const formattedDateString = formatEventDate(thisEvent.date);
       setEventName(thisEvent.name)

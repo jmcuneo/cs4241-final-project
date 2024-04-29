@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function EventTitleManager({ eventId }) {
@@ -122,12 +122,12 @@ function EventTitleManager({ eventId }) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             token: localStorage.getItem("token"),
             eventId: eventId
-         }),
+          }),
         });
-  
+
         const res = await response.json();
         if (res.success === true) navigate("/main");
         else window.confirm(res.error);
@@ -135,10 +135,9 @@ function EventTitleManager({ eventId }) {
         console.error("Error deleting event:", error);
       }
     }
-}
+  }
 
   const updateEventData = useCallback(() => {
-    getEvent();
     if (thisEvent !== null) {
       const formattedDateString = formatEventDate(thisEvent.date);
       setEventName(thisEvent.name)
@@ -151,7 +150,7 @@ function EventTitleManager({ eventId }) {
 
   useEffect(() => {
     updateEventData();
-  }, [updateEventData, eventGuests]);
+  }, [updateEventData]);
 
   useEffect(() => {
     getEvent();

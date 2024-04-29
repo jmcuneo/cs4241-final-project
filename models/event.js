@@ -168,7 +168,7 @@ const eventSchema = new Schema({
                 }
             });*/
 
-            // TODO: Sending ObjectIds if it is a user. Try to fix this.
+            if (guestList === undefined || guestList.attendees === undefined) return [];
             return Promise.all(guestList?.attendees.map(async (attendee) => {
                 // Populate inviter but hide everything other than fullName
                 const { inviter, ...rest } = attendee.toObject();
@@ -398,7 +398,7 @@ const eventSchema = new Schema({
                 return {
                     fullName: await inviter.fullName,
                     username: inviter.username,
-                    guestCount: (await this.getInviteIdsByInviter(inviter)).length
+                    guestCount: (await this.getInviteIdsByInviter(inviter))?.length ?? 0
                 }
             }));
         },
