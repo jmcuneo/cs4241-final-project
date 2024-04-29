@@ -75,32 +75,6 @@ function PetForm() {
     setLeaderboardData(data);
   }
 
-  /*
-  async function getLeaderboard() {
-    const response = await fetch("http://localhost:3001/get");
-    const data = await response.json();
-
-    data.sort((a, b) => a.raceTime - b.raceTime);
-  
-    const tableBody = document.querySelector("#leaderboard tbody");
-    tableBody.innerHTML = ""; 
-  
-    data.forEach((item, index) => {
-      let row = document.createElement("tr");
-      let counter = index + 1;
-      row.innerHTML = `
-        <td>${counter}</td>
-        <td>${item.petName}</td>
-        <td>${item.raceTime}</td>
-        <td>
-          <button class="button" onclick="deleteRow('${item._id}')">Delete</button>
-        </td>
-      `;
-      tableBody.appendChild(row);
-    });
-  }
-  */
-
   async function deleteRow(itemID) {
     console.log(itemID)
     const json = { _id: itemID },
@@ -129,23 +103,31 @@ function PetForm() {
 
     // define energy boost multiplier based on diet
     const dietMultiplier = {
-        steak: { dog: 0.9, cat: 0.85, bunny: 0.8, turtle: 0.75 },
-        tuna: { dog: 0.85, cat: 0.9, bunny: 0.85, turtle: 0.8 },
-        carrots: { dog: 0.8, cat: 0.85, bunny: 0.9, turtle: 0.85 },
-        lettuce: { dog: 0.75, cat: 0.8, bunny: 0.85, turtle: 0.9 }
+        steak: { dog: 0.9, cat: 0.8, bunny: 0.7, turtle: 0.6 },
+        tuna: { dog: 0.8, cat: 0.9, bunny: 0.7, turtle: 0.6 },
+        carrots: { dog: 0.6, cat: 0.7, bunny: 0.9, turtle: 0.8 },
+        lettuce: { dog: 0.6, cat: 0.7, bunny: 0.8, turtle: 0.9 }
     };
 
     // calculate the modified race time based on diet and animal type
     let modifiedRaceTime = baseRaceTimes[animalType] * dietMultiplier[dietType][animalType];
 
     // adjust modified race time based on exercise level
-    let adjustedRaceTime = modifiedRaceTime * (1 - (exerciseLevel / 200));
+    let adjustedRaceTime;
+    if (exerciseLevel >= 90) {
+        // Increase race time due to exhaustion for high exercise levels
+        adjustedRaceTime = modifiedRaceTime * (1 + ((exerciseLevel - 90) / 100));
+    } else {
+        adjustedRaceTime = modifiedRaceTime * (1 - (exerciseLevel / 200));
+    }
 
     // round off to the nearest hundredth
     adjustedRaceTime = Math.round(adjustedRaceTime * 100) / 100;
 
     return adjustedRaceTime;
   }
+
+  
 
   return (
     <div>
@@ -212,7 +194,7 @@ function PetForm() {
           <option value="steak">Steak</option>
           <option value="tuna">Tuna</option>
           <option value="lettuce">Lettuce</option>
-          <option value="carrot">Carrot</option>
+          <option value="carrots">Carrots</option>
         </Form.Control>
       </Form.Group>
 
