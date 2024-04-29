@@ -57,17 +57,19 @@ You can use any web-based frameworks or tools available, but for your server pro
 # README Start
 For our project, we created an LGBTQ+ themed matching game which matches famous queer people with events or activities they were apart of. We also implemented a login page which allows for custom user signups, GitHub authentication, or a guest login. Users that complete the game while logged in with either of the first two methods will automatically have their score uploaded to our leadboard database which is also shown on the page. 
 
-The frontend of the site is written in basic JavaScript with CSS designing mostly completed in Bulma. The server backend was written with Express
+The frontend of the site is written in basic JavaScript with CSS designing mostly completed in Bulma. The server backend was written with Express with aid from the Passport.js library for integrating OAuth authentication. Our database was a single MongoDB Database with multiple collections inside.
 
 ## Achievements
 
 - MongoDB Integration: We implemented multiple collections within MongoDB which keep track of users, the information on the matching cards, as well as the current leaderboard of all player scores. 
 - GitHub OAuth Integration:
 - Perfect Lighthouse Score: We checked the Lighthouse score of our project throughout development and changed our project as needed (often adding accessibility improvements) to achieve a 100% on all 4 Lighthouse tests. A screenshot of the score has been added to the repo.
+![Lighthouse Score]("lighthouse score.png")
+...
 
 ## Challenges
 - OAuth:
-
+...
 
 ## Group Contributions
 
@@ -86,6 +88,7 @@ The frontend of the site is written in basic JavaScript with CSS designing mostl
 - Research
 - Website Map Base 
 - Backend Server Game Logic
+- Data Transfer between Client - Server - Database
 
 # Luca Wol 
 - Research
