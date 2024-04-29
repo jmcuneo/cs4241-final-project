@@ -23,6 +23,8 @@ Race-a-Pet is a web-based game where users can create pets and race them against
 1. Joselin
     - login page
     - back button on Results page
+    - styling pet form page
+    - mongodb 
 2. Esha
     - Pet form page
     - Bootstrap styling
