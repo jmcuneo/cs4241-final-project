@@ -1,7 +1,7 @@
-import express from "express";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { Server } from "socket.io";
+import socketioHandleMessages from "./message.controller.js";
 
 const socketioConnection = async (io) => {
 
@@ -12,6 +12,8 @@ const socketioConnection = async (io) => {
 		const decoded = jwt.verify(cookies.jwt, process.env.JWT_SECRET);
 		console.log(decoded.userId);
 		socket.join(decoded.userId);
+		socket.decodedUID = decoded.userId;
+		socketioHandleMessages(socket, io);
 		socket.on("sendMessage", (message) => {
 			console.log(message);
 		});

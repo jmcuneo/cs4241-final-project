@@ -5,7 +5,6 @@ import { useEffect, useRef } from 'react';
 import { extractTime } from '../../utils/extractTime.js';
 
 const Messages = () => {
-
   const { messages, loading } = useGetMessages();
   const lastMessageRef = useRef(null);
   useEffect(() => {

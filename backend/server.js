@@ -6,10 +6,10 @@ import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 
 import authRoutes from "./routes/auth.routes.js"; 
-import messageRoutes from "./routes/message.routes.js"; 
+//import messageRoutes from "./routes/message.routes.js"; 
 import userRoutes from "./routes/user.routes.js";
-import socketioConnection from "./controllers/socketio.controller.js";
 
+import socketioConnection from "./controllers/socketio.controller.js";
 import connectToMongoDB from "./db/connectToMongoDB.js";
 
 const PORT = process.env.PORT || 8000;
@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
 })
 */
 app.use("/api/auth", authRoutes);
-app.use("/api/messages", messageRoutes);
+//app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);
 
 // app.get("/", (req, res) => { 

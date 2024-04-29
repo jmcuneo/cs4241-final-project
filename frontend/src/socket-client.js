@@ -1,5 +1,7 @@
 import {io} from "socket.io-client";
 
-export const socket = io("ws://localhost:3000", {
+const socketgen = io("ws://localhost:3000", {
 	path: "/api/socket.io/"
 });
+
+export const socket = socketgen

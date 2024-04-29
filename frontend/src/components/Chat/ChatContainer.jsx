@@ -5,11 +5,12 @@ import MessageInputBox from './MessageInputBox';
 import Messages from './Messages';
 import useConversation from "../../zustand/useConversation";
 import { useAuthContext } from '../../context/AuthContext';
+import { socket } from "../../socket-client.js";
 
 
 const ChatContainer = () => {
   const { selectedConversation, setSelectedConversation } = useConversation();
-
+	
   useEffect(() => {
     return () => setSelectedConversation(null);
   }, [setSelectedConversation]);

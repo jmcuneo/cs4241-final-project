@@ -8,12 +8,12 @@ export default defineConfig({
   server:{
     port: 3000,
     proxy:{
-      "/api":{
-        target: `http://localhost:${process.env.PORT || 8000}`,
-      },
 			"/api/socket.io":{
 				target: `ws://localhost:3636`,
-			}
+			},
+      "/api":{
+        target: `http://localhost:${process.env.PORT || 8000}`,
+      }
     }
   },
 })
