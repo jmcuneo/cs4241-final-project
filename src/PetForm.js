@@ -132,7 +132,7 @@ function PetForm() {
 
   return (
     <div className="center">
-      <h1 className='center'>Race-a-Pet</h1>
+      <h1>&#127937;Race-a-Pet</h1>
       <Container>
         <Row>
           <Col><h2 className='center'>Create your Pet to Race!</h2></Col>
