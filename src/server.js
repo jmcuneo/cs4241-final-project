@@ -139,6 +139,7 @@ app.post("/select", async (req, res) => {
 })
 
 
+
 app.post("/auth/add-leaderboard-entry",  auth.authenticateToken, async (req, res) => {
   console.log(req.user)
   const entry = await db.addLeaderboardEntry({
@@ -146,6 +147,7 @@ app.post("/auth/add-leaderboard-entry",  auth.authenticateToken, async (req, res
     score: Number(req.body.score)
 
   })
+
 })
 app.post("/leaderboard", async (req, res) => {
  const leaderboard =  await db.getLeaderboard();
