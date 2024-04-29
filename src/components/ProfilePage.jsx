@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Navbar from "./Navbar";
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
 
 function ProfilePage({ onLogout }) {
   const [userProfile, setUserProfile] = useState(null);
+  const makeAdminRef = useRef(null);
+  const [message, setMessage] = useState("");
+
   const getProfile = async () => {
     try {
       const response = await fetch("//localhost:3000/api/getProfile", {
@@ -22,6 +25,34 @@ function ProfilePage({ onLogout }) {
       console.error("Error getting profile:", error);
       return null;
     }
+  };
+
+  const makeAdmin = async (username) => {
+    try {
+      const response = await fetch("//localhost:3000/api/makeAdmin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          token: localStorage.getItem("token"),
+          targetUser: username
+        }),
+      });
+
+      let res = await response.json();
+      if(res.success === true) setMessage("User is now an admin!");
+      else setMessage("Error making user admin: " + res.error);
+    } catch (error) {
+      console.error("Error making user admin:", error);
+      return null;
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const username = makeAdminRef.current.value;
+    makeAdmin(username);
   };
 
   useEffect(() => {
@@ -61,6 +92,25 @@ function ProfilePage({ onLogout }) {
               Error loading profile
             </div>
           )}
+          <form className="w-full" onSubmit={(e) => handleSubmit(e)}>
+            <div className="flex flex-col justify-start items-center">
+              <input
+                className="input input-bordered w-full max-w-xs"
+                type="text"
+                id="makeAdminInput"
+                placeholder="input username"
+                required
+                ref={makeAdminRef}
+              />
+              <button
+                className="btn btn-success add-guest-button mt-2"
+                type="submit"
+              >
+                Make Admin Account
+              </button>
+            </div>
+          </form>
+          <div className="text-xl text-white">{message}</div>
         </motion.div>
       </div>
     </>

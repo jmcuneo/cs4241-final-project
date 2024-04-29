@@ -36,7 +36,7 @@ router.post('/makeAdmin', async (req, res) => {
 
         const success = await user.makeAdmin(newAdmin);
 
-        return res.json({ success: success });
+        return res.json({ success: success, error: "none" });
     } catch (err) {
         console.log(err);
         return res.json({ error: "Failed to make admin" });
