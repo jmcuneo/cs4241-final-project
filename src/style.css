@@ -24,8 +24,7 @@ ol ol {
     font-size: 15px;
   }
   
-  
-  /* Buttons */
+
   .button {
     background-color: #f7bacd; /* Light pastel pink */
     color: #333; /* Dark text */
@@ -57,4 +56,17 @@ ol ol {
     font-size: 15px;
     color: #333;
   }
+  .buttonSmall {
+    background-color: #f7bacd; 
+    color: #333; 
+    border: 2px solid #a56b8b; 
+    border-radius: 5px;
+    padding: 7px 15px;
+    font-size: 15px;
+  }
   
+  .buttonSmall:hover {
+    background-color: #f2a8ba; 
+    border-color: #8c4765; 
+    color: #222; 
+  }

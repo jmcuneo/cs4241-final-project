@@ -187,7 +187,7 @@ function PetForm() {
           name="animalType"
           value={animalType}
           onChange={handleInputChange}
-          className='ormControl'
+          className='formControl'
           required
         >
           <option value="" disabled>Select</option>

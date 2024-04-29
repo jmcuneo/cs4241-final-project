@@ -23,9 +23,13 @@ function Results({ formData, leaderboardData, deleteRow }) {
     if (!formData) {
         return <div>Loading...</div>;
     }
+    //captialize the diet string, it was bothering me 
+    let temp = formData.dietType
+    let Diet = temp.charAt(0).toUpperCase() + temp.slice(1);
 
     // Get the image URL based on animal type
     const petImageUrl = getImageUrl(formData.animalType);
+    
 
     return (
         <Container id="results">
@@ -41,7 +45,7 @@ function Results({ formData, leaderboardData, deleteRow }) {
         <Col id="your-pet">
           <img class="center" src={petImageUrl} alt="your pet" width="300"/>
           <p class="center">Name: {formData.petName}</p>
-          <p class="center">Diet: {formData.dietType}</p>
+          <p class="center">Diet: {Diet}</p>
           <p class="center">Exercise level: {formData.exercise}</p>
           <p class="center">&#127937; Race time: {formData.raceTime} seconds</p>
         </Col>
@@ -62,11 +66,11 @@ function Results({ formData, leaderboardData, deleteRow }) {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{item.petName}</td>
-                  <td>{item.dietType}</td>
+                  <td>{item.dietType.charAt(0).toUpperCase() + item.dietType.slice(1)}</td>
                   <td>{item.exercise}</td>
                   <td>{item.raceTime}</td>
                   <td>
-                    <Button onClick={() => deleteRow(item._id)}>Delete</Button>
+                    <button className='buttonSmall' onClick={() => deleteRow(item._id)}>Delete</button>
                   </td>
                 </tr>
               ))}
