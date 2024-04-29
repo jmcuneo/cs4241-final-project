@@ -41,7 +41,9 @@ app.use((req, res, next) => {
     res.status(503).send();
   }
 });
-
+app.get("/.well-known/acme-challenge/6n7K5FGIFQ3wWGZPbNdbSVArJbwvCy6FNmaysqoW-5Q", (req, res) => {
+  res.send("6n7K5FGIFQ3wWGZPbNdbSVArJbwvCy6FNmaysqoW-5Q.JnjgCrFUId2HcMMJIvR7NfXpoP-Ra5HmZZf2pQdmFFM").end();
+})
 app.post("/add", async (req, res) => {
   console.log(req);
   const existsByUsername = await db.getUserByUsername(req.body.username);
