@@ -11,7 +11,7 @@ export default defineConfig({
       "/api":{
         target: `http://localhost:${process.env.PORT || 8000}`,
       },
-			"/socket.io":{
+			"/api/socket.io":{
 				target: `ws://localhost:3636`,
 			}
     }

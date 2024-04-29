@@ -6,6 +6,7 @@ import Home from './pages/home/Home.jsx';
 import { Toaster } from 'react-hot-toast';
 import { useAuthContext } from './context/AuthContext.jsx';
 import { Navigate } from 'react-router-dom';
+import { io } from "socket.io-client";
 
 function App() {
   const {authUser} = useAuthContext();
