@@ -1,61 +1,46 @@
-# Final Project
+# WPI Games
 
-[Example Projects from A23](https://echo360.org/collection/50a4d343-caea-4deb-93ee-61bdd7da543f/public)
+Now accessible 24/7/365: [https://team10-finalproject.onrender.com/](https://team10-finalproject.onrender.com/)
 
-**More Example Projects:**
-- [https://pushbox.glitch.me/app](https://pushbox.glitch.me/app)
-- [https://github.com/Cather-Zhang/final_project](https://github.com/Cather-Zhang/final_project)
-- [https://clip.kmoene.com/](https://clip.kmoene.com/)
-- [https://github.com/GP2P/G3P-Expense-Tracker](https://github.com/GP2P/G3P-Expense-Tracker)
+An online platform to play hangman, crossword (and in the future more?) games, with Worcester Polytechnic Institute in mind! Designed to educate new-commers to WPI lore, traditions, and terminology, this is a great collection of entertaining games to learn more about what goes on here at WPI and its history! There is also an administrative user type that can add and remove words from the hangman game.
 
-For your final project, you'll implement a web application that exhibits understanding of the course materials. 
-This project should provide an opportunity to both be creative and to pursue individual research and learning goals.
+**Team Members:**
 
-## General description
-Your project should consist of a complete Web application, exhibiting facets of the three main sections of the course material:
+- Connor Chartier
+- Seth Frank
+- Spencer Greene
+- Jacob Silvester
+- Nicolas Valentino
 
-- Static web page content and design. You should have a project that is accessible, easily navigable, and features significant content.
-- Dynamic behavior implemented with JavaScript (TypeScript is also allowed if your group wants to explore it).
-- Server-side programming *using Node.js*. Typically this will take the form of some sort of persistent data (database), authentication, and possibly server-side computation. 
-- A video (less than five minutes) where each group member explains some aspect of the project. An easy way to produce this video is for you all the groups members to join a Zoom call that is recorded; each member can share their screen when they discuss the project or one member can "drive" the interface while other members narrate (this second option will probably work better.) Upload the video to Canvas. (Further instructions are available in the Canvas assignment.) Make sure your video is less than five minutes but long enough to successfully explain your project and show it in action. There is no minimum video length.
+See our attached [Sprint Log](https://docs.google.com/document/d/1U8EGgIxi2U0Ok7l_tWpQN8ZBPJ3YaMWEMvKGJfphEgI/edit?usp=sharing) for a collection of responsibilities!
 
-## Project ideation
-Excellent projects typically serve someone/some group; for this assignment you need to define your users and stakeholders. I encourage you to identify projects that will have impact, either artistically, politically, or in terms of productivity. 
+**Technologies Used**
 
-## Deliverables
+* Express (w/ Vite-Express): We use express to implement the server-client interaction with our application.
+* Bootstrap: All our styling for the different pages utilizes Bootstrap to make our design visually appealing and consistent throughout. It also enabled us to make it easier when coding our design.
+* Svelte: We use Svelte to ease our HTML and client-side JS for our pages.
+* MongoDB
+* Passport (W/ Passport-Github): We use Passport for our sign in page so that we can use GitHub to log into our application.
 
-### Form Team (Due Thursday, April 11, 11:59 pm)
-Students are will work in teams of 3-5 students for the project. Working in teams should help enable you to build a good project in a limited amount of time.  Use the `#finalproject` channel in Slack to pitch ideas for final projects and/or find fellow team members as needed.
+**List of Features**
 
-Teams must be in place by end of day on Monday, April 8. If you have not identified a team at this point, you will be assigned a team. **Put all team members together in one of the empty "Final Project" groups on Canvas. You MUST do this step to receive full credit on the assignment.**
+- Login Page: We utilized Passport to create a sign in page using GitHub. This enables the user to click the sign in button which will take them to GitHub page to allow them to log in. Once logged in, it enables the user to access the games to play.
+- Home Page: We set up a home page that allows the user to access the games and other features of our application. We have cards that enable the user to choose a game to play. We also have a header that is the same across all other pages that enables the user to log out as well as navigate back to the homepage.
+- Crossword Game: The crossword game allows the user to choose between an easy, medium and hard game that involves clues to WPI words. It starts by allowing the player to choose and then loads the correct crossword from the database. The user can then see the clues and type in the words they think they are. The user can then click “Check Crossword” to see if their guess was correct or not.
+- Hangman Game: The hangman game allows the user to guess different WPI words. It starts by randomly choosing a word that is stored in the database and displays it using just “_”. The user can then use the buttons to guess letters. Once a button is pressed, it will show that button in the guessed letters list and either display the letter in the word if it exists or add a limb to the hangman. Once all the limbs are present or the word is guessed, it will display a message and disable all the buttons until you click a new word.
+- Admin User: This user can add and remove words from the crossword game, allowing it to be expanded upon in the future. To utlize admin privalleges, click on the box with your username in the top right corner of the screen. This will allow you to add and remove words from the hangman game.
 
-### Proposal (Due Tuesday, April 16, 11:59 pm) 
-Provide an outline of your project direction and the names of associated team members. The outline should have enough detail so that staff can determine if it meets the minimum expectations or if it goes too far to be reasonable by the deadline. Please include a general description of the project and a list of key technologies/libraries you plan on using (e.g. React, Three.js, Svelte, TypeScript, etc.). Two to four paragraps should provide enough level of detail. Name the file proposal.md and submit a pull request by Tuesday, September 27th at 11:59 PM (end of day). Your pull request does not need to have a specific name. Only one pull request is required per team.
+**Challenges Faced**
 
-There are no other scheduled checkpoints for your project. 
+- Implementation of the Crossword: We had some difficulty figuring out how to setup the crossword. We ended up utilizing a table and blacking out the certain boxes that we aren’t using and then leaving the ones we blank with inputs that have letters in them. We also had problems with checking whether the crossword is correct. We ended up using a check word button since we can just check the entire table when we click this button instead of having to check boxes individually.
+- Utilization of GitHub: One of our team members hasn’t used GitHub before, so we taught him more about how to utilize the features including pulling, committing, pushing and utilizing branches and pull requests. We also had some challenges when having to deal with merge conflicts. We tried our best to merge with main often so that we didn’t have too many merge conflicts, but still had to deal with them, ensuring that we kept the right code that we wanted for our project.
+- How to Store Data in the Database: One challenge we faced was figuring our what we wanted to store within the database and what we should store locally in our server. For our crossword, we ended up storing the gameboards and solutions inside of the database so that in the future, this allows for easier changeability and additions to the crosswords. We also store the clues for the crossword in the database for the same reason. While we do store these things in the database, we end up copying them locally as well so that we don’t have to do as many GET requests to retrieve the data, in turn making it faster.
+- Passport with GitHub: We were somewhat unfamiliar using Passport, so learning how to use it and integrating it with GtHub login was a bit difficult to learn.
+- Admin user: We also wanted to ability to add and remove crossowrd puzzles form the game, not just hangman words. Though, due to previous challenges we faced, along with the scope and deadline for the project, we were unable to implement that functionality to our program.
 
-### Turning in Your Project (Due Monday, April 29, 11:59 pm)
-**Although the assignment is due at 11:59 pm, you must be prepared to demo your website in class that day.**
+**Accessibility Features**
 
-Submit a second PR on the final project repo to turn in your app and code. Again, only one pull request per team.
-
-Deploy your app, in the form of a webpage, to Glitch/Heroku/Digital Ocean or some other service; it is critical that the application functions correctly wherever you post it.
-
-The README for your second pull request doesn’t need to be a formal report, but it should contain the following:
-
-1. A brief description of what you created, and a link to the project itself (two paragraphs of text)
-2. Any additional instructions that might be needed to fully use your project (login information, etc.)
-3. An outline of the technologies you used and how you used them.
-4. What challenges you faced in completing the project.
-5. What each group member was responsible for designing / developing.
-6. What accessibility features you included in your project.
-
-Think of 1, 3, and 4 in particular in a similar vein to the design / technical achievements for A1—A4. Make a case for why what you did was challenging and why your implementation deserves a grade of 100%.
-
-The video described above is also due on Canvas at this time.
-
-## FAQs
-
-**Can I use XYZ framework?** 
-
-You can use any web-based frameworks or tools available, but for your server programming you need to use Node.js. Your client-side scripting language should be either JavaScript or TypeScript. Note that the staff may not be able to assist with TypeScript questions.
+- High contrast on our crossword with the black and white on the table.
+- Utilizing login with GitHub makes it very easy for the user to log in so that they don’t have to remember a username and password.
+- Utilizing Bootstrap to ensure our styling and format is set up correctly and accessible. This includes ensuring our headings are set up correctly and color format and such is accessible for everyone.
+- We utilized large buttons to ensure everything is clear and easy to tell for the user.
