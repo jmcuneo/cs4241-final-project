@@ -37,9 +37,8 @@ exports.calculateScore = (item1, item2, ref_arr) => {
     console.log(item2)
     console.log(val)
 
-    if (item2 == val) {
-        return 100
-    } else return 0
+    if (item2 == val) return 100;
+    else return -50;
 
 } 
 

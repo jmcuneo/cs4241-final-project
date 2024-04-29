@@ -24,7 +24,7 @@ fetchUserEmail = async (accessToken) => {
   const octokit = new Octokit({
     auth: accessToken,
   });
-  console.log("mmmmm");
+  console.log("looking for user");
 
   await octokit
     .request("GET /user/emails", {

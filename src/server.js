@@ -130,7 +130,7 @@ app.post("/select", async (req, res) => {
   let item1 = req.body.item1,
       item2 = req.body.item2,
       curr_time = req.body.timeElapsed, //not sure what to do with time...
-
+      
       curr_score = helpers.calculateScore(item1, item2, inMemCache);
       console.log(curr_score)
   
@@ -139,10 +139,15 @@ app.post("/select", async (req, res) => {
 })
 
 
-app.post("/auth/add-leaderboard-entry", auth.authenticateToken, (req, res) => {
-  console.log("User: " + req.user.username)
-  console.log("Score: " + req.body.score)
-  res.json("Hello")
+
+app.post("/auth/add-leaderboard-entry",  auth.authenticateToken, async (req, res) => {
+  console.log(req.user)
+  const entry = await db.addLeaderboardEntry({
+    username: req.user.username,
+    score: Number(req.body.score)
+
+  })
+
 })
 app.post("/leaderboard", async (req, res) => {
  const leaderboard =  await db.getLeaderboard();
