@@ -1,11 +1,11 @@
 # Final Project
 
-Instructions on how to run: 
+deployed on render:
+https://cs4241-final-project-r2mj.onrender.com/ 
 
-1. cd into frontend and do npm install
-2. do npm run dev in frontend folder to view the project frontend at http://localhost:5173/.
-3. run npm install in root directory
-4. run npm run server in root directory and it will run the server at http://localhost:3001 or set a PORT=portnumber variable to any port in your .env file.
+Instructions on how to run: 
+npm run build
+npm start
 
 
 [Example Projects from A23](https://echo360.org/collection/50a4d343-caea-4deb-93ee-61bdd7da543f/public)

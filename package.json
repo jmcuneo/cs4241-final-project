@@ -4,7 +4,9 @@
   "description": "how to run:  1. cd into frontend and do npm install 2. do npm run dev to view the project 3. more steps when backend is implemented ...",
   "main": "server.js",
   "scripts": {
-    "server": "nodemon backend/server.js"
+    "server": "nodemon backend/server.js",
+    "start": "node backend/server.js",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "type": "module",
   "keywords": [],

@@ -8,9 +8,11 @@ const Home = () => {
 
       <Sidebar />
 
+
       {/* Main content */}
-      <div className="flex-1 bg-[#262626] h-[100%]">
+      <div className="flex-1 bg-primary dark:bg-lightprimary h-[100%]">
         <ChatContainer/>
+
       </div>
 
 

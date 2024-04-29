@@ -2,8 +2,12 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cookie from "cookie";
-import { Server } from "socket.io";
+import { createServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
+
 import jwt from "jsonwebtoken";
+
+import path from "path";
 
 import authRoutes from "./routes/auth.routes.js"; 
 //import messageRoutes from "./routes/message.routes.js"; 
@@ -12,14 +16,25 @@ import userRoutes from "./routes/user.routes.js";
 import socketioConnection from "./controllers/socketio.controller.js";
 import connectToMongoDB from "./db/connectToMongoDB.js";
 
+
+
+const __dirname = path.resolve();
+
 const PORT = process.env.PORT || 8000;
+
 const app =  express();
-const io = new Server(app.listen(3636), {
-	path: "/api/socket.io/"
+const httpServer = createServer(app);
+
+const io = new SocketIOServer(httpServer, {
+  path: "/api/socket.io/"
 });
 app.set("io", io);
 
+
 dotenv.config();
+
+
+
 
 app.use(express.json()); //parse json data in the request body (from req.body)
 app.use(cookieParser()); //parse cookies from the request headers
@@ -35,9 +50,17 @@ app.use("/api/users", userRoutes);
 
 
 
-app.listen(PORT, () => {
+app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname,"frontend/dist/index.html"))
+})
+
+
+httpServer.listen(PORT, () => {
   connectToMongoDB();
-  console.log( `server running on port ${PORT}`);
-	socketioConnection(io);
+  console.log(`Server running on port ${PORT}`);
+  socketioConnection(io);
 });
 
