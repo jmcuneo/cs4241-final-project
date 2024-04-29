@@ -19,7 +19,7 @@ function Register(props) {
         const password = document.getElementById('pswd').value;
         const emailInput = document.getElementById('email-input').value;
     
-        fetch('http://localhost:3000/register', {
+        fetch('/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

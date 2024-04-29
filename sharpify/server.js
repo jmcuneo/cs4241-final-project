@@ -233,6 +233,7 @@ app.post("/sharpify", upload.single('image'), async (request, response) => {
     form.append('color_parameters', JSON.stringify({ "type": "hdr_light_advanced", "level": 1 }));
     form.append('light_parameters', JSON.stringify({ "type": "hdr_light_advanced", "level": 1 }));
     form.append('width', 2000);
+    form.append('quality', 100);
 
     const formHeaders = form.getHeaders();
 
