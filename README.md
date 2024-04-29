@@ -41,6 +41,6 @@ One challenge we ran into was authenicating login for everyone on the team; some
 
 ## Accessibility Features
 Make a case for why what you did was challenging and why your implementation deserves a grade of 100%.
-- Lighthouse test?
+- ![Lighthouse test](lighthouse.png)
 - color scheme and legible font
 
