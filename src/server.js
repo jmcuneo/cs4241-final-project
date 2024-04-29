@@ -135,8 +135,8 @@ app.post("/update", async (req, res) => {
 
 app.post("/load", async (req, res) => {
   inMemCache = await db.getCards();
-  
-  res.send(JSON.stringify(inMemCache))
+  const response = JSON.stringify(inMemCache);
+  res.send(response)
 })
 
 app.post("/select", async (req, res) => {
