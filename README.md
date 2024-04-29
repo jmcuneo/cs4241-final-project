@@ -53,3 +53,34 @@ The video described above is also due on Canvas at this time.
 **Can I use XYZ framework?** 
 
 You can use any web-based frameworks or tools available, but for your server programming you need to use Node.js. Your client-side scripting language should be either JavaScript or TypeScript. Note that the staff may not be able to assist with TypeScript questions.
+
+# README Start
+For our project, we created an LGBTQ+ themed matching game which matches famous queer people with events or activities they were apart of. We also implemented a login page which allows for custom user signups, GitHub authentication, or a guest login. Users that complete the game while logged in with either of the first two methods will automatically have their score uploaded to our leadboard database which is also shown on the page. 
+
+The frontend of the site is written in basic JavaScript with CSS designing mostly completed in Bulma. The server backend was written with Express
+
+## Achievements
+
+- MongoDB Integration: We implemented multiple collections within MongoDB which keep track of users, the information on the matching cards, as well as the current leaderboard of all player scores. 
+- GitHub OAuth Integration:
+- Perfect Lighthouse Score:
+
+## Challenges
+- OAuth:
+
+
+## Group Contributions
+
+# Ivy Bixler
+- Research
+
+# Ava Chadbourne
+- Research
+
+# Nat Dynko
+- Research
+- Website Map Base 
+- Backend Server Game Logic
+
+# Luca Wol 
+- Research
