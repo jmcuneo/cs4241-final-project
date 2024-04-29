@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="This page is a cookie clicker game changed into a Goatbuck clicker game geared toward WPI students"
+    />
+    <title>Goatbucks Clicker Layout</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="preload" href="https://cdn.glitch.global/446b7435-19b5-4854-910c-66a24ab877a7/thumbnails_goat-icon-grey.webp?v=1713988997541" as="image">
+  </head>
+  <body>
+    <div id="top-half-div" class="flex-container" name="time-clicker-leaderboard-box">
+      <div id="login-time-div" class="column" name="login-time-box">
+        <p class="subtitle" name="time-title">Time</p>
+        <div class="time-div" name="progress-bar-box">
+          <div class="progress-bar" name="progress-bar-container">
+            <div id="yearProgress" class="progress" style="width: 0" name="year-progress"></div>
+          </div>
+          <p id="yearCount" name="year-count">Year 1</p>
+        </div>
+        <p id="user" name="current-user"></p>
+        <button id="logout" class="button" name="logout-button">Logout</button>
+      </div>
+      <div id="title-clicker-div" class="column" name="title-box">
+        <p class="title" name="title">Goatbucks Clicker</p>
+        <div class="instructions-button" name="instructions-box">
+          <button onclick="toggleInstructions()" name="instructions-button">Instructions</button>
+        </div>
+        <p class="goatbucks" id="totalMoney" name="goatbucks"></p>
+        <button
+          class="circle-button"
+          id="mainButton"
+          name="goatbucks-clicker"
+        >Click Me</button>
+      </div>
+      <div id="leaderboard-div" class="column" name="leaderboard-box">
+        <p class="subtitle" name="leaderboard-title">Leaderboard</p>
+        <table class="leaderboard-table" name="leaderboard-table">
+          <tr>
+            <th style="padding-right: 30px">User</th>
+            <th>High Score</th>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div id="bottom-half-div" class="flex-container"  name="upgrade-tables-box">
+      <div id="smoothie-lab" class="restaurant"  name="smoothie-lab-box">
+        <p>Smoothie Lab</p>
+        <table class="food-table" name="smoothie-lab-table">
+          <tr>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Upgrades
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Price
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Per Click
+            </td>
+          </tr>
+          <tr>
+            <td>Elemental Smoothie</td>
+            <td><button class="food-button" id="1upgrade1">30</button></td>
+            <td><p>+1</p></td>
+          </tr>
+          <tr>
+            <td>Fusion Smoothie</td>
+            <td><button class="food-button" id="1upgrade2">150</button></td>
+            <td><p>+3</p></td>
+          </tr>
+          <tr>
+            <td>Velocity Smoothie</td>
+            <td><button class="food-button" id="1upgrade3">400</button></td>
+            <td><p>+5</p></td>
+          </tr>
+        </table>
+      </div>
+
+      <div id="halal-shack" class="restaurant" name="halal-shack-box">
+        <p>Halal Shack</p>
+        <table class="food-table" name="halal-shack-table">
+          <tr>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Upgrades
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Price
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Passive
+            </td>
+          </tr>
+          <tr>
+            <td>Rice Bowl</td>
+            <td><button class="food-button" id="2upgrade1">20</button></td>
+            <td><p>+1</p></td>
+          </tr>
+          <tr>
+            <td>Zoodle Bowl</td>
+            <td><button class="food-button" id="2upgrade2">100</button></td>
+            <td><p>+2</p></td>
+          </tr>
+          <tr>
+            <td>Fries Bowl</td>
+            <td><button class="food-button" id="2upgrade3">300</button></td>
+            <td><p>+3</p></td>
+          </tr>
+        </table>
+      </div>
+
+      <div id="cc-food-court" class="restaurant" name="cc-food-court-box">
+        <p>CC Food Court</p>
+        <table class="food-table" name="cc-food-court-table">
+          <tr>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Upgrades
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Price
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Per Click
+            </td>
+          </tr>
+          <tr>
+            <td>Subs</td>
+            <td><button class="food-button" id="3upgrade1">700</button></td>
+            <td><p>+10</p></td>
+          </tr>
+          <tr>
+            <td>Wraps</td>
+            <td><button class="food-button" id="3upgrade2">3000</button></td>
+            <td><p>+12</p></td>
+          </tr>
+          <tr>
+            <td>Pizza</td>
+            <td><button class="food-button" id="3upgrade3">8000</button></td>
+            <td><p>+15</p></td>
+          </tr>
+        </table>
+      </div>
+      <div id="sono-grill" class="restaurant" name="sono-grill-box">
+        <p>Sono Grill</p>
+        <table class="food-table" name="sono-grill-table">
+          <tr>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Upgrades
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Price
+            </td>
+            <td style="font-weight: bold; padding: 3%; white-space: nowrap">
+              Passive
+            </td>
+          </tr>
+          <tr>
+            <td>Chips and Salsa</td>
+            <td><button class="food-button" id="4upgrade1">500</button></td>
+            <td><p>+5</p></td>
+          </tr>
+          <tr>
+            <td>Chips and Guac</td>
+            <td><button class="food-button" id="4upgrade2">2500</button></td>
+            <td><p>+10</p></td>
+          </tr>
+          <tr>
+            <td>Tacos</td>
+            <td><button class="food-button" id="4upgrade3">6000</button></td>
+            <td><p>+15</p></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div id="instruction-box" class="instruction-box"  name="instructions-box-opened">
+      <div class="instruction-box-text" name="instructions-text">
+        <h2>Instructions</h2>
+        <p>
+          The goal of the game is to make GoatBucks by clicking the Goat in the
+          middle of the screen. You can use your GoatBucks to invest in WPI
+          restaurants' food items to generate more GoatBucks. Get as
+          much as you can!
+        </p>
+        <p>
+          While typically these games are endless, your time at school isn’t, so
+          if you get the max upgrades before you reach the end of your Senior
+          Year (by clicking the price next to each food item), then you will win once you graduate!
+          Years are based on a set timer.
+        </p>
+        <p>
+          Try to improve your high score by getting as many Goatbucks as possible before the timer ends.
+        </p>
+        <p>
+          Next to each food upgrade, you will find a button with their price and
+          what they will yield. If it says 'Per Click', it means that every time
+          you click the Goat button, you will that get amount added to your balance.
+          If it says'Passive', it means you will get that amount for every
+          second that passes (from the moment you buy that upgrade).
+        </p>
+      </div>
+      <button class="close-button" onclick="toggleInstructions()" name="close-intructions-button">Close</button>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"
+      defer
+    ></script>
+    <script src="js/main.js" defer></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const button = document.querySelector(".circle-button");
+
+        button.addEventListener("click", function (event) {
+          const rect = button.getBoundingClientRect();
+          const centerX = (rect.left + rect.right) / 2;
+          const centerY = (rect.top + rect.bottom) / 2;
+          const originX = centerX / window.innerWidth;
+          const originY = centerY / window.innerHeight;
+
+          confetti({
+            particleCount: 60,
+            spread: 80,
+            origin: { x: originX, y: originY },
+          });
+        });
+
+        const foodButtons = document.querySelectorAll(".food-button");
+        foodButtons.forEach(function (foodButton) {
+          foodButton.addEventListener("click", function (event) {
+            const rect = foodButton.getBoundingClientRect();
+            const centerX = (rect.left + rect.right) / 2;
+            const centerY = (rect.top + rect.bottom) / 2;
+            const originX = centerX / window.innerWidth;
+            const originY = centerY / window.innerHeight;
+
+            confetti({
+              particleCount: 20,
+              spread: 60,
+              origin: { x: originX, y: originY },
+            });
+          });
+        });
+      });
+
+      function toggleInstructions() {
+        const instructionBox = document.getElementById("instruction-box");
+        instructionBox.style.display =
+          instructionBox.style.display === "block" ? "none" : "block";
+      }
+    </script>
+  </body>
+</html>
