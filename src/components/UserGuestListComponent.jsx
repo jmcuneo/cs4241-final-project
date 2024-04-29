@@ -226,21 +226,21 @@ const guestTable = () => {
   return (
     <div className="prose min-w-screen">
       <div className="flex flex-col px-2 w-screen">
-        <h1 className="w" style={{marginLeft: "7rem", marginBottom: "4rem", marginTop: "1rem"}}>Guest List</h1>
-        <div className="grid columns-3 grid-cols-3 gap-1">
+        {/* <h1 className="w" style={{marginLeft: "7rem", marginBottom: "4rem", marginTop: "1rem"}}>Guest List</h1> */}
+        <div className="grid columns-3 grid-cols-3 gap-1 mt-7">
           {/* first col */}
           {!manage && (
             <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto mb-10">
               <GuestListComponent
                 guestList={guestList}
-                shouldDisplayTitle={false}
+                shouldDisplayTitle={true}
               ></GuestListComponent>
             </div>
           )}
           {/* second col */}
-          <div style={{marginTop:"-3.5rem"}}>
+          <div >
             {!manage && (
-              <h1 className="w" style={{marginLeft: "10rem", marginBottom: "1rem"}}>Your Guests</h1>
+              <h1 className="ml-[10rem] mb-4" >Your Guests</h1>
             )}
             <div className="flex justify-center align-center max-h-[75vh] overflow-y-auto mb-10">
               {userGuestList.length > 0 ? (
@@ -253,7 +253,8 @@ const guestTable = () => {
           
           {/* last col */}
           {!manage && (
-            <div className="add-guest flex justify-center align-center max-h-[75vh] overflow-y-auto">
+            <div className="add-guest flex flex-col justify-start align-center items-center max-h-[75vh] overflow-y-auto prose">
+              <h1 className="mb-4">Add a Guest</h1>
               <form className="w-full" onSubmit={(e) => handleSubmit(e)}>
                 <div className="flex flex-col justify-start items-center">
                   <input

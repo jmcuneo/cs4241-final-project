@@ -10,7 +10,7 @@ function GuestListComponent({ guestList, shouldDisplayTitle }) {
 
   return (
     <div className="overflow-x-auto prose">
-      {shouldDisplayTitle && <h1>Guest List</h1>}
+      {shouldDisplayTitle && <div className="flex align-center justify-center w-full mb-4"><h1>Guest List</h1></div>}
       <input 
         style={{marginBottom: "0.2rem"}}
         type="text"
