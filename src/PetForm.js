@@ -212,7 +212,7 @@ function PetForm() {
           <option value="steak">Steak</option>
           <option value="tuna">Tuna</option>
           <option value="lettuce">Lettuce</option>
-          <option value="carrot">Carrot</option>
+          <option value="carrots">Carrots</option>
         </Form.Control>
       </Form.Group>
 
