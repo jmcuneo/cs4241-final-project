@@ -54,19 +54,21 @@ const SignUp = () => {
               <div className="space-y-6 mt-4">
 
                 <label className="input input-bordered dark:border-lighttertiary border-tertiary w-80 bg-primary dark:bg-lightprimary flex items-center gap-2">
-                  <input type="text" name="fullName" className="grow" placeholder="Display Name" value={inputs.fullName} onChange={handleChange} />
+
+                  <input type="text" name="fullName" className="grow text-lightdark dark:text-dark" placeholder="Display Name" value={inputs.fullName} onChange={handleChange} />
                 </label>
 
                 <label className="input input-bordered border-tertiary dark:border-lighttertiary w-80 bg-primary dark:bg-lightprimary flex items-center gap-2">
-                  <input type="text" name="username" className="grow" placeholder="Username" value={inputs.username} onChange={handleChange} />
+                  <input type="text" name="username" className="grow text-lightdark dark:text-dark" placeholder="Username" value={inputs.username} onChange={handleChange} />
                 </label>
 
                 <label className="input input-bordered border-tertiary dark:border-lighttertiary bg-primary dark:bg-lightprimary w-80 flex items-center gap-2">
-                  <input type="password" name="password" className="grow" placeholder="Password" value={inputs.password} onChange={handleChange} />
+                  <input type="password" name="password" className="grow text-lightdark dark:text-dark" placeholder="Password" value={inputs.password} onChange={handleChange} />
                 </label>
 
                 <label className="input input-bordered border-tertiary dark:border-lighttertiary bg-primary dark:bg-lightprimary w-80 flex items-center gap-2">
-                  <input type="password" name="confirmPassword" className="grow" placeholder="Confirm Password" value={inputs.confirmPassword} onChange={handleChange} />
+                  <input type="password" name="confirmPassword" className="grow text-lightdark dark:text-dark" placeholder="Confirm Password" value={inputs.confirmPassword} onChange={handleChange} />
+
                 </label>
 
               </div>
