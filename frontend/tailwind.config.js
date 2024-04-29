@@ -32,8 +32,8 @@ module.exports = {
          lightprimary: '#e6e6e6', // Light mode primary
          lightsecondary: '#404040', 
          lighttertiary: '#000000', 
-         lightdark: '#a2a2a3', 
-         lightother: '#cacbcc',
+         lightdark: '#cacbcc', // #00ff80
+         lightother: '#a2a2a3',
          lightlight: '#000000',
          lightback: '#ffffff', // Background color in light mode
          lightloginbutton: '#c9c7c7',

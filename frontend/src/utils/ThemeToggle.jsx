@@ -17,11 +17,9 @@ function ThemeToggle() {
   };
 
   return (
-    <div className='flex justify-between items-center  bg-dark dark:bg-lightdark p-0'>
-    <button onClick={toggleTheme} className="ml-4 rounded focus:outline-none">
+    <button onClick={toggleTheme} tabindex="0" className="ml-4 rounded focus:outline-none">
                 <img src={kebabMenu} alt="Menu" className="w-6 h-6" draggable="false" />
             </button>
-    </div>
   );
 }
 
