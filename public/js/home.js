@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             return response.json();
         });
 
-    const ws = new WebSocket('ws://campus-connect-9c83.onrender.com/messages?user=' + encodeURIComponent(user.username));
+    const ws = new WebSocket('wss://campus-connect-9c83.onrender.com/messages?user=' + encodeURIComponent(user.username));
 
     ws.onopen = function () {
         console.log('WebSocket Client Connected');
