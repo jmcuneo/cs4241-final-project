@@ -195,8 +195,11 @@ function PetForm() {
         </Form.Group>
 
         <Form.Group controlId="exercise">
+        <div className="labelWrapper">
           <Form.Label className='formLabel'>Exercise Level:</Form.Label>
-          <Form.Control
+        </div>
+        <div className="sliderWrapper">
+          <input
             type="range"
             name="exercise"
             min="0"
@@ -207,7 +210,9 @@ function PetForm() {
             className='formControl'
           />
           <span id="exercise-value">{exerciseLevel}</span>
-        </Form.Group>
+        </div>
+      </Form.Group>
+
 
         <button className='button' variant="primary" type="submit">
           Submit
