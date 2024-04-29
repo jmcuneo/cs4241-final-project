@@ -1,57 +1,54 @@
-# Final Project
+# Final Project- Sharpify
 
 [https://cs4241-final-project-vsnm.onrender.com/](https://cs4241-final-project-vsnm.onrender.com/)
 
-[Example Projects from A23](https://echo360.org/collection/50a4d343-caea-4deb-93ee-61bdd7da543f/public)
+## Description
 
-For your final project, you'll implement a web application that exhibits understanding of the course materials. 
-This project should provide an opportunity to both be creative and to pursue individual research and learning goals.
+For our project, we developed an image sharpener – called Sharpify – that aimed to develop a system where users can sign in, upload new images to be enhanced, and access their saved images. This application will allow users to interactively sharpen images, providing a user-friendly interface and efficient processing. We used React.js, Bootstrap, and CSS to create the pages.
 
-## General description
-Your project should consist of a complete Web application, exhibiting facets of the three main sections of the course material:
+To enhance an image, we made a call to the Deep Image AI API (https://deep-image.ai/app/). This API has many tools and specific enhancement variables and parameters for the variables that had to be sent from our server. These enhancements include deblurring, color enhancement, light enhancement, and denoise. Some of them have their parameters like denoise. Denoise in the Deep Image AI API has two versions so we put in v2 as a parameter to specify the most recent version. Once we send an image, we receive the enhanced image URL that gets downloaded to the user's local machine and sent to the database through our server.
 
-- Static web page content and design. You should have a project that is accessible, easily navigable, and features significant content.
-- Dynamic behavior implemented with JavaScript (TypeScript is also allowed if your group wants to explore it).
-- Server-side programming *using Node.js*. Typically this will take the form of some sort of persistent data (database), authentication, and possibly server-side computation. 
-- A video (less than five minutes) where each group member explains some aspect of the project. An easy way to produce this video is for you all the groups members to join a Zoom call that is recorded; each member can share their screen when they discuss the project or one member can "drive" the interface while other members narrate (this second option will probably work better.) Upload the video to Canvas. (Further instructions are available in the Canvas assignment.) Make sure your video is less than five minutes but long enough to successfully explain your project and show it in action. There is no minimum video length.
+Our application uses MongoDB and Firebase to store our data. When a user registers to Sharpify, their data is stored in the user collection. Whenever a user uploads an image, the image is sent to Firebase, where the image will be stored, while the image URL created by Firebase is sent to MongoDB. In MongoDB, the image URLs are stored in their own collection with the uploaded users _ID as one of its fields. When accessing the saved images, the server retrieves the signed-in users _ID, and retrieves the image URLs stored in MongoDB that contain the user _ID.
 
-## Project ideation
-Excellent projects typically serve someone/some group; for this assignment you need to define your users and stakeholders. I encourage you to identify projects that will have impact, either artistically, politically, or in terms of productivity. 
 
-## Deliverables
+**NOTE**: Our current API only has 30 calls left!
 
-### Form Team (Due Thursday, April 11, 11:59 pm)
-Students are will work in teams of 3-5 students for the project. Working in teams should help enable you to build a good project in a limited amount of time.  Use the `#finalproject` channel in Slack to pitch ideas for final projects and/or find fellow team members as needed.
+## Technologies and Frameworks
+- **Front-end**:
+  - **React**: To build a dynamic and responsive UI.
+  - **JavaScript**: For general front-end programming.
+  - **React Bootstrap and Custom CSS**: For styling the application.
 
-Teams must be in place by end of day on Monday, April 8. If you have not identified a team at this point, you will be assigned a team. **Put all team members together in one of the empty "Final Project" groups on Canvas. You MUST do this step to receive full credit on the assignment.**
+- **Back-end**:
+  - **Firebase**: Store the images uploaded by users 
+  - **Express**: For making API requests to our backend.
+  - **MySQL**: To store user and image data securely.
+  - **Node.js File System Module**: To interact with the file system for image uploads and downloads.
+  - **MongoDB**: Store user data and the image URLs provided by Firebase 
 
-### Proposal (Due Tuesday, April 16, 11:59 pm) 
-Provide an outline of your project direction and the names of associated team members. The outline should have enough detail so that staff can determine if it meets the minimum expectations or if it goes too far to be reasonable by the deadline. Please include a general description of the project and a list of key technologies/libraries you plan on using (e.g. React, Three.js, Svelte, TypeScript, etc.). Two to four paragraps should provide enough level of detail. Name the file proposal.md and submit a pull request by Tuesday, September 27th at 11:59 PM (end of day). Your pull request does not need to have a specific name. Only one pull request is required per team.
+- **Image Processing**:
+  - **Deep Image API**: Call to this API from the server giving the image and enhancements to make on the image
+  - **Canvas API**: To display graphics and results of the image processing.
 
-There are no other scheduled checkpoints for your project. 
+## Challenges
 
-### Turning in Your Project (Due Monday, April 29, 11:59 pm)
-**Although the assignment is due at 11:59 pm, you must be prepared to demo your website in class that day.**
+**Project Scope and Time**
+- We had planned to use Tensorflow and Potrace to create a model that can enhance and vectorize images however, we realized that creating and training the model would take way too long. We decided to switch to using an image-enhancing API.
 
-Submit a second PR on the final project repo to turn in your app and code. Again, only one pull request per team.
+**Storing Images**
+- Initially, we planned to use MongoDB to store the images, but we quickly realized that Mongo was not meant to store images. We decided to use Firebase since they were a service we could use for free that matched what we were looking for. From here, setting up Firebase took a bit of work since we never used it before, and there were multiple files we needed to create to have Firebase work outside of adding it to our code.
 
-Deploy your app, in the form of a webpage, to Glitch/Heroku/Digital Ocean or some other service; it is critical that the application functions correctly wherever you post it.
+**Image display**
+- Getting an image of any aspect ratio to display correctly in both the saved images pages and the dashboard modal was quite the challenge. This was especially tricky due to the saved images page using a bootstrap column system, and the modal being split into a left and right side. We were able to solve this problem using clever containering and custom CSS properties, though it took us an extensive amount of time to figure this out.
 
-The README for your second pull request doesn’t need to be a formal report, but it should contain the following:
 
-1. A brief description of what you created, and a link to the project itself (two paragraphs of text)
-2. Any additional instructions that might be needed to fully use your project (login information, etc.)
-3. An outline of the technologies you used and how you used them.
-4. What challenges you faced in completing the project.
-5. What each group member was responsible for designing / developing.
-6. What accessibility features you included in your project.
+## Team Roles
 
-Think of 1, 3, and 4 in particular in a similar vein to the design / technical achievements for A1—A4. Make a case for why what you did was challenging and why your implementation deserves a grade of 100%.
+- **Dov Ushman** - Lead Cloud Engineer: Responsible for interfacing with the server and managing our database operations. 
+- **Andrew Nguyen** - Machine Learning Expert: Implemented the Canvas API and Deep Image AI API to enhance and display images 
+- **Luke Foley** - Lead Front-End Developer: Focused on building the front-end architecture using React.js and ensuring a seamless user experience.
 
-The video described above is also due on Canvas at this time.
 
-## FAQs
+## Accessbility
 
-**Can I use XYZ framework?** 
-
-You can use any web-based frameworks or tools available, but for your server programming you need to use Node.js. Your client-side scripting language should be either JavaScript or TypeScript. Note that the staff may not be able to assist with TypeScript questions.
+We really wanted to make sure our app was accessible to users, so we tried to keep our pages streamlined and easy to use. We kept track of accessibility using Lighthouse to ensure our website would be usable for everyone. Our final website has an accessibility score of 100% on our home page. Specific examples of ways we focused on accessibility were by ensuring we had a strong color contrast so all parts of the page would be readable and ensuring all of our buttons had text on them so their purpose would be clear.
