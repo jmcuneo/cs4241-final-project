@@ -102,7 +102,7 @@ function UserGuestListComponent({ manage }) {
   useEffect(() => {
     getGuestList("//localhost:3000/api/getGuestList", "guest");
     getGuestList("//localhost:3000/api/getUserGuestList", "user");
-  }, [getGuestList]);
+  }, [getGuestList, guestList]);
 
   const filteredList = (() => {
     let list = guestList;

@@ -76,7 +76,7 @@ function UserListComponent() {
 
     useEffect(() => {
         getUserList();
-    }, [eventId]);
+    }, [eventId, userList]);
 
     const guestTable = () => {
         return (

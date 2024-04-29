@@ -57,6 +57,7 @@ function EventTitle({ eventId, isAdmin }) {
   };
 
   const updateEventData = useCallback(() => {
+    getEvent();
     if (thisEvent !== null) {
       const formattedDateString = formatEventDate(thisEvent.date);
       setEventName(thisEvent.name)

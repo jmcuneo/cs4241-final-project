@@ -138,6 +138,7 @@ function EventTitleManager({ eventId }) {
 }
 
   const updateEventData = useCallback(() => {
+    getEvent();
     if (thisEvent !== null) {
       const formattedDateString = formatEventDate(thisEvent.date);
       setEventName(thisEvent.name)
@@ -150,7 +151,7 @@ function EventTitleManager({ eventId }) {
 
   useEffect(() => {
     updateEventData();
-  }, [updateEventData]);
+  }, [updateEventData, eventGuests]);
 
   useEffect(() => {
     getEvent();
