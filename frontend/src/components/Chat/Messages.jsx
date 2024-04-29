@@ -5,15 +5,24 @@ import { useEffect, useRef } from 'react';
 import { extractTime } from '../../utils/extractTime.js';
 import { socket } from "../../socket-client.js";
 import toast from "react-hot-toast";
+import useConversation from "../../zustand/useConversation";
 
 const Messages = () => {
-  const { messages, loading } = useGetMessages();
+  const { messagesexp, loading } = useGetMessages();
   const lastMessageRef = useRef(null);
+	const { messages, setMessages, selectedConversation } = useConversation();
   useEffect(() => {
-
-		socket.on("message", (message) => {
-			console.log("test");
-			toast(message.message);
+		socket.on("message", (message, displayName) => {
+			if (message.senderId == selectedConversation._id || message.recieverId == selectedConversation._id) {
+				setMessages([...messages, message]);
+			}
+			else {
+				toast((t) => (
+					<p>
+						<b>{displayName}</b> says: {message.message}
+					</p>
+				));
+			}
 		});
 
     setTimeout(() => {lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });}, 100)
@@ -22,11 +31,11 @@ const Messages = () => {
 			socket.off("message")
 		};
 
-  }, [messages, socket])
+  }, [messagesexp, socket])
 
 
-  if (messages.length > 0) {
-    const lastMessage = messages[messages.length - 1];
+  if (messagesexp.length > 0) {
+    const lastMessage = messagesexp[messagesexp.length - 1];
     console.log("Last message:", lastMessage.message);
     console.log("Last Message Time" , extractTime(lastMessage.updatedAt));
 
@@ -37,7 +46,7 @@ const Messages = () => {
     <div>
 
 
-      {!loading && messages.length > 0 && messages.map((message) => (
+      {!loading && messagesexp.length > 0 && messagesexp.map((message) => (
 					<div key={message._id}
           ref={lastMessageRef}
           >
@@ -47,7 +56,7 @@ const Messages = () => {
       
       {loading && [...Array(4)].map((_, idx) => <MessageSkeleton key={idx} />)}
 
-      {!loading && messages.length === 0 && (
+      {!loading && messagesexp.length === 0 && (
         <p className='text-center'>Send a message to start the conversation</p>
       )}
 

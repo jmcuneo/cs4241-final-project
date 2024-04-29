@@ -24,20 +24,6 @@ dotenv.config();
 app.use(express.json()); //parse json data in the request body (from req.body)
 app.use(cookieParser()); //parse cookies from the request headers
 
-
-// temporary!
-/*
-io.on("connection", (socket) => {
-	console.log("connection!");
-	let cookiestring = socket.handshake.headers.cookie;
-	let cookies = cookie.parse(cookiestring);
-	const decoded = jwt.verify(cookies.jwt, process.env.JWT_SECRET);	console.log(decoded.userId);
-	socket.join(decoded.userId);
-	socket.on("sendMessage", (message) => {
-		console.log(message);
-	});
-})
-*/
 app.use("/api/auth", authRoutes);
 //app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);

@@ -46,8 +46,8 @@ const socketioHandleMessages = async (socket, io) => {
 		if (newMessage) {
 			conversation.messages.push(newMessage._id);
 		}
-
-		io.to(senderId).to(recieverId).emit("message", newMessage);
+		console.log(user.fullName);
+		io.to(senderId).to(recieverId).emit("message", newMessage, user.fullName);
 	
 	})
 

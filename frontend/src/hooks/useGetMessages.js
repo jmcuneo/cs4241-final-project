@@ -6,7 +6,7 @@ import { socket } from "../socket-client.js"
 const useGetMessages = () => {
     const [loading, setLoading] = useState(false);
     const {messages, setMessages, selectedConversation} = useConversation();
-
+		const messagesexp = messages;
 
     useEffect(() => {
 
@@ -36,7 +36,7 @@ const useGetMessages = () => {
       
         
     }, [selectedConversation?._id, setMessages])
-    return {loading, messages}
+    return {loading, messagesexp}
 
     
 }
