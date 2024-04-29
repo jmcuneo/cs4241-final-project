@@ -33,3 +33,46 @@
 .child {
     justify-content: center;
 }
+/*Style the links inside the navigation bar */
+.topnav a {
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+/*!* Change the color of links on hover *!*/
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+    border-bottom: none;
+}
+
+/*!* Add a color to the active/current link *!*/
+.topnav a.active {
+    background-color: #007559;
+    color: white;
+}
+
+.topnav a.user {
+    justify-content: flex-end;
+    margin-left: auto;
+}
+.topnav {
+    background-color: #7e7e7e;
+    overflow: hidden;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+}
+body{
+    max-width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+.content {
+    margin-top: 1em;
+    margin-left: 15%;
+    margin-right: 15%;
+}
