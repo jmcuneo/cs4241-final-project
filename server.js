@@ -29,10 +29,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 ViteExpress.config({ mode: 'development' });
 
-export const JWT_KEY = "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!";
+export const JWT_KEY = `${process.env.WEB_TOKEN_KEY}`; //9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!
 
 app.use(session({
-    secret: '5O$5HP^xg2zV0duE',     //MAKE A NEW KEY EVENTUALLY AND MOVE TO .ENV
+    secret: `${process.env.SESSION_SECRET}`,     //MAKE A NEW KEY EVENTUALLY AND MOVE TO .ENV 5O$5HP^xg2zV0duE
     resave: false,
     saveUninitialized: false,
     cookie: { secure: true }
