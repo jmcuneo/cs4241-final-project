@@ -16,16 +16,16 @@ function Dashboard(props) {
         const file = e.target.files[0];
         setFileType(file.type.split('/')[1]);
 
-         let formData = new FormData();
-         formData.append('image', file);
+        let formData = new FormData();
+        formData.append('image', file);
 
-         const response = fetch('/upload', {
-             method: 'POST',
-             body: formData
+        const response = fetch('/upload', {
+            method: 'POST',
+            body: formData
 
-     }).then(response => {response.blob()})
-         .then(blob => {console.log(blob)})
-         .catch(error => {console.error(error)});
+        }).then(response => { response.blob() })
+            .then(blob => { console.log(blob) })
+            .catch(error => { console.error(error) });
 
         if (!file) return;
         const reader = new FileReader();
@@ -42,30 +42,30 @@ function Dashboard(props) {
 
     async function onHandleMakeDownloadLink(imageUrl, filename = `sharpified-image.${fileType}`) {
         const response = await fetch(imageUrl);
-            const blob = await response.blob();
-            const blobUrl = URL.createObjectURL(blob);
-            const downloadLink = document.createElement('a');
-            downloadLink.href = blobUrl;
-            downloadLink.download = filename;
-            downloadLink.click();
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = blobUrl;
+        downloadLink.download = filename;
+        downloadLink.click();
     }
 
-function changeCanvasImage(canvasRef, imageUrl) {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    function changeCanvasImage(canvasRef, imageUrl) {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
 
-    const img = new Image();
-    img.onload = function() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear the canvas
-        ctx.drawImage(img, 0, 0);  // Draw the new image on the canvas
-    };
-    img.src = imageUrl;  // Set the source of the image object to the new image URL
-}
+        const img = new Image();
+        img.onload = function () {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear the canvas
+            ctx.drawImage(img, 0, 0);  // Draw the new image on the canvas
+        };
+        img.src = imageUrl;  // Set the source of the image object to the new image URL
+    }
 
     function sharpify() {
-        // if (!imageSrc) return;
-        // const canvas = canvasRef.current;
-        // const ctx = canvas.getContext('2d');
+        const label = document.getElementById("hidden-label");
+        label.style.display = "block"; 
+
         if (!imageSrc || !canvasRef.current) return;
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
@@ -76,30 +76,24 @@ function changeCanvasImage(canvasRef, imageUrl) {
             canvas.height = canvas.width / imageAspectRatio;
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-              // Convert the canvas to a Blob object
-        canvas.toBlob(async (blob) => {
-            // Create a new FormData instance
-            const formData = new FormData();
-            // Append the Blob object to the form data
-            formData.append('image', blob, 'enhanced-image.png');
+            canvas.toBlob(async (blob) => {
+                const formData = new FormData();
+                formData.append('image', blob, 'enhanced-image.png');
 
-            // const blobUrl = URL.createObjectURL(blob);
-            // formData.append('imagePath', blobUrl);
-
-            // Send the Blob object using the fetch API
-       
-                const response = await fetch('/sharpify', {
-                    method: 'POST',
-                    body: formData,
-                }).then(response => response.json())
-        .then(data => {
-            onHandleMakeDownloadLink(data.result_url, 'sharpified-image.png');
-            changeCanvasImage(canvas, data.result_url);})
-        .catch(error => {console.error(error)});;
-
-
-        });
-
+                try {
+                    const response = await fetch('/sharpify', {
+                        method: 'POST',
+                        body: formData,
+                    });
+                    const data = await response.json();
+                    onHandleMakeDownloadLink(data.result_url, 'sharpified-image.png');
+                    changeCanvasImage(canvasRef, data.result_url);
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    label.style.display = "none";
+                }
+            });
         };
         img.src = imageSrc;
     }
@@ -131,8 +125,9 @@ function changeCanvasImage(canvasRef, imageUrl) {
                         <img src={imageSrc} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} alt="Uploaded" />
                     </div>
                     <div className="modal-divider"></div>
-                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                         <div className="sharpify" onClick={sharpify}>Sharpify</div>
+                        <label id="hidden-label" style={{ display: 'none' }}>Please wait for your image to be processed...</label>
                     </div>
                 </Modal.Body>
             </Modal>

@@ -11,7 +11,7 @@ function Navbar(props) {
         return location.pathname === route ? "nav-link active" : "nav-link";
     };
 
-    const [user, setUser] = useState({ username: "Username" });
+    const [user, setUser] = useState({ username: "Back to Login" });
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: "rgba(42,87,131,1)" }}>
