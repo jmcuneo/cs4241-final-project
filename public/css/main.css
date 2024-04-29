@@ -122,11 +122,12 @@ html {
     max-width: 90%;
     align-self: center;
     padding-top: 1.5%;
+    overflow-x: scroll;
 }
 
 .circle-button {
     background-color: red;
-    color: white;
+    color: transparent;
     border: none;
     border-radius: 50%;
     min-width: 200px;
