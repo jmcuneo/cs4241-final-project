@@ -18,7 +18,7 @@ Sometimes Glitch will bug out and cause an error. We're not quite sure what caus
 
 ## Technologies
 
-We used GitHub OAuth in order to authenticate users for the application. This authentication happens on the server, from which we store each user's GitHub info as a cookie within each client's session. This cookie is referenced for all of the functionality that requires user info. For our profile stats page we implemented D3, a data visualization library in javascript. D3 allowed us to make a variety of charts to show player win percentage, win rate over time, and player placement history. We used websocket to synch each player's game screen. If one player's status changes, it would update everyone's screen.
+We used GitHub OAuth in order to authenticate users for the application. This authentication happens on the server, from which we store each user's GitHub info as a cookie within each client's session. This cookie is referenced for all of the functionality that requires user info. We used MongoDB as our database for this project. We store user and game stats, such as wins, losses, and history. For our profile stats page we implemented D3, a data visualization library in javascript. D3 allowed us to make a variety of charts to show player win percentage, win rate over time, and player placement history. We used websocket to synch each player's game screen. If one player's status changes, it would update everyone's screen.
 
 ## Challenges
 
