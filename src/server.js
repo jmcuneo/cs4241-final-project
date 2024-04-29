@@ -8,7 +8,8 @@ const express = require("express"),
   requests = require("./requests"),
   ghlogin = require("./gh-login"),
   { ObjectId } = require("mongodb"),
-  https = require('https')
+  https = require('https'),
+  http = require('http'),
   url = require("url");
 
 var GitHubStrategy = require("passport-github2").Strategy,
