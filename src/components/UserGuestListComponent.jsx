@@ -5,11 +5,34 @@ import GuestListComponent from "./GuestListComponent";
 
 function UserGuestListComponent({ manage }) {
   const { eventId } = useParams();
+  const [thisEvent, setThisEvent] = useState(null);
   const [guestList, setGuestList] = useState([]);
   const [userGuestList, setUserGuestList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const guestNameRef = useRef(null);
   const [message, setMessage] = useState("");
+  const [totalLimit, setTotalLimit] = useState('');
+  const [userLimit, setUserLimit] = useState('');
+
+  const getEvent = useCallback(async () => {
+    try {
+      const response = await fetch("//localhost:3000/api/getEvent", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: localStorage.getItem("token"),
+          eventId: eventId
+        }),
+      });
+
+      const _events = await response.json();
+      setThisEvent(_events);
+    } catch (error) {
+      console.error("Error getting events: " + error);
+    }
+  }, [eventId]);
 
   const getGuestList = useCallback(async (apiPoint, listType) => {
     try {
@@ -33,32 +56,39 @@ function UserGuestListComponent({ manage }) {
   }, [eventId]);
 
   const addGuest = async (guestName) => {
-    try {
-      const response = await fetch("//localhost:3000/api/inviteGuest", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: localStorage.getItem("token"),
-          eventId: eventId,
-          guestName: guestName,
-        }),
-      });
-      const result = await response.json();
-      if (result.success == true) {
-        setGuestList((currentGuests) => [...currentGuests, { guestName }]);
-        setUserGuestList((currentGuests) => [...currentGuests, { guestName }]);
-        setMessage("");
-      } else {
-        console.log(result);
-        setMessage("Error: " + result.error);
+    if (thisEvent.guestCount < totalLimit){
+      if (thisEvent.userInvites < userLimit) {
+        try {
+          const response = await fetch("//localhost:3000/api/inviteGuest", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: localStorage.getItem("token"),
+              eventId: eventId,
+              guestName: guestName,
+            }),
+          });
+          const result = await response.json();
+          if (result.success == true) {
+            setGuestList((currentGuests) => [...currentGuests, { guestName }]);
+            setUserGuestList((currentGuests) => [...currentGuests, { guestName }]);
+            setMessage("");
+          } else {
+            console.log(result);
+            setMessage("Error: " + result.error);
+          }
+          
+        } catch (error) {
+          console.error("Error adding guest:", error);
+        }
+        guestNameRef.current.value = "";
       }
-      
-    } catch (error) {
-      console.error("Error adding guest:", error);
+      else setMessage("Sorry, you have no more invites!");
     }
-    guestNameRef.current.value = "";
+    else setMessage("Sorry, total guest limit reached");
+    
   };
 
   const removeGuest = async (guestName) => {
@@ -89,6 +119,38 @@ function UserGuestListComponent({ manage }) {
     }
   };
 
+    // Note: Mutilator
+    const getLimits = useCallback(async () => {
+      try {
+        const response = await fetch("//localhost:3000/api/getGuestAndInviteLimits", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: localStorage.getItem("token"),
+            eventId: eventId
+          }),
+        });
+  
+        let limits = await response.json();
+        if (limits.guestLimit !== undefined) {
+          setTotalLimit(limits.guestLimit);
+        } else {
+          setTotalLimit('');
+        }
+  
+        if (limits.inviteLimit !== undefined) {
+          setUserLimit(limits.inviteLimit);
+        } else {
+          setUserLimit('');
+        }
+  
+      } catch (error) {
+        console.error("Error getting limits: " + error);
+      }
+    }, [eventId]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const guestName = guestNameRef.current.value;
@@ -102,7 +164,9 @@ function UserGuestListComponent({ manage }) {
   useEffect(() => {
     getGuestList("//localhost:3000/api/getGuestList", "guest");
     getGuestList("//localhost:3000/api/getUserGuestList", "user");
-  }, [getGuestList, guestList]);
+    getLimits();
+    getEvent();
+  }, [getGuestList, getLimits, getEvent, guestList]);
 
   const filteredList = (() => {
     let list = guestList;
