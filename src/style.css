@@ -43,14 +43,14 @@ ol ol {
 
 
   .center {
-    margin: 0 auto; /* Set left and right margins to auto */
+    margin: auto; 
     text-align: center;
-    display: block; /* Ensure it's a block-level element */
+    display: block; 
   }
   .formControl{
-    padding: 10;
     font-size: 15px;
     color: #333;
+    margin: "0";
   }
   .formLabel{
     padding: 10;

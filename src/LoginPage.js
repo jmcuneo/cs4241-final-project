@@ -70,7 +70,7 @@ function LoginPage() {
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                class = "p-1 center"
+                class = "center"
               />
             </Form.Group>
 
@@ -80,7 +80,7 @@ function LoginPage() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                class = "p-1 center"
+                class = "center"
               />
             </Form.Group>
           

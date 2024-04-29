@@ -167,7 +167,7 @@ function PetForm() {
     </Row>
     </Container>
     <h2 className='center'>Enter Here!</h2>
-    <Form  className='center' onSubmit={handleSubmit}>
+    <Form  className="center" onSubmit={handleSubmit}>
       <Form.Group controlId="petName">
         <Form.Label className='formLabel'>Pet Name:</Form.Label>
         <Form.Control
@@ -187,7 +187,7 @@ function PetForm() {
           name="animalType"
           value={animalType}
           onChange={handleInputChange}
-          className='formControl'
+          className='ormControl'
           required
         >
           <option value="" disabled>Select</option>
@@ -231,9 +231,9 @@ function PetForm() {
         <span id="exercise-value">{exerciseLevel}</span>
       </Form.Group>
 
-      <Button variant="primary" type="submit">
+      <button className='button'variant="primary" type="submit">
         Submit
-      </Button>
+      </button>
     </Form>
   </div>
   );

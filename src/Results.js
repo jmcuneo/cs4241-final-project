@@ -29,20 +29,23 @@ function Results({ formData, leaderboardData, deleteRow }) {
 
     return (
         <Container id="results">
-      <h1>Race Results</h1>
+      <h1 class ="center">Race-a-Pet</h1>
+      <h2 class="center">Race Results </h2>
+      <p class="center">Here are your race results with the rest of your pets!</p>
+      <Row>
+        <Col><h2 class ="center">Your Pet!</h2></Col>
+        <Col><h2 class ="center">Leaderboard</h2></Col>
+      </Row>
 
       <Row>
         <Col id="your-pet">
-          <h2>Your Pet!</h2>
-          <img src={petImageUrl} alt="your pet" width="300"/>
-          <p>Name: {formData.petName}</p>
-          <p>Diet: {formData.dietType}</p>
-          <p>Exercise level: {formData.exercise}</p>
-          <p>&#127937; Race time: {formData.raceTime} seconds</p>
+          <img class="center" src={petImageUrl} alt="your pet" width="300"/>
+          <p class="center">Name: {formData.petName}</p>
+          <p class="center">Diet: {formData.dietType}</p>
+          <p class="center">Exercise level: {formData.exercise}</p>
+          <p class="center">&#127937; Race time: {formData.raceTime} seconds</p>
         </Col>
-
         <Col >
-          <h2>Leaderboard</h2>
           <Table striped bordered hover id="leaderboard">
             <thead>
               <tr>
