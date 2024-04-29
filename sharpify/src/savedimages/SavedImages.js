@@ -68,12 +68,9 @@ function SavedImages(props) {
                 </Modal.Body>
                 <Modal.Footer>
                     {selectedImage &&
-                        // <button onClick={() => handleDownload(selectedImage.url, selectedImage.filename)}>
-                        //     <FontAwesomeIcon icon={faCloudDownloadAlt} /> Download
-                        // </button>
-                        <button onClick={() => handleDownload(selectedImage.url)}>
+                        <div className="file-input-label" onClick={() => handleDownload(selectedImage.url)}>
                             <FontAwesomeIcon icon={faCloudDownloadAlt} /> Download
-                        </button>
+                        </div>
                     }
                 </Modal.Footer>
             </Modal>
