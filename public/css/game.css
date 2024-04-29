@@ -6,4 +6,30 @@
 }
 .player {
     margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.playerButton{
+    font-size: 20px;
+    width: 95%;
+    height: 60px;
+    padding: 5px;
+    margin: 20px 5px 5px;
+}
+.endButton{
+    font-size: 20px;
+    width: 80px;
+    height: 60px;
+    padding: 5px;
+    margin-top: 30px;
+    background-color: #007559;
+}
+.parent {
+    display: grid;
+    grid-template-columns: 65% 10% 10% 15%;
+    gap: 5px;
+}
+.child {
+    justify-content: center;
 }

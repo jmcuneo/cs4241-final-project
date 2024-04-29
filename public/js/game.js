@@ -65,17 +65,27 @@ const getUser = async function () {
 }
 
 function generateButtons() {
-    const playerContainer = document.querySelector(".player-container");
+    let playerContainer = document.querySelector(".player-container");
     playerContainer.innerHTML = ""; // Clear previous players
+    playerContainer =  document.querySelector(".active-game");
     console.log(players)
+
     players.forEach(player => {
         const playerDiv = document.createElement("div");
-        playerDiv.classList.add("player");
+        playerDiv.classList.add("parent");
         playerDiv.innerHTML = `
+        <div class="child">
             <button class="playerButton" id="${player.username}">${player.username}: ${player.health}</button>
+        </div>
+        <div class="child">
             <button class="playerButton" onclick="changeHealth('${player.username}', 1)">+</button>
+        </div>
+        <div class="child">    
             <button class="playerButton" onclick="changeHealth('${player.username}', -1)">-</button>
+        </div>
+        <div class="child">
             <button class="playerButton" onclick="death('${player.username}')">Die</button>
+        </div>    
         `;
         playerContainer.appendChild(playerDiv);
     })
@@ -83,7 +93,7 @@ function generateButtons() {
     const playerDiv = document.createElement("div");
     playerDiv.classList.add("player");
     playerDiv.innerHTML = `
-            <button onclick="gameOver()">GG</button>
+            <button class="endButton" onclick="gameOver()">GG</button>
         `;
     playerContainer.appendChild(playerDiv);
 
@@ -115,8 +125,7 @@ function gameOver(){
 }
 
 function updatePlayerStatus() {
-    const playerButtons = document.querySelectorAll(".player button");
-    console.log(playerButtons)
+    const playerButtons = document.querySelectorAll(".playerButton");
     playerButtons.forEach(button => {
         const playerId = button.id;
         const player = players.find(player => player.username === playerId);
@@ -130,6 +139,9 @@ function updatePlayerStatus() {
 }
 
 function endGameResults(playerList) {
+    const activeGame = document.querySelector(".active-game");
+    activeGame.innerHTML = ""; // Clear previous player list
+
     const playerListContainer = document.querySelector(".player-container");
     playerListContainer.innerHTML = ""; // Clear previous player list
 
