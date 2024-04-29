@@ -18,7 +18,7 @@ Sometimes Glitch will bug out and cause an error. We're not quite sure what caus
 
 ## Technologies
 
-We used GitHub OAuth in order to authenticate users for the application. This authentication happens on the server, from which we store each user's GitHub info as a cookie within each client's session. This cookie is referenced for all of the functionality that requires user info.
+We used GitHub OAuth in order to authenticate users for the application. This authentication happens on the server, from which we store each user's GitHub info as a cookie within each client's session. This cookie is referenced for all of the functionality that requires user info. For our profile stats page we implemented D3, a data visualization library in javascript. D3 allowed us to make a variety of charts to show player win percentage, win rate over time, and player placement history.
 
 ## Challenges
 
@@ -27,7 +27,7 @@ We also discovered that much of our functionality relied on each client session 
 
 ## Division of Labor
 
-Jack LaFond:
+Jack Lafond: Helped with server set up, stats page, helped with CSS styling and html pages
 
 Aidan MacNevin: Database connections and management, Leaderboard, Game Page CSS styling, HTML/CSS formatting
 
