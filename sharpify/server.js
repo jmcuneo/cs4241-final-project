@@ -227,7 +227,11 @@ app.post("/sharpify", upload.single('image'), async (request, response) => {
         return;
     }
 
-    form.append('enhancements', JSON.stringify(['denoise', 'deblur', 'light', 'clean']));
+    form.append('enhancements', JSON.stringify(['denoise', 'deblur', 'color', 'light']));
+    form.append('denoise_parameters', JSON.stringify({ "type": "v2" }));
+    form.append('deblur_parameters', JSON.stringify({ "type": "v2" }));
+    form.append('color_parameters', JSON.stringify({ "type": "hdr_light_advanced", "level": 1 }));
+    form.append('light_parameters', JSON.stringify({ "type": "hdr_light_advanced", "level": 1 }));
     form.append('width', 2000);
 
     const formHeaders = form.getHeaders();
