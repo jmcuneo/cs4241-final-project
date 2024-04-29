@@ -33,11 +33,7 @@ Aidan MacNevin: Database connections and management, Leaderboard, Game Page CSS 
 
 Edison Zhang: Websocket, game functionality, createGame javascript
 
-Bryon Tom:
-OAuth functionality
-Cookies
-Login/Home Page
-Html/CSS formatting
+Bryon Tom: OAuth functionality, cookies, Login/Home Page, Html/CSS formatting
 
 ## Accessibility
 Visually distinct color scheme.
