@@ -477,7 +477,7 @@ const userSchema = new Schema({
         async makeAdmin(user) {
             if (!user) return false;
             // Defaults to false if the permissions are not initialized
-            if (this?.permissions?.includes(PERMISSIONS.GIFT_ADMIN) ?? false) {
+            if (this.accountType === ACCOUNT_TYPE.ADMIN || (this?.permissions?.includes(PERMISSIONS.GIFT_ADMIN) ?? false)) {
                 try {
                     user.accountType = ACCOUNT_TYPE.ADMIN;
                     await user.save();
