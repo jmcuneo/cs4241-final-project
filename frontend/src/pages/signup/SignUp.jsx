@@ -54,6 +54,7 @@ const SignUp = () => {
               <div className="space-y-6 mt-4">
 
                 <label className="input input-bordered dark:border-lighttertiary border-tertiary w-80 bg-primary dark:bg-lightprimary flex items-center gap-2">
+
                   <input type="text" name="fullName" className="grow text-lightdark dark:text-dark" placeholder="Display Name" value={inputs.fullName} onChange={handleChange} />
                 </label>
 
@@ -67,6 +68,7 @@ const SignUp = () => {
 
                 <label className="input input-bordered border-tertiary dark:border-lighttertiary bg-primary dark:bg-lightprimary w-80 flex items-center gap-2">
                   <input type="password" name="confirmPassword" className="grow text-lightdark dark:text-dark" placeholder="Confirm Password" value={inputs.confirmPassword} onChange={handleChange} />
+
                 </label>
 
               </div>
