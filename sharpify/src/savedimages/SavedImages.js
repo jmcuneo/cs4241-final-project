@@ -12,13 +12,11 @@ function SavedImages(props) {
     const [selectedImage, setSelectedImage] = useState(null);
 
     useEffect(() => {
-        // Fetch the images from your server
         fetch('retrieveImages', {
-            credentials: 'include' // Include cookies in the request
+            credentials: 'include' 
         })
             .then(response => response.json())
             .then(data => {
-                // Log the fetched images
                 console.log(data);
 
                 setImages(data.map(url => ({ url })));

@@ -3,15 +3,8 @@ const fs = require('fs');
 const express = require("express"),
     app = express(),
     path = require('path'),
-    mime = require("mime"),
     cookieParser = require('cookie-parser'),
-    dir = "public/",
-    potrace = require('potrace'),
     multer = require('multer'),
-    GridFsStorage = require('multer-gridfs-storage'),
-    Grid = require('gridfs-stream'),
-    Jimp = require('jimp'),
-    http = require('https'),
     FormData = require('form-data'),
     fetch = require('node-fetch'),
     port = 3000;
@@ -29,7 +22,6 @@ admin.initializeApp({
 });
 
 const bucket = admin.storage().bucket();
-let client;
 
 const uri = `mongodb+srv://dovushman:${process.env.PASSWORD}@cluster0.vpfjttx.mongodb.net/a3-dovUshman?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -69,8 +61,6 @@ async function run() {
     }
 }
 run();
-
-let namesArray = []
 
 app.get("/", (request, response) => {
     response.sendFile(__dirname + "/public/logIn.html")
@@ -139,7 +129,6 @@ app.post("/register", async (request, response) => {
 });
 
 const uuid = require('uuid');
-let uploadedImage;
 
 app.post("/upload", upload.single('image'), async (request, response) => {
     console.log(request.file.path);
@@ -162,7 +151,6 @@ app.get('/retrieveImages', async (request, response) => {
 
     const userImages = await images.find({ userId: userId }).toArray();
 
-    // Map the userImages array to only include the firebaseUrl field
     const imageUrls = userImages.map(image => image.firebaseUrl);
 
     response.set('Access-Control-Allow-Origin', '*');
@@ -204,7 +192,6 @@ async function waitForJobCompletion(apiUrl, headers, jobId) {
         resultUrl = data.result_url;
 
         if (jobStatus !== 'completed') {
-            // Wait for 1 second before polling again
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
     }
@@ -217,7 +204,6 @@ app.post("/sharpify", upload.single('image'), async (request, response) => {
     console.log("image: " + uploadedImage)
     const form = new FormData();
 
-    // Check if the file exists before trying to open it
     if (fs.existsSync(uploadedImage)) {
         let file = fs.createReadStream(uploadedImage);
         form.append('image', file);
@@ -243,15 +229,12 @@ app.post("/sharpify", upload.single('image'), async (request, response) => {
         'X-API-Key': process.env.API_KEY,
     };
 
-    // Store the data from the response in a variable after the first use
     fetch(apiUrl, {
         method: 'POST',
         body: form,
         headers: headers,
     })
         .then(res => res.json())
-        // ... other code ...
-
         .then(async data => {
             console.log('Response:', data);
 
@@ -259,19 +242,16 @@ app.post("/sharpify", upload.single('image'), async (request, response) => {
                 data.result_url = await waitForJobCompletion(apiUrl, headers, data.job);
             }
 
-            console.log(data.result_url); // Log the URL of the enhanced image  
+            console.log(data.result_url); 
 
-            // Download the enhanced image to your server
             const downloadResponse = await fetch(data.result_url);
             const buffer = await downloadResponse.buffer();
 
-            // Upload the enhanced image to Firebase and MongoDB
             const imageId = uuid.v4();
             const firebaseUrl = await uploadImageToDbs(buffer, imageId, request);
 
-            // Use the data
-            data.result_url = firebaseUrl; // Update the result_url to the Firebase URL
-            response.json(data);  // Send the data as a response
+            data.result_url = firebaseUrl; 
+            response.json(data);  
         })
         .catch(error => {
             console.error('Error:', error.message);
@@ -280,7 +260,6 @@ app.post("/sharpify", upload.single('image'), async (request, response) => {
 });
 
 async function uploadImageToDbs(buffer, imageId, request) {
-    // Determine the content type from the file extension
     const ext = path.extname(request.file.originalname);
     let contentType;
     if (ext === '.jpg' || ext === '.jpeg') {
@@ -289,29 +268,26 @@ async function uploadImageToDbs(buffer, imageId, request) {
         contentType = 'image/png';
     }
 
-    // Upload to Firebase
     let firebaseUrl;
     try {
         const file = bucket.file(imageId);
         await file.save(buffer, {
             public: true,
             metadata: {
-                contentType: contentType, // Use the determined content type
+                contentType: contentType, 
                 firebaseStorageDownloadTokens: uuid.v4()
             }
         });
         console.log(`Image uploaded to Firebase with ID: ${imageId}`);
-        // Get the URL of the uploaded image
         firebaseUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(imageId)}?alt=media`;
     } catch (error) {
         console.error('Error uploading image to Firebase:', error);
         return;
     }
 
-    // Upload to MongoDB
     const imageDocument = {
         filename: imageId + ext, 
-        firebaseUrl: firebaseUrl, // Store the Firebase URL
+        firebaseUrl: firebaseUrl, 
         uploadDate: new Date(),
         userId: request.cookies.userId
     };
