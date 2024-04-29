@@ -170,7 +170,7 @@ async function start() {
 
   interval = setInterval(stopWatch, 1000);
   startBtn.style.display = "none";
-  setInterval(stopWatch, 1000);
+  //setInterval(stopWatch, 1000);
 }
 
 function addCell(content) {
