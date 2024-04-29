@@ -27,8 +27,10 @@ Follow the buttons to edit events/add guests/delete guests.
 ## Outline of Technologies Used
 - __React__: Used to make all page components 
 - __Mongoose__: Made schemas and hold all user data
-- __Three.js__: Added animations to site
+- __Framer__: Added animations to site
 - __Passport__: Used for adding authentication for login
+- __DaisyUI__: Used for styling components
+- __Tailwind CSS__: Used this framework for styling 
 
 ## Challenges
 One challenge we ran into was authenicating login for everyone on the team; sometimes there would be fetching issues while logging in even if no code has been changed. We also had difficulty deploying the project since we built the entire project before trying to host. Problems of any kind that arose were resolved by working together and communicating with each other so that multiple pairs of eyes were looking for bugs or issues. 
