@@ -6,6 +6,7 @@ import Messages from './Messages';
 import useConversation from "../../zustand/useConversation";
 import { useAuthContext } from '../../context/AuthContext';
 import { socket } from "../../socket-client.js";
+import toast from "react-hot-toast";
 
 
 const ChatContainer = () => {
@@ -38,6 +39,17 @@ export default ChatContainer;
 const NoChatSelected = () => {
 
   const { authUser } = useAuthContext();
+	
+	// ugly code duplication but gets message notifications working
+	useEffect(() => {
+		socket.on("message", (message, displayName) => {
+			toast((t) => (
+				<p>
+					<b>{displayName}</b> says: {message.message}
+				</p>));
+		});
+	});
+
   return (
     <div className='flex items-center justify-center w-full h-full'>
       <div className='px-4 text-center sm:text-lg md:text-xl text-welcome dark:text-lightwelcome font-semibold flex flex-col items-center gap-2'>
