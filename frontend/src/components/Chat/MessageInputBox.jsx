@@ -13,19 +13,21 @@ const MessageInputBox = () => {
         setMessage("");
     };
 
+
+
     return (
-        <div className="bg-[#414141] w-full h-[58px]">
-            <form onSubmit={handleSubmit} className="bg-dark w-full h-[56px] mb-0 mt-[2px] mr-0 ml-0 flex items-center justify-start">
+        <div className="bg-other dark:bg-lightother w-full h-[58px]">
+            <form onSubmit={handleSubmit} className="bg-dark dark:bg-lightdark w-full h-[56px] mb-0 mt-[2px] mr-0 ml-0 flex items-center justify-start">
                 <div className="ml-3 flex items-center w-full">
                     <input
                         type="text"
                         value={message}
-                        className="flex-grow mr-2 bg-[#262626] text-white p-2 rounded-lg"
+                        className="flex-grow mr-2 bg-primary dark:bg-lightprimary text-white dark:text-lightlight p-2 rounded-lg"
                         style={{ maxWidth: '95%' }}
                         placeholder=" Type a message..."
                         onChange={(e) => setMessage(e.target.value)}
                     />
-                    <button type='submit' className="flex items-center justify-center p-1 rounded hover:bg-cyan-700 focus:outline-none">
+                    <button type='submit'  tabindex="0" className="flex items-center justify-center p-1 rounded hover:bg-cyan-700 focus:outline-none">
                         {loading ? <div className='loading loading-spinner'></div> : <img src={SendImage} alt="Send" className="w-8 h-8" draggable="false" />}
                     </button>
                 </div>

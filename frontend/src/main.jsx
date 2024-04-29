@@ -16,4 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
   </BrowserRouter>
   ,
-)
+);
+
+const currentTheme = localStorage.getItem('theme') || 'dark'; // Default to dark if nothing is set
+document.documentElement.classList.add(currentTheme);

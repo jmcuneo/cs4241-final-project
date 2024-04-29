@@ -60,10 +60,10 @@ const Messages = () => {
       {loading && [...Array(4)].map((_, idx) => <MessageSkeleton key={idx} />)}
 
       {!loading && messagesexp.length === 0 && (
-        <p className='text-center'>Send a message to start the conversation</p>
-      )}
+		  <p className='text-center text-welcome dark:text-lightwelcome'>Send a message to start the conversation</p>
+	  )}
 
-    </div>
+	</div>
   )
 }
 

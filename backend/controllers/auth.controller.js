@@ -8,13 +8,11 @@ export const signup = async (req, res) => {
     try {
         const { fullName, username, password, confirmPassword } = req.body;
 
-				const lowerUsername = username.toLowerCase();
-
         if (password != confirmPassword) {
             return res.status(400).json({ error: "Passwords do not match" })
         }
 
-        const user = await User.findOne({ username: lowerUsername });
+        const user = await User.findOne({ username });
 
         if (user) {
             return res.status(400).json({ error: "Username already exists" })
@@ -34,7 +32,7 @@ export const signup = async (req, res) => {
 
         const newUser = new User({
             fullName,
-            username: lowerUsername,
+            username,
             password: hashedPassword,
             profilePic: profileColor  
         });
@@ -64,9 +62,7 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const { username, password } = req.body;
-				const lowerUsername = username.toLowerCase();
-				console.log(lowerUsername);
-        const user = await User.findOne({username: lowerUsername});
+        const user = await User.findOne({username});
         const isPasswordCorrect = user && await bcrypt.compare(password, user?.password || "");
         
 
