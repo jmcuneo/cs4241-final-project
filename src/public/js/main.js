@@ -161,7 +161,7 @@ async function start() {
   const response = await fetch("/load", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-  });
+  }).then((response) => console.log(response))
   const resp = await response.json();
   shuffle(resp);
   for (let i = 0; i < resp.length; i++) {
