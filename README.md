@@ -14,10 +14,13 @@ The purpose of this project was to create a website for a local WPI community to
 
 ## Instructions & Login Information
 Login:
-- Usernames: "admin" || "dummy"
-- Password: "password"
+- Username: mmouse
+- Password: !123
 
-Note: The "admin" account has more pages to view and addtional management features.
+- Username: dduck
+- Password: !123
+
+Note: The "mmouse" account has more pages to view and addtional management features.
 
 Follow the buttons to edit events/add guests/delete guests. 
 
@@ -32,7 +35,7 @@ One challenge we ran into was authenicating login for everyone on the team; some
 
 ## Group Responsibilities
 - __Alexander Beck__: backend - made database and created all necessary api calls
-- __Jayson Caissie__: frontend - used Three.js to make the animations on the site, added search and scroll ability to tables
+- __Jayson Caissie__: frontend - used Framer motion to make the animations on the site, added search and scroll ability to tables, implemented user authorization.
 - __Carlos Medina__: frontend - created table components and scroll capabilties, navbar, added tailwind and css for styling, format pages
 - __Olivia Perez__: frontend - assisted with adding navigation, addGuest capabilities, guest list components, and readme
 - __Jack Weinstein__: frontend - created project/start code, page navigation, page components, registration, format pages
