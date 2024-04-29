@@ -5,7 +5,7 @@ Note: Look at [proposal.md](proposal.md), not this README for the proposal submi
 A video (less than five minutes) where each group member explains some aspect of the project. An easy way to produce this video is for you all the groups members to join a Zoom call that is recorded; each member can share their screen when they discuss the project or one member can "drive" the interface while other members narrate (this second option will probably work better.) Upload the video to Canvas. (Further instructions are available in the Canvas assignment.) Make sure your video is less than five minutes but long enough to successfully explain your project and show it in action. There is no minimum video length.
 
 # README
-__Project link__: 
+__Project link__: https://cs4241-final-project-zzsv.onrender.com
 
 ## Project Description
 We created an Event Management web application. It is a platform designed to create an event, invite guests, and manage event and guest details. Users can register, invite guests, uninvite guests, and view the guest list for an event. Admins have an expanded set of abilities including being able to create events, manage guest lists, change event details, invite users to an event's list, and assign admin to users.
