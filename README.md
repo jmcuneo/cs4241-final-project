@@ -63,7 +63,7 @@ The frontend of the site is written in basic JavaScript with CSS designing mostl
 
 - MongoDB Integration: We implemented multiple collections within MongoDB which keep track of users, the information on the matching cards, as well as the current leaderboard of all player scores. 
 - GitHub OAuth Integration:
-- Perfect Lighthouse Score:
+- Perfect Lighthouse Score: We checked the Lighthouse score of our project throughout development and changed our project as needed (often adding accessibility improvements) to achieve a 100% on all 4 Lighthouse tests. A screenshot of the score has been added to the repo.
 
 ## Challenges
 - OAuth:
@@ -76,6 +76,11 @@ The frontend of the site is written in basic JavaScript with CSS designing mostl
 
 # Ava Chadbourne
 - Research
+- Visual layout of elements
+- Using Bulma to style webpage
+- Iteraction with gameboard elements
+- Information display
+- Client-side login handling
 
 # Nat Dynko
 - Research
