@@ -194,12 +194,12 @@ const eventSchema = new Schema({
         async getUpcomingEvents(user) {
             if (!user) return [];
             const currentDate = new Date().toISOString();
-            const isAdmin = (await User.findOne({ _id: user._id })).accountType === ACCOUNT_TYPE.ADMIN;
+            // Removed so that admins do not have access to all events
+            /*const isAdmin = (await User.findOne({ _id: user._id })).accountType === ACCOUNT_TYPE.ADMIN;
             if (isAdmin) {
                 return (await this.where('date').gte(currentDate).select('name date location attendees guestCount').populate('attendees').exec());
-            }
+            }*/
             const upcoming = await this.where('date').gte(currentDate).where('allowedInviters').in([user._id]).select('name date location attendees guestCount allowedInviters').populate('attendees').exec();
-            console.log(upcoming)
             return upcoming;
         },
     },
