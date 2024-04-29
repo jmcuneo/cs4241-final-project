@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link } from 'react-router-dom';
 import { Container, Row, Col, Table, Button } from 'react-bootstrap';
 import "./style.css"
 
@@ -14,6 +14,10 @@ function getImageUrl(animalType) {
             return require("../src/img/turtle.png");
         case 'bunny':
             return require("../src/img/bunny.png");
+        case 'lizard':
+            return require("../src/img/lizard.png");
+        case 'hamster':
+            return require("../src/img/hamster.png");
         default:
             return ""; // empty string if animalType is undefined or null
     }
@@ -52,7 +56,7 @@ function Results({ formData, leaderboardData, deleteRow }) {
                     <p className="center">Exercise level: {formData.exercise}</p>
                     <p className="center">&#127937; Race time: {formData.raceTime} seconds</p>
                     <Link to="/PetForm">
-                    <button className='button'>
+                    <button className='button center'>
                       Go to Pet Form
                     </button>
                   </Link>
