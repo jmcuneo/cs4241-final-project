@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Table, Button } from 'react-bootstrap';
+import "./style.css"
 
 // get image URL based on animal type
 function getImageUrl(animalType) {

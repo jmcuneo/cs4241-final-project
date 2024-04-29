@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Results from './Results';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form,Container,Row,Col } from 'react-bootstrap';
+import "./style.css"
 
 function PetForm() {
   const [petName, setPetName] = useState('');
@@ -148,34 +149,45 @@ function PetForm() {
 
   return (
     <div>
-    <h1>Race-a-Pet</h1>
-    <h2>Create your Pet to Race!</h2>
-    <h2>Instructions</h2>
-    <ol>
+      <h1 className='center'>Race-a-Pet</h1>
+      <Container>
+        <Row>
+        <Col><h2 className='center'>Create your Pet to Race!</h2></Col>
+       <Col><h2 className='center'>Instructions</h2></Col>
+        </Row>
+    
+    <Row>
+      <Col><p className='center'>Here, you will create your pet. Be Creative!</p></Col>
+    <Col><ol>
       <li>Give your pet a name.</li>
       <li>Pick what pet you wan.</li>
       <li>Give it a Diet.</li>
       <li>Deside how much it exercises.</li>
-    </ol>
-    <Form onSubmit={handleSubmit}>
+    </ol></Col>
+    </Row>
+    </Container>
+    <h2 className='center'>Enter Here!</h2>
+    <Form  className='center' onSubmit={handleSubmit}>
       <Form.Group controlId="petName">
-        <Form.Label>Pet Name:</Form.Label>
+        <Form.Label className='formLabel'>Pet Name:</Form.Label>
         <Form.Control
           type="text"
           name="petName"
           value={petName}
           onChange={handleInputChange}
+          className='formControl'
           required
         />
       </Form.Group>
 
       <Form.Group controlId="animalType">
-        <Form.Label>Animal Type:</Form.Label>
+        <Form.Label className='formLabel'>Animal Type:</Form.Label>
         <Form.Control
           as="select"
           name="animalType"
           value={animalType}
           onChange={handleInputChange}
+          className='formControl'
           required
         >
           <option value="" disabled>Select</option>
@@ -187,12 +199,13 @@ function PetForm() {
       </Form.Group>
 
       <Form.Group controlId="dietType">
-        <Form.Label>Diet Type:</Form.Label>
+        <Form.Label className='formLabel'>Diet Type:</Form.Label>
         <Form.Control
           as="select"
           name="dietType"
           value={dietType}
           onChange={handleInputChange}
+          className='formControl'
           required
         >
           <option value="" disabled>Select</option>
@@ -204,7 +217,7 @@ function PetForm() {
       </Form.Group>
 
       <Form.Group controlId="exercise">
-        <Form.Label>Exercise Level:</Form.Label>
+        <Form.Label className='formLabel'>Exercise Level:</Form.Label>
         <Form.Control
           type="range"
           name="exercise"
@@ -213,6 +226,7 @@ function PetForm() {
           value={exerciseLevel}
           step="1"
           onChange={handleInputChange}
+          className='formControl'
         />
         <span id="exercise-value">{exerciseLevel}</span>
       </Form.Group>
