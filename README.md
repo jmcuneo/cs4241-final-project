@@ -29,7 +29,7 @@ We also discovered that much of our functionality relied on each client session 
 
 Jack LaFond:
 
-Aidan MacNevin:
+Aidan MacNevin: Database connections and management, Leaderboard, Game Page CSS styling, HTML/CSS formatting
 
 Edison Zhang:
 
