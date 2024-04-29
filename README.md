@@ -52,3 +52,5 @@ Our application uses MongoDB and Firebase to store our data. When a user registe
 ## Accessbility
 
 We really wanted to make sure our app was accessible to users, so we tried to keep our pages streamlined and easy to use. We kept track of accessibility using Lighthouse to ensure our website would be usable for everyone. Our final website has an accessibility score of 100% on our home page. Specific examples of ways we focused on accessibility were by ensuring we had a strong color contrast so all parts of the page would be readable and ensuring all of our buttons had text on them so their purpose would be clear.
+
+![LightHouse Scores](https://github.com/dovushman/cs4241-final-project/blob/main/lighthouse_scores.png)
