@@ -33,12 +33,6 @@ let client;
 
 const uri = `mongodb+srv://dovushman:${process.env.PASSWORD}@cluster0.vpfjttx.mongodb.net/a3-dovUshman?retryWrites=true&w=majority&appName=Cluster0`;
 
-// MongoClient.connect(uri, function(err, client) {
-//   if (err) throw err;
-//   console.log("Connected successfully to MongoDB server");
-//   client = client;
-// });
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -48,8 +42,6 @@ const upload = multer({ dest: 'uploads/' });
 
 
 app.use(express.static(path.join(__dirname, 'build')));
-
-// const { MongoClient, ObjectId } = require('mongodb');
 
 
 let db;
@@ -68,10 +60,6 @@ async function run() {
 
         users = db.collection("users");
         console.log(`Connected to the collection:${users.collectionName}`);
-
-        // images = db.collection("images");
-
-        // images = db.collection("images");
 
         images = db.collection("images");
         console.log(`Connected to the collection:${images.collectionName}`);
@@ -104,20 +92,16 @@ app.post('/submit', upload.single('image'), async (request, response) => {
     };
 
     try {
-        // Insert the document into the 'images' collection
         const result = await db.collection('images').insertOne(imageDocument);
 
-        // Send a response with the inserted document's ID
         response.json({ message: 'File uploaded successfully', id: result.insertedId });
     } catch (error) {
         console.error(error);
         response.status(500).json({ message: 'Error uploading file' });
     }
     try {
-        // Insert the document into the 'images' collection
         const result = await db.collection('images').insertOne(imageDocument);
 
-        // Send a response with the inserted document's ID
         response.json({ message: 'File uploaded successfully', id: result.insertedId });
     } catch (error) {
         console.error(error);
@@ -156,35 +140,36 @@ app.post("/register", async (request, response) => {
 
 const uuid = require('uuid');
 let uploadedImage;
+
 app.post("/upload", upload.single('image'), async (request, response) => {
-       console.log(request.file.path);
+    console.log(request.file.path);
     const tempPath = request.file.path;
-    const targetPath = path.join(__dirname, "./uploads/uploadedImage.jpg");
-    fs.rename(tempPath, targetPath, async err => 
- {
+    const ext = path.extname(request.file.originalname);
+    const targetPath = path.join(__dirname, `./uploads/uploadedImage${ext}`);
+    fs.rename(tempPath, targetPath, async err => {
         if (err) {
             console.log("error")
         }
         else {
             console.log("uploaded")
-            //console.log(targetPath);
-        uploadedImage = targetPath;
-      
-    }})
+            uploadedImage = targetPath;
+        }
+    })
 })
-
 
 app.get('/retrieveImages', async (request, response) => {
     const userId = request.cookies.userId;
 
     const userImages = await images.find({ userId: userId }).toArray();
+
+    // Map the userImages array to only include the firebaseUrl field
+    const imageUrls = userImages.map(image => image.firebaseUrl);
+
     response.set('Access-Control-Allow-Origin', '*');
-
-
-    response.json(userImages);
+    response.json(imageUrls);
 });
 
-const {Storage} = require('@google-cloud/storage');
+const { Storage } = require('@google-cloud/storage');
 const storage = new Storage();
 
 
@@ -207,85 +192,139 @@ app.get('/getImage/:imageId', async (request, response) => {
 
 
 
+async function waitForJobCompletion(apiUrl, headers, jobId) {
+    let jobStatus = 'not_started';
+    let resultUrl;
+
+    while (jobStatus !== 'completed') {
+        const response = await fetch(`${apiUrl}/${jobId}`, { headers });
+        const data = await response.json();
+
+        jobStatus = data.status;
+        resultUrl = data.result_url;
+
+        if (jobStatus !== 'completed') {
+            // Wait for 1 second before polling again
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+    }
+
+    return resultUrl;
+}
 app.post("/sharpify", upload.single('image'), async (request, response) => {
-//FOR A NEW ENHANCE BUTTON
     console.log("sharpify post request received")
-    // const uploadedImage = request.body.imagePath;
+    const uploadedImage = request.file.path;
     console.log("image: " + uploadedImage)
-console.log("image: " + uploadedImage.path)
     const form = new FormData();
 
-    let file = fs.createReadStream(uploadedImage);
+    // Check if the file exists before trying to open it
+    if (fs.existsSync(uploadedImage)) {
+        let file = fs.createReadStream(uploadedImage);
+        form.append('image', file);
+    } else {
+        console.log('File does not exist');
+        response.status(500).send('File does not exist');
+        return;
+    }
 
-    form.append('image', file);
-    
-    //from api documentation
     form.append('enhancements', JSON.stringify(['denoise', 'deblur', 'light', 'clean']));
     form.append('width', 2000);
-// Get the headers from the form
-const formHeaders = form.getHeaders();
 
-    //console.log("line 250 " + file)
+    const formHeaders = form.getHeaders();
+
     const apiUrl = 'https://deep-image.ai/rest_api/process_result';
     const headers = {
-    'Content-Type': formHeaders['content-type'],
-    'X-API-Key': process.env.API_KEY,  // Replace 'API_KEY' with your actual API key
-  };
+        'Content-Type': formHeaders['content-type'],
+        'X-API-Key': process.env.API_KEY,
+    };
 
-
-  fetch(apiUrl, {
-    method: 'POST',
-    body: form,
-    headers: headers,
-  })
-    .then(res => res.json())
-    .then(data => {
-      console.log('Response:', data);
-      console.log(data.result_url); // Log the URL of the enhanced image  
-      response.json(data);  // Send the data as a response
+    // Store the data from the response in a variable after the first use
+    fetch(apiUrl, {
+        method: 'POST',
+        body: form,
+        headers: headers,
     })
-    .catch(error => {
-      console.error('Error:', error.message);
-      response.status(500).send('An error occurred');
-    });
+        .then(res => res.json())
+        // ... other code ...
+
+        .then(async data => {
+            console.log('Response:', data);
+
+            if (data.status === 'not_started') {
+                data.result_url = await waitForJobCompletion(apiUrl, headers, data.job);
+            }
+
+            console.log(data.result_url); // Log the URL of the enhanced image  
+
+            // Download the enhanced image to your server
+            const downloadResponse = await fetch(data.result_url);
+            const buffer = await downloadResponse.buffer();
+
+            // Upload the enhanced image to Firebase and MongoDB
+            const imageId = uuid.v4();
+            const firebaseUrl = await uploadImageToDbs(buffer, imageId, request);
+
+            // Use the data
+            data.result_url = firebaseUrl; // Update the result_url to the Firebase URL
+            response.json(data);  // Send the data as a response
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+            response.status(500).send('An error occurred');
+        })
+});
+
+async function uploadImageToDbs(buffer, imageId, request) {
+    // Determine the content type from the file extension
+    const ext = path.extname(request.file.originalname);
+    let contentType;
+    if (ext === '.jpg' || ext === '.jpeg') {
+        contentType = 'image/jpeg';
+    } else if (ext === '.png') {
+        contentType = 'image/png';
+    }
+
+    // Upload to Firebase
+    let firebaseUrl;
+    try {
+        const file = bucket.file(imageId);
+        await file.save(buffer, {
+            public: true,
+            metadata: {
+                contentType: contentType, // Use the determined content type
+                firebaseStorageDownloadTokens: uuid.v4()
+            }
+        });
+        console.log(`Image uploaded to Firebase with ID: ${imageId}`);
+        // Get the URL of the uploaded image
+        firebaseUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(imageId)}?alt=media`;
+    } catch (error) {
+        console.error('Error uploading image to Firebase:', error);
+        return;
+    }
+
+    // Upload to MongoDB
+    const imageDocument = {
+        filename: imageId + ext, 
+        firebaseUrl: firebaseUrl, // Store the Firebase URL
+        uploadDate: new Date(),
+        userId: request.cookies.userId
+    };
+    try {
+        const result = await images.insertOne(imageDocument);
+        console.log(`Image uploaded to MongoDB with ID: ${result.insertedId}`);
+    } catch (error) {
+        console.error('Error uploading image to MongoDB:', error);
+    }
+
+    return firebaseUrl;
 }
-)
-//get reqeust to retrieeve the image
-
-// Delete Image
-
-// app.delete("/delete", async (request, response) => {
-//     const {username, password} = request.body;
-
-
-//     console.log("line 166 " + request.body.id)
-
-
-//     const userData = await usersData.findOne({$and: [
-//         { id: parseInt(request.body.id) },
-//         { userId: request.cookies['userId'] }
-//       ]});
-//     console.log("line 174 " + JSON.stringify(userData, null, 2));
-//     let objectId = userData._id
-
-//     usersData.deleteOne({_id: objectId})
-
-
-//     if (usersData.find({ _id: objectId }) === null) {
-//         console.log("deleted")
-//     }
-
-//     console.log(namesArray)
-
-//     response.writeHead(200, "OK", { "Content-Type": "application/json" })
-//     response.end(JSON.stringify({ status: 'success', message: 'Delete' }))
-// })
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
-  });
+});
 
 // app.listen(process.env.PORT || port)
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT || 3000}`);
-  });
+});

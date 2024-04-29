@@ -21,17 +21,13 @@ function SavedImages(props) {
                 // Log the fetched images
                 console.log(data);
 
-                // Update the state with the fetched images
-                setImages(data);
+                setImages(data.map(url => ({ url })));
             })
             .catch(error => console.error('Error:', error));
     }, []);
-    
-    const handleDownload = (imageSrc, filename) => {
-        // Extract the image ID from the imageSrc URL
-        const imageId = imageSrc.split('/').pop();
-    
-        fetch(`http://localhost:3000/getImage/${imageId}`)
+
+    const handleDownload = (url, filename) => {
+        fetch(url)
             .then(response => response.blob())
             .then(blob => {
                 const url = window.URL.createObjectURL(blob);
@@ -55,30 +51,34 @@ function SavedImages(props) {
         setShowModal(false);
     };
 
-return (
-    <Container className="image-row" style={{ marginTop: '4rem' }}>
-        {images.map((image, index) => (
-            <div key={index} className="image-container">
-                <Image src={image.url} className="saved-image" onClick={() => handleImageClick(image)} />
-            </div>
-        ))}
+    return (
+        <Container className="image-row" style={{ marginTop: '4rem' }}>
+            {images.map((image, index) => (
+                <div key={index} className="image-container">
+                    <Image src={image.url} className="saved-image" onClick={() => handleImageClick(image)} />
+                </div>
+            ))}
 
-        <Modal show={showModal} onHide={handleCloseModal}>
-            <Modal.Header closeButton>
-                <Modal.Title>Image Preview</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {selectedImage && <Image src={selectedImage.url} fluid />}
-            </Modal.Body>
-            <Modal.Footer>
-                {selectedImage && 
-                    <button onClick={() => handleDownload(selectedImage.url, selectedImage.filename)}>
-                        <FontAwesomeIcon icon={faCloudDownloadAlt} /> Download
-                    </button>
-                }
-            </Modal.Footer>
-        </Modal>
-    </Container>
-);}
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Image Preview</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {selectedImage && <Image src={selectedImage.url} fluid />}
+                </Modal.Body>
+                <Modal.Footer>
+                    {selectedImage &&
+                        // <button onClick={() => handleDownload(selectedImage.url, selectedImage.filename)}>
+                        //     <FontAwesomeIcon icon={faCloudDownloadAlt} /> Download
+                        // </button>
+                        <button onClick={() => handleDownload(selectedImage.url)}>
+                            <FontAwesomeIcon icon={faCloudDownloadAlt} /> Download
+                        </button>
+                    }
+                </Modal.Footer>
+            </Modal>
+        </Container>
+    );
+}
 
 export default SavedImages;

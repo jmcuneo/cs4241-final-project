@@ -10,9 +10,11 @@ function Dashboard(props) {
     const [showModal, setShowModal] = useState(false);
     const [imageSrc, setImageSrc] = useState('');
     const canvasRef = useRef(null);
+    const [fileType, setFileType] = useState('');
 
     function onHandleFileChange(e) {
         const file = e.target.files[0];
+        setFileType(file.type.split('/')[1]);
 
          let formData = new FormData();
          formData.append('image', file);
@@ -38,8 +40,8 @@ function Dashboard(props) {
         setShowModal(false);
     }
 
-    async function onHandleMakeDownloadLink(imageUrl, filename = 'sharpified-image.png') {
-            const response = await fetch(imageUrl);
+    async function onHandleMakeDownloadLink(imageUrl, filename = `sharpified-image.${fileType}`) {
+        const response = await fetch(imageUrl);
             const blob = await response.blob();
             const blobUrl = URL.createObjectURL(blob);
             const downloadLink = document.createElement('a');
@@ -61,7 +63,10 @@ function changeCanvasImage(canvasRef, imageUrl) {
 }
 
     function sharpify() {
-        if (!imageSrc) return;
+        // if (!imageSrc) return;
+        // const canvas = canvasRef.current;
+        // const ctx = canvas.getContext('2d');
+        if (!imageSrc || !canvasRef.current) return;
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         const img = new Image();
