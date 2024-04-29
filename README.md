@@ -6,6 +6,7 @@ https://cs4241-final-project-r2mj.onrender.com/
 Instructions on how to run: 
 npm run build
 npm start
+runs at port 8000
 
 
 [Example Projects from A23](https://echo360.org/collection/50a4d343-caea-4deb-93ee-61bdd7da543f/public)
