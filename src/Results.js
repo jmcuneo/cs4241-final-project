@@ -40,7 +40,7 @@ function Results({ formData, leaderboardData, deleteRow }) {
 
     return (
         <Container id="results">
-            <h1 className="center">Race-a-Pet</h1>
+            <h1>&#127937;Race-a-Pet</h1>
             <h2 className="center">Race Results</h2>
             <p className="center">Here are your race results with the rest of your pets!</p>
             <Row>

@@ -36,7 +36,7 @@ function LoginPage() {
         <PetForm />
       ) : (
         <div>
-          <h1 className="center">Race-a-Pet</h1>
+          <h1>&#127937;Race-a-Pet</h1>
         
           <Container>
             <Row>
