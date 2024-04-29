@@ -12,6 +12,11 @@ Our application uses MongoDB and Firebase to store our data. When a user registe
 
 **NOTE**: Our current API only has 30 calls left!
 
+## How to Access Site
+Our site can be accessed at this URL: [https://cs4241-final-project-vsnm.onrender.com/](https://cs4241-final-project-vsnm.onrender.com/)
+For our hosting, we used Render, which means that if our site has been inactive, it may take a minute or two to open. To log into the site, a user can use the register page to create an account. To see saved images being persisted across uses, a user can return to log in and resign in to see their images being saved across uses. Our demo account is also available for users to see persistence across uses. This account is accessible using the email: “demo” and the password: “password”. This account has one uploaded image, but more can be uploaded.
+
+
 ## Example
 
 ![Before](https://github.com/dovushman/cs4241-final-project/blob/main/before.png)
