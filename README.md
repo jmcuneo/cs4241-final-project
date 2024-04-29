@@ -59,3 +59,12 @@ You can use any web-based frameworks or tools available, but for your server pro
 - To run open one terminal and type "npm start" and open another terminal and type "nodemon server.js"
 
 
+
+
+## Pet Images
+- https://pngfre.com/gecko-png/
+- https://pngtree.com/so/cute-hamster-vector
+- https://www.vecteezy.com/png/25245264-cat-clipart-icon-flat-design-on-transparent-background-animal-isolated-clipping-path-element
+- https://pngtree.com/free-animal-clipart/dog
+- https://commons.wikimedia.org/wiki/File:Turtle_clip_art.svg 
+
