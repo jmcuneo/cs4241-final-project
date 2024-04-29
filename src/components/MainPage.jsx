@@ -35,7 +35,7 @@ function MainPage({ onLogout, isAdmin }) {
   const handleCreateEvent = async (e, eventName, eventDate, eventLocation) => {
     e.preventDefault();
     try {
-      const response = await fetch("//localhost:3000/api/createEvent", {
+      const response = await fetch("/api/createEvent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +59,7 @@ function MainPage({ onLogout, isAdmin }) {
   };
   const getUpcomingEvents = useCallback(async () => {
     try {
-      const response = await fetch("//localhost:3000/api/getUpcomingEvents", {
+      const response = await fetch("/api/getUpcomingEvents", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

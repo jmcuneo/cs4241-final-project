@@ -1,7 +1,7 @@
-import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
 import { motion } from "framer-motion";
+import PropTypes from "prop-types";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 /**
  * @author Jack Weinstein
@@ -20,7 +20,7 @@ function LoginPage({ onLogin }) {
     setMessage("Logging in...");
 
     try {
-      const response = await fetch("//localhost:3000/login", {
+      const response = await fetch("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

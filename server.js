@@ -23,16 +23,15 @@ dotenv.config();
 
 //Account code
 app.use(cors());
-//app.use(express.static("dist"));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-ViteExpress.config({ mode: 'development' });
+ViteExpress.config({ mode: 'production' });
 
-export const JWT_KEY = "9s68zYkVaXeZ@aSnpc42CKY%%aWXrJp$$mFeWKE!!";
+export const JWT_KEY = process.env.WEB_TOKEN_KEY;
 
 app.use(session({
-    secret: '5O$5HP^xg2zV0duE',     //MAKE A NEW KEY EVENTUALLY AND MOVE TO .ENV
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { secure: true }
@@ -179,12 +178,3 @@ async function connectToDB() {
 ViteExpress.listen(app, process.env.PORT || port, () => {
     console.log("Server listening on port " + (process.env.PORT ? process.env.PORT : port));
 });
-
-/*
-#################################################
-WILL DELETE ENTIRE DB ON EVERY LOAD!!!!!!!!!!!!!!
-Only keep when in DEVELOPMENT.
-#################################################
-*/
-// testDB();
-// await createDummyUsers();

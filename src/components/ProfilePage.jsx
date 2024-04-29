@@ -10,7 +10,7 @@ function ProfilePage({ onLogout, isAdmin}) {
 
   const getProfile = async () => {
     try {
-      const response = await fetch("//localhost:3000/api/getProfile", {
+      const response = await fetch("/api/getProfile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,7 +29,7 @@ function ProfilePage({ onLogout, isAdmin}) {
 
   const makeAdmin = async (username) => {
     try {
-      const response = await fetch("//localhost:3000/api/makeAdmin", {
+      const response = await fetch("/api/makeAdmin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

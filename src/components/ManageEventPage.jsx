@@ -15,7 +15,7 @@ function ManageEventPage({ onLogout }) {
 
   const getGuestList = useCallback(async () => {
     try {
-      const response = await fetch("//localhost:3000/api/getGuestList", {
+      const response = await fetch("/api/getGuestList", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,7 +35,7 @@ function ManageEventPage({ onLogout }) {
 
   const getProfile = async () => {
     try {
-      const response = await fetch("//localhost:3000/api/getProfile", {
+      const response = await fetch("/api/getProfile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ function ManageEventPage({ onLogout }) {
   const handleUpdateTotalLimit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch("//localhost:3000/api/setGuestLimit", {
+      const response = await fetch("/api/setGuestLimit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +97,7 @@ function ManageEventPage({ onLogout }) {
   const handleUpdateUserLimit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch("//localhost:3000/api/setInviteLimit", {
+      const response = await fetch("/api/setInviteLimit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +126,7 @@ function ManageEventPage({ onLogout }) {
   // Note: Mutilator
   const getLimits = useCallback(async () => {
     try {
-      const response = await fetch("//localhost:3000/api/getGuestAndInviteLimits", {
+      const response = await fetch("/api/getGuestAndInviteLimits", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

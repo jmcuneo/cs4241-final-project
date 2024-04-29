@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function EventTitleManager({ eventId }) {
-  //const { eventId } = useParams();
   const [thisEvent, setThisEvent] = useState([]);
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
@@ -37,7 +36,7 @@ function EventTitleManager({ eventId }) {
 
   const getEvent = useCallback(async () => {
     try {
-      const response = await fetch("//localhost:3000/api/getEvent", {
+      const response = await fetch("/api/getEvent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,7 +49,6 @@ function EventTitleManager({ eventId }) {
 
       const _events = await response.json();
       setThisEvent(_events);
-      // updateEventData();
     } catch (error) {
       console.error("Error getting events: " + error);
     }
@@ -58,7 +56,7 @@ function EventTitleManager({ eventId }) {
 
   const updateEvent = async (newEventName, newEventDate, newEventLocation) => {
     try {
-      const response = await fetch("//localhost:3000/api/modifyEvent", {
+      const response = await fetch("/api/modifyEvent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -117,7 +115,7 @@ function EventTitleManager({ eventId }) {
 
     if (shouldDelete) {
       try {
-        const response = await fetch("//localhost:3000/api/deleteEvent", {
+        const response = await fetch("/api/deleteEvent", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -247,7 +245,7 @@ function EventTitleManager({ eventId }) {
 }
 
 EventTitleManager.propTypes = {
-  eventId: PropTypes.string,
+  eventId: PropTypes.string.isRequired,
   isAdmin: PropTypes.bool
 }
 

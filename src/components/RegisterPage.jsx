@@ -22,7 +22,7 @@ function RegisterPage() {
     setMessage("Registering");
 
     try {
-      const response = await fetch("//localhost:3000/register", {
+      const response = await fetch("/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -12,7 +12,7 @@ function UserListComponent() {
 
   const getUserList = useCallback(async () => {
     try {
-      const response = await fetch("//localhost:3000/api/getAllowedInviters", {
+      const response = await fetch("/api/getAllowedInviters", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,7 +32,7 @@ function UserListComponent() {
 
   const handleRemove = async (username) => {
     try {
-      const response = await fetch("//localhost:3000/api/removeAllowedInviter", {
+      const response = await fetch("/api/removeAllowedInviter", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +52,7 @@ function UserListComponent() {
 
   const handleAdd = async () => {
     try {
-      const response = await fetch("//localhost:3000/api/addAllowedInviter", {
+      const response = await fetch("/api/addAllowedInviter", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

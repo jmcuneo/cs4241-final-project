@@ -1,7 +1,6 @@
-import User, { PERMISSIONS, addPermissionsToUser } from "./models/user.js";
-import Event from "./models/event.js";
-import Logger from "./models/actionlog.js";
-import Account from "./models/account.js";
+import User, { PERMISSIONS, addPermissionsToUser } from "../models/user.js";
+import Event from "../models/event.js";
+import Account from "../models/account.js";
 
 /**
 *
@@ -143,13 +142,6 @@ export async function createDummyUsers() {
         await user.inviteGuests(dummyEvent, 'Debby');
     if (dummyEvent.attendees.filter(attendee => attendee.guest === 'Joe Biden').length === 0)
         await admin.inviteGuests(dummyEvent, 'Joe Biden');
-}
-
-async function clearEntireDB() {
-    await User.deleteMany({});
-    await Event.deleteMany({});
-    await Logger.deleteMany({});
-    await Account.deleteMany({});
 }
 
 async function testMakeAdmin(users) {

@@ -16,7 +16,7 @@ function UserGuestListComponent({ manage }) {
 
   const getEvent = useCallback(async () => {
     try {
-      const response = await fetch("//localhost:3000/api/getEvent", {
+      const response = await fetch("/api/getEvent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,10 +56,10 @@ function UserGuestListComponent({ manage }) {
   }, [eventId]);
 
   const addGuest = async (guestName) => {
-    if (thisEvent.guestCount < totalLimit){
-      if (thisEvent.userInvites < userLimit) {
+    if (thisEvent.guestCount < totalLimit || totalLimit === 0 || totalLimit === ''){
+      if (thisEvent.userInvites < userLimit || userLimit === 0 || userLimit === '') {
         try {
-          const response = await fetch("//localhost:3000/api/inviteGuest", {
+          const response = await fetch("/api/inviteGuest", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -93,7 +93,7 @@ function UserGuestListComponent({ manage }) {
 
   const removeGuest = async (guestName) => {
     try {
-      const response = await fetch("//localhost:3000/api/uninviteGuest", {
+      const response = await fetch("/api/uninviteGuest", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -122,7 +122,7 @@ function UserGuestListComponent({ manage }) {
     // Note: Mutilator
     const getLimits = useCallback(async () => {
       try {
-        const response = await fetch("//localhost:3000/api/getGuestAndInviteLimits", {
+        const response = await fetch("/api/getGuestAndInviteLimits", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -162,8 +162,8 @@ function UserGuestListComponent({ manage }) {
   };
 
   useEffect(() => {
-    getGuestList("//localhost:3000/api/getGuestList", "guest");
-    getGuestList("//localhost:3000/api/getUserGuestList", "user");
+    getGuestList("/api/getGuestList", "guest");
+    getGuestList("/api/getUserGuestList", "user");
     getLimits();
     getEvent();
   }, [getGuestList, getLimits, getEvent]);

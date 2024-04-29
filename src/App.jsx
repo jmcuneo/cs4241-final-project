@@ -18,7 +18,7 @@ function App() {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const response = await fetch('//localhost:3000/api/verifyToken', {
+        const response = await fetch('/api/verifyToken', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ function App() {
 
     const verifyAdmin = async () => {
       try {
-        const response = await fetch('//localhost:3000/api/verifyAdmin', {
+        const response = await fetch('/api/verifyAdmin', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

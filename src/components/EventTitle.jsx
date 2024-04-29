@@ -32,7 +32,7 @@ function EventTitle({ eventId, isAdmin }) {
 
   const getEvent = useCallback(async () => {
     try {
-      const response = await fetch("//localhost:3000/api/getEvent", {
+      const response = await fetch("/api/getEvent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
