@@ -14,6 +14,10 @@ function getImageUrl(animalType) {
             return require("../src/img/turtle.png");
         case 'bunny':
             return require("../src/img/bunny.png");
+        case 'lizard':
+            return require("../src/img/lizard.png");
+        case 'hamster':
+            return require("../src/img/hamster.png");
         default:
             return ""; // empty string if animalType is undefined or null
     }

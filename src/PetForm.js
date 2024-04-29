@@ -97,15 +97,19 @@ function PetForm() {
       dog: 10,
       cat: 11,
       bunny: 13,
-      turtle: 15
+      turtle: 20, 
+      lizard: 16,
+      hamster: 15
       };
 
       // define energy boost multiplier based on diet
       const dietMultiplier = {
-          steak: { dog: 0.9, cat: 0.85, bunny: 0.75, turtle: 0.7 },
-          tuna: { dog: 0.85, cat: 0.9, bunny: 0.75, turtle: 0.7 },
-          carrots: { dog: 0.6, cat: 0.7, bunny: 0.9, turtle: 0.8 },
-          lettuce: { dog: 0.6, cat: 0.7, bunny: 0.8, turtle: 0.9 }
+          steak: { dog: 0.9, cat: 0.85, bunny: 0.75, turtle: 0.7, lizard: 0.6, hamster: 0.75 },
+          tuna: { dog: 0.85, cat: 0.9, bunny: 0.75, turtle: 0.7, lizard: 0.65, hamster: 0.6 },
+          carrots: { dog: 0.6, cat: 0.7, bunny: 0.9, turtle: 0.8, lizard: 0.7, hamster: 0.8 },
+          lettuce: { dog: 0.6, cat: 0.7, bunny: 0.8, turtle: 0.9, lizard: 0.8, hamster: 0.75 },
+          cricket: { dog: 0.6, cat: 0.7, bunny: 0.6, turtle: 0.8, lizard: 0.9, hamster: 0.8 },
+          grass: { dog: 0.6, cat: 0.7, bunny: 0.8, turtle: 0.85, lizard: 0.8, hamster: 0.9 }
       };
 
       // calculate the modified race time based on diet and animal type
@@ -173,6 +177,8 @@ function PetForm() {
             <option value="cat">Cat</option>
             <option value="turtle">Turtle</option>
             <option value="bunny">Bunny</option>
+            <option value="lizard">Lizard</option>
+            <option value="hamster">Hamster</option>
           </Form.Control>
         </Form.Group>
 
@@ -191,6 +197,8 @@ function PetForm() {
             <option value="tuna">Tuna</option>
             <option value="lettuce">Lettuce</option>
             <option value="carrots">Carrots</option>
+            <option value="cricket">Cricket</option>
+            <option value="grass">Grass</option>
           </Form.Control>
         </Form.Group>
 
