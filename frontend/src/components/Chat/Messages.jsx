@@ -14,7 +14,10 @@ const Messages = () => {
   useEffect(() => {
 		socket.on("message", (message, displayName) => {
 			if (message.senderId == selectedConversation._id || message.recieverId == selectedConversation._id) {
-				setMessages([...messages, message]);
+				if (Array.isArray(messages)) {
+					setMessages([...messages, message]);
+				}
+				else setMessages([message])
 			}
 			else {
 				toast((t) => (
