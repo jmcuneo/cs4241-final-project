@@ -3,13 +3,26 @@ import useGetMessages from '../../hooks/useGetMessages'
 import MessageSkeleton from "../skeletons/MessageSkeleton";
 import { useEffect, useRef } from 'react';
 import { extractTime } from '../../utils/extractTime.js';
+import { socket } from "../../socket-client.js";
+import toast from "react-hot-toast";
 
 const Messages = () => {
   const { messages, loading } = useGetMessages();
   const lastMessageRef = useRef(null);
   useEffect(() => {
+
+		socket.on("message", (message) => {
+			console.log("test");
+			toast(message.message);
+		});
+
     setTimeout(() => {lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });}, 100)
-  }, [messages])
+
+		return () => {
+			socket.off("message")
+		};
+
+  }, [messages, socket])
 
 
   if (messages.length > 0) {
@@ -18,6 +31,7 @@ const Messages = () => {
     console.log("Last Message Time" , extractTime(lastMessage.updatedAt));
 
   }
+
   
   return (
     <div>

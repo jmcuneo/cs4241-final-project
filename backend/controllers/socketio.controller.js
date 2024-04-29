@@ -8,7 +8,12 @@ const socketioConnection = async (io) => {
 	io.on("connection", (socket) => {
 		console.log("connection!");
 		let cookiestring = socket.handshake.headers.cookie;
+		if (!cookiestring) cookiestring = "";
 		let cookies = cookie.parse(cookiestring);
+		if (!cookies.jwt) {
+			socket.disconnect();
+			return;
+		}
 		const decoded = jwt.verify(cookies.jwt, process.env.JWT_SECRET);
 		console.log(decoded.userId);
 		socket.join(decoded.userId);

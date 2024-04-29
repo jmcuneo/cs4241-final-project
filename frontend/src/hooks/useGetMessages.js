@@ -13,15 +13,16 @@ const useGetMessages = () => {
         const getMessages = async () =>{
             setLoading(true);
 						let startId = 0; // temporary var will be passsed as arg once this is all working
-						socket.emit("getMessages", startId);
+						let requestJson = { index: startId, to: selectedConversation._id };
+						socket.emit("getMessages", requestJson);
+						
             try {
-                const res = await fetch(`/api/messages/${selectedConversation._id}`);
-                const data = await res.json();
+							socket.on("conversation", (convo) => {
+                const data = convo;
 
                 if(data.error) throw new Error(data.error);
-
-    
-                setMessages(data);
+                setMessages(convo);
+							});
             } catch (error) {
                 toast.error(error.message)
             } finally {
