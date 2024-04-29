@@ -1,4 +1,4 @@
-const socket = io('http://localhost:3000');
+const socket = io();
 
 let numPlayers;
 
@@ -134,10 +134,16 @@ function updatePlayerStatus() {
     playerButtons.forEach(button => {
         const playerId = button.id;
         const player = players.find(player => player.username === playerId);
-
         if (player) {
             const playerButton = button.parentNode.querySelector("button");
             playerButton.textContent = `${player.username}: ${player.health}`; // Assuming health is a property of the player object
+            if(player.isAlive){
+                playerButton.style.backgroundColor = '#007559'
+                playerButton.style.borderColor = '#007559'
+            } else{
+                playerButton.style.backgroundColor = 'gray'
+                playerButton.style.borderColor = 'gray'
+            }
         }
     });
 
