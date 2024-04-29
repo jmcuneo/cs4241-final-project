@@ -187,7 +187,7 @@ function PetForm() {
           name="animalType"
           value={animalType}
           onChange={handleInputChange}
-          className='formControl'
+          className='ormControl'
           required
         >
           <option value="" disabled>Select</option>
@@ -212,7 +212,7 @@ function PetForm() {
           <option value="steak">Steak</option>
           <option value="tuna">Tuna</option>
           <option value="lettuce">Lettuce</option>
-          <option value="carrots">Carrots</option>
+          <option value="carrot">Carrot</option>
         </Form.Control>
       </Form.Group>
 
