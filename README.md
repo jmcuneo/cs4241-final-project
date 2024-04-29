@@ -31,7 +31,7 @@ Jack LaFond:
 
 Aidan MacNevin: Database connections and management, Leaderboard, Game Page CSS styling, HTML/CSS formatting
 
-Edison Zhang:
+Edison Zhang: Websocket, game functionality, createGame javascript
 
 Bryon Tom:
 OAuth functionality
