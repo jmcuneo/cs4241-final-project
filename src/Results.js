@@ -64,7 +64,8 @@ function Results({ formData, leaderboardData, deleteRow }) {
                             <tr>
                                 <th>Rank</th>
                                 <th>Pet Name</th>
-                                <th>Diet</th>
+                                <th>Animal</th>
+                                <th>Diet</th>                                
                                 <th>Exercise Level</th>
                                 <th>Time</th>
                                 <th>Actions</th>
@@ -75,6 +76,7 @@ function Results({ formData, leaderboardData, deleteRow }) {
                                 <tr key={index}>
                                     <td>{index + 1}</td>
                                     <td>{item.petName}</td>
+                                    <td>{item.animalType.charAt(0).toUpperCase() + item.animalType.slice(1)}</td>
                                     <td>{item.dietType.charAt(0).toUpperCase() + item.dietType.slice(1)}</td>
                                     <td>{item.exercise}</td>
                                     <td>{item.raceTime}</td>
