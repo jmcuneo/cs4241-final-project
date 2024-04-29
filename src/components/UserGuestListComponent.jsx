@@ -166,7 +166,7 @@ function UserGuestListComponent({ manage }) {
     getGuestList("//localhost:3000/api/getUserGuestList", "user");
     getLimits();
     getEvent();
-  }, [getGuestList, getLimits, getEvent, guestList]);
+  }, [getGuestList, getLimits, getEvent]);
 
   const filteredList = (() => {
     let list = guestList;
@@ -175,7 +175,7 @@ function UserGuestListComponent({ manage }) {
     return list.filter((guest) =>
       guest.guestName.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  })();
+  })(); // NOTE: This parenthesis at the end is important. Keep them.
 
 
 const guestTable = () => {
