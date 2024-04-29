@@ -1,3 +1,5 @@
+
+
 const test = [
   {
     img:
@@ -96,6 +98,8 @@ let successColor = "#56ae57";
 let totalTime = 0;
 let minute = 0;
 let second = 0;
+
+let interval;
 let matches = 0;
 
 const giimmeComkie = () => {
@@ -163,6 +167,9 @@ async function start() {
   for (let i = 0; i < resp.length; i++) {
     addCell(resp[i]);
   }
+
+  interval = setInterval(stopWatch, 1000);
+  startBtn.style.display = "none";
   setInterval(stopWatch, 1000);
 }
 
@@ -264,6 +271,8 @@ function stopWatch() {
     console.log("game ended")
 		gameover();
 		matches = 0;
+
+    clearInterval(interval)
     const play = document.getElementById("playagain");
     play.style.display = "";
 	}
@@ -323,7 +332,7 @@ async function showLeaderboard() {
 async function gameover(){
   console.log("game over")
 	let score = document.getElementById("score").innerHTML;
-	let body = JSON.stringify({score: score})
+	let body = JSON.stringify({score: score, time: totalTime})
 	const response = await fetch("/auth/add-leaderboard-entry", {
 		method: "POST",
     headers: {
@@ -331,8 +340,11 @@ async function gameover(){
       Authorization: `Bearer ${document.cookie.substring(6)}`,
     },
 		body
-	}).then();
-	const resp = await response.json();
+	}).finally(async()=>{
+    console.log('fetching lb after game over event')
+    await showLeaderboard()
+  });
+	//const resp = await response.json();
 }
 
 function restart() {
