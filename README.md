@@ -27,7 +27,8 @@ Follow the buttons to edit events/add guests/delete guests.
 - __Framer__: Added animations to site
 - __Passport__: Used for adding authentication for login
 - __DaisyUI__: Used for styling components
-- __Tailwind CSS__: Used this framework for styling 
+- __Tailwind CSS__: Used this framework for styling
+- __Node JS__: Used to host our API and provide data to our frontend from our MongoDB Atlas backend
 
 ## Challenges
 One challenge we ran into was authenicating login for everyone on the team; sometimes there would be fetching issues while logging in even if no code has been changed. We also had difficulty deploying the project since we built the entire project before trying to host. Problems of any kind that arose were resolved by working together and communicating with each other so that multiple pairs of eyes were looking for bugs or issues. 
@@ -40,7 +41,5 @@ One challenge we ran into was authenicating login for everyone on the team; some
 - __Jack Weinstein__: frontend - created project/start code, page navigation, page components, login and registration, format pages, connected frontend and backend
 
 ## Accessibility Features
-Make a case for why what you did was challenging and why your implementation deserves a grade of 100%.
 - ![Lighthouse test](lighthouse.png)
-- color scheme and legible font
-
+- Made the lighthouse test 100 in Accessibility
