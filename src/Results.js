@@ -52,9 +52,9 @@ function Results({ formData, leaderboardData, deleteRow }) {
                     <p className="center">Exercise level: {formData.exercise}</p>
                     <p className="center">&#127937; Race time: {formData.raceTime} seconds</p>
                     <Link to="/PetForm">
-                    <Button variant="primary">
+                    <button className='button'>
                       Go to Pet Form
-                    </Button>
+                    </button>
                   </Link>
 
                 </Col>
