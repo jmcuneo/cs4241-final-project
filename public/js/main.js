@@ -9,10 +9,6 @@ const RESTART = 'r';
 const START = 's';
 
 
-
-
-
-
 // Game board
 class Board {
   constructor(width, height, cS) {
@@ -236,8 +232,6 @@ class Board {
         rowsCleared++;
       }
     }
-
-    // TODO add 400 point bonus for back-to-back tetris?
     switch (rowsCleared) {
       case 1:
         this.updateScore(100)
@@ -255,6 +249,7 @@ class Board {
   }
 }
 
+// Represents a single cell on the game board
 class Cell {
     constructor(isEmpty, color, x, y) {
         this.isEmpty = isEmpty;
@@ -271,6 +266,11 @@ class Cell {
     }
 }
 
+
+/*
+Represents a piece that hasn't been placed on the board
+Palette is adapted from Bang Wong's "Points of view: Color blindness" (https://doi-org.ezpv7-web-p-u01.wpi.edu/10.1038/nmeth.1618)
+*/
 class Piece {
   constructor(shape, color, orientations, canvasName) {
     this.ctx = document.getElementById(canvasName).getContext('2d');
@@ -312,7 +312,7 @@ class Piece {
 
 class PieceI extends Piece {
   constructor(canvasName = 'board') {
-    super([[0, 0, 0, 0,], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0,]], 'cyan',
+    super([[0, 0, 0, 0,], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0,]], "rgb(86 180 233)",
     {0: [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]], 90: [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]],
      180: [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0]], 270: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]}, canvasName);
   }
@@ -320,7 +320,7 @@ class PieceI extends Piece {
 
 class PieceJ extends Piece {
   constructor(canvasName = 'board') {
-    super([[1, 0, 0], [1, 1, 1], [0, 0, 0]], 'blue',
+    super([[1, 0, 0], [1, 1, 1], [0, 0, 0]], "rgb(0 114 178)",
     {0: [[1, 0, 0], [1, 1, 1], [0, 0, 0]], 90: [[0, 1, 1], [0, 1, 0], [0, 1, 0]],
       180: [[0, 0, 0], [1, 1, 1], [0, 0, 1]], 270: [[0, 1, 0], [0, 1, 0], [1, 1, 0]]}, canvasName);
   }
@@ -328,7 +328,7 @@ class PieceJ extends Piece {
 
 class PieceL extends Piece {
   constructor(canvasName = 'board') {
-    super([[0, 0, 1], [1, 1, 1], [0, 0, 0]], 'orange',
+    super([[0, 0, 1], [1, 1, 1], [0, 0, 0]], "rgb(230 159 0)",
     {0: [[0, 0, 1], [1, 1, 1], [0, 0, 0]], 90: [[0, 1, 0], [0, 1, 0], [0, 1, 1]],
       180: [[0, 0, 0], [1, 1, 1], [1, 0, 0]], 270: [[1, 1, 0], [0, 1, 0], [0, 1, 0]]},canvasName);
   }
@@ -336,7 +336,7 @@ class PieceL extends Piece {
 
 class PieceO extends Piece {
   constructor(canvasName = 'board') {
-      super([[1, 1], [1, 1]], 'yellow',
+      super([[1, 1], [1, 1]], "rgb(240 228 66)",
       {0: [[1, 1], [1, 1]], 90: [[1, 1], [1, 1]], 
         180: [[1, 1], [1, 1]], 270: [[1, 1], [1, 1]]}, canvasName);
   }
@@ -344,7 +344,7 @@ class PieceO extends Piece {
 
 class PieceS extends Piece {
   constructor(canvasName = 'board') {
-      super([[0, 1, 1], [1, 1, 0], [0, 0, 0]], 'green', 
+      super([[0, 1, 1], [1, 1, 0], [0, 0, 0]], "rgb(0 158 115)", 
       {0: [[0, 1, 1], [1, 1, 0], [0, 0, 0]], 90: [[0, 1, 0], [0, 1, 1], [0, 0, 1]], 
         180: [[0, 0, 0], [0, 1, 1], [1, 1, 0]], 270: [[1, 0, 0], [1, 1, 0], [0, 1, 0]]}, canvasName);
   }
@@ -352,7 +352,7 @@ class PieceS extends Piece {
 
 class PieceT extends Piece {
   constructor(canvasName = 'board') {
-      super([[0, 1, 0], [1, 1, 1]], 'purple',
+      super([[0, 1, 0], [1, 1, 1]], "rgb(204 121 167)",
       {0: [[0, 1, 0], [1, 1, 1]], 90: [[0, 1, 0], [0, 1, 1], [0, 1, 0]], 
         180: [[0, 0, 0], [1, 1, 1], [0, 1, 0]], 270: [[0, 1, 0], [1, 1, 0], [0, 1, 0]]}, canvasName);
   }
@@ -360,21 +360,11 @@ class PieceT extends Piece {
 
 class PieceZ extends Piece {
   constructor(canvasName = 'board') {
-      super([[1, 1, 0], [0, 1, 1], [0, 0, 0]], 'red',
+      super([[1, 1, 0], [0, 1, 1], [0, 0, 0]], "rgb(213 94 0)",
       {0: [[1, 1, 0], [0, 1, 1], [0, 0, 0]], 90: [[0, 0, 1], [0, 1, 1], [0, 1, 0]], 
         180: [[0, 0, 0], [1, 1, 0], [0, 1, 1]], 270: [[0, 1, 0], [1, 1, 0], [1, 0, 0]]}, canvasName);
   }
 }
-
-
-// Instantiate the pieces
-let pieceI = new PieceI();
-let pieceJ = new PieceJ();
-let pieceL = new PieceL();
-let pieceO = new PieceO();
-let pieceS = new PieceS();
-let pieceT = new PieceT();
-let pieceZ = new PieceZ();
 
 
 // View
@@ -537,6 +527,7 @@ async function sendScore(score){
 
 board.drawBackground()
 
+// Handling game inputs
 document.addEventListener(
   "keydown",
   (event) => {

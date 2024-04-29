@@ -97,19 +97,22 @@ async function addDataToTable(table){
       let medal = row.insertCell()
       let img = document.createElement("img")
       img.setAttribute("src", "/images/goldMedal.png")
-      img.setAttribute("style","width:20px;height:20px;")
+      img.setAttribute("style","width:20px;aspect-ratio:0.84")
+      img.setAttribute("alt", "First Place Medal")
       medal.appendChild(img)
     } else if (count===1){
       let medal = row.insertCell()
       let img = document.createElement("img")
       img.setAttribute("src", "/images/silverMedal.png")
       img.setAttribute("style","width:20px;height:20px;")
+      img.setAttribute("alt", "Second Place Medal")
       medal.appendChild(img)
     } else if (count ===2) {
       let medal = row.insertCell()
       let img = document.createElement("img")
       img.setAttribute("src", "/images/bronzeMedal.png")
       img.setAttribute("style","width:20px;height:20px;")
+      img.setAttribute("alt", "Third Place Medal")
       medal.appendChild(img)
     } else {
       let position = row.insertCell()

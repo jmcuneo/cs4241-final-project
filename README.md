@@ -1,55 +1,49 @@
-# Final Project
+## Brief Description
 
-[Example Projects from A23](https://echo360.org/collection/50a4d343-caea-4deb-93ee-61bdd7da543f/public)
+Our group created our own hosted game, sᴉɹʇǝʇ. This website consists of three pages, all of which have a navigation menu at the top to allow the user to navigate between all three pages. The first page is a login page that comes with instructions on how to log in, and the user is not able to navigate to any other page on the site until they have successfully logged in. The second page is the main page of the site where you are able to play Tetris or sᴉɹʇǝʇ depending on the current active mode you can dictate via the buttons below the game window. The final page is a leaderboard page that displays multiple statistics. The first statistic is the top 10 scores achieved on the game in descending order, with medals displayed for the top 3 users, if there's that many on the leaderboard. Additionally, the currently logged in user's top score will be displayed at the bottom of this table, along with their associated rank so if the user logged in is not in the top 10, they can still see their ranking for their top score.
 
-For your final project, you'll implement a web application that exhibits understanding of the course materials. 
-This project should provide an opportunity to both be creative and to pursue individual research and learning goals.
+## Project Website:
 
-## General description
-Your project should consist of a complete Web application, exhibiting facets of the three main sections of the course material:
+https://cs4241-final-project.onrender.com/
 
-- Static web page content and design. You should have a project that is accessible, easily navigable, and features significant content.
-- Dynamic behavior implemented with JavaScript (TypeScript is also allowed if your group wants to explore it).
-- Server-side programming *using Node.js*. Typically this will take the form of some sort of persistent data (database), authentication, and possibly server-side computation. 
-- A video (less than five minutes) where each group member explains some aspect of the project. An easy way to produce this video is for you all the groups members to join a Zoom call that is recorded; each member can share their screen when they discuss the project or one member can "drive" the interface while other members narrate (this second option will probably work better.) Upload the video to Canvas. (Further instructions are available in the Canvas assignment.) Make sure your video is less than five minutes but long enough to successfully explain your project and show it in action. There is no minimum video length.
+## Additional Instructions
 
-## Project ideation
-Excellent projects typically serve someone/some group; for this assignment you need to define your users and stakeholders. I encourage you to identify projects that will have impact, either artistically, politically, or in terms of productivity. 
+**Login Instructions:**\
+In order to log in to this application, you can enter any username you want, and give it a password you will want as well. This account will be automatically created but have no data associated with it.\
+_NOTE:_ If you would like to log in to an account with data already set up, the username TestingUser and Password Testing is already set up with some dummy data entries.\
+**Gameplay Instructions:**\
+Once on the game page, you must press `s` to start the game.\
+sᴉɹʇǝʇ is enabled by default, click the 'Normal Mode' button to play Tetris, and press the 'Silly Mode' button to swap back to sᴉɹʇǝʇ.\
+`<` to move a piece to the left\
+`>` to move a piece to the right\
+`z` to rotate a piece counterclockwise\
+`x` to rotate a piece clockwise\
+`↓` to soft drop a piece\
+`space` to hard drop a piece\
+`r` to reset the board
 
-## Deliverables
+## Technology Outline:
 
-### Form Team (Due Thursday, April 11, 11:59 pm)
-Students are will work in teams of 3-5 students for the project. Working in teams should help enable you to build a good project in a limited amount of time.  Use the `#finalproject` channel in Slack to pitch ideas for final projects and/or find fellow team members as needed.
+**Render:** We hosted our site on Render.com instead of Glitch.\
+**JavaScript:** We used JavaScript for the core of our game and and score page. For the main.html page, we utilized JavaScript classes to create a Board, Cells, Piece, and Next Types. These objects were used in conjunction to simulate a Tetris game. The Cell objects are the (x, y) coordinate grid spaces in the Tetris board. The Piece objects are used to instantiate any Tetris piece that can be placed on the board (Z, S, J, L, I, O, T). The Next class maintains a pieceQueue of pieces to be spawned and handles the logic to display the next 5 pieces in the sidebar. The Board class includes elements from each of the other classes and handles placement, movement, row clearing, difficulty scaling, game over, and scoring. Lastly for the main page, we used JavaScript to track the user's current score and pull their highest score from the database, as well as event listeners to handle keyboard control of the website.\
+**MongoDB:** We used MongoDB as our database to store the login accounts and scores from these accounts. Scores are automatically populated into the database upon the game reaching its 'game over' state.\
+**Node-Express:** We used a Node.js Express web-server to serve our application, where we used their Handlebars as a way to send messages to the pages upon logging in to the application.\
+**Bootstrap:** We used Bootstrap almost exclusively as our way to style our website, with only a small handful of stylings handled in the main.css file.
 
-Teams must be in place by end of day on Monday, April 8. If you have not identified a team at this point, you will be assigned a team. **Put all team members together in one of the empty "Final Project" groups on Canvas. You MUST do this step to receive full credit on the assignment.**
+## Challenges Faced:
 
-### Proposal (Due Tuesday, April 16, 11:59 pm) 
-Provide an outline of your project direction and the names of associated team members. The outline should have enough detail so that staff can determine if it meets the minimum expectations or if it goes too far to be reasonable by the deadline. Please include a general description of the project and a list of key technologies/libraries you plan on using (e.g. React, Three.js, Svelte, TypeScript, etc.). Two to four paragraps should provide enough level of detail. Name the file proposal.md and submit a pull request by Tuesday, September 27th at 11:59 PM (end of day). Your pull request does not need to have a specific name. Only one pull request is required per team.
+Most of the major challenges our group faced came up when we were initially implementing the logic of the game and the core gameplay loop. Different members of the team had worked on different aspects of the game, so when we started to connect all that logic together there were a number of bugs we had to spend time ironing out. In particular, piece movement, placement, and rotation were challenging for us to figure out at first, as well as properly detecting pieces that were out of bounds. We also had some bugs related the score submission and displaying the scoreboard that were a bit challenging to figure out.
 
-There are no other scheduled checkpoints for your project. 
+## Group Member Contributions:
 
-### Turning in Your Project (Due Monday, April 29, 11:59 pm)
-**Although the assignment is due at 11:59 pm, you must be prepared to demo your website in class that day.**
+**Austin Rebello**: Set up the base shell of the project, including the 3 base HTML Handlebars pages and their connectivity to one another. Worked on the navigation bar and its functionality and styling. Developed the JavaScript for the login.html and scores.html page, as well as the design of both pages. Assisted in the development of the game functionality and debugging of the piece movement and placement. Set up the databases and their connections, as well as the current score / high score functionalities on the main game page.<br><br>
+**Brianna Sahagian**: Set up Tetris database and collections on MongoDB. Implemented piece configurations and worked on rotations, motion, and piece spawning via the queue. Added instructions, 'game start' logic, local and global high score alerts, and game over alert. Implemented difficulty scaling based on 'levels' and rows cleared for faster piece drop rates. Worked on Guest profile display and introduced some interactive elements to main.handlebars.<br><br>
+**Darren Ni**: Created the two html canvas elements, along with the `Board` and `Next` classes to control the logic within the canvases. Used x and y offsets with `cellSize` to draw the grid background in the Board in the `drawBackground()` function. Created the `Piece` class along with its subclasses, and worked on the `draw()` function to allow each pieces to render themselves. Created the `hardDrop()` and `softDrop()` functions within the `Board` class, and implemented them in the game, and also made the two buttons to change mode (Normal Mode and Silly Mode).
 
-Submit a second PR on the final project repo to turn in your app and code. Again, only one pull request per team.
 
-Deploy your app, in the form of a webpage, to Glitch/Heroku/Digital Ocean or some other service; it is critical that the application functions correctly wherever you post it.
 
-The README for your second pull request doesn’t need to be a formal report, but it should contain the following:
+**Parker Frizzle**: Added majority of logic related to the game board and its cells and assisted with piece logic. Implemented logic to handle interactions between the active piece and the game board, such as piece collision, boundary detection, loss detection, and line clear logic. Implemented main game loop and animation logic. Found and added colorblind-friendly palette for game pieces. Tested and debugged site, especially game functionality.
 
-1. A brief description of what you created, and a link to the project itself (two paragraphs of text)
-2. Any additional instructions that might be needed to fully use your project (login information, etc.)
-3. An outline of the technologies you used and how you used them.
-4. What challenges you faced in completing the project.
-5. What each group member was responsible for designing / developing.
-6. What accessibility features you included in your project.
+## Accessibility Features:
 
-Think of 1, 3, and 4 in particular in a similar vein to the design / technical achievements for A1—A4. Make a case for why what you did was challenging and why your implementation deserves a grade of 100%.
-
-The video described above is also due on Canvas at this time.
-
-## FAQs
-
-**Can I use XYZ framework?** 
-
-You can use any web-based frameworks or tools available, but for your server programming you need to use Node.js. Your client-side scripting language should be either JavaScript or TypeScript. Note that the staff may not be able to assist with TypeScript questions.
+We have scored a 100 on Google Lighthouse on all three pages for accessibility. We have added alt text to all images. We also implemented colorblind friendly for the game page since the base Tetris piece colors are affected by those who may be colorblind. This mode changes the colors of specifically the pieces of the game. To further assist with user accessibility, we used high contrast colors on the rest of the site.
