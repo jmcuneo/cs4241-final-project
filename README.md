@@ -14,10 +14,13 @@ The purpose of this project was to create a website for a local WPI community to
 
 ## Instructions & Login Information
 Login:
-- Usernames: "admin" || "dummy"
-- Password: "password"
+- Username: mmouse
+- Password: !123
 
-Note: The "admin" account has more pages to view and addtional management features.
+- Username: dduck
+- Password: !123
+
+Note: The "mmouse" account has more pages to view and addtional management features.
 
 Follow the buttons to edit events/add guests/delete guests. 
 
