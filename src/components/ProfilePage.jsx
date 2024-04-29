@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
 
-function ProfilePage({ onLogout }) {
+function ProfilePage({ onLogout, isAdmin}) {
   const [userProfile, setUserProfile] = useState(null);
   const makeAdminRef = useRef(null);
   const [message, setMessage] = useState("");
@@ -92,25 +92,30 @@ function ProfilePage({ onLogout }) {
               Error loading profile
             </div>
           )}
-          <form className="w-full" onSubmit={(e) => handleSubmit(e)}>
-            <div className="flex flex-col justify-start items-center">
-              <input
-                className="input input-bordered w-full max-w-xs"
-                type="text"
-                id="makeAdminInput"
-                placeholder="input username"
-                required
-                ref={makeAdminRef}
-              />
-              <button
-                className="btn btn-success add-guest-button mt-2"
-                type="submit"
-              >
-                Make Admin Account
-              </button>
-            </div>
-          </form>
+          {isAdmin && (
+            <div>
+              <form className="w-full" onSubmit={(e) => handleSubmit(e)}>
+                <div className="flex flex-col justify-start items-center">
+                  <input
+                    className="input input-bordered w-full max-w-xs"
+                    type="text"
+                    id="makeAdminInput"
+                    placeholder="input username"
+                    required
+                    ref={makeAdminRef}
+                  />
+                  <button
+                    className="btn btn-success add-guest-button mt-2"
+                    type="submit"
+                  >
+                    Make Admin Account
+                  </button>
+                </div>
+              </form>
           <div className="text-xl text-white">{message}</div>
+            </div>
+          )}
+          
         </motion.div>
       </div>
     </>
@@ -119,6 +124,7 @@ function ProfilePage({ onLogout }) {
 
 ProfilePage.propTypes = {
   onLogout: PropTypes.func.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
 };
 
 export default ProfilePage;
