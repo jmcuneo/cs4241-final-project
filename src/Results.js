@@ -6,13 +6,13 @@ import "./style.css"
 function getImageUrl(animalType) {
     switch(animalType){
         case 'dog':
-            return require("../src/img/dog.jpeg");
+            return require("../src/img/dog.png");
         case 'cat':
-            return require("../src/img/cat.jpeg");
+            return require("../src/img/cat.png");
         case 'turtle':
-            return require("../src/img/turtle.jpeg");
+            return require("../src/img/turtle.png");
         case 'bunny':
-            return require("../src/img/bunny.webp");
+            return require("../src/img/bunny.png");
         default:
             return ""; // empty string if animalType is undefined or null
     }
