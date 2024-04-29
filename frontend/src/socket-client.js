@@ -1,7 +1,8 @@
-import {io} from "socket.io-client";
+import { io } from "socket.io-client";
 
-const socketgen = io("ws://localhost:3000", {
-	path: "/api/socket.io/"
+// Assuming the frontend and backend are served from the same domain
+const socket = io("/", {
+  path: "/api/socket.io/"
 });
 
-export const socket = socketgen;
+export { socket };

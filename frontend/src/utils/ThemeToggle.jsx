@@ -17,7 +17,7 @@ function ThemeToggle() {
   };
 
   return (
-    <button onClick={toggleTheme} tabindex="0" className="ml-4 rounded focus:outline-none">
+    <button onClick={toggleTheme} tabIndex="0" className="ml-4 rounded focus:outline-none">
                 <img src={kebabMenu} alt="Menu" className="w-6 h-6" draggable="false" />
             </button>
   );

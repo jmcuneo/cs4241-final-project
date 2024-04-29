@@ -9,6 +9,7 @@ import useConversation from "../../zustand/useConversation";
 
 const Messages = () => {
   const { messagesexp, loading } = useGetMessages();
+  console.log(messagesexp.length, "Messages length");
   const lastMessageRef = useRef(null);
 	const { messages, setMessages, selectedConversation } = useConversation();
   useEffect(() => {
@@ -59,7 +60,7 @@ const Messages = () => {
       
       {loading && [...Array(4)].map((_, idx) => <MessageSkeleton key={idx} />)}
 
-      {!loading && messagesexp.length === 0 && (
+      {!loading && messagesexp.length === 0 || messagesexp.length === undefined && (
 		  <p className='text-center text-welcome dark:text-lightwelcome'>Send a message to start the conversation</p>
 	  )}
 
