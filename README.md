@@ -5,6 +5,7 @@ Race-a-Pet is a web-based game where users can create pets and race them against
 
 ## Instructions - Run Locally
 - To run, ensure npm and nodemon are installed in the terminal. 
+- Have port 3000 and 3001 available 
 - Open one terminal and type "npm start" and open another terminal and type "nodemon server.js". On Windows, the second terminal may need to be a command prompt. 
 - Login using "user" as username and "pass" as password. 
 
@@ -13,7 +14,7 @@ Race-a-Pet is a web-based game where users can create pets and race them against
 2. Styled with Bootstrap and CSS 
 3. Implemtnted session based authentication 
 4. Saved Users information Using MongoDB
-5. Conducted User Studies 
+5. Conducted User Studies (Infomation ins UserTesting.md)
 6. Implemented Aria for Accessability
 
 ## Challenges
@@ -21,6 +22,10 @@ Race-a-Pet is a web-based game where users can create pets and race them against
 2. Ran into a few issues implementing MongoDB, but was able to debug it after going to office hours multiple times. 
 3. Had trouble loading our website to Glitch or another server that isn't local. 
     - Glitch does not support bootstrap
+    - Tried with GitHub pages but it does not run the app correctly
+    - I needed to put a payment method for Heroku. I am not willing to give my private info for something that is free
+    -Render took to long to deploy 
+    -Had to submit our final locally
 
 ## Group Contributions
 1. Joselin
