@@ -36,20 +36,20 @@ function LoginPage() {
         <PetForm />
       ) : (
         <div>
-          <h1>&#127937;Race-a-Pet</h1>
+          <h1 aria-label="Race-a-Pet" role="heading">&#127937;Race-a-Pet</h1>
         
           <Container>
             <Row>
-              <Col><h2 className="center">About</h2></Col>
-              <Col><h2 className="center">Instructions</h2></Col>
+              <Col><h2 className="center" role = "heading">About</h2></Col>
+              <Col><h2 className="center" role = "heading">Instructions</h2></Col>
             </Row>
             <Row>
               <Col>
-                <p className="center">Welcome to Race-a-Pet! Where you create a pet and see how far it can run!</p>
-                <p className="center">Created by: Esha Bajwa, Joselin Barbosa, and Jolene Pern</p>
+                <p role = "region" aria-label= "about" className="center">Welcome to Race-a-Pet! Where you create a pet and see how far it can run!</p>
+                <p role = "region" aria-label= "author" className="center">Created by: Esha Bajwa, Joselin Barbosa, and Jolene Pern</p>
               </Col>
               <Col>
-                <ol>
+                <ol aria-label = "Instructions">
                   <li>Log In with your Race-a-Pet account</li>
                   <li>Create your Pet</li>
                   <ol>
@@ -63,15 +63,16 @@ function LoginPage() {
               </Col>
             </Row>
           </Container>
-          <h2 className="center">Login</h2>
-          <Form className="center">
+          <h2 role="heading" className="center">Login</h2>
+          <Form aria-label="Login" className="center">
             <Form.Group controlId="formBasicUsername">
               <Form.Control
                 type="text"
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="formControl" /* Apply the .formControl class */
+                className="formControl" 
+                aria-label = "Username"
               />
             </Form.Group>
 
@@ -81,12 +82,13 @@ function LoginPage() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="formControl" /* Apply the .formControl class */
+                className="formControl" 
+                aria-label = "Password"
               />
             </Form.Group>
           
 
-            <button className="button center" onClick={handleLogin}>
+            <button role="button" aria-label="Login" className="button center" onClick={handleLogin}>
               Login
             </button>
           </Form>

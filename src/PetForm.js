@@ -132,15 +132,15 @@ function PetForm() {
 
   return (
     <div className="center">
-      <h1>&#127937;Race-a-Pet</h1>
+      <h1 role="heading" aria-label="Name">&#127937;Race-a-Pet</h1>
       <Container>
         <Row>
-          <Col><h2 className='center'>Create your Pet to Race!</h2></Col>
-          <Col><h2 className='center'>Instructions</h2></Col>
+          <Col><h2 role="heading" className='center'>Create your Pet to Race!</h2></Col>
+          <Col><h2 role="heading" className='center'>Instructions</h2></Col>
         </Row>
         <Row>
-          <Col><p className='center'>Here, you will create your pet. Be Creative!</p></Col>
-          <Col><ol>
+          <Col><p aria-label="about" className='center'>Here, you will create your pet. Be Creative!</p></Col>
+          <Col><ol aria-label="instructions">
             <li>Give your pet a name.</li>
             <li>Pick what pet you want.</li>
             <li>Give it a Diet.</li>
@@ -148,8 +148,8 @@ function PetForm() {
           </ol></Col>
         </Row>
       </Container>
-      <h2 className='center'>Enter Here!</h2>
-      <Form className="text-center" onSubmit={handleSubmit}>
+      <h2 role ="header" aria-label="Enter Here" className='center'>Enter Here!</h2>
+      <Form role ="form" className="text-center" onSubmit={handleSubmit}>
         <Form.Group controlId="petName">
           <Form.Label className='formLabel'>Pet Name:</Form.Label>
           <Form.Control
@@ -158,6 +158,7 @@ function PetForm() {
             value={petName}
             onChange={handleInputChange}
             className='formControl'
+            aria-label = "Pet Name"
             required
           />
         </Form.Group>
@@ -170,6 +171,7 @@ function PetForm() {
             value={animalType}
             onChange={handleInputChange}
             className='formControl'
+            aria-label="Animal Type"
             required
           >
             <option value="" disabled>Select</option>
@@ -190,6 +192,7 @@ function PetForm() {
             value={dietType}
             onChange={handleInputChange}
             className='formControl'
+            aria-label="Diet Type"
             required
           >
             <option value="" disabled>Select</option>
@@ -216,12 +219,11 @@ function PetForm() {
             step="1"
             onChange={handleInputChange}
             className='formControl'
+            aria-label="excercise"
           />
           <span id="exercise-value">{exerciseLevel}</span>
         </div>
       </Form.Group>
-
-
         <button className='button' variant="primary" type="submit">
           Submit
         </button>

@@ -18,6 +18,7 @@ Race-a-Pet is a web-based game where users can create pets and race them against
 1. Was not able to get Github login working
 2. Ran into a few issues implementing MongoDB, but was able to debug it after going to office hours
 3. Had trouble loading our website to Glitch or another server that isn't local. 
+    - Glitch does not support bootstrap
 
 ## Group Contributions
 1. Joselin
@@ -28,6 +29,7 @@ Race-a-Pet is a web-based game where users can create pets and race them against
 2. Esha
     - Pet form page
     - Bootstrap styling
+    - custom CSS styling with bootstrap 
     - Aria for accessibility
     - conducted a user test
 3. Jolene

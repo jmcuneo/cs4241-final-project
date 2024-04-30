@@ -39,24 +39,25 @@ function Results({ formData, leaderboardData, deleteRow }) {
     const petImageUrl = getImageUrl(formData.animalType);
 
     return (
+        <div>
+             <h1 role="heading" aria-label="Name">&#127937;Race-a-Pet</h1>
         <Container id="results">
-            <h1>&#127937;Race-a-Pet</h1>
-            <h2 className="center">Race Results</h2>
-            <p className="center">Here are your race results with the rest of your pets!</p>
+            <h2 className="center" role="heading" aria-label="Race Results">Race Results</h2>
+            <p className="center" aria-label="about">Here are your race results with the rest of your pets!</p>
             <Row>
-                <Col><h2 className="center">Your Pet!</h2></Col>
-                <Col><h2 className="center">Leaderboard</h2></Col>
+                <Col><h2 role="heading" aria-label="Your Pet" className="center">Your Pet!</h2></Col>
+                <Col><h2 role ="heading" aria-label="Leaderboard" className="center">Leaderboard</h2></Col>
             </Row>
 
             <Row>
-                <Col id="your-pet">
+                <Col aria-label="Pet Info" id="your-pet">
                     <img className="center" src={petImageUrl} alt="your pet" width="300"/>
                     <p className="center">Name: {formData.petName}</p>
                     <p className="center">Diet: {Diet}</p>
                     <p className="center">Exercise level: {formData.exercise}</p>
                     <p className="center">&#127937; Race time: {formData.raceTime} seconds</p>
                     <Link to="/PetForm">
-                    <button className='button center'>
+                    <button role="button" aria-label="Go to Pet Form" className='button center'>
                       Go to Pet Form
                     </button>
                   </Link>
@@ -66,13 +67,13 @@ function Results({ formData, leaderboardData, deleteRow }) {
                     <Table striped bordered hover id="leaderboard">
                         <thead>
                             <tr>
-                                <th>Rank</th>
-                                <th>Pet Name</th>
-                                <th>Animal</th>
-                                <th>Diet</th>                                
-                                <th>Exercise Level</th>
-                                <th>Time</th>
-                                <th>Actions</th>
+                                <th aria-label="Rank">Rank</th>
+                                <th aria-label="Pet Name">Pet Name</th>
+                                <th aria-label="Animal">Animal</th>
+                                <th aria-label="Diet">Diet</th>
+                                <th aria-label="Exercise Level">Exercise Level</th>
+                                <th aria-label="Time">Time</th>
+                                <th aria-label="Actions">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,7 +86,7 @@ function Results({ formData, leaderboardData, deleteRow }) {
                                     <td>{item.exercise}</td>
                                     <td>{item.raceTime}</td>
                                     <td>
-                                        <button className='buttonSmall' onClick={() => deleteRow(item._id)}>Delete</button>
+                                        <button role="button" aria-label="Delete" className='buttonSmall' onClick={() => deleteRow(item._id)}>Delete</button>
                                     </td>
                                 </tr>
                             ))}
@@ -94,6 +95,7 @@ function Results({ formData, leaderboardData, deleteRow }) {
                 </Col>
             </Row>
         </Container>
+        </div>
     );
 }
 
