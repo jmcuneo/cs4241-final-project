@@ -25,6 +25,7 @@ The challenges of this project were multifaceted, primarily revolving around ens
 
 ## Technologies Used
 - **Node.js**: Forms the backbone of our backend infrastructure, managing server-side logic, including user authentication and message transmission. This enables our platform to handle complex operations efficiently while maintaining scalability.
+- **React**: Used for creating interactive frontend.
 - **Socket.io**: Key to our real-time communication capabilities, Socket.io supports websocket connections that enable features such as live messaging and automatic reconnection, ensuring that users experience minimal disruption in their interactions.
 - **MongoDB Atlas**: Our choice for database management, MongoDB Atlas stores and organizes user data and chat histories. It provides robust scalability and security features, which are essential for handling sensitive information and supporting a growing number of users.
 - **DaisyUI & TailwindCSS**: These tools greatly enhance the user interface by providing customizable components and utility-first styling. This combination allows us to create a clean and intuitive design that adapts seamlessly across different devices and browsers. Also used to switch between light and dark themes
@@ -36,10 +37,11 @@ The challenges of this project were multifaceted, primarily revolving around ens
 - **State Management**: Managing a frequently changing global state with Zustand, necessary for updating user statuses and new messages without performance issues.
 - **Session Persistence**: Implementing mechanisms to remember user sessions to local storage across tabs without requiring re-login.
 - **Socket.io Integration**: Coordinating real-time updates through Socket.io with Zustand state management.
+- **Encryption** We had originally inteneded to add a way for users to open up an end to end encrypted channel, however, we ultimately decided against it as the end to end encrypted chats would not transfer between different devices and would lead to a poor user experience.
 
 ## Contributions
-- **Eamon**: Focused on the authentication processes and socket implementation.
-- **Hanzalah and Rohit**: Handled all backend developments and database schema.
+- **Éamonn**: Focused on the authentication processes and socket implementation.
+- **Hanzalah and Rohit**: Handled backend developments and database schema.
 - **Everyone**: Contributed to frontend development and interface design.
 
 ## Accessibility Features
