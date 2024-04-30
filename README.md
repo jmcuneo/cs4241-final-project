@@ -1,66 +1,50 @@
-# Final Project
+# Web-based Instant Messaging Service - Chat App
 
-deployed on render:
-https://cs4241-final-project-r2mj.onrender.com/ 
+## Project Overview
 
-Instructions on how to run: 
-npm run build
-npm start
-runs at port 8000
+Our project is an advanced web-based instant messaging service designed to facilitate real-time communication between users through a secure and user-friendly interface. Users are required to create an account, which then allows them to participate in real-time messaging.The platform's interface is meticulously crafted to be clean and intuitive, ensuring that users can easily navigate and utilize the service without any hassle. This design philosophy is critical in eliminating barriers to effective communication, making our service accessible to a wide range of users with varying levels of technical expertise.
 
+The challenges of this project were multifaceted, primarily revolving around ensuring real-time functionality, robust security, and seamless user experience across different devices and browsers. Integrating technologies such as Socket.IO for real-time communication and Zustand for efficient state management required sophisticated architectural decisions to maintain high performance and responsiveness of the application under the load of simultaneous users. Given these complexities and our successful implementation that meets all functional and non-functional requirements, this project merits a grade of 100%. The service not only meets its intended design specifications but also provides a reliable, secure, and easy-to-use platform for communication, reflecting a high standard of software engineering and user-centric design.
 
-[Example Projects from A23](https://echo360.org/collection/50a4d343-caea-4deb-93ee-61bdd7da543f/public)
+[View the project here] (https://cs4241-final-project-r2mj.onrender.com).
 
-For your final project, you'll implement a web application that exhibits understanding of the course materials. 
-This project should provide an opportunity to both be creative and to pursue individual research and learning goals.
+## Usage Instructions
+### Login Details
+- **Username:** johndoe
+- **Password:** 123456
+- **Username 2:** janedoe
+- **Password 2:** 123456
+- Can also create two accounts to chat to each other.
+- To run locally, run npm run build and npm start and navigate to port 8000
 
-## General description
-Your project should consist of a complete Web application, exhibiting facets of the three main sections of the course material:
+### Interface:
+- Fairly simple and understandable interface.
+- Can use search to search for users and press enter and it will take you to the closest user with the search query.
+- When logged in, top left will be the current logged in user's profile picture and name with the logout button next to it.
+- Can switch between dark and light mode.
 
-- Static web page content and design. You should have a project that is accessible, easily navigable, and features significant content.
-- Dynamic behavior implemented with JavaScript (TypeScript is also allowed if your group wants to explore it).
-- Server-side programming *using Node.js*. Typically this will take the form of some sort of persistent data (database), authentication, and possibly server-side computation. 
-- A video (less than five minutes) where each group member explains some aspect of the project. An easy way to produce this video is for you all the groups members to join a Zoom call that is recorded; each member can share their screen when they discuss the project or one member can "drive" the interface while other members narrate (this second option will probably work better.) Upload the video to Canvas. (Further instructions are available in the Canvas assignment.) Make sure your video is less than five minutes but long enough to successfully explain your project and show it in action. There is no minimum video length.
+## Technologies Used
+- **Node.js**: Forms the backbone of our backend infrastructure, managing server-side logic, including user authentication and message transmission. This enables our platform to handle complex operations efficiently while maintaining scalability.
+- **Socket.io**: Key to our real-time communication capabilities, Socket.io supports websocket connections that enable features such as live messaging and automatic reconnection, ensuring that users experience minimal disruption in their interactions.
+- **MongoDB Atlas**: Our choice for database management, MongoDB Atlas stores and organizes user data and chat histories. It provides robust scalability and security features, which are essential for handling sensitive information and supporting a growing number of users.
+- **DaisyUI & TailwindCSS**: These tools greatly enhance the user interface by providing customizable components and utility-first styling. This combination allows us to create a clean and intuitive design that adapts seamlessly across different devices and browsers. Also used to switch between light and dark themes
+- **React-Hot-Toast**:Utilized for displaying notifications and messages in an interactive manner, enhancing the user experience by providing timely and contextually relevant feedback.
+- **Zustand**: Manages global state across our React application, simplifying the state logic needed in a dynamic environment. Zustand helps in maintaining a clean and manageable codebase, which is crucial for the scalability and maintainability of the application.
 
-## Project ideation
-Excellent projects typically serve someone/some group; for this assignment you need to define your users and stakeholders. I encourage you to identify projects that will have impact, either artistically, politically, or in terms of productivity. 
+## Project Challenges
+- **Design Consistency**: Achieving a consistent and responsive design across various devices using TailwindCSS and DaisyUI was challenging, particularly when integrating various components for a dynamic content setup.
+- **State Management**: Managing a frequently changing global state with Zustand, necessary for updating user statuses and new messages without performance issues.
+- **Session Persistence**: Implementing mechanisms to remember user sessions to local storage across tabs without requiring re-login.
+- **Socket.io Integration**: Coordinating real-time updates through Socket.io with Zustand state management.
 
-## Deliverables
+## Contributions
+- **Eamon**: Focused on the authentication processes and socket implementation.
+- **Hanzalah and Rohit**: Handled all backend developments and database schema.
+- **Everyone**: Contributed to frontend development and interface design.
 
-### Form Team (Due Thursday, April 11, 11:59 pm)
-Students are will work in teams of 3-5 students for the project. Working in teams should help enable you to build a good project in a limited amount of time.  Use the `#finalproject` channel in Slack to pitch ideas for final projects and/or find fellow team members as needed.
-
-Teams must be in place by end of day on Monday, April 8. If you have not identified a team at this point, you will be assigned a team. **Put all team members together in one of the empty "Final Project" groups on Canvas. You MUST do this step to receive full credit on the assignment.**
-
-### Proposal (Due Tuesday, April 16, 11:59 pm) 
-Provide an outline of your project direction and the names of associated team members. The outline should have enough detail so that staff can determine if it meets the minimum expectations or if it goes too far to be reasonable by the deadline. Please include a general description of the project and a list of key technologies/libraries you plan on using (e.g. React, Three.js, Svelte, TypeScript, etc.). Two to four paragraps should provide enough level of detail. Name the file proposal.md and submit a pull request by Tuesday, September 27th at 11:59 PM (end of day). Your pull request does not need to have a specific name. Only one pull request is required per team.
-
-There are no other scheduled checkpoints for your project. 
-
-### Turning in Your Project (Due Monday, April 29, 11:59 pm)
-**Although the assignment is due at 11:59 pm, you must be prepared to demo your website in class that day.**
-
-Submit a second PR on the final project repo to turn in your app and code. Again, only one pull request per team.
-
-Deploy your app, in the form of a webpage, to Glitch/Heroku/Digital Ocean or some other service; it is critical that the application functions correctly wherever you post it.
-
-The README for your second pull request doesn’t need to be a formal report, but it should contain the following:
-
-1. A brief description of what you created, and a link to the project itself (two paragraphs of text)
-2. Any additional instructions that might be needed to fully use your project (login information, etc.)
-3. An outline of the technologies you used and how you used them.
-4. What challenges you faced in completing the project.
-5. What each group member was responsible for designing / developing.
-6. What accessibility features you included in your project.
-
-Think of 1, 3, and 4 in particular in a similar vein to the design / technical achievements for A1—A4. Make a case for why what you did was challenging and why your implementation deserves a grade of 100%.
-
-The video described above is also due on Canvas at this time.
-
-## FAQs
-
-**Can I use XYZ framework?** 
-
-You can use any web-based frameworks or tools available, but for your server programming you need to use Node.js. Your client-side scripting language should be either JavaScript or TypeScript. Note that the staff may not be able to assist with TypeScript questions.
-
-
+## Accessibility Features
+- **Themes**: Users can switch between dark and light modes to suit their visual preferences. Used state management to store the current theme throughout the app
+- **Error Handling**: Robust error management with clear notifications helps users navigate and resolve issues quickly.
+- **Search Functionality**: Enables easy searching for contacts within the application.
+- **Minimalist Design**: Avoids unnecessary clutter to enhance user focus and ease of use.
+- **Consistent UI**: Uniform design elements across the application improve user familiarity and interaction.
