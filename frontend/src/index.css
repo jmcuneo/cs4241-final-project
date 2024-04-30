@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image: url('frontend/public/green-leaves-plant-aesthetic-5k-3840x2160-3559.jpg');
+  backdrop-filter: blur(1px);
+  box-shadow: inset 0 0 0 1000px rgba(164, 232, 160, 0.4);
+  background-size: cover;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.login-entry{
+  text-align: center;
+  border: none;
+  border-radius: 20px;
+  padding: 100px;
+  margin: 100px;
+  color: #fff;
+  font-size: 20px;
+}
+
+.login-page{
+  background: none;
+  color: #000;
+  padding: 10px;
+}
+
+.instructions h1{
+  font-size: 30px;
+}
+
+ol li {
+  list-style: decimal inside;
+}
+
+ul li {
+  list-style: inside;
+}
+
+.images{
+  width: 45%;
+  display: inline-block;
+  padding: 10px;
+}

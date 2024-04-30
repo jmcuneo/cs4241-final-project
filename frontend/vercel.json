@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://cs4241-final-project-backend.vercel.app/api/:path*"
+    }
+  ]
+}
