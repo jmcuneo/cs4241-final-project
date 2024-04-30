@@ -5,9 +5,9 @@ Our project is centered around creating a web-based instant messaging service th
 
 ## Usage Instructions
 ### Login Details
-- **Username:** John Doe
+- **Username:** johndoe
 - **Password:** 123456
-- **Username 2:** Jane Doe
+- **Username 2:** janedoe
 - **Password 2:** 123456
 - Can also create two accounts to chat to each other.
 
