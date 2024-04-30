@@ -41,7 +41,7 @@ const socketioHandleMessages = async (socket, io) => {
 		})
 		
 		await newMessage.save();
-		await conversation.save();
+		conversation.save();
 
 		if (newMessage) {
 			conversation.messages.push(newMessage._id);
