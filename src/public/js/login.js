@@ -16,18 +16,41 @@ window.onload = function() {
     if(localStorage.getItem("token")) localStorage.clear()
 }
 
-async function signUp() {
+async function signUp(event) {
+    if(event) event.preventDefault();
     const user = document.querySelector("#signUpUser"),
           email = document.querySelector("#signUpEmail"),
           pass = document.querySelector("#signUpPass")
     let body = {username: user.value, email: email.value, password: pass.value}
     body = JSON.stringify(body);
-    const response = await fetch( "/add", {
-        method:'POST',
-        headers: { 'Content-Type': 'application/json'},
-        body
-    })
-    console.log(await response);
+    if(user.value !== ""&& email.value !== "" && pass.value !== ""){
+        
+        const response = await fetch( "/add", {
+            method:'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body
+        }).then(async (response) =>{
+            if(response.status == 200){
+                const rsp = await(
+                    "/login/auth", {
+                        method:'POST',
+                        headers: { 'Content-Type': 'application/json'},
+                        body
+                    })
+            }
+    
+        }).then(response => {
+            if(response !== "bad login"){
+                document.cookie = `token=${response}`;
+                window.location = "/play-game"
+                return false;
+            }
+            else console.log("bad login");
+        });
+        console.log(await response);
+    }else{
+        //todo add message
+    }
 }
 
 async function signIn(event) {
@@ -45,21 +68,22 @@ async function signIn(event) {
     }
     
     let body = {username: username, email: email, password: pass.value}
-    
-    body = JSON.stringify(body);
-    const response = await fetch( "/login/auth", {
-        method:'POST',
-        headers: { 'Content-Type': 'application/json'},
-        body
-    }).then(response => response.json())
-    .then(response =>{
-        if(response !== "bad login"){
-            document.cookie = `token=${response}`;
-            window.location = "/play-game"
-            return false;
-        }
-        else console.log("bad login");
-    })
+    if(userEmail.value !== "" && pass.value !== ""){
+        body = JSON.stringify(body);
+        const response = await fetch( "/login/auth", {
+            method:'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body
+        }).then(response => response.json())
+        .then(response =>{
+            if(response !== "bad login"){
+                document.cookie = `token=${response}`;
+                window.location = "/play-game"
+                return false;
+            }
+            else console.log("bad login");
+        })
+    }
 }
 
 function github() {

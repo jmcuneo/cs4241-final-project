@@ -3,16 +3,28 @@ const express = require("express"),
   path = require("path"),
   auth = require("./auth"),
   db = require("./db"),
+  fs = require('fs'),
   helpers = require("./helpers"),
   requests = require("./requests"),
   ghlogin = require("./gh-login"),
   { ObjectId } = require("mongodb"),
+  https = require('https'),
+  http = require('http'),
   url = require("url");
 
 var GitHubStrategy = require("passport-github2").Strategy,
   passport = require("passport");
 
 require("dotenv").config();
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/lgbt-matching.bixler.me/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/lgbt-matching.bixler.me/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/lgbt-matching.bixler.me/chain.pem', 'utf8');
+
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
+};
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
@@ -21,7 +33,7 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "http://127.0.0.1:3000/auth/github/callback",
+      callbackURL: process.env.REDIRECT,
     },
     function (accessToken, refreshToken, profile, cb) {
       console.log("at: ", accessToken, "rt: ", refreshToken, profile, cb);
@@ -41,7 +53,9 @@ app.use((req, res, next) => {
     res.status(503).send();
   }
 });
-
+app.get("/.well-known/acme-challenge/7wfVfBorDT1GxVxRmhHS6lBYf85WrkEARWk96MtIMU0", (req, res) => {
+  res.send("7wfVfBorDT1GxVxRmhHS6lBYf85WrkEARWk96MtIMU0.JnjgCrFUId2HcMMJIvR7NfXpoP-Ra5HmZZf2pQdmFFM").end();
+})
 app.post("/add", async (req, res) => {
   console.log(req);
   const existsByUsername = await db.getUserByUsername(req.body.username);
@@ -121,8 +135,8 @@ app.post("/update", async (req, res) => {
 
 app.post("/load", async (req, res) => {
   inMemCache = await db.getCards();
-  
-  res.send(JSON.stringify(inMemCache))
+  const response = JSON.stringify(inMemCache);
+  res.send(response)
 })
 
 app.post("/select", async (req, res) => {
@@ -139,6 +153,7 @@ app.post("/select", async (req, res) => {
 })
 
 
+
 app.post("/auth/add-leaderboard-entry",  auth.authenticateToken, async (req, res) => {
   console.log(req.user)
   const entry = await db.addLeaderboardEntry({
@@ -146,6 +161,7 @@ app.post("/auth/add-leaderboard-entry",  auth.authenticateToken, async (req, res
     score: Number(req.body.score),
     time: Number(req.body.timeElapsed)
   })
+
   res.status(200).end()
 })
 app.post("/leaderboard", async (req, res) => {
@@ -194,4 +210,12 @@ app.post('/auth/test', auth.authenticateToken, (req, res) => {
 process.on('exit', () => {
   db.close();
 });
-app.listen(process.env.PORT || 3000);
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
+httpServer.listen(80, () => {
+	console.log('HTTP Server running on port 80');
+});
+
+httpsServer.listen(443, () => {
+	console.log('HTTPS Server running on port 443');
+});

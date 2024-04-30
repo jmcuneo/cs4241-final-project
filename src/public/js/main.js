@@ -92,19 +92,21 @@ let selected1 = null;
 let selected2 = null;
 
 let defaultColor = "azure";
-let selectedColor = "rgb(116, 138, 227)";
+let selectedColor = "#bbe0ff";
+let successColor = "#56ae57";
 
 let totalTime = 0;
 let minute = 0;
 let second = 0;
+
 let interval;
+let matches = 0;
+
 const giimmeComkie = () => {
   var cookie = localStorage.getItem('token');
   console.log(cookie)
   if(cookie) document.cookie = `token=${cookie}`;
 }
-
-let matches = 0;
 
 window.onload = async function () {
   giimmeComkie();
@@ -116,6 +118,9 @@ window.onload = async function () {
 	}	
   const gameboard = document.getElementById("gameboard");
   gameboard.style.display = "none";
+  const play = document.getElementById("playagain");
+  play.style.display = "none";
+  play.onclick = restart
   const startBtn = document.getElementById("startButton");
   startBtn.onclick = start;
   if (document.cookie) {
@@ -145,21 +150,28 @@ function shuffle(array) {
 async function start() {
   const logoutBtn = document.getElementById("logoutButton")
   logoutBtn.parentElement.style.paddingTop = "0px"
+
   const startBtn = document.getElementById("startButton");
+  startBtn.style.display = "none";
+
   const gameboard = document.getElementById("gameboard");
   gameboard.style.display = "flex";
+
   showLeaderboard();
   const response = await fetch("/load", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-  });
+  })
   const resp = await response.json();
+  console.log(resp)
   shuffle(resp);
   for (let i = 0; i < resp.length; i++) {
     addCell(resp[i]);
   }
+
   interval = setInterval(stopWatch, 1000);
   startBtn.style.display = "none";
+  //setInterval(stopWatch, 1000);
 }
 
 function addCell(content) {
@@ -170,13 +182,14 @@ function addCell(content) {
     cell.id = content.name
     cell.addEventListener("click", select)
     cell.addEventListener("mouseenter", showInfo)
-    let card = makeElem("div", "card has-text-weight-bold", "", cell)
+    let card = makeElem("div", "card has-text-weight-bold has-text-black", "", cell)
     let imgCard = makeElem("div", "card-image", "", card)
     let imgWrap = makeElem("figure", "image is-4by3", "", imgCard)
     let img = makeElem("img", "", null, imgWrap)
     img.src = content.img
     img.alt = content.alt
-    let cont = makeElem("p", "is-size-7", content.name, card)
+    img.title = content.alt
+    let cont = makeElem("p", "is-size-7 has-text-black", content.name, card)
 }
 
 function makeElem(type, classType, inner, parent) {
@@ -197,6 +210,7 @@ async function select(event) {
     if (id != selected1 && selected2 == null) {
       if (selected1 == null) {
         elem.style.backgroundColor = selectedColor;
+        elem.style.filter = "drop-shadow(1px 1px 0.1rem black)";
         selected1 = id;
       } else {
         selected2 = id;
@@ -219,6 +233,7 @@ async function select(event) {
     } else if (id == selected1) {
       let oldSelected = document.getElementById(selected1).childNodes[0];
       oldSelected.style.backgroundColor = defaultColor;
+      oldSelected.style.filter = ""
       selected1 = selected2;
       selected2 = null;
     }
@@ -257,7 +272,10 @@ function stopWatch() {
     console.log("game ended")
 		gameover();
 		matches = 0;
+
     clearInterval(interval)
+    const play = document.getElementById("playagain");
+    play.style.display = "";
 	}
 }
 
@@ -270,6 +288,7 @@ function handleGuess(resp) {
 
   let oldSelected = document.getElementById(selected1).childNodes[0];
   oldSelected.style.backgroundColor = defaultColor;
+  oldSelected.style.filter = ""
   handleDisplay(selected1, match);
   handleDisplay(selected2, match);
   selected1 = null;
@@ -279,8 +298,9 @@ function handleGuess(resp) {
 function handleDisplay(itemID, match) {
   let item = document.getElementById(itemID).childNodes[0];
   if (match) {
-    item.style.border = "2px solid green";
-    item.style.backgroundColor = "green";
+    item.style.border = "2px solid " + successColor;
+    item.style.backgroundColor = successColor;
+    item.style.filter = ""
     item.className = item.className + " inactive";
   } else {
     item.classList.add("apply-shake")
@@ -316,12 +336,19 @@ async function gameover(){
 	let body = JSON.stringify({score: score, time: totalTime})
 	const response = await fetch("/auth/add-leaderboard-entry", {
 		method: "POST",
-		headers: { "Content-Type": "application/json",
-                Authorization: `Bearer ${document.cookie.substring(6)}`,},
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${document.cookie.substring(6)}`,
+    },
 		body
 	}).finally(async()=>{
     console.log('fetching lb after game over event')
     await showLeaderboard()
   });
 	//const resp = await response.json();
+}
+
+function restart() {
+  window.location = "/play-game"
+  return false
 }
