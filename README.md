@@ -1,10 +1,12 @@
 # Race-a-Pet
 ### by Esha Bajwa, Joselin Barbosa, Jolene Pern 
 
-Race-a-Pet is a web-based game where users can create pets and race them against each other. Users will “design” a pet with various features such as animal type, diet, and exercise, which will affect their racing ability. 
+Race-a-Pet is a web-based game where users can create pets and race them against each other. Users will “design” a pet with various features such as animal type, diet, and exercise. Based on the attributes, a race time is calculated and displayed to the user, along with a leaderboard of all the previous race times ranked by time. Users can manage the leaderboard by adding more pets or delete them from the database. 
 
-## Instructions
-- To run open one terminal and type "npm start" and open another terminal and type "nodemon server.js"
+## Instructions - Run Locally
+- To run, ensure npm and nodemon are installed in the terminal. 
+- Open one terminal and type "npm start" and open another terminal and type "nodemon server.js". On Windows, the second terminal may need to be a command prompt. 
+- Login using "user" as username and "pass" as password. 
 
 ## Technologies + Features
 1. Implemented React 
@@ -16,7 +18,7 @@ Race-a-Pet is a web-based game where users can create pets and race them against
 
 ## Challenges
 1. Was not able to get Github login working
-2. Ran into a few issues implementing MongoDB, but was able to debug it after going to office hours
+2. Ran into a few issues implementing MongoDB, but was able to debug it after going to office hours multiple times. 
 3. Had trouble loading our website to Glitch or another server that isn't local. 
     - Glitch does not support bootstrap
 
