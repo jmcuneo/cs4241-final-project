@@ -14,7 +14,7 @@ Race-a-Pet is a web-based game where users can create pets and race them against
 2. Styled with Bootstrap and CSS 
 3. Implemtnted session based authentication 
 4. Saved Users information Using MongoDB
-5. Conducted User Studies (Infomation ins UserTesting.md)
+5. Conducted User Studies (Infomation in UserTesting.md)
 6. Implemented Aria for Accessability
 
 ## Challenges
