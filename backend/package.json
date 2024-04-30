@@ -1,0 +1,45 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server",
+    "dev": "nodemon src/app",
+    "deploy": "nodemon src/app",
+    "versel-build": "echo hello",
+    "proxy": "http://localhost:3000"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express-session": "^1.17.4",
+    "@types/passport": "^1.0.16",
+    "@types/passport-github": "^1.1.12",
+    "common": "file:../common",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "express-session": "^1.18.0",
+    "mongodb": "^6.5.0",
+    "mongoose": "^8.3.1",
+    "node-fetch": "^2.6.5",
+    "passport": "^0.7.0",
+    "ts-node": "^10.9.2",
+    "vite-express": "^0.16.0",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.16",
+    "@types/node-fetch": "^2.5.12",
+    "@types/nodemon": "^1.19.6",
+    "nodemon": "^3.0.3",
+    "typescript": "^5.3.3",
+    "vite": "^5.2.0"
+  }
+}
