@@ -10,7 +10,7 @@ The frontend of the site is written in basic JavaScript with CSS designing mostl
 - MongoDB Integration: We implemented multiple collections within MongoDB which keep track of users, the information on the matching cards, as well as the current leaderboard of all player scores. 
 - GitHub OAuth Integration:
 - Perfect Lighthouse Score: We checked the Lighthouse score of our project throughout development and changed our project as needed (often adding accessibility improvements) to achieve a 100% on all 4 Lighthouse tests. A screenshot of the score has been added to the repo.
-![Lighthouse Score]("lighthouse score.png")
+  [Score](lighthouse score.png)
 - Deployed on a Digital Ocean Droplet instance. HTTPS was handled using certbot and the automated walkthrough. PM2 manages daemonization of the server.
 
 ## Challenges
@@ -33,7 +33,7 @@ The frontend of the site is written in basic JavaScript with CSS designing mostl
 - Research
 - Visual layout of elements
 - Using Bulma to style webpage
-- Iteraction with gameboard elements
+- Interaction with gameboard elements
 - Information display
 - Client-side login handling
 
