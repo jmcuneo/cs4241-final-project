@@ -1,9 +1,7 @@
-# Project Proposal
-Stephen Fanning - Owen Lehane
+## A Simple Todo List
 
-This project will be a fully functional chess website in which you can play a game of chess against anyone else on the website. The website will primarily use a React front end, with an Express server for the back end, and a MongoDB database. Given that we are a group of two, we will focus on a few points of basic functionality for the website, and we will expand to more features if time allows. The basic functionality we will implement is as follows:
+https://a4-stephenfanning.onrender.com
 
-- **Login Page**: The app will utilize Github Authentication to allow users to log in within a basic login page. Their Github account will then be used to distinguish them from other users. 
-- **Matchmaking Page**: This page will show a list of available game rooms and allow users to join game rooms to start a game of chess. It will also allow users to create their own game room, allowing other players to join it.
-- **Game Page**: This page will facilitate the actual gameplay between two players. Thankfully, there are a number of pre-existing chess libraries that we can use, meaning we should not have to reimplement the entire game of chess. This page will allow a complete game to occur, including updating the board state for both players as moves are made, and allowing either player to resign at any time. Once a game is complete, it will update the playes' win/loss record (which will be stored in the MongoDB database) and then return both players to the matchmaking page.
+This application is a very simple to-do list that lets you keep track of tasks. Simply type the details of the task and click "Submit". You can enter the same task (but with different course, due date, or add date values) to modify existing entries in the list, and you can press "Clear" to delete them all. The Todo list is also user-specific. (No functional changes from Assignment A3)
 
+The new technology hindered the development process, but only because of my inexperience with it. Troubleshooting various issues, both with the client and integration with the server, proved exceptionally difficult given my limited experience with React and websites in general. However, I can clearly see how using React would greatly improve the development experience provided that the developer is experienced with the software.
